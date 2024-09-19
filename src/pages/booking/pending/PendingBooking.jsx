@@ -8,6 +8,7 @@ import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
+import BookingFilter from "../../../components/BookingFilter";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
@@ -44,17 +45,6 @@ const PendingBooking = () => {
   }, []);
 
   const columns = [
-    {
-      name: "slNo",
-      label: "SL No",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
-      },
-    },
     {
       name: "order_ref",
       label: "ID",
@@ -164,25 +154,8 @@ const PendingBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[9];
-      let backgroundColor = "";
-      if (orderStatus === "Confirmed") {
-        backgroundColor = "#d4edda"; // light green
-      } else if (orderStatus === "Completed") {
-        backgroundColor = "#fff3cd"; // light yellow
-      } else if (orderStatus === "Inspection") {
-        backgroundColor = "#e2e3e5"; // light gray
-      } else if (orderStatus === "Pending") {
-        backgroundColor = "#f8d7da"; // light red
-      } else if (orderStatus === "Cancel") {
-        backgroundColor = "#ADD8E6"; // light  blue
-      } else if (orderStatus === "On the way") {
-        backgroundColor = "#b68dee"; // light  purple
-      }
-
       return {
         style: {
-          backgroundColor: backgroundColor,
           borderBottom: "10px solid #f1f7f9",
         },
       };
@@ -190,6 +163,7 @@ const PendingBooking = () => {
   };
   return (
     <Layout>
+      <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Pending Booking List

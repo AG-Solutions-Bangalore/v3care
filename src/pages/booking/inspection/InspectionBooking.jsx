@@ -8,6 +8,7 @@ import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
+import BookingFilter from "../../../components/BookingFilter";
 
 const InspectionBooking = () => {
   const [InspectionBookData, setInspectionBookData] = useState(null);
@@ -44,17 +45,6 @@ const InspectionBooking = () => {
   }, []);
 
   const columns = [
-    {
-      name: "slNo",
-      label: "SL No",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
-      },
-    },
     {
       name: "order_ref",
       label: "ID",
@@ -181,6 +171,7 @@ const InspectionBooking = () => {
   };
   return (
     <Layout>
+      <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Inspection Booking List

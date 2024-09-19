@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiSquarePlus } from "react-icons/ci";
 import Moment from "moment";
+import BookingFilter from "../../../components/BookingFilter";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -45,17 +46,6 @@ const TodayBooking = () => {
   }, []);
 
   const columns = [
-    {
-      name: "slNo",
-      label: "SL No",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
-      },
-    },
     {
       name: "order_ref",
       label: "ID",
@@ -180,7 +170,7 @@ const TodayBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[11];
+      const orderStatus = rowData[10];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green
@@ -206,6 +196,7 @@ const TodayBooking = () => {
   };
   return (
     <Layout>
+      <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Today Booking List

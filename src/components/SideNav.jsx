@@ -212,13 +212,13 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                             color="inherit"
                             className="font-medium capitalize"
                           >
-                            Today
+                            Booking
                           </Typography>
                         </Button>
                       )}
                     </NavLink>
                   </li>
-                  <li>
+                  {/* <li>
                     <NavLink to="/tomorrow">
                       {({ isActive }) => (
                         <Button
@@ -357,7 +357,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                         </Button>
                       )}
                     </NavLink>
-                  </li>
+                  </li> */}
                 </ul>
               )}
             </div>

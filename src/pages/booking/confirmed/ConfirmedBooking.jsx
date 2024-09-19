@@ -8,12 +8,27 @@ import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 import Moment from "moment";
+import BookingFilter from "../../../components/BookingFilter";
+import OrderRefModal from "../../../components/OrderRefModal";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  // Modal state management
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOrderRef, setSelectedOrderRef] = useState(null);
+
+  const handleOpenModal = (orderRef) => {
+    setSelectedOrderRef(orderRef);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrderRef(null);
+  };
 
   useEffect(() => {
     const fetchConfirmData = async () => {
@@ -46,22 +61,24 @@ const ConfirmedBooking = () => {
 
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
-      },
-    },
-    {
       name: "order_ref",
       label: "ID",
       options: {
         filter: false,
         sort: false,
+        customBodyRender: (order_ref, tableMeta) => {
+          const order_no_assign = tableMeta.rowData[9]; // Assuming order_no_assign is in the 9th column
+          return order_no_assign > 0 ? (
+            <a
+              className="text-blue-600 underline cursor-pointer"
+              onClick={() => handleOpenModal(order_ref)}
+            >
+              {order_ref}
+            </a>
+          ) : (
+            order_ref
+          );
+        },
       },
     },
     {
@@ -129,7 +146,7 @@ const ConfirmedBooking = () => {
       label: "No of Assign",
       options: {
         filter: false,
-        sort: false,
+        sort: true,
       },
     },
     {
@@ -182,7 +199,7 @@ const ConfirmedBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[11];
+      const orderStatus = rowData[10];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green
@@ -196,6 +213,8 @@ const ConfirmedBooking = () => {
         backgroundColor = "#ADD8E6"; // light  blue
       } else if (orderStatus === "On the way") {
         backgroundColor = "#b68dee"; // light  purple
+      } else if (orderStatus === "In Progress") {
+        backgroundColor = "#f7f588"; // light  yellow
       }
 
       return {
@@ -208,6 +227,7 @@ const ConfirmedBooking = () => {
   };
   return (
     <Layout>
+      <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Confirmed Booking List
@@ -224,6 +244,11 @@ const ConfirmedBooking = () => {
           options={options}
         />
       </div>
+      <OrderRefModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        orderRef={selectedOrderRef}
+      />
     </Layout>
   );
 };
