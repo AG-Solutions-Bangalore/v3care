@@ -111,6 +111,26 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               )}
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/branch">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Master
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
+          </li>
           {/* <li>
             <NavLink to="/add-booking">
               {({ isActive }) => (

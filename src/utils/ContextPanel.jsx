@@ -48,6 +48,14 @@ const AppProvider = ({ children }) => {
           currentPath === "/pending" ||
           currentPath === "/vendor-job" ||
           currentPath === "/add-booking" ||
+          currentPath === "/branch" ||
+          currentPath === "/refer-by" ||
+          currentPath === "/service" ||
+          currentPath === "/service-sub" ||
+          currentPath === "/service-price" ||
+          currentPath === "/field-team" ||
+          currentPath === "/operation-team" ||
+          currentPath === "/backhand-team" ||
           currentPath === "/change-password"
         ) {
           navigate(currentPath);

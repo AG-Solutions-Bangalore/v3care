@@ -16,6 +16,14 @@ import PendingBooking from "./pages/booking/pending/PendingBooking";
 import TodayBooking from "./pages/booking/today/TodayBooking";
 import TomorrowBooking from "./pages/booking/tomorrow/TomorrowBooking";
 import VendorJobBooking from "./pages/booking/vendorJob/VendorJobBooking";
+import BranchMaster from "./pages/master/branch/BranchMaster";
+import ReferByMaster from "./pages/master/referBy/ReferByMaster";
+import ServiceMaster from "./pages/master/service/ServiceMaster";
+import ServiceSubMaster from "./pages/master/serviceSub/ServiceSubMaster";
+import ServicePriceMaster from "./pages/master/servicePrice/ServicePriceMaster";
+import FieldTeamMaster from "./pages/master/fieldTeam/FieldTeamMaster";
+import OperationTeamMaster from "./pages/master/operationTeam/OperationTeamMaster";
+import BackhandTeamMaster from "./pages/master/backhandTeam/BackhandTeamMaster";
 const App = () => {
   return (
     <>
@@ -34,7 +42,15 @@ const App = () => {
         <Route path="/today" element={<TodayBooking />} />
         <Route path="/tomorrow" element={<TomorrowBooking />} />
         <Route path="/vendor-job" element={<VendorJobBooking />} />
-
+        {/* master  */}
+        <Route path="/branch" element={<BranchMaster />} />
+        <Route path="/refer-by" element={<ReferByMaster />} />
+        <Route path="/service" element={<ServiceMaster />} />
+        <Route path="/service-sub" element={<ServiceSubMaster />} />
+        <Route path="/service-price" element={<ServicePriceMaster />} />
+        <Route path="/field-team" element={<FieldTeamMaster />} />
+        <Route path="operation-team" element={<OperationTeamMaster />} />
+        <Route path="/backhand-team" element={<BackhandTeamMaster />} />
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}
