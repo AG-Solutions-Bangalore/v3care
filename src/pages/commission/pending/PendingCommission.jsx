@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import Layout from "../../../layout/Layout";
+import CommissionFilter from "../../../components/CommissionFilter";
 import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../utils/ContextPanel";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
+import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
-const VendorList = () => {
-  const [vendorListData, setVendorListData] = useState(null);
+const PendingCommission = () => {
+  const [PendingCommissionData, setPendingCommissionData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchVendorListData = async () => {
+    const fetchPendingComData = async () => {
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -23,7 +23,7 @@ const VendorList = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-vendor-list`,
+          `${BASE_URL}/api/panel-fetch-comm-pending-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -31,27 +31,24 @@ const VendorList = () => {
           }
         );
 
-        setVendorListData(response.data?.vendor);
+        setPendingCommissionData(response.data?.booking);
       } catch (error) {
-        console.error("Error fetching vendor list data", error);
+        console.error("Error fetching dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchVendorListData();
+    fetchPendingComData();
     setLoading(false);
   }, []);
 
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "order_ref",
+      label: "ID",
       options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
+        filter: true,
+        sort: true,
       },
     },
     {
@@ -63,8 +60,8 @@ const VendorList = () => {
       },
     },
     {
-      name: "vendor_short",
-      label: "Short",
+      name: "order_area",
+      label: "Area",
       options: {
         filter: true,
         sort: true,
@@ -72,7 +69,7 @@ const VendorList = () => {
     },
     {
       name: "vendor_company",
-      label: "Company",
+      label: "Vendor",
       options: {
         filter: true,
         sort: true,
@@ -87,8 +84,24 @@ const VendorList = () => {
       },
     },
     {
-      name: "vendor_email",
-      label: "Email",
+      name: "order_date",
+      label: "Booking Date",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "order_service_date",
+      label: "Service Date",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "order_service",
+      label: "Service",
       options: {
         filter: true,
         sort: true,
@@ -96,13 +109,14 @@ const VendorList = () => {
     },
 
     {
-      name: "vendor_status",
-      label: "Status",
+      name: "order_comm",
+      label: "Commission",
       options: {
         filter: true,
         sort: false,
       },
     },
+
     {
       name: "id",
       label: "Action",
@@ -112,12 +126,8 @@ const VendorList = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <FaEdit
-                title="View Cylinder Info"
-                className="h-5 w-5 cursor-pointer"
-              />
               <MdOutlineRemoveRedEye
-                title="View Cylinder Info"
+                title="View pending Info"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>
@@ -143,20 +153,18 @@ const VendorList = () => {
       };
     },
   };
+
   return (
     <Layout>
+      <CommissionFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Vendor List
+          Commission Pending List
         </h3>
-
-        <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
-          + Add Vendor
-        </Link>
       </div>
       <div className="mt-5">
         <MUIDataTable
-          data={vendorListData ? vendorListData : []}
+          data={PendingCommissionData ? PendingCommissionData : []}
           columns={columns}
           options={options}
         />
@@ -165,4 +173,4 @@ const VendorList = () => {
   );
 };
 
-export default VendorList;
+export default PendingCommission;

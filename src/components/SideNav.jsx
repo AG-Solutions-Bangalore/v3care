@@ -131,6 +131,46 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               )}
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/vendor-list">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Vendor List
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/idealfield-list">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Ideal Field List
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
+          </li>
           {/* <li>
             <NavLink to="/add-booking">
               {({ isActive }) => (
@@ -238,149 +278,52 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                       )}
                     </NavLink>
                   </li>
-                  {/* <li>
-                    <NavLink to="/tomorrow">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Tomorrow
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/pending">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Pending
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/inspection">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Inspection
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/confirmed">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Confirmed
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/vendor-job">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Vendor Job
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/cancel">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Cancel
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/completed">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Completed
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li> */}
                 </ul>
               )}
             </div>
+          </li>
+
+          {/* payment  */}
+          <li>
+            <NavLink to="/pending-payment">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Payment
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
+          </li>
+          {/* commission  */}
+          <li>
+            <NavLink to="/commission-pending">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Commission
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
           </li>
 
           {/* Add more hardcoded routes here as needed */}
