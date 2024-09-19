@@ -43,12 +43,12 @@ const MasterFilter = () => {
       color: "from-gray-500 to-gray-400",
     },
     {
-      label: "Operation Team",
+      label: "Operation",
       path: "/operation-team",
       color: "from-lime-500 to-green-400",
     },
     {
-      label: "Backhand Team",
+      label: "Backhand",
       path: "/backhand-team",
       color: "from-lime-500 to-green-400",
     },
