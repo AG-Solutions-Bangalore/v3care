@@ -325,6 +325,27 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               )}
             </NavLink>
           </li>
+          {/* notification  */}
+          <li>
+            <NavLink to="/notification">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Notification
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
+          </li>
 
           {/* Add more hardcoded routes here as needed */}
         </ul>
