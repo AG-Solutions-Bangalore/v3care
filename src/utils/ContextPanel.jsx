@@ -63,6 +63,8 @@ const AppProvider = ({ children }) => {
           currentPath === "/commission-pending" ||
           currentPath === "/commission-received" ||
           currentPath === "/notification" ||
+          currentPath === "/booking-download" ||
+          currentPath === "/vendor-download" ||
           currentPath === "/change-password"
         ) {
           navigate(currentPath);

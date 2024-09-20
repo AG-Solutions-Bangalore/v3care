@@ -67,7 +67,7 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[9]; // Assuming order_no_assign is in the 9th column
+          const order_no_assign = tableMeta.rowData[8]; // Assuming order_no_assign is in the 9th column
           return order_no_assign > 0 ? (
             <a
               className="text-blue-600 underline cursor-pointer"

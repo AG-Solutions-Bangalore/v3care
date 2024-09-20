@@ -31,6 +31,8 @@ import ReceivedPayment from "./pages/payment/received/ReceivedPayment";
 import PendingCommission from "./pages/commission/pending/PendingCommission";
 import ReceivedsCommission from "./pages/commission/received/ReceivedsCommission";
 import NotificationList from "./pages/notification/NotificationList";
+import BookingDownload from "./pages/download/booking/BookingDownload";
+import VendorDownload from "./pages/download/vendor/VendorDownload";
 const App = () => {
   return (
     <>
@@ -70,6 +72,9 @@ const App = () => {
         <Route path="/commission-received" element={<ReceivedsCommission />} />
         {/* notification  */}
         <Route path="/notification" element={<NotificationList />} />
+        {/* download  */}
+        <Route path="/booking-download" element={<BookingDownload />} />
+        <Route path="/vendor-download" element={<VendorDownload />} />
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}
