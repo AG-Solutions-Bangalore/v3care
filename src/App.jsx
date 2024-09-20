@@ -33,6 +33,17 @@ import ReceivedsCommission from "./pages/commission/received/ReceivedsCommission
 import NotificationList from "./pages/notification/NotificationList";
 import BookingDownload from "./pages/download/booking/BookingDownload";
 import VendorDownload from "./pages/download/vendor/VendorDownload";
+import BranchEditMaster from "./pages/master/branch/BranchEditMaster";
+import ReferByEditMaster from "./pages/master/referBy/ReferByEditMaster";
+import ServiceEditMaster from "./pages/master/service/ServiceEditMaster";
+import ServiceSubEditMaster from "./pages/master/serviceSub/ServiceSubEditMaster";
+import ServicePriceEditMaster from "./pages/master/servicePrice/ServicePriceEditMaster";
+import FieldTeamEditMaster from "./pages/master/fieldTeam/FieldTeamEditMaster";
+import FieldTeamViewMaster from "./pages/master/fieldTeam/FieldTeamViewMaster";
+import OperationViewTeamMaster from "./pages/master/operationTeam/OperationViewTeamMaster";
+import OperationEditTeamMaster from "./pages/master/operationTeam/OperationEditTeamMaster";
+import BackhandViewTeamMaster from "./pages/master/backhandTeam/BackhandViewTeamMaster";
+import BackhandEditTeamMaster from "./pages/master/backhandTeam/BackhandEditTeamMaster";
 const App = () => {
   return (
     <>
@@ -53,13 +64,42 @@ const App = () => {
         <Route path="/vendor-job" element={<VendorJobBooking />} />
         {/* master  */}
         <Route path="/branch" element={<BranchMaster />} />
+        <Route path="/branch-edit/:id" element={<BranchEditMaster />} />
         <Route path="/refer-by" element={<ReferByMaster />} />
+        <Route path="/refer-by-edit/:id" element={<ReferByEditMaster />} />
         <Route path="/service" element={<ServiceMaster />} />
+        <Route path="/service-edit/:id" element={<ServiceEditMaster />} />
         <Route path="/service-sub" element={<ServiceSubMaster />} />
+        <Route
+          path="/service-sub-edit/:id"
+          element={<ServiceSubEditMaster />}
+        />
         <Route path="/service-price" element={<ServicePriceMaster />} />
+        <Route
+          path="/service-price-edit/:id"
+          element={<ServicePriceEditMaster />}
+        />
         <Route path="/field-team" element={<FieldTeamMaster />} />
+        <Route path="/field-team-edit/:id" element={<FieldTeamEditMaster />} />
+        <Route path="/field-team-view/:id" element={<FieldTeamViewMaster />} />
         <Route path="operation-team" element={<OperationTeamMaster />} />
+        <Route
+          path="/operation-team-view/:id"
+          element={<OperationViewTeamMaster />}
+        />
+        <Route
+          path="/operation-team-edit/:id"
+          element={<OperationEditTeamMaster />}
+        />
         <Route path="/backhand-team" element={<BackhandTeamMaster />} />
+        <Route
+          path="/backhand-team-view/:id"
+          element={<BackhandViewTeamMaster />}
+        />
+        <Route
+          path="/backhand-team-edit/:id"
+          element={<BackhandEditTeamMaster />}
+        />
         {/* vendor List  */}
         <Route path="/vendor-list" element={<VendorList />} />
         {/* ideal field list  */}

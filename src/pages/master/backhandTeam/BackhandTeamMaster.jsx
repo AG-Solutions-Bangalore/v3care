@@ -106,10 +106,12 @@ const BackhandTeamMaster = () => {
           return (
             <div className="flex items-center space-x-2">
               <FaEdit
+                onClick={() => navigate(`/backhand-team-edit/${id}`)}
                 title="View Cylinder Info"
                 className="h-5 w-5 cursor-pointer"
               />
               <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/backhand-team-view/${id}`)}
                 title="View Cylinder Info"
                 className="h-5 w-5 cursor-pointer"
               />

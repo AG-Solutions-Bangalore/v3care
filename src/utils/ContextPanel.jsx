@@ -36,37 +36,52 @@ const AppProvider = ({ children }) => {
       navigate("/maintenance");
     } else if (isPanelUp?.success) {
       if (token) {
-        if (
-          currentPath === "/home" ||
-          currentPath === "/profile" ||
-          currentPath === "/cancel" ||
-          currentPath === "/completed" ||
-          currentPath === "/confirmed" ||
-          currentPath === "/inspection" ||
-          currentPath === "/today" ||
-          currentPath === "/tomorrow" ||
-          currentPath === "/pending" ||
-          currentPath === "/vendor-job" ||
-          currentPath === "/add-booking" ||
-          currentPath === "/branch" ||
-          currentPath === "/refer-by" ||
-          currentPath === "/service" ||
-          currentPath === "/service-sub" ||
-          currentPath === "/service-price" ||
-          currentPath === "/field-team" ||
-          currentPath === "/operation-team" ||
-          currentPath === "/backhand-team" ||
-          currentPath === "/vendor-list" ||
-          currentPath === "/idealfield-list" ||
-          currentPath === "/pending-payment" ||
-          currentPath === "/received-payment" ||
-          currentPath === "/commission-pending" ||
-          currentPath === "/commission-received" ||
-          currentPath === "/notification" ||
-          currentPath === "/booking-download" ||
-          currentPath === "/vendor-download" ||
-          currentPath === "/change-password"
-        ) {
+        const allowedPaths = [
+          "/home",
+          "/profile",
+          "/cancel",
+          "/completed",
+          "/confirmed",
+          "/inspection",
+          "/today",
+          "/tomorrow",
+          "/pending",
+          "/vendor-job",
+          "/add-booking",
+          "/branch",
+          "/branch-edit/:id",
+          "/refer-by",
+          "/refer-by-edit/:id",
+          "/service",
+          "/service-edit/:id",
+          "/service-sub",
+          "/service-sub-edit/:id",
+          "/service-price",
+          "/service-price-edit/:id",
+          "/field-team",
+          "/field-team-edit/:id",
+          "/field-team-view/:id",
+          "/operation-team",
+          "/operation-team-view/:id",
+          "/operation-team-edit/:id",
+          "/backhand-team",
+          "/backhand-team-view/:id",
+          "/backhand-team-edit/:id",
+          "/vendor-list",
+          "/idealfield-list",
+          "/pending-payment",
+          "/received-payment",
+          "/commission-pending",
+          "/commission-received",
+          "/notification",
+          "/booking-download",
+          "/vendor-download",
+          "/change-password",
+        ];
+        const isAllowedPath = allowedPaths.some((path) =>
+          currentPath.startsWith(path)
+        );
+        if (isAllowedPath) {
           navigate(currentPath);
         } else {
           navigate("/home");

@@ -111,7 +111,10 @@ const ServicePriceMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div className="flex items-center space-x-2">
+            <div
+              onClick={() => navigate(`/service-price-edit/${id}`)}
+              className="flex items-center space-x-2"
+            >
               <FaEdit
                 title="View Cylinder Info"
                 className="h-5 w-5 cursor-pointer"
