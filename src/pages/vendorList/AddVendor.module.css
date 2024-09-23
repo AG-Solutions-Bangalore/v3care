@@ -1,0 +1,104 @@
+.form-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .form-container > div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form-container input {
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .form-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  
+  .file-input {
+    margin-top: 10px;
+  }
+  
+  .file-input label {
+    font-weight: bold;
+  }
+  /* // */
+  .fileupload {
+    width: 100%;
+    padding: 9px 15px 15px 15px;
+    box-sizing: border-box;
+  }
+  
+  .hiddenInput {
+    display: none;
+  }
+  
+  .fileContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    padding-bottom: 8px;
+  }
+  
+  .fileName {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* // */
+  
+  .adornment-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .adornment-input input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding-left: 10px;
+  }
+  
+  .submit-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .submit-button button {
+    padding: 10px 20px;
+    background: linear-gradient(360deg, #6f53d3 -25.41%, #c5b5ff 131.15%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .dropdown {
+    padding: 0px !important;
+    background-color: red;
+  }
+  
+  @media (max-width: 600px) {
+    .submit-button {
+      justify-content: center;
+    }
+  }
+  

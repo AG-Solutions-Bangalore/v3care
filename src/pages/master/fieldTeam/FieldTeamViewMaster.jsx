@@ -73,6 +73,7 @@ const FieldTeamViewMaster = () => {
                 View Field Team{id}
               </h1>
               <div className="flex flex-row  gap-2">
+                {/* add condition is userdhar adn pancard is null disabled  */}
                 <a
                   target="_blank"
                   className="px-2  bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center"
@@ -80,15 +81,20 @@ const FieldTeamViewMaster = () => {
                     "https://agsdraft.online/app/storage/app/public/user_document/" +
                     fieldTeamViewData?.user_aadhar
                   }
+                  download
                 >
                   Download Aadhar
                 </a>
-                <Link
+
+                <a
                   className="px-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center"
-                  to={"/"}
+                  href={
+                    "https://agsdraft.online/app/storage/app/public/user_document/" +
+                    fieldTeamViewData?.user_pancard
+                  }
                 >
                   Download Pan Card
-                </Link>
+                </a>
               </div>
             </div>
 

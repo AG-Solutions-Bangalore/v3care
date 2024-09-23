@@ -44,6 +44,12 @@ import OperationViewTeamMaster from "./pages/master/operationTeam/OperationViewT
 import OperationEditTeamMaster from "./pages/master/operationTeam/OperationEditTeamMaster";
 import BackhandViewTeamMaster from "./pages/master/backhandTeam/BackhandViewTeamMaster";
 import BackhandEditTeamMaster from "./pages/master/backhandTeam/BackhandEditTeamMaster";
+import AddVendor from "./pages/vendorList/AddVendor";
+import ViewVendor from "./pages/vendorList/ViewVendor";
+import EditVendor from "./pages/vendorList/EditVendor";
+import VendorPendingEdit from "./pages/vendorList/VendorPendingEdit";
+import AddVendorService from "./pages/vendorList/AddVendorService";
+import PendingPaymentView from "./pages/payment/pending/PendingPaymentView";
 const App = () => {
   return (
     <>
@@ -102,10 +108,22 @@ const App = () => {
         />
         {/* vendor List  */}
         <Route path="/vendor-list" element={<VendorList />} />
+        <Route path="/add-vendor" element={<AddVendor />} />
+        <Route path="/vendor-view/:id" element={<ViewVendor />} />
+        <Route path="/vendor-edit/:id" element={<EditVendor />} />
+        <Route
+          path="/vendor-pending-edit/:id"
+          element={<VendorPendingEdit />}
+        />
+        <Route path="/add-vendor-service/:id" element={<AddVendorService />} />
         {/* ideal field list  */}
         <Route path="/idealfield-list" element={<IdealFieldList />} />
         {/* payment  */}
         <Route path="/pending-payment" element={<PendingPayment />} />
+        <Route
+          path="/pending-payment-view/:id"
+          element={<PendingPaymentView />}
+        />
         <Route path="/received-payment" element={<ReceivedPayment />} />
         {/* commission  */}
         <Route path="/commission-pending" element={<PendingCommission />} />

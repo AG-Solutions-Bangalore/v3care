@@ -289,7 +289,7 @@ const ServicePriceEditMaster = () => {
                 disabled={isButtonDisabled}
               >
                 <AiOutlineCloudUpload className="mr-2" size={20} />
-                Submit
+                Update
               </Button>
 
               <Link to="/service-price" className="w-full sm:w-auto">
