@@ -139,10 +139,12 @@ const InspectionBooking = () => {
           return (
             <div className="flex items-center space-x-2">
               <CiSquarePlus
-                title="Add Cylinder Info"
+                onClick={() => navigate(`/edit-booking/${id}`)}
+                title="Edit Booking"
                 className="h-5 w-5 cursor-pointer"
               />
               <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/view-booking/${id}`)}
                 title="View Cylinder Info"
                 className="h-5 w-5 cursor-pointer"
               />

@@ -141,7 +141,10 @@ const ReceivedPayment = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div className="flex items-center space-x-2">
+            <div
+              onClick={() => navigate(`/pending-received-view/${id}`)}
+              className="flex items-center space-x-2"
+            >
               <MdOutlineRemoveRedEye
                 title="View pending Info"
                 className="h-5 w-5 cursor-pointer"

@@ -6,7 +6,7 @@ import SideNav from "../components/SideNav";
 const Layout = ({ children }) => {
   const [openSideNav, setOpenSideNav] = useState(false);
   return (
-    <div className="min-h-screen bg-blue-gray-50/50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 ">
       <SideNav openSideNav={openSideNav} setOpenSideNav={setOpenSideNav} />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar
@@ -23,3 +23,5 @@ const Layout = ({ children }) => {
 };
 
 export default Layout;
+
+// bg-gradient-to-br from-blue-200 to-gray-100

@@ -50,6 +50,15 @@ import EditVendor from "./pages/vendorList/EditVendor";
 import VendorPendingEdit from "./pages/vendorList/VendorPendingEdit";
 import AddVendorService from "./pages/vendorList/AddVendorService";
 import PendingPaymentView from "./pages/payment/pending/PendingPaymentView";
+import PendingReceivedView from "./pages/payment/received/PendingReceivedView";
+import PendingCommissionView from "./pages/commission/pending/PendingCommissionView";
+import AddNotification from "./pages/notification/AddNotification";
+import ReceivedCommissionView from "./pages/commission/received/ReceivedCommissionView";
+import ViewBooking from "./pages/booking/commonView/ViewBooking";
+import BookingAssign from "./pages/booking/commonView/bookingAssign/BookingAssign";
+import AssignVendor from "./pages/booking/commonView/assignVendor/AssignVendor";
+import EditBookingAll from "./pages/booking/commonView/editBooking/EditBookingAll";
+
 const App = () => {
   return (
     <>
@@ -59,6 +68,11 @@ const App = () => {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
         <Route path="/maintenance" element={<Maintenance />} />
+        {/* booking  */}
+        <Route path="/view-booking/:id" element={<ViewBooking />} />
+        <Route path="/booking-assign/:id" element={<BookingAssign />} />
+        <Route path="/assign-vendor/:id" element={<AssignVendor />} />
+        <Route path="/edit-booking/:id" element={<EditBookingAll />} />
         <Route path="/add-booking" element={<AddBooking />} />
         <Route path="/cancel" element={<CancelBooking />} />
         <Route path="/completed" element={<CompletedBooking />} />
@@ -125,11 +139,24 @@ const App = () => {
           element={<PendingPaymentView />}
         />
         <Route path="/received-payment" element={<ReceivedPayment />} />
+        <Route
+          path="/pending-received-view/:id"
+          element={<PendingReceivedView />}
+        />
         {/* commission  */}
         <Route path="/commission-pending" element={<PendingCommission />} />
+        <Route
+          path="/pending-commission-view/:id"
+          element={<PendingCommissionView />}
+        />
         <Route path="/commission-received" element={<ReceivedsCommission />} />
+        <Route
+          path="/received-commission-view/:id"
+          element={<ReceivedCommissionView />}
+        />
         {/* notification  */}
         <Route path="/notification" element={<NotificationList />} />
+        <Route path="/add-notification" element={<AddNotification />} />
         {/* download  */}
         <Route path="/booking-download" element={<BookingDownload />} />
         <Route path="/vendor-download" element={<VendorDownload />} />

@@ -3,20 +3,8 @@ import Layout from "../../../layout/Layout";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
-import {
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaClock,
-  FaCreditCard,
-  FaUser,
-  FaPhone,
-  FaEnvelope,
-  FaHome,
-  FaFileAlt,
-  FaCommentAlt,
-  FaExclamationTriangle,
-  FaDollarSign,
-} from "react-icons/fa";
+
+import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
   CardHeader,
@@ -37,14 +25,14 @@ const PendingPaymentView = () => {
     order_check_payment_type: "",
     order_check_payment_details: "",
   });
+
+  // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
+  // no need check at once and remove it
   const [vendor, setVendor] = useState({});
   const [paymentModes, setPaymentModes] = useState([]);
-
-  useEffect(() => {
-    fetchBookingData();
-    fetchPaymentModes();
-  }, []);
+  // new design
+  const [activeTab, setActiveTab] = useState("bookingDetails");
 
   const fetchBookingData = async () => {
     try {
@@ -75,20 +63,19 @@ const PendingPaymentView = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setPaymentModes(response.data.paymentMode);
+      setPaymentModes(response.data?.paymentMode);
     } catch (error) {
       console.error("Error fetching payment modes:", error);
     }
   };
 
+  useEffect(() => {
+    fetchBookingData();
+    fetchPaymentModes();
+  }, []);
+
   const onInputChange = (e) => {
     setPayment({ ...payment, [e.target.name]: e.target.value });
-  };
-
-  const onMap = (e) => {
-    e.preventDefault();
-    const mapurl = booking?.order_url;
-    window.open(mapurl, "_blank");
   };
 
   const updateData = async (e) => {
@@ -109,19 +96,128 @@ const PendingPaymentView = () => {
     }
   };
 
-  const InfoCard = ({ title, icon: Icon, children }) => (
-    <Card className="h-full">
-      <CardHeader floated={false} className="h-16 p-4">
-        <div className="flex items-center justify-between">
-          <Typography variant="h6" color="blue-gray" className="mb-1">
-            {title}
-          </Typography>
-          <Icon className="h-5 w-5 text-purple-500" />
-        </div>
-      </CardHeader>
-      <CardBody>{children}</CardBody>
-    </Card>
-  );
+  const renderActiveTabContent = () => {
+    switch (activeTab) {
+      case "bookingDetails":
+      case "customerInfo":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {" "}
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>ID:</strong> {booking.order_ref} ({booking.order_status}
+                )
+              </Typography>
+              <Typography className="text-black">
+                <strong>Name:</strong> {booking.order_customer}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Mobile:</strong> {booking.order_customer_mobile}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Email:</strong> {booking.order_customer_email}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Booking Created By:</strong> {booking.created_by}
+              </Typography>
+            </div>
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>Date:</strong>{" "}
+                {moment(booking.order_date).format("DD-MM-YYYY")}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Service Date:</strong>{" "}
+                {moment(booking.order_service_date).format("DD-MM-YYYY")}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Slot Time:</strong> {booking.order_time}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Service:</strong>{" "}
+                {booking.order_custom_price <= "1"
+                  ? booking.order_service
+                  : booking.order_custom}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Booking Confirmed By:</strong> {booking.updated_by}
+              </Typography>
+            </div>
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>Sub-service:</strong>{" "}
+                {booking.order_custom_price <= "1"
+                  ? booking.order_service_sub
+                  : ""}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Amount:</strong> {booking?.order_payment_amount}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Type:</strong> {booking.order_payment_type}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Transaction Details:</strong>{" "}
+                {booking.order_transaction_details}
+              </Typography>
+            </div>
+          </div>
+        );
+      case "additionalInfo":
+      case "location":
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {" "}
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>Remarks:</strong> {booking.order_remarks}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Comment:</strong> {booking.order_comment}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Postpone Reason:</strong>{" "}
+                {booking.order_postpone_reason}
+              </Typography>
+            </div>
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>Area:</strong> {booking.order_area}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Branch:</strong> {booking.branch_name}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Address:</strong> {booking.order_flat},{" "}
+                {booking.order_building}, {booking.order_landmark},{" "}
+                {booking.order_address}
+              </Typography>
+            </div>
+            <div className="space-y-2">
+              <Typography className="text-black">
+                <strong>Booked Price:</strong> {booking.order_service_price_for}{" "}
+                -{" "}
+                {booking.order_custom_price <= "1"
+                  ? booking.order_service_price
+                  : booking.order_custom_price}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Current Price:</strong>{" "}
+                {booking.order_service_price_for} - {booking.order_amount}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Advanced:</strong> {booking.order_advance}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Distance:</strong> {booking.order_km} Km
+              </Typography>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <Layout>
@@ -129,145 +225,100 @@ const PendingPaymentView = () => {
         <Typography variant="h4" color="gray" className="mb-6">
           View Pending Payment
         </Typography>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <InfoCard title="Booking Details" icon={FaCalendarAlt}>
-            <Typography className="text-black">
-              <strong>ID:</strong> {booking.order_ref} ({booking.order_status})
-            </Typography>
-            <Typography className="text-black">
-              <strong>Date:</strong>{" "}
-              {moment(booking.order_date).format("DD-MM-YYYY")}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Service Date:</strong>{" "}
-              {moment(booking.order_service_date).format("DD-MM-YYYY")}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Slot Time:</strong> {booking.order_time}
-            </Typography>
-          </InfoCard>
-          <InfoCard title="Customer Information" icon={FaUser}>
-            <Typography className="text-black">
-              <strong>Name:</strong> {booking.order_customer}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Mobile:</strong> {booking.order_customer_mobile}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Email:</strong> {booking.order_customer_email}
-            </Typography>
-          </InfoCard>
-          <InfoCard title="Service Details" icon={FaFileAlt}>
-            <Typography className="text-black">
-              <strong>Service:</strong>{" "}
-              {booking.order_custom_price <= "1"
-                ? booking.order_service
-                : booking.order_custom}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Sub-service:</strong>{" "}
-              {booking.order_custom_price <= "1"
-                ? booking.order_service_sub
-                : ""}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Booked Price:</strong> {booking.order_service_price_for} -{" "}
-              {booking.order_custom_price <= "1"
-                ? booking.order_service_price
-                : booking.order_custom_price}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Current Price:</strong> {booking.order_service_price_for}{" "}
-              - {booking.order_amount}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Advanced:</strong> {booking.order_advance}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Distance:</strong> {booking.order_km} Km
-            </Typography>
-          </InfoCard>
-          <InfoCard title="Location" icon={FaMapMarkerAlt}>
-            <Typography className="text-black">
-              <strong>Branch:</strong> {booking.branch_name}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Area:</strong> {booking.order_area}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Address:</strong> {booking.order_flat},{" "}
-              {booking.order_building}, {booking.order_landmark},{" "}
-              {booking.order_address}
-            </Typography>
-            <Button onClick={onMap} color="blue">
-              View on Map
-            </Button>
-          </InfoCard>
-          <InfoCard title="Additional Info" icon={FaCommentAlt}>
-            <Typography className="text-black">
-              <strong>Remarks:</strong> {booking.order_remarks}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Comment:</strong> {booking.order_comment}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Postpone Reason:</strong> {booking.order_postpone_reason}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Booking Created By:</strong> {booking.created_by}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Booking Confirmed By:</strong> {booking.updated_by}
-            </Typography>
-          </InfoCard>
-          <InfoCard title="Payment" icon={FaCreditCard}>
-            <Typography className="text-black">
-              <strong>Amount:</strong> {booking?.order_payment_amount}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Type:</strong> {booking.order_payment_type}
-            </Typography>
-            <Typography className="text-black">
-              <strong>Transaction Details:</strong>{" "}
-              {booking.order_transaction_details}
-            </Typography>
-          </InfoCard>
-        </div>
 
-        <Card className="mb-6">
-          <CardHeader floated={false} className="h-16 p-4">
-            <Typography variant="h5" color="blue-gray">
-              Receive Payment
-            </Typography>
-          </CardHeader>
-          <CardBody>
-            <form onSubmit={updateData} className="space-y-4">
-              <Select
-                label="Select Payment Mode"
-                name="order_check_payment_type"
-                value={payment.order_check_payment_type}
-                onChange={(value) =>
-                  setPayment({ ...payment, order_check_payment_type: value })
-                }
-              >
-                {paymentModes.map((mode) => (
-                  <Option key={mode.payment_mode} value={mode.payment_mode}>
-                    {mode.payment_mode}
-                  </Option>
-                ))}
-              </Select>
-              <Input
-                label="Referral Number / Remarks"
-                name="order_check_payment_details"
-                value={payment.order_check_payment_details}
-                onChange={onInputChange}
-              />
-              <Button type="submit" color="blue">
-                Receive Payment
-              </Button>
-            </form>
-          </CardBody>
-        </Card>
+        <div className="flex gap-4">
+          <div className="flex-grow">
+            <div className="mb-2">
+              <div className="flex justify-start space-x-4 ">
+                {/* Home Deep Cleaning Button */}
+                <button
+                  onClick={() => setActiveTab("bookingDetails")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "bookingDetails"
+                      ? "border-blue-500 bg-blue-100 text-blue-600"
+                      : "border-transparent hover:bg-blue-50"
+                  }`}
+                >
+                  <FaHome />
+                  {booking?.order_service}
+                </button>
+
+                {/* Booking Overview Button */}
+                <button
+                  onClick={() => setActiveTab("customerInfo")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "customerInfo"
+                      ? "border-green-500 bg-green-100 text-green-600"
+                      : "border-transparent hover:bg-green-50"
+                  }`}
+                >
+                  <FaClipboardList />
+                  Booking Overview
+                </button>
+
+                {/* Other Details Button */}
+                <button
+                  onClick={() => setActiveTab("additionalInfo")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "additionalInfo"
+                      ? "border-red-500 bg-red-100 text-red-600"
+                      : "border-transparent hover:bg-red-50"
+                  }`}
+                >
+                  <FaInfoCircle />
+                  Other Details
+                </button>
+              </div>
+
+              {/* Main Content Based on Active Tab */}
+              <Card className="mt-2">
+                <CardBody>{renderActiveTabContent()}</CardBody>
+              </Card>
+            </div>
+
+            {/* Payment Card */}
+            <Card className="mb-6">
+              <CardHeader floated={false} className="h-16 p-4">
+                <Typography variant="h5" color="blue-gray">
+                  Receive Payment
+                </Typography>
+              </CardHeader>
+              <CardBody>
+                <form onSubmit={updateData} className="space-y-4">
+                  <Select
+                    label="Select Payment Mode"
+                    name="order_check_payment_type"
+                    value={payment.order_check_payment_type || ""}
+                  >
+                    {paymentModes.map((mode) => (
+                      <Option
+                        key={mode.payment_mode}
+                        value={mode.payment_mode}
+                        onClick={() =>
+                          setPayment({
+                            ...payment,
+                            order_check_payment_type: mode.payment_mode,
+                          })
+                        }
+                      >
+                        {mode.payment_mode}
+                      </Option>
+                    ))}
+                  </Select>
+                  <Input
+                    label="Referral Number / Remarks"
+                    name="order_check_payment_details"
+                    value={payment.order_check_payment_details}
+                    onChange={onInputChange}
+                  />
+                  <Button type="submit" color="blue">
+                    Receive Payment
+                  </Button>
+                </form>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
       </div>
     </Layout>
   );

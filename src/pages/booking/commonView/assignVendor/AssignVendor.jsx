@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
+import Layout from "../../../../layout/Layout";
+import BookingFilter from "../../../../components/BookingFilter";
+import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
-import { CiSquarePlus } from "react-icons/ci";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
-import BookingFilter from "../../../components/BookingFilter";
-
-const PendingBooking = () => {
-  const [pendingBookData, setPendingBookData] = useState(null);
+import { ContextPanel } from "../../../../utils/ContextPanel";
+import { FaEdit } from "react-icons/fa";
+import BASE_URL from "../../../../base/BaseUrl";
+const AssignVendor = () => {
+  const { id } = useParams();
+  const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchPendingData = async () => {
+    const fetchAssignVendorData = async () => {
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -25,7 +25,7 @@ const PendingBooking = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-list`,
+          `${BASE_URL}/api/panel-fetch-booking-assign-vendor-list/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -33,69 +33,70 @@ const PendingBooking = () => {
           }
         );
 
-        setPendingBookData(response.data?.booking);
+        setBookingVendorAssignData(response.data?.bookingAssign);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchPendingData();
+    fetchAssignVendorData();
     setLoading(false);
   }, []);
 
   const columns = [
     {
-      name: "order_ref",
-      label: "ID",
+      name: "slNo",
+      label: "SL No",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          return tableMeta.rowIndex + 1;
+        },
+      },
+    },
+    {
+      name: "name",
+      label: "Full Name",
       options: {
         filter: false,
         sort: false,
       },
     },
     {
-      name: "branch_name",
-      label: "Branch",
+      name: "order_start_time",
+      label: "Start Time",
       options: {
         filter: true,
         sort: true,
       },
     },
     {
-      name: "order_customer",
-      label: "Customer",
+      name: "order_end_time",
+      label: "End Time",
       options: {
         filter: false,
         sort: false,
       },
     },
     {
-      name: "order_customer_mobile",
-      label: "Mobile",
+      name: "order_assign_remarks",
+      label: "Remarks",
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: "order_date",
-      label: "Booking Date",
+      name: "order_assign_status",
+      label: "Status",
       options: {
         filter: true,
         sort: false,
       },
     },
-    {
-      name: "order_service_date",
-      label: "Service Date",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
+
     {
       name: "order_service",
       label: "Service",
@@ -104,23 +105,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    {
-      name: "order_amount",
-      label: "Price",
-      options: {
-        filter: false,
-        sort: false,
-      },
-    },
 
-    {
-      name: "order_status",
-      label: "Status",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
     {
       name: "id",
       label: "Action",
@@ -130,14 +115,8 @@ const PendingBooking = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <CiSquarePlus
-                onClick={() => navigate(`/edit-booking/${id}`)}
-                title="edit booking"
-                className="h-5 w-5 cursor-pointer"
-              />
-              <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="View Cylinder Info"
+              <FaEdit
+                title="Edit Booking Asssign"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>
@@ -168,7 +147,7 @@ const PendingBooking = () => {
       <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Pending Booking List
+          Booking User List{id}
         </h3>
 
         <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
@@ -177,7 +156,7 @@ const PendingBooking = () => {
       </div>
       <div className="mt-5">
         <MUIDataTable
-          data={pendingBookData ? pendingBookData : []}
+          data={bookingAssignVendorData ? bookingAssignVendorData : []}
           columns={columns}
           options={options}
         />
@@ -186,4 +165,4 @@ const PendingBooking = () => {
   );
 };
 
-export default PendingBooking;
+export default AssignVendor;

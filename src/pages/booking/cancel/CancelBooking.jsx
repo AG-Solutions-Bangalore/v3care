@@ -130,7 +130,10 @@ const CancelBooking = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div className="flex items-center space-x-2">
+            <div
+              onClick={() => navigate(`/view-booking/${id}`)}
+              className="flex items-center space-x-2"
+            >
               <MdOutlineRemoveRedEye
                 title="View Cylinder Info"
                 className="h-5 w-5 cursor-pointer"
