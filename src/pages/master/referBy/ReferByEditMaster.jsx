@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { toast } from "react-toastify";
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -83,10 +84,11 @@ const ReferByEditMaster = () => {
         }
       );
 
-      alert("Update successful");
+      toast.success("Update successful");
+      navigate("/refer-by");
     } catch (error) {
       console.error("Error updating refer by", error);
-      alert("Update failed. Please try again.");
+      toast.error("Update failed. Please try again.");
     } finally {
       setIsButtonDisabled(false);
     }
@@ -97,7 +99,7 @@ const ReferByEditMaster = () => {
       <div className="container mx-auto px-4">
         {/* Page Title */}
         <div className="my-4 text-2xl font-bold text-gray-800">
-          <FaBuilding className="inline mr-2" /> Edit Refer by {id}
+          <FaBuilding className="inline mr-2" /> Edit Refer By
         </div>
 
         <Card className="p-6 mt-6">
@@ -106,7 +108,7 @@ const ReferByEditMaster = () => {
               {/* Branch Name */}
               <div className="form-group">
                 <label htmlFor="refer_by" className="text-gray-700">
-                  Branch<span className="text-red-800">*</span>
+                  Refer By<span className="text-red-800">*</span>
                 </label>
                 <input
                   type="text"
@@ -151,7 +153,7 @@ const ReferByEditMaster = () => {
               >
                 {isButtonDisabled ? "Updating..." : "Update"}
               </Button>
-              <Link to="/listing">
+              <Link to="/refer-by">
                 <Button className="mr-4 mb-4" color="green">
                   Back
                 </Button>

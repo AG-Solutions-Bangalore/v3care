@@ -18,43 +18,8 @@ import {
   Select,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../../base/BaseUrl";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 
-const status = [
-  {
-    value: "Pending",
-    label: "Pending",
-  },
-  {
-    value: "Inspection",
-    label: "Inspection",
-  },
-  {
-    value: "Confirmed",
-    label: "Confirmed",
-  },
-  {
-    value: "On the way",
-    label: "On the way",
-  },
-  {
-    value: "In Progress",
-    label: "In Progress",
-  },
-  {
-    value: "Completed",
-    label: "Completed",
-  },
-  {
-    value: "Vendor",
-    label: "Vendor",
-  },
-  {
-    value: "Cancel",
-    label: "Cancel",
-  },
-];
-const EditBookingAll = () => {
+const PostponeBooking = () => {
   const { id } = useParams();
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
@@ -66,24 +31,16 @@ const EditBookingAll = () => {
   var todayback = yyyy + "-" + mm + "-" + dd;
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
-  const [paymentmode, setPaymentMode] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
 
-  // Input change handler
+  //   Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    if (
-      [
-        "order_amount",
-        "order_advance",
-        "order_payment_amount",
-        "order_comm",
-      ].includes(name)
-    ) {
+    if (["order_amount", "order_payment_amount", "order_comm"].includes(name)) {
       if (validateOnlyDigits(value)) {
         setBooking((prev) => ({ ...prev, [name]: value }));
       }
@@ -91,7 +48,6 @@ const EditBookingAll = () => {
       setBooking((prev) => ({ ...prev, [name]: value }));
     }
   };
-
   const fetchBookingData = async () => {
     try {
       const response = await axios({
@@ -106,65 +62,40 @@ const EditBookingAll = () => {
       console.error("Error fetching booking data:", error);
     }
   };
-  const fetchpaymentData = async () => {
-    try {
-      const response = await axios({
-        url: `${BASE_URL}/api/panel-fetch-payment-mode`,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setPaymentMode(response.data?.paymentMode);
-    } catch (error) {
-      console.error("Error fetching booking data:", error);
-    }
-  };
-
   useEffect(() => {
     fetchBookingData();
-    fetchpaymentData();
   }, []);
-  // Handle form submission
+
   const onSubmit = (e) => {
+    let data = {
+      order_service_date: booking.order_service_date,
+      order_time: booking.order_time,
+
+      order_comm: booking.order_comm,
+      order_comment: booking.order_comment,
+      order_postpone_reason: booking.order_postpone_reason,
+    };
+
+    var v = document.getElementById("addIndiv").checkValidity();
+    var v = document.getElementById("addIndiv").reportValidity();
     e.preventDefault();
-    const form = document.getElementById("addIndiv");
-    if (form.checkValidity()) {
+
+    if (v) {
       setIsButtonDisabled(true);
-      const data = {
-        order_service_date: booking.order_service_date,
-        order_amount: booking.order_amount,
-        order_advance: booking.order_advance,
-        order_time: booking.order_time,
-        order_status: booking.order_status,
-        order_comm: booking.order_comm,
-        order_comment: booking.order_comment,
-        order_payment_amount: booking.order_payment_amount,
-        order_payment_type: booking.order_payment_type,
-        order_transaction_details: booking.order_transaction_details,
-        branch_id: booking.branch_id,
-        order_area: booking.order_area,
-      };
-      axios
-        .put(`${BASE_URL}/api/panel-update-booking/${id}`, data, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("login")}`,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === "200") {
-            alert("Data Updated Successfully");
-          } else {
-            alert("Duplicate Entry");
-          }
-        })
-        .catch((err) => {
-          console.error("Error updating booking", err);
-          alert("Error updating booking");
-        })
-        .finally(() => {
-          setIsButtonDisabled(false);
-        });
+      axios({
+        url: BASE_URL + "/panel-update-booking-postpone/" + id,
+        method: "PUT",
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("login")}`,
+        },
+      }).then((res) => {
+        if (res.data.code == "200") {
+          alert("success");
+        } else {
+          alert("Duplicate entry");
+        }
+      });
     }
   };
   const renderActiveTabContent = () => {
@@ -176,11 +107,7 @@ const EditBookingAll = () => {
             {" "}
             <div className="space-y-2">
               <Typography className="text-black">
-                <strong>ID:</strong> {booking.order_ref} ({booking.order_status}
-                )
-              </Typography>
-              <Typography className="text-black">
-                <strong>Name:</strong> {booking.order_customer}
+                <strong>Customer Name:</strong> {booking.order_customer}
               </Typography>
               <Typography className="text-black">
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
@@ -205,16 +132,16 @@ const EditBookingAll = () => {
                 <strong>Slot Time:</strong> {booking.order_time}
               </Typography>
               <Typography className="text-black">
+                <strong>Booking Confirmed By:</strong> {booking.updated_by}
+              </Typography>
+            </div>
+            <div className="space-y-2">
+              <Typography className="text-black">
                 <strong>Service:</strong>{" "}
                 {booking.order_custom_price <= "1"
                   ? booking.order_service
                   : booking.order_custom}
               </Typography>
-              <Typography className="text-black">
-                <strong>Booking Confirmed By:</strong> {booking.updated_by}
-              </Typography>
-            </div>
-            <div className="space-y-2">
               <Typography className="text-black">
                 <strong>Sub-service:</strong>{" "}
                 {booking.order_custom_price <= "1"
@@ -275,7 +202,7 @@ const EditBookingAll = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Edit Booking {id}
+          Postpone Booking{id}
         </Typography>
 
         <div className="flex gap-4">
@@ -335,26 +262,6 @@ const EditBookingAll = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <div className="form-group">
-                      <Select
-                        id="select-corrpreffer"
-                        required
-                        type="select"
-                        label="Status"
-                        name="order_status"
-                        value={booking.order_status}
-                        onChange={(e) => onInputChange(e)}
-                      >
-                        {status.map((option) => (
-                          <SelectOption key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectOption>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="form-group">
                       <Input
                         fullWidth
                         required
@@ -383,7 +290,7 @@ const EditBookingAll = () => {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="col-span-2">
                     <div className="form-group">
                       <Input
                         fullWidth
@@ -396,32 +303,7 @@ const EditBookingAll = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Amount"
-                        name="order_amount"
-                        value={booking.order_amount}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Advance"
-                        name="order_advance"
-                        value={booking.order_advance}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
+                  <div className="col-span-4">
                     <div className="form-group">
                       <Input
                         fullWidth
@@ -433,48 +315,14 @@ const EditBookingAll = () => {
                       />
                     </div>
                   </div>
-
-                  <div>
+                  <div className="col-span-4">
                     <div className="form-group">
                       <Input
                         fullWidth
-                        label="Paid Amount"
-                        name="order_payment_amount"
-                        value={booking.order_payment_amount}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Select
-                        fullWidth
-                        label="Payment Mode"
-                        type="select"
-                        name="order_payment_type"
-                        value={booking.order_payment_type}
-                        onChange={(e) => onInputChange(e)}
-                      >
-                        {paymentmode.map((option) => (
-                          <SelectOption
-                            key={option.payment_mode}
-                            value={option.payment_mode}
-                          >
-                            {option.payment_mode}
-                          </SelectOption>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Transaction Details"
-                        name="order_transaction_details"
-                        value={booking.order_transaction_details}
+                        label="Postpone Reason"
+                        multiline
+                        name="order_postpone_reason"
+                        value={booking.order_postpone_reason}
                         onChange={(e) => onInputChange(e)}
                       />
                     </div>
@@ -490,20 +338,6 @@ const EditBookingAll = () => {
                   >
                     Update
                   </Button>
-                  <Button
-                    onClick={() => navigate(`/booking-reschedule/${id}`)}
-                    className="mr-2 mb-2"
-                    color="primary"
-                  >
-                    Work in Progress
-                  </Button>
-                  <Button
-                    onClick={() => navigate(`/postpone-booking/${id}`)}
-                    className="mb-2"
-                    color="primary"
-                  >
-                    Postpone
-                  </Button>
                 </div>
               </CardBody>
             </Card>
@@ -514,4 +348,4 @@ const EditBookingAll = () => {
   );
 };
 
-export default EditBookingAll;
+export default PostponeBooking;

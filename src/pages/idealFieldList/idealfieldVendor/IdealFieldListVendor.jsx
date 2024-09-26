@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
+import IdealFieldListFilter from "../../../components/IdealFieldListFilter";
 import { FaCalendarAlt } from "react-icons/fa";
 import { Card } from "@material-tailwind/react";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../utils/ContextPanel";
-import IdealFieldListFilter from "../../components/IdealFieldListFilter";
-
-const IdealFieldList = () => {
+import { ContextPanel } from "../../../utils/ContextPanel";
+import BASE_URL from "../../../base/BaseUrl";
+const IdealFieldListVendor = () => {
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
   var mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -43,7 +42,7 @@ const IdealFieldList = () => {
         };
         const token = localStorage.getItem("token");
         const response = await axios.post(
-          `${BASE_URL}/api/panel-fetch-ideal-field`,
+          `${BASE_URL}/api/panel-fetch-vendor-ideal-field`,
           data,
           {
             headers: {
@@ -62,14 +61,13 @@ const IdealFieldList = () => {
     fetchIdealData();
     setLoading(false);
   }, [idealDataDate.from_date]);
-
   return (
     <Layout>
       <IdealFieldListFilter />
       <div className="container mx-auto px-4">
         {/* Page Title */}
         <div className="my-4 text-2xl font-bold text-gray-800">
-          Ideal Field List
+          Vendor Ideal Field List
         </div>
 
         <Card className="mt-6 p-4">
@@ -116,4 +114,5 @@ const IdealFieldList = () => {
     </Layout>
   );
 };
-export default IdealFieldList;
+
+export default IdealFieldListVendor;

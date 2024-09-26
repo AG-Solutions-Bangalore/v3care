@@ -1,7 +1,8 @@
 import React from "react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 
-const DownloadFilter = () => {
+const IdealFieldListFilter = () => {
   //   const [activeButton, setActiveButton] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,27 +16,16 @@ const DownloadFilter = () => {
   const handleButtonClick = (path) => {
     navigate(path);
   };
-
   const buttons = [
     {
-      label: "Download Booking",
-      path: "/booking-download",
+      label: "V3 Care Ideal Field List",
+      path: "/idealfield-list",
       color: "from-pink-500 to-orange-400",
     },
     {
-      label: "Download Vendor",
-      path: "/vendor-download",
+      label: "Vendor Ideal Field List",
+      path: "/idealfield-vendor-list",
       color: "from-blue-500 to-cyan-400",
-    },
-    {
-      label: "Download Received Payment",
-      path: "/received-download",
-      color: "from-red-500 to-purple-400",
-    },
-    {
-      label: "Download Pending Payment",
-      path: "/pending-download",
-      color: "from-blue-500 to-green-400",
     },
   ];
   return (
@@ -57,4 +47,4 @@ const DownloadFilter = () => {
   );
 };
 
-export default DownloadFilter;
+export default IdealFieldListFilter;

@@ -116,6 +116,7 @@ const AssignVendor = () => {
           return (
             <div className="flex items-center space-x-2">
               <FaEdit
+                onClick={() => navigate(`/edit-booking-vendor/${id}`)}
                 title="Edit Booking Asssign"
                 className="h-5 w-5 cursor-pointer"
               />
@@ -147,7 +148,7 @@ const AssignVendor = () => {
       <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Booking User List{id}
+          Booking Vendor List{id}
         </h3>
 
         <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">

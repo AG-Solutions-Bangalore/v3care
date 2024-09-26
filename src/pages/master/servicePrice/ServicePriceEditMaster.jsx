@@ -156,7 +156,7 @@ const ServicePriceEditMaster = () => {
       <MasterFilter />
       <div className="p-4 sm:p-6 lg:p-8">
         <div className="mb-6 text-2xl font-bold text-gray-800">
-          Edit Service Price {id}
+          Edit Service Price
         </div>
 
         <Card className="p-4 sm:p-6 lg:p-8">

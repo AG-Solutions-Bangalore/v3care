@@ -146,7 +146,10 @@ const OperationTeamMaster = () => {
           Operation Team List
         </h3>
 
-        <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
+        <Link
+          to="/add-operation-team"
+          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+        >
           + Operation Field Team
         </Link>
       </div>

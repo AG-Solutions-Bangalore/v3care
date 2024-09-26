@@ -148,8 +148,8 @@ const VendorList = () => {
                     className="h-5 w-5 cursor-pointer"
                   />
                   <FiUsers
-                    onClick={() => navigate(`/vendor-view/${id}`)}
-                    title="View Cylinder Info"
+                    onClick={() => navigate(`/vendor-user-list/${id}`)}
+                    title="vendor user list"
                     className="h-5 w-5 cursor-pointer"
                   />
                 </>

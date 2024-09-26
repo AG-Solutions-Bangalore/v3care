@@ -58,10 +58,30 @@ import ViewBooking from "./pages/booking/commonView/ViewBooking";
 import BookingAssign from "./pages/booking/commonView/bookingAssign/BookingAssign";
 import AssignVendor from "./pages/booking/commonView/assignVendor/AssignVendor";
 import EditBookingAll from "./pages/booking/commonView/editBooking/EditBookingAll";
-
+import WorkInProgress from "./pages/booking/commonView/editBooking/WorkInProgress";
+import PostponeBooking from "./pages/booking/commonView/editBooking/PostponeBooking";
+import EditBookingAssign from "./pages/booking/commonView/bookingAssign/EditBookingAssign";
+import EditAssignVendor from "./pages/booking/commonView/assignVendor/EditAssignVendor";
+import IdealFieldListVendor from "./pages/idealFieldList/idealfieldVendor/IdealFieldListVendor";
+import ReceivedDownload from "./pages/download/received/ReceivedDownload";
+import PendingDownload from "./pages/download/pending/PendingDownload";
+import VendorUserList from "./pages/vendorList/VendorUserList";
+import EditVendorUser from "./pages/vendorList/EditVendorUser";
+import AddVendorUser from "./pages/vendorList/AddVendorUser";
+import AddBranch from "./pages/master/branch/AddBranch";
+import AddReferBy from "./pages/master/referBy/AddReferBy";
+import AddServiceMaster from "./pages/master/service/AddServiceMaster";
+import AddServiceSubMaster from "./pages/master/serviceSub/AddServiceSubMaster";
+import AddServicePrice from "./pages/master/servicePrice/AddServicePrice";
+import AddFieldTeamMaster from "./pages/master/fieldTeam/AddFieldTeamMaster";
+import AddOperationTeam from "./pages/master/operationTeam/AddOperationTeam";
+import AddBackhandTeam from "./pages/master/backhandTeam/AddBackhandTeam";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   return (
     <>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -71,8 +91,15 @@ const App = () => {
         {/* booking  */}
         <Route path="/view-booking/:id" element={<ViewBooking />} />
         <Route path="/booking-assign/:id" element={<BookingAssign />} />
+        <Route
+          path="/edit-booking-assign/:id"
+          element={<EditBookingAssign />}
+        />
         <Route path="/assign-vendor/:id" element={<AssignVendor />} />
+        <Route path="/edit-booking-vendor/:id" element={<EditAssignVendor />} />
         <Route path="/edit-booking/:id" element={<EditBookingAll />} />
+        <Route path="/booking-reschedule/:id" element={<WorkInProgress />} />
+        <Route path="/postpone-booking/:id" element={<PostponeBooking />} />
         <Route path="/add-booking" element={<AddBooking />} />
         <Route path="/cancel" element={<CancelBooking />} />
         <Route path="/completed" element={<CompletedBooking />} />
@@ -84,25 +111,32 @@ const App = () => {
         <Route path="/vendor-job" element={<VendorJobBooking />} />
         {/* master  */}
         <Route path="/branch" element={<BranchMaster />} />
+        <Route path="/add-branch" element={<AddBranch />} />
         <Route path="/branch-edit/:id" element={<BranchEditMaster />} />
         <Route path="/refer-by" element={<ReferByMaster />} />
+        <Route path="/add-referby" element={<AddReferBy />} />
         <Route path="/refer-by-edit/:id" element={<ReferByEditMaster />} />
         <Route path="/service" element={<ServiceMaster />} />
+        <Route path="/add-service" element={<AddServiceMaster />} />
         <Route path="/service-edit/:id" element={<ServiceEditMaster />} />
         <Route path="/service-sub" element={<ServiceSubMaster />} />
+        <Route path="/add-service-sub" element={<AddServiceSubMaster />} />
         <Route
           path="/service-sub-edit/:id"
           element={<ServiceSubEditMaster />}
         />
         <Route path="/service-price" element={<ServicePriceMaster />} />
+        <Route path="/add-service-price" element={<AddServicePrice />} />
         <Route
           path="/service-price-edit/:id"
           element={<ServicePriceEditMaster />}
         />
         <Route path="/field-team" element={<FieldTeamMaster />} />
+        <Route path="/add-field-team" element={<AddFieldTeamMaster />} />
         <Route path="/field-team-edit/:id" element={<FieldTeamEditMaster />} />
         <Route path="/field-team-view/:id" element={<FieldTeamViewMaster />} />
-        <Route path="operation-team" element={<OperationTeamMaster />} />
+        <Route path="/operation-team" element={<OperationTeamMaster />} />
+        <Route path="/add-operation-team" element={<AddOperationTeam />} />
         <Route
           path="/operation-team-view/:id"
           element={<OperationViewTeamMaster />}
@@ -112,6 +146,7 @@ const App = () => {
           element={<OperationEditTeamMaster />}
         />
         <Route path="/backhand-team" element={<BackhandTeamMaster />} />
+        <Route path="/add-backhand-team" element={<AddBackhandTeam />} />
         <Route
           path="/backhand-team-view/:id"
           element={<BackhandViewTeamMaster />}
@@ -125,6 +160,9 @@ const App = () => {
         <Route path="/add-vendor" element={<AddVendor />} />
         <Route path="/vendor-view/:id" element={<ViewVendor />} />
         <Route path="/vendor-edit/:id" element={<EditVendor />} />
+        <Route path="/vendor-user-list/:id" element={<VendorUserList />} />
+        <Route path="/add-vendor-user/:id" element={<AddVendorUser />} />
+        <Route path="/edit-vendor-user-list/:id" element={<EditVendorUser />} />
         <Route
           path="/vendor-pending-edit/:id"
           element={<VendorPendingEdit />}
@@ -132,6 +170,10 @@ const App = () => {
         <Route path="/add-vendor-service/:id" element={<AddVendorService />} />
         {/* ideal field list  */}
         <Route path="/idealfield-list" element={<IdealFieldList />} />
+        <Route
+          path="/idealfield-vendor-list"
+          element={<IdealFieldListVendor />}
+        />
         {/* payment  */}
         <Route path="/pending-payment" element={<PendingPayment />} />
         <Route
@@ -160,6 +202,8 @@ const App = () => {
         {/* download  */}
         <Route path="/booking-download" element={<BookingDownload />} />
         <Route path="/vendor-download" element={<VendorDownload />} />
+        <Route path="/received-download" element={<ReceivedDownload />} />
+        <Route path="/pending-download" element={<PendingDownload />} />
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}

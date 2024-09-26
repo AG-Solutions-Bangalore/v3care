@@ -1,20 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../layout/Layout";
+import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import MUIDataTable from "mui-datatables";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { CiSquarePlus } from "react-icons/ci";
+import Moment from "moment";
+import { ContextPanel } from "../../utils/ContextPanel";
+import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
-
-const ReferByMaster = () => {
-  const [referData, setReferData] = useState(null);
+const VendorUserList = () => {
+  const { id } = useParams();
+  const [vendorUserList, setVendorUserList] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchReferData = async () => {
+    const fetchUserVendorListData = async () => {
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -23,7 +27,7 @@ const ReferByMaster = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-referby-list`,
+          `${BASE_URL}/api/panel-fetch-vendor-users/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -31,46 +35,51 @@ const ReferByMaster = () => {
           }
         );
 
-        setReferData(response.data?.referby);
+        setVendorUserList(response.data?.vendorUser);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchReferData();
+    fetchUserVendorListData();
     setLoading(false);
   }, []);
 
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "name",
+      label: "Full Name",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
       },
     },
     {
-      name: "refer_by",
-      label: "Refer By",
+      name: "email",
+      label: "Email",
       options: {
         filter: true,
         sort: true,
       },
     },
-
     {
-      name: "refer_by_status",
+      name: "mobile",
+      label: "Mobile",
+      options: {
+        filter: false,
+        sort: false,
+      },
+    },
+    {
+      name: "status",
       label: "Status",
       options: {
         filter: true,
         sort: false,
       },
     },
+
     {
       name: "id",
       label: "Action",
@@ -79,12 +88,10 @@ const ReferByMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div
-              onClick={() => navigate(`/refer-by-edit/${id}`)}
-              className="flex items-center space-x-2"
-            >
+            <div className="flex items-center space-x-2">
               <FaEdit
-                title="View Cylinder Info"
+                onClick={() => navigate(`/edit-vendor-user-list/${id}`)}
+                title="edit vendor user list"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>
@@ -102,33 +109,24 @@ const ReferByMaster = () => {
     viewColumns: true,
     download: false,
     print: false,
-    setRowProps: (rowData) => {
-      return {
-        style: {
-          borderBottom: "10px solid #f1f7f9",
-        },
-      };
-    },
   };
-
   return (
     <Layout>
-      <MasterFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Refer By List
+          Vendor User List {id}
         </h3>
 
         <Link
-          to="/add-referby"
+          to={`/add-vendor-user/${id}`}
           className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
         >
-          + Add Refer by
+          + Add Vendor User
         </Link>
       </div>
       <div className="mt-5">
         <MUIDataTable
-          data={referData ? referData : []}
+          data={vendorUserList ? vendorUserList : []}
           columns={columns}
           options={options}
         />
@@ -137,4 +135,4 @@ const ReferByMaster = () => {
   );
 };
 
-export default ReferByMaster;
+export default VendorUserList;

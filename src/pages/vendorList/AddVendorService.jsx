@@ -9,13 +9,13 @@ import { useParams } from "react-router-dom";
 
 const AddVendorService = () => {
   const { id } = useParams();
-  const [test, setTest] = useState([]);
-  const [servicess, setServicess] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [availableServices, setAvailableServices] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const handleChange = (event) => {
-    setTest(event.target.value);
-    console.log("check", event.target.value);
+    setSelectedServices(event.target.value);
+    console.log("Selected Services:", event.target.value);
   };
 
   useEffect(() => {
@@ -27,17 +27,14 @@ const AddVendorService = () => {
           Authorization: `Bearer ${theLoginToken}`,
         },
       })
-      .then((response) => setServicess(response.data.service))
+      .then((response) => setAvailableServices(response.data.service))
       .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("vendor_service", test);
-
-    const url = new URL(window.location.href);
-    const id = url.searchParams.get("id");
+    data.append("vendor_service", selectedServices);
 
     const formValid = document.getElementById("addIndiv").reportValidity();
 
@@ -54,7 +51,7 @@ const AddVendorService = () => {
           }
         )
         .then((res) => {
-          if (res.data.code == "200") {
+          if (res.data.code === "200") {
             alert("Data updated successfully");
           } else {
             alert("Duplicate Entry");
@@ -69,45 +66,50 @@ const AddVendorService = () => {
   };
   return (
     <Layout>
-      <div className="p-6 w-full mx-auto">
-        <h1 className="text-2xl font-bold mb-4">Add Vendor Service{id}</h1>
+      <div className="p-6 w-full  mx-auto bg-white shadow-lg rounded-lg mt-5">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Add Vendor Service - {id}
+        </h1>
+        <div className="border-t border-gray-300 my-4"></div>
         <form
           id="addIndiv"
           autoComplete="off"
           onSubmit={onSubmit}
-          className="space-y-4"
+          className="space-y-6"
         >
-          <div className="border-t border-gray-300 my-4"></div>
-          <div className="w-full">
-            <FormControl fullWidth>
-              <InputLabel htmlFor="select-multiple-checkbox">
-                Service*
-              </InputLabel>
-              <Select
-                multiple
-                value={test}
-                onChange={handleChange}
-                required
-                input={<Input id="select-multiple-checkbox" />}
-                renderValue={(selected) => selected.join(", ")}
-              >
-                {servicess.map((service) => (
-                  <MenuItem key={service.service} value={service.service}>
-                    <Checkbox
-                      color="primary"
-                      checked={test.indexOf(service.service) > -1}
-                    />
-                    <ListItemText primary={service.service} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
+          <FormControl fullWidth required>
+            <InputLabel htmlFor="select-multiple-checkbox">Service*</InputLabel>
+            <Select
+              multiple
+              value={selectedServices}
+              onChange={handleChange}
+              input={
+                <Input
+                  id="select-multiple-checkbox"
+                  className="bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              }
+              renderValue={(selected) => selected.join(", ")}
+              className="bg-gray-100 rounded-md shadow-sm"
+            >
+              {availableServices.map((service) => (
+                <MenuItem key={service.service} value={service.service}>
+                  <Checkbox
+                    color="primary"
+                    checked={selectedServices.indexOf(service.service) > -1}
+                  />
+                  <ListItemText primary={service.service} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-blue-500 text-white py-2 px-4 rounded flex items-center disabled:bg-gray-400"
+              className={`flex items-center justify-center bg-blue-600 text-white py-2 px-4 rounded-md shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 ${
+                isButtonDisabled ? "bg-gray-400" : "hover:bg-blue-700"
+              }`}
               disabled={isButtonDisabled}
             >
               <FiEdit className="mr-2" /> Update

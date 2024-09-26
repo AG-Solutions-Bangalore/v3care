@@ -1,28 +1,78 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
+import { useState } from "react";
 import { MdUpdate } from "react-icons/md";
 import { Button, MenuItem, TextField } from "@mui/material";
-
-const EditBookingAssign = () => {
+import BASE_URL from "../../../../base/BaseUrl";
+import axios from "axios";
+import { ContextPanel } from "../../../../utils/ContextPanel";
+const EditAssignVendor = () => {
   const { id } = useParams();
+
   const [bookingUser, setBookingUser] = useState({
     order_user_id: "",
-    order_assign_status: "",
+    order_start_time: "",
+    order_end_time: "",
     order_assign_remarks: "",
+    order_assign_status: "",
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [assignUserP, setAssignUserP] = useState([]);
 
-  const assignUserP = [
-    { id: 1, name: "User 1" },
-    { id: 2, name: "User 2" },
-  ];
+  const [loading, setLoading] = useState(false);
+  const { isPanelUp } = useContext(ContextPanel);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTodayData = async () => {
+      try {
+        if (!isPanelUp) {
+          navigate("/maintenance");
+          return;
+        }
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-booking-assign-vendor-by-id/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setBookingUser(response.data?.bookingAssign);
+        setAssignUserP(response.data?.bookingAssignUser);
+      } catch (error) {
+        console.error("Error fetching dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTodayData();
+    setLoading(false);
+  }, []);
 
   const status = [
-    { value: "active", label: "Active" },
-    { value: "inactive", label: "Inactive" },
+    {
+      value: "Pending",
+      label: "Pending",
+    },
+    {
+      value: "Confirmed",
+      label: "Confirmed",
+    },
+    {
+      value: "Finish",
+      label: "Finish",
+    },
+    {
+      value: "Cancel",
+      label: "Cancel",
+    },
   ];
 
   const onInputChange = (e) => {
@@ -32,9 +82,28 @@ const EditBookingAssign = () => {
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic
+    let data = {
+      order_user_id: bookingUser.order_user_id,
+      order_start_time: bookingUser.order_start_time,
+      order_end_time: bookingUser.order_end_time,
+      order_assign_remarks: bookingUser.order_assign_remarks,
+      order_assign_status: bookingUser.order_assign_status,
+    };
+    const response = await axios.put(
+      `${BASE_URL}/api/panel-update-booking-assign-vendor/${id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data.code == "200") {
+      alert("Success hurray");
+    }
   };
 
   return (
@@ -42,9 +111,10 @@ const EditBookingAssign = () => {
       <BookingFilter />
       <div className="p-6">
         <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          Edit Booking Assign User <span className="text-blue-600">{id}</span>
+          Edit Booking Assign Vendor
+          <span className="text-blue-600">{id}</span>
         </h2>
-        <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-lg">
+        <div className=" border border-gray-300 bg-white p-6 rounded-lg shadow-lg">
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {/* Assign User */}
@@ -111,16 +181,14 @@ const EditBookingAssign = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="mt-6 text-center">
-              <Button
-                type="submit"
-                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-md shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ease-in-out disabled:opacity-50"
-                onClick={onSubmit}
+            <div className="mt-6 text-center bg-blue-400  w-48 rounded-lg  ">
+              <button
+                className=" p-1 text-center   mb-2 text-white"
+                // onClick={onSubmit}
                 disabled={isButtonDisabled}
               >
-                <MdUpdate />
-                <span>Update</span>
-              </Button>
+                Update
+              </button>
             </div>
           </form>
         </div>
@@ -129,4 +197,4 @@ const EditBookingAssign = () => {
   );
 };
 
-export default EditBookingAssign;
+export default EditAssignVendor;

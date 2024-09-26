@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
+import { toast } from "react-toastify";
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -18,6 +19,7 @@ const ServiceEditMaster = () => {
     service_image: "",
     service_comm: "",
   });
+  const navigate = useNavigate();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -87,9 +89,10 @@ const ServiceEditMaster = () => {
       })
         .then((res) => {
           if (res.data.code == "200") {
-            alert("Data Updated Successfully");
+            toast.success("update succesfull");
+            navigate("/service");
           } else {
-            alert("Duplicate Entry");
+            toast.error("duplicate entry");
           }
         })
         .finally(() => {
@@ -107,7 +110,7 @@ const ServiceEditMaster = () => {
       <MasterFilter />
       <div className="textfields-wrapper">
         <div className="my-4 text-2xl font-bold text-gray-800">
-          Edit Service {id}
+          Edit Service
         </div>
         <Card className="p-6 mt-6">
           <form
@@ -124,7 +127,9 @@ const ServiceEditMaster = () => {
               {/* Service Fields */}
               <div>
                 <div className="mb-4">
-                  <label className="text-gray-700">Service</label>
+                  <label className="text-gray-700">
+                    Service <span className="text-red-700">*</span>{" "}
+                  </label>
                   <input
                     type="text"
                     name="service"
@@ -136,7 +141,9 @@ const ServiceEditMaster = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="text-gray-700">Service Commission</label>
+                  <label className="text-gray-700">
+                    Service Commission<span className="text-red-700">*</span>
+                  </label>
                   <input
                     type="text"
                     name="service_comm"
@@ -156,7 +163,9 @@ const ServiceEditMaster = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="text-gray-700">Status</label>
+                  <label className="text-gray-700">
+                    Status<span className="text-red-700">*</span>
+                  </label>
                   <select
                     name="service_status"
                     value={services.service_status}
@@ -184,7 +193,7 @@ const ServiceEditMaster = () => {
               >
                 {isButtonDisabled ? "Updating..." : "Update"}
               </Button>
-              <Link>
+              <Link to="/service">
                 <Button className="mr-4 mb-4" color="green">
                   Back
                 </Button>

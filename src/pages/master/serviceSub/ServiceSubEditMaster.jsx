@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
+import { toast } from "react-toastify";
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -20,7 +21,7 @@ const ServiceSubEditMaster = () => {
     service_sub_status: "",
     service_sub_image: "",
   });
-
+  const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [serdata, setSerData] = useState([]);
@@ -89,9 +90,11 @@ const ServiceSubEditMaster = () => {
           }
         );
         if (res.data.code == "200") {
-          alert("data update succesfully");
+          toast.success("Branch Create succesfull");
+
+          navigate("/service-sub");
         } else {
-          alert("duplicate entry");
+          toast.error("duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service:", error);
@@ -120,7 +123,9 @@ const ServiceSubEditMaster = () => {
               </div>
               <div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Service</label>
+                  <label className="block text-gray-700">
+                    Service <span className="text-red-700">*</span>
+                  </label>
                   <select
                     name="service_id"
                     value={services.service_id}
@@ -136,7 +141,9 @@ const ServiceSubEditMaster = () => {
                   </select>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Service Sub</label>
+                  <label className="block text-gray-700">
+                    Service Sub<span className="text-red-700">*</span>
+                  </label>
                   <input
                     type="text"
                     name="service_sub"
@@ -157,7 +164,9 @@ const ServiceSubEditMaster = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Status</label>
+                  <label className="block text-gray-700">
+                    Status <span className="text-red-700">*</span>
+                  </label>
                   <select
                     name="service_sub_status"
                     value={services.service_sub_status}
@@ -184,7 +193,7 @@ const ServiceSubEditMaster = () => {
               >
                 {isButtonDisabled ? "Updating..." : "Update"}
               </Button>
-              <Link>
+              <Link to="/service-sub">
                 <Button className="mr-4 mb-4" color="green">
                   Back
                 </Button>

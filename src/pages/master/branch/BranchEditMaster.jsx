@@ -3,11 +3,12 @@ import Layout from "../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import MasterFilter from "../../../components/MasterFilter";
 import { FaBuilding } from "react-icons/fa";
-import { Button, Card } from "@material-tailwind/react";
+import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { toast } from "react-toastify";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
@@ -83,11 +84,15 @@ const BranchEditMaster = () => {
         }
       );
       console.log("Form submitted", branch);
-
-      alert("update succesfull");
+      if (response.data.code == "200") {
+        toast.success("update succesfull");
+        navigate("/branch");
+      } else {
+        toast.error("duplicate entry");
+      }
     } catch (error) {
       console.error("Error updating refer by", error);
-      alert("Update failed. Please try again.");
+      toast.error("Update failed. Please try again.");
     } finally {
       setIsButtonDisabled(false);
     }
@@ -99,7 +104,7 @@ const BranchEditMaster = () => {
       <div className="container mx-auto px-4">
         {/* Page Title */}
         <div className="my-4 text-2xl font-bold text-gray-800">
-          <FaBuilding className="inline mr-2" /> Edit Branch {id}
+          <FaBuilding className="inline mr-2" /> Edit Branch
         </div>
 
         <Card className="p-6 mt-6">
@@ -153,7 +158,7 @@ const BranchEditMaster = () => {
               >
                 {isButtonDisabled ? "Updating..." : "Update"}
               </Button>
-              <Link to="/listing">
+              <Link to="/branch">
                 <Button className="mr-4 mb-4" color="green">
                   Back
                 </Button>
