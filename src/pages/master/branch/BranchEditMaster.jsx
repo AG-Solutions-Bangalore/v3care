@@ -9,6 +9,14 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { toast } from "react-toastify";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { MdArrowBack, MdSend } from "react-icons/md";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
@@ -112,55 +120,67 @@ const BranchEditMaster = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Branch Name */}
               <div className="form-group">
-                <label htmlFor="branch_name" className="text-gray-700">
-                  Branch<span className="text-red-800">*</span>
-                </label>
-                <input
+                <Input
+                  label="Branch"
                   type="text"
                   name="branch_name"
                   value={branch.branch_name}
                   onChange={onInputChange}
-                  disabled
-                  className="w-full border border-gray-300 rounded-md p-2 mt-2 focus:ring-2 focus:ring-blue-400"
                   required
+                  disabled
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
 
               {/* Branch Status */}
-              <div className="form-group">
-                <label htmlFor="branch_status" className="text-gray-700">
-                  Status<span className="text-red-800">*</span>
-                </label>
-                <select
+
+              <FormControl fullWidth>
+                <InputLabel id="service-select-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Status <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="service-select-label"
+                  id="service-select"
                   name="branch_status"
                   value={branch.branch_status}
                   onChange={onInputChange}
-                  className="w-full border border-gray-300 rounded-md p-2 mt-2 focus:ring-2 focus:ring-blue-400"
+                  label="Status *"
                   required
                 >
-                  <option value="">Select Status</option>
-                  {status.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
+                  {status.map((data) => (
+                    <MenuItem key={data.value} value={String(data.value)}>
+                      {data.label}
+                    </MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
             </div>
 
             {/* Buttons */}
             <div className="text-center mt-6">
               <Button
                 type="submit"
-                className="mr-4 mb-4"
-                color="blue"
+                className="mr-2 mb-2"
+                color="primary"
                 disabled={isButtonDisabled}
               >
-                {isButtonDisabled ? "Updating..." : "Update"}
+                <div className="flex gap-1">
+                  <MdSend className="w-4 h-4" />
+                  <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+                </div>
               </Button>
+
               <Link to="/branch">
-                <Button className="mr-4 mb-4" color="green">
-                  Back
+                <Button className="mr-2 mb-2" color="primary">
+                  <div className="flex gap-1">
+                    <MdArrowBack className="w-5 h-5" />
+                    <span>Back</span>
+                  </div>
                 </Button>
               </Link>
             </div>

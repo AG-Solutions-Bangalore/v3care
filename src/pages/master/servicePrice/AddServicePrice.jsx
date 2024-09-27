@@ -8,6 +8,8 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
+import { Button, Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const AddServicePrice = () => {
   const [services, setServices] = useState({
@@ -86,6 +88,7 @@ const AddServicePrice = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
+
     if (["service_price_rate", "service_price_amount"].includes(name)) {
       if (validateOnlyDigits(value)) {
         setServices((prev) => ({ ...prev, [name]: value }));
@@ -94,6 +97,24 @@ const AddServicePrice = () => {
       setServices((prev) => ({ ...prev, [name]: value }));
     }
   };
+
+  // const onInputChange = (e) => {
+  //   let name, value;
+
+  //   if (e && e.target) {
+  //     ({ name, value } = e.target);
+  //   } else {
+  //     name = e.target ? e.target.name : e.name;
+  //     value = e;
+  //   }
+  //   if (["service_price_rate", "service_price_amount"].includes(name)) {
+  //     if (validateOnlyDigits(value)) {
+  //       setServices((prev) => ({ ...prev, [name]: value }));
+  //     }
+  //   } else {
+  //     setServices((prev) => ({ ...prev, [name]: value }));
+  //   }
+  // };
 
   // const onInputChange = (e) => {
   //   setServices({
@@ -151,50 +172,98 @@ const AddServicePrice = () => {
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Select Field */}
-            <div className="form-group">
+            {/* <div className="form-group">
               <label className="block text-lg font-semibold text-gray-700 mb-2">
                 Service <span className="text-red-700">*</span>
               </label>
-              <select
+              <Select
                 name="service_id"
-                value={services.service_id}
-                onChange={onInputChange}
+                value={String(services.service_id)}
+                onChange={(value) =>
+                  onInputChange({ name: "service_id", value })
+                }
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               >
                 {serdata.map((serdatas, key) => (
-                  <option key={key} value={serdatas.id}>
+                  <SelectOption key={key} value={String(serdatas.id)}>
                     {serdatas.service}
-                  </option>
+                  </SelectOption>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </div> */}
+            <FormControl fullWidth>
+              <InputLabel id="service-select-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Service <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="service-select-label"
+                id="service-select"
+                name="service_id"
+                value={services.service_id}
+                label="Service *"
+                onChange={onInputChange}
+                required
+              >
+                {serdata.map((serdatas) => (
+                  <MenuItem key={serdatas.id} value={String(serdatas.id)}>
+                    {serdatas.service}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             {/* Service Sub Select Field */}
-            <div className="form-group">
+            {/* <div className="form-group">
               <label className="block text-lg font-semibold text-gray-700 mb-2">
                 Service Sub
               </label>
-              <select
+              <Select
+                label="service"
                 name="service_sub_id"
-                value={services.service_sub_id}
-                onChange={onInputChange}
+                value={String(services.service_sub_id)}
+                onChange={(value) =>
+                  onInputChange({ name: "service_id", value })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               >
                 {serdatasub.map((serdatas, key) => (
-                  <option key={key} value={serdatas.id}>
+                  <SelectOption key={key} value={String(serdatas.id)}>
                     {serdatas.service_sub}
-                  </option>
+                  </SelectOption>
                 ))}
-              </select>
-            </div>
+              </Select>
+            </div> */}
+            <FormControl fullWidth>
+              <InputLabel id="service-sub-select-label">
+                <span className=" text-sm  bottom-[6px] relative  ">
+                  Service Sub
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="service-sub-select-label"
+                id="service-sub-select"
+                name="service_sub_id"
+                value={services.service_sub_id}
+                label="Service Sub"
+                onChange={onInputChange}
+              >
+                {serdatasub.map((serdatas) => (
+                  <MenuItem key={serdatas.id} value={String(serdatas.id)}>
+                    {serdatas.service_sub}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             {/* Service Price For Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Price For<span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="Service Price For"
                 type="text"
                 name="service_price_for"
                 value={services.service_price_for}
@@ -206,10 +275,8 @@ const AddServicePrice = () => {
 
             {/* Service Rate Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Rate<span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="Service Rate"
                 type="text"
                 name="service_price_rate"
                 value={services.service_price_rate}
@@ -221,10 +288,8 @@ const AddServicePrice = () => {
 
             {/* Service Amount Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Amount<span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="Service Amount"
                 type="text"
                 name="service_price_amount"
                 value={services.service_price_amount}
@@ -238,24 +303,28 @@ const AddServicePrice = () => {
           {/* Buttons */}
           <div className="flex justify-center space-x-4">
             {/* Submit Button */}
-            <button
+
+            <Button
               type="submit"
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+              className="mr-2 mb-2"
+              color="primary"
               disabled={isButtonDisabled}
             >
-              <MdSend className="w-5 h-5" />
-              <span>{isButtonDisabled ? "Submiting..." : "Submit"}</span>
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Submiting..." : "Submit"}</span>
+              </div>
+            </Button>
 
             {/* Back Button */}
-            <Link to="/service-price">
-              <button
-                type="button"
-                className="flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 focus:ring-4 focus:ring-green-300 transition-all duration-300"
-              >
-                <MdArrowBack className="w-5 h-5" />
-                <span>Back</span>
-              </button>
+
+            <Link to="/branch">
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-5 h-5" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   FaUser,
@@ -11,8 +11,17 @@ import {
   FaFileAlt,
   FaClipboardList,
 } from "react-icons/fa";
-import { MdDescription } from "react-icons/md";
+import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
 import BASE_URL from "../../../base/BaseUrl";
+import { Button, Input, Textarea } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { toast } from "react-toastify";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -30,9 +39,8 @@ const BackhandEditTeamMaster = () => {
     user_aadhar: "",
     user_pancard_no: "",
     user_pancard: "",
-    user_type: "",
   });
-
+  const navigate = useNavigate();
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -66,245 +74,200 @@ const BackhandEditTeamMaster = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const form = document.getElementById("addIndiv");
-    if (form.checkValidity()) {
-      setIsButtonDisabled(true);
-      const data = new FormData();
-      Object.keys(team).forEach((key) => {
-        data.append(key, team[key]);
-      });
-      data.append("user_aadhar", selectedFile1);
-      data.append("user_pancard", selectedFile2);
+    setIsButtonDisabled(true);
 
-      axios({
-        url: `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
-        method: "POST",
-        data,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }).then((res) => {
-        if (res.data.code === "200") {
-          alert("data update succesfully");
-        } else {
-          alert("duplicate entry");
-        }
-      });
-    }
+    const data = new FormData();
+    data.append("name", team.name);
+    data.append("mobile", team.mobile);
+    data.append("email", team.email);
+    data.append("remarks", team.remarks);
+    data.append("status", team.status);
+    data.append("user_aadhar_no", team.user_aadhar_no);
+    data.append("user_aadhar", selectedFile1);
+    data.append("user_pancard_no", team.user_pancard_no);
+    data.append("user_pancard", selectedFile2);
+    data.append("user_type", team.user_type);
+
+    axios({
+      url: `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
+      method: "POST",
+      data,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
+      if (res.data.code == "200") {
+        toast.success("update succesfull");
+        navigate("/backhand-team");
+      } else {
+        toast.error("duplicate entry");
+      }
+    });
   };
   return (
     <Layout>
       <MasterFilter />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold mb-6">Edit Backhand Team {id}</h1>
+        <h1 className="text-2xl font-bold mb-6">Edit Backhand Team </h1>
         <form
           id="addIndiv"
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           autoComplete="off"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
             {/* Full Name Field */}
-            <div className="relative">
-              <label className="block text-gray-700 mb-2" htmlFor="name">
-                Full Name
-              </label>
-              <div className="relative">
-                <FaUser className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                  placeholder="Full Name"
-                  name="name"
-                  value={team.name}
-                  onChange={onInputChange}
-                  disabled
-                  required
-                />
-              </div>
+            <div>
+              <Input
+                label="Full Name"
+                type="text"
+                name="name"
+                value={team.name}
+                onChange={onInputChange}
+                required
+                className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
+              />
             </div>
 
             {/* Mobile No Field */}
-            <div className="relative">
-              <label className="block text-gray-700  mb-2" htmlFor="mobile">
-                Mobile No
-              </label>
-              <div className="relative">
-                <FaMobile className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                  placeholder="Mobile No"
-                  name="mobile"
-                  value={team.mobile}
-                  onChange={onInputChange}
-                  maxLength={10}
-                  minLength={10}
-                  required
-                />
-              </div>
+            <div>
+              <Input
+                label="Mobile No"
+                type="text"
+                name="mobile"
+                value={team.mobile}
+                onChange={onInputChange}
+                maxLength={10}
+                minLength={10}
+                required
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
             </div>
 
             {/* Email Field */}
-            <div className="relative">
-              <label className="block text-gray-700  mb-2" htmlFor="email">
-                Email Id
-              </label>
-              <div className="relative">
-                <FaEnvelope className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="email"
-                  placeholder="Email Id"
-                  name="email"
-                  value={team.email}
-                  onChange={onInputChange}
-                />
-              </div>
+            <div>
+              <Input
+                label="Email Id"
+                type="email"
+                required
+                name="email"
+                value={team.email}
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
             </div>
 
             {/* Aadhar No Field */}
-            <div className="relative">
-              <label
-                className="block text-gray-700  mb-2"
-                htmlFor="user_aadhar_no"
-              >
-                Aadhar No
-              </label>
-              <div className="relative">
-                <FaIdCard className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                  placeholder="Aadhar No"
-                  name="user_aadhar_no"
-                  value={team.user_aadhar_no}
-                  onChange={onInputChange}
-                  maxLength={12}
-                />
-              </div>
+            <div>
+              <Input
+                label="Aadhar No"
+                type="text"
+                name="user_aadhar_no"
+                value={team.user_aadhar_no}
+                onChange={onInputChange}
+                maxLength={12}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
             </div>
 
             {/* Aadhar File Upload */}
-            <div className="relative">
-              <label
-                className="block text-gray-700  mb-2"
-                htmlFor="user_aadhar"
-              >
-                Aadhar File
-              </label>
-              <div className="relative">
-                <FaFileAlt className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="file"
-                  name="user_aadhar"
-                  onChange={(e) => setSelectedFile1(e.target.files[0])}
-                />
-              </div>
+
+            <div>
+              <Input
+                label="Aadhar File"
+                type="file"
+                name="user_aadhar"
+                onChange={(e) => setSelectedFile1(e.target.files[0])}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+              />
               <small className="text-gray-500">{team.user_aadhar}</small>
             </div>
 
             {/* Pancard No Field */}
-            <div className="relative">
-              <label
-                className="block text-gray-700  mb-2"
-                htmlFor="user_pancard_no"
-              >
-                Pancard No
-              </label>
-              <div className="relative">
-                <FaIdCard className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="text"
-                  placeholder="Pancard No"
-                  name="user_pancard_no"
-                  value={team.user_pancard_no}
-                  onChange={onInputChange}
-                  maxLength={10}
-                />
-              </div>
+            <div>
+              <Input
+                label="Pancard No"
+                type="text"
+                name="user_pancard_no"
+                value={team.user_pancard_no}
+                onChange={onInputChange}
+                maxLength={10}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
             </div>
 
             {/* Pancard File Upload */}
-            <div className="relative">
-              <label
-                className="block text-gray-700  mb-2"
-                htmlFor="user_pancard"
-              >
-                Pancard File
-              </label>
-              <div className="relative">
-                <FaFileAlt className="absolute top-3 left-3 text-blue-400" />
-                <input
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="file"
-                  name="user_pancard"
-                  onChange={(e) => setSelectedFile2(e.target.files[0])}
-                />
-              </div>
+
+            <div>
+              <Input
+                label="Pancard File"
+                type="file"
+                name="user_pancard"
+                onChange={(e) => setSelectedFile2(e.target.files[0])}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
               <small className="text-gray-500">{team.user_pancard}</small>
             </div>
 
             {/* Status Dropdown */}
-            <div className="relative">
-              <label className="block text-gray-700 mb-2" htmlFor="status">
-                Status
-              </label>
-              <div className="relative">
-                <FaClipboardList className="absolute top-3 left-3 text-blue-400" />
-                <select
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  name="status"
-                  value={team.status}
-                  onChange={onInputChange}
-                  required
-                >
-                  <option value="">Select Status</option>
-                  {status.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+
+            <FormControl fullWidth>
+              <InputLabel id="service-select-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Status <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="service-select-label"
+                id="service-select"
+                name="status"
+                value={team.status}
+                onChange={onInputChange}
+                label="Status *"
+                required
+              >
+                {status.map((data) => (
+                  <MenuItem key={data.value} value={data.value}>
+                    {data.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             {/* Remarks Field */}
-            <div className="relative col-span-full">
-              <label className="block text-gray-700  mb-2" htmlFor="remarks">
-                Remarks
-              </label>
-              <div className="relative">
-                <MdDescription className="absolute top-3 left-3 text-blue-400" />
-                <textarea
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Remarks"
-                  name="remarks"
-                  value={team.remarks}
-                  onChange={onInputChange}
-                  rows="3"
-                ></textarea>
-              </div>
+
+            <div className="col-span-3">
+              <Textarea
+                label="Remarks"
+                name="remarks"
+                value={team.remarks}
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              ></Textarea>
             </div>
           </div>
 
           <div className="flex justify-center mt-6 space-x-4">
-            <button
+            <Button
               type="submit"
-              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-                isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className="mr-2 mb-2"
+              color="primary"
               onClick={onSubmit}
               disabled={isButtonDisabled}
             >
-              Update
-            </button>
-            <Link
-              to="/field-team"
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Back
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+              </div>
+            </Button>
+
+            <Link to="/backhand-team">
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

@@ -14,6 +14,12 @@ import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
 import BASE_URL from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
+// import { createTheme, ThemeProvider } from "@mui/material/styles";
+// const theme = createTheme();
+
+// theme.typography.h3 = {
+//   fontSize: "1px",
+// };
 const AddVendor = () => {
   // sajid
   const [services, setServices] = useState([]);
@@ -296,283 +302,305 @@ const AddVendor = () => {
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
-      <form id="addIndiv">
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{ padding: "20px", fontWeight: "600" }}
-        >
-          Personal Details
-        </Typography>
-        <Box className={styles["form-container"]}>
-          <CustomInput
-            label="Nick Name"
-            icon={Person}
-            name="vendor_short"
-            value={vendor.vendor_short}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Company"
-            icon={BusinessIcon}
-            name="vendor_company"
-            required
-            value={vendor.vendor_company}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Mobile No"
-            icon={PhoneIphone}
-            name="vendor_mobile"
-            required
-            type="tel"
-            value={vendor.vendor_mobile}
-            inputProps={{ maxLength: 10, minLength: 10 }}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Email"
-            icon={Email}
-            name="vendor_email"
-            required
-            type="email"
-            value={vendor.vendor_email}
-            onChange={(e) => onInputChange(e)}
-          />
+      <Box
+        sx={{
+          bgcolor: "white",
+          padding: "10px",
+          marginTop: "15px",
+          borderRadius: "10px",
+        }}
+      >
+        <form id="addIndiv">
+          {/* <ThemeProvider theme={theme}> */}
+          <Typography
+            variant="h5"
+            // align="center"
+          >
+            Personal Details
+          </Typography>
+          {/* </ThemeProvider> */}
 
-          <Dropdown
-            label="Branch"
-            options={branches.map((branch) => ({
-              value: branch.value,
-              label: branch.label,
-            }))}
-            required
-            icon={BusinessIcon}
-            name="branch_id"
-            value={vendor.branch_id}
-            onChange={(e) => {
-              setVendor((prevVendor) => ({
-                ...prevVendor,
-                branch_id: e.target.value || "",
-              }));
-            }}
-          />
+          <Box className={styles["form-container"]}>
+            <CustomInput
+              label="Nick Name"
+              icon={Person}
+              name="vendor_short"
+              value={vendor.vendor_short}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Company"
+              icon={BusinessIcon}
+              name="vendor_company"
+              required
+              value={vendor.vendor_company}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Mobile No"
+              icon={PhoneIphone}
+              name="vendor_mobile"
+              required
+              type="tel"
+              value={vendor.vendor_mobile}
+              inputProps={{ maxLength: 10, minLength: 10 }}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Email"
+              icon={Email}
+              name="vendor_email"
+              required
+              type="email"
+              value={vendor.vendor_email}
+              onChange={(e) => onInputChange(e)}
+            />
 
-          <CustomInput
-            label="Aadhar No"
-            name="vendor_aadhar_no"
-            required
-            inputProps={{ maxLength: 12, minLength: 12 }}
-            value={vendor.vendor_aadhar_no}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="GST No"
-            name="vendor_gst_no"
-            inputProps={{ maxLength: 15 }}
-            value={vendor.vendor_gst_no}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Photo"
-            type="file"
-            name="vendor_images"
-            ref={inputRef1}
-            onChange={(e) => setSelectedFile1(e.target.files[0])}
-          />
-          <CustomInput
-            label="Aadhar Card Front Side"
-            type="file"
-            name="vendor_aadhar_front"
-            ref={inputRef2}
-            onChange={(e) => setSelectedFile2(e.target.files[0])}
-          />
-          <CustomInput
-            label="Aadhar Card Back Side"
-            type="file"
-            name="vendor_aadhar_back"
-            ref={inputRef3}
-            onChange={(e) => setSelectedFile3(e.target.files[0])}
-          />
-          <CustomInput
-            label="GST Certificate"
-            type="file"
-            name="vendor_gst_certificate"
-            ref={inputRef4}
-            onChange={(e) => setSelectedFile4(e.target.files[0])}
-          />
-          <CustomInput
-            label="Reference Name 1"
-            name="vendor_ref_name_1"
-            value={vendor.vendor_ref_name_1}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Reference Mobile No 1"
-            icon={PhoneIphone}
-            type="tel"
-            name="vendor_ref_mobile_1"
-            inputProps={{ maxLength: 10 }}
-            value={vendor.vendor_ref_mobile_1}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Reference Name 2"
-            name="vendor_ref_name_2"
-            value={vendor.vendor_ref_name_2}
-            onChange={(e) => onInputChange(e)}
-          />
-          <CustomInput
-            label="Reference Mobile No 2"
-            icon={PhoneIphone}
-            type="tel"
-            name="vendor_ref_mobile_2"
-            inputProps={{ maxLength: 10 }}
-            value={vendor.vendor_ref_mobile_2}
-            onChange={(e) => onInputChange(e)}
-          />
-        </Box>
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{ padding: "20px", fontWeight: "600" }}
-        >
-          Services Details
-        </Typography>
+            <Dropdown
+              // label="Branch"
+              options={branches.map((branch) => ({
+                value: branch.value,
+                label: branch.label,
+              }))}
+              name="branch_id"
+              label="Branch"
+              required
+              value={vendor.branch_id}
+              onChange={(e) => {
+                setVendor((prevVendor) => ({
+                  ...prevVendor,
+                  branch_id: e.target.value || "",
+                }));
+              }}
+            />
 
-        <Box>
-          <div>
-            <h3 style={{ fontSize: "17px", fontWeight: 600 }}>Services*</h3>
-          </div>
-          <Autocomplete
-            multiple
-            id="checkboxes-tags-demo"
-            options={services}
-            value={test}
-            disableCloseOnSelect
-            getOptionLabel={(option) => option.service}
-            onChange={(event, newValue) => handleChange(newValue)}
-            renderOption={(props, option, { selected }) => {
-              const { key, ...optionProps } = props;
-              return (
-                <li key={key} {...optionProps}>
-                  <Checkbox
-                    ref={checkboxRef}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    style={{ marginRight: 8 }}
-                    checked={selected}
-                  />
-                  {option.service}
-                </li>
-              );
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Choose services"
-                InputProps={{
-                  ...params.InputProps,
-                  style: { padding: "0px" },
-                }}
-                inputProps={{
-                  ...params.inputProps,
-                  style: { padding: "10px" },
-                }}
-              />
-            )}
-          />
-        </Box>
+            <CustomInput
+              label="Aadhar No"
+              name="vendor_aadhar_no"
+              required
+              inputProps={{ maxLength: 12, minLength: 12 }}
+              value={vendor.vendor_aadhar_no}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="GST No"
+              name="vendor_gst_no"
+              inputProps={{ maxLength: 15 }}
+              value={vendor.vendor_gst_no}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Photo"
+              type="file"
+              name="vendor_images"
+              ref={inputRef1}
+              onChange={(e) => setSelectedFile1(e.target.files[0])}
+            />
+            <CustomInput
+              label="Aadhar Card Front Side"
+              type="file"
+              name="vendor_aadhar_front"
+              ref={inputRef2}
+              onChange={(e) => setSelectedFile2(e.target.files[0])}
+            />
+            <CustomInput
+              label="Aadhar Card Back Side"
+              type="file"
+              name="vendor_aadhar_back"
+              ref={inputRef3}
+              onChange={(e) => setSelectedFile3(e.target.files[0])}
+            />
+            <CustomInput
+              label="GST Certificate"
+              type="file"
+              name="vendor_gst_certificate"
+              ref={inputRef4}
+              onChange={(e) => setSelectedFile4(e.target.files[0])}
+            />
+            <CustomInput
+              label="Reference Name 1"
+              name="vendor_ref_name_1"
+              value={vendor.vendor_ref_name_1}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Reference Mobile No 1"
+              icon={PhoneIphone}
+              type="tel"
+              name="vendor_ref_mobile_1"
+              inputProps={{ maxLength: 10 }}
+              value={vendor.vendor_ref_mobile_1}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Reference Name 2"
+              name="vendor_ref_name_2"
+              value={vendor.vendor_ref_name_2}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Reference Mobile No 2"
+              icon={PhoneIphone}
+              type="tel"
+              name="vendor_ref_mobile_2"
+              inputProps={{ maxLength: 10 }}
+              value={vendor.vendor_ref_mobile_2}
+              onChange={(e) => onInputChange(e)}
+            />
+          </Box>
+          <Typography
+            variant="h5"
+            // align="center"
+            sx={{ padding: "10px" }}
+          >
+            Services Details
+          </Typography>
 
-        {/* // */}
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{ padding: "20px", fontWeight: "600" }}
-        >
-          Address Details
-        </Typography>
-        <Box>
-          {users1.map((user, index) => (
-            <div key={index} className={styles["form-container"]}>
-              <CustomInput
-                label="Pincode"
-                icon={PinDrop}
-                name="vendor_branch_pincode"
-                required
-                value={user.vendor_branch_pincode}
-                onChange={(e) => {
-                  onChange1(e, index), CheckPincode(e, index);
-                }}
-              />
-              <CustomInput
-                label="City"
-                icon={LocationCityIcon}
-                name="vendor_branch_city"
-                disabled
-                required
-                value={user.vendor_branch_city}
-                onChange={(e) => onChange1(e, index)}
-              />
-              <CustomInput
-                label="District"
-                disabled
-                name="vendor_branch_district"
-                value={user.vendor_branch_district}
-                onChange={(e) => onChange1(e, index)}
-              />
-              <CustomInput
-                label="State"
-                disabled
-                name="vendor_branch_state"
-                required
-                value={user.vendor_branch_state}
-                onChange={(e) => onChange1(e, index)}
-              />
-              <Dropdown
-                label="Street/Location/Village"
-                name="vendor_branch_location"
-                required
-                onChange={(e) => onChange1(e, index)}
-                value={user.vendor_branch_location}
-                options={location.map((loc) => ({ value: loc, label: loc }))}
-                icon={BusinessIcon}
-              />
+          <Box>
+            {/* <div>
+              <h3 style={{ fontSize: "17px", fontWeight: 600 }}>Services*</h3>
+            </div> */}
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={services}
+              value={test}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.service}
+              onChange={(event, newValue) => handleChange(newValue)}
+              renderOption={(props, option, { selected }) => {
+                const { key, ...optionProps } = props;
+                return (
+                  <li key={key} {...optionProps}>
+                    <Checkbox
+                      ref={checkboxRef}
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.service}
+                  </li>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  // placeholder="Choose services"
+                  label={
+                    <label
+                      style={{
+                        fontSize: 13,
+                        fontFamily: "sans-serif",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Choose services
+                      {<span style={{ color: "red" }}>*</span>}
+                    </label>
+                  }
+                  InputProps={{
+                    ...params.InputProps,
+                    style: { padding: "0px" },
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    style: { padding: "10px" },
+                  }}
+                />
+              )}
+            />
+          </Box>
 
-              <CustomInput
-                label="House #/Flat #/ Plot #"
-                icon={HouseIcon}
-                name="vendor_branch_flat"
-                value={user.vendor_branch_flat}
-                onChange={(e) => onChange1(e, index)}
-              />
+          {/* // */}
+          <Typography
+            variant="h5"
+            // align="center"
+            sx={{ padding: "10px" }}
+          >
+            Address Details
+          </Typography>
+          <Box>
+            {users1.map((user, index) => (
+              <div key={index} className={styles["form-container"]}>
+                <CustomInput
+                  label="Pincode"
+                  icon={PinDrop}
+                  name="vendor_branch_pincode"
+                  required
+                  value={user.vendor_branch_pincode}
+                  onChange={(e) => {
+                    onChange1(e, index), CheckPincode(e, index);
+                  }}
+                />
+                <CustomInput
+                  label={<span className="!text-gray-600">City</span>}
+                  icon={LocationCityIcon}
+                  name="vendor_branch_city"
+                  disabled
+                  required
+                  value={user.vendor_branch_city}
+                  onChange={(e) => onChange1(e, index)}
+                />
+                <CustomInput
+                  label={<span className="!text-gray-600">District</span>}
+                  disabled
+                  required
+                  name="vendor_branch_district"
+                  value={user.vendor_branch_district}
+                  onChange={(e) => onChange1(e, index)}
+                />
+                <CustomInput
+                  label={<span className="!text-gray-600">State</span>}
+                  disabled
+                  name="vendor_branch_state"
+                  required
+                  value={user.vendor_branch_state}
+                  onChange={(e) => onChange1(e, index)}
+                />
+                <Dropdown
+                  label="Street/Location/Village "
+                  name="vendor_branch_location"
+                  required
+                  onChange={(e) => onChange1(e, index)}
+                  value={user.vendor_branch_location}
+                  options={location.map((loc) => ({ value: loc, label: loc }))}
+                />
 
-              <CustomInput
-                label="Apartment/Building"
-                name="vendor_branch_building"
-                value={user.vendor_branch_building}
-                onChange={(e) => onChange1(e, index)}
-              />
-              <CustomInput
-                label="Landmark"
-                name="vendor_branch_landmark"
-                value={user.vendor_branch_landmark}
-                onChange={(e) => onChange1(e, index)}
-              />
-            </div>
-          ))}
-        </Box>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={(e) => onSubmit(e)}
-          sx={{ mt: 3 }}
-        >
-          Submit
-        </Button>
-      </form>
+                <CustomInput
+                  label="House /Flat / Plot "
+                  icon={HouseIcon}
+                  name="vendor_branch_flat"
+                  value={user.vendor_branch_flat}
+                  onChange={(e) => onChange1(e, index)}
+                />
+
+                <CustomInput
+                  label="Apartment/Building"
+                  name="vendor_branch_building"
+                  value={user.vendor_branch_building}
+                  onChange={(e) => onChange1(e, index)}
+                />
+                <CustomInput
+                  label="Landmark"
+                  name="vendor_branch_landmark"
+                  value={user.vendor_branch_landmark}
+                  onChange={(e) => onChange1(e, index)}
+                />
+              </div>
+            ))}
+          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            onClick={(e) => onSubmit(e)}
+            sx={{ mt: 3 }}
+          >
+            Submit
+          </Button>
+        </form>
+      </Box>
     </Layout>
   );
 };

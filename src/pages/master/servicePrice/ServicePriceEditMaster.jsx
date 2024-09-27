@@ -1,16 +1,30 @@
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, Card } from "@material-tailwind/react";
+import { Button, Card, Input } from "@material-tailwind/react";
 import { FiArrowLeft } from "react-icons/fi";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { FaEdit, FaServicestack } from "react-icons/fa";
-import { MdSubtitles, MdPriceCheck, MdOutlineRateReview } from "react-icons/md";
+import {
+  MdSubtitles,
+  MdPriceCheck,
+  MdOutlineRateReview,
+  MdSend,
+  MdArrowBack,
+} from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 // import { BiStatus } from "react-icons/bi";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -28,6 +42,7 @@ const ServicePriceEditMaster = () => {
     service_price_status: "",
   });
 
+  const navigate = useNavigate();
   const [serdata, setSerData] = useState([]);
   const [serdatasub, setSerDataSub] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -139,9 +154,10 @@ const ServicePriceEditMaster = () => {
         );
 
         if (response.data.code == "200") {
-          alert("data update succesfully");
+          toast.success("update succesfull");
+          navigate("/service-price");
         } else {
-          alert("duplicate entery");
+          toast.error("duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service price:", error);
@@ -167,135 +183,151 @@ const ServicePriceEditMaster = () => {
           >
             <div className="space-y-4">
               <div>
-                <label className="block text-gray-700 mb-2">Service</label>
                 <div className="relative">
-                  <FaServicestack className="absolute top-3 left-3 text-gray-400" />
-                  <select
-                    name="service_id"
-                    value={services.service_id}
-                    onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
-                    required
-                  >
-                    <option value="">Select Service</option>
-                    {serdata.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.service}
-                      </option>
-                    ))}
-                  </select>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Service <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="service_id"
+                      value={services.service_id}
+                      onChange={onInputChange}
+                      label="Service *"
+                      required
+                    >
+                      {serdata.map((service) => (
+                        <MenuItem key={service.id} value={service.id}>
+                          {service.service}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-2">Service Sub</label>
                 <div className="relative">
-                  <MdSubtitles className="absolute top-3 left-3 text-gray-400" />
-                  <select
-                    name="service_sub_id"
-                    value={services.service_sub_id}
-                    onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
-                  >
-                    <option value="">Select Sub Service</option>
-                    {serdatasub.map((subService) => (
-                      <option key={subService.id} value={subService.id}>
-                        {subService.service_sub}
-                      </option>
-                    ))}
-                  </select>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Service Sub <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="service_sub_id"
+                      value={services.service_sub_id}
+                      onChange={onInputChange}
+                      label="Service Sub *"
+                      required
+                    >
+                      {serdatasub.map((subService) => (
+                        <MenuItem key={subService.id} value={subService.id}>
+                          {subService.service_sub}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+              <div>
+                <div className="relative ">
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="service_price_status"
+                      value={services.service_price_status}
+                      onChange={onInputChange}
+                      label="Status *"
+                      required
+                    >
+                      {statusOptions.map((data) => (
+                        <MenuItem key={data.value} value={data.value}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 mb-2">
-                  Service Price For
-                </label>
-                <div className="relative">
-                  <MdPriceCheck className="absolute top-3 left-3 text-gray-400" />
-                  <input
-                    type="text"
-                    name="service_price_for"
-                    value={services.service_price_for}
-                    onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
-                    required
-                  />
-                </div>
+            <div>
+              <div className="relative">
+                <Input
+                  label=" Service Price For"
+                  type="text"
+                  name="service_price_for"
+                  value={services.service_price_for}
+                  onChange={onInputChange}
+                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                  required
+                />
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-2">Service Rate</label>
-                <div className="relative">
-                  <MdOutlineRateReview className="absolute top-3 left-3 text-gray-400" />
-                  <input
+                <div className="relative mt-4">
+                  <Input
+                    label="Service Rate"
                     type="text"
                     name="service_price_rate"
                     value={services.service_price_rate}
                     onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-2">
-                  Service Amount
-                </label>
-                <div className="relative">
-                  <RiMoneyDollarCircleLine className="absolute top-3 left-3 text-gray-400" />
-                  <input
+                <div className="relative mt-6">
+                  <Input
+                    label="Service Amount"
                     type="text"
                     name="service_price_amount"
                     value={services.service_price_amount}
                     onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
                     required
                   />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-700 mb-2">Status</label>
-                <div className="relative">
-                  <FaEdit className="absolute top-3 left-3 text-gray-400" />
-                  <select
-                    name="service_price_status"
-                    value={services.service_price_status}
-                    onChange={onInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
-                    required
-                  >
-                    <option value="">Select Status</option>
-                    {statusOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
             </div>
 
             <div className="col-span-1 lg:col-span-2 flex flex-col sm:flex-row justify-center items-center mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
               <Button
-                className={`w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center justify-center ${
-                  isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                type="submit"
+                className="mr-2 mb-2"
+                color="primary"
                 onClick={onSubmit}
                 disabled={isButtonDisabled}
               >
-                <AiOutlineCloudUpload className="mr-2" size={20} />
-                Update
+                <div className="flex gap-1">
+                  <MdSend className="w-4 h-4" />
+                  <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+                </div>
               </Button>
 
-              <Link to="/service-price" className="w-full sm:w-auto">
-                <Button className="w-full bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg flex items-center justify-center">
-                  <FiArrowLeft className="mr-2" size={20} />
-                  Cancel
+              <Link to="/service-price">
+                <Button className="mr-2 mb-2" color="primary">
+                  <div className="flex gap-1">
+                    <MdArrowBack className="w-4 h-4" />
+                    <span>Back</span>
+                  </div>
                 </Button>
               </Link>
             </div>

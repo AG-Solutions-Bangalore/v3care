@@ -4,6 +4,7 @@ import { MdSend } from "react-icons/md";
 
 import Layout from "../../layout/Layout";
 import { useParams } from "react-router-dom";
+import { Input } from "@material-tailwind/react";
 
 const AddVendorUser = () => {
   const { id } = useParams();
@@ -64,7 +65,7 @@ const AddVendorUser = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {/* Full Name */}
               <div className="form-group">
-                <TextField
+                <Input
                   id="name"
                   required
                   label="Full Name"
@@ -78,7 +79,7 @@ const AddVendorUser = () => {
 
               {/* Mobile No */}
               <div className="form-group">
-                <TextField
+                <Input
                   fullWidth
                   required
                   id="mobile"
@@ -93,13 +94,14 @@ const AddVendorUser = () => {
 
               {/* Email */}
               <div className="form-group">
-                <TextField
+                <Input
                   fullWidth
                   required
                   id="email"
                   label="Email"
                   type="email"
                   name="email"
+                  inputProps={{ maxLength: 10, minLength: 10 }}
                   value={vendor.email}
                   onChange={onInputChange}
                   className="bg-gray-100 rounded-md"

@@ -5,6 +5,15 @@ import { useParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
+import { Button, Input } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { MdArrowBack, MdSend } from "react-icons/md";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -240,90 +249,82 @@ const EditVendor = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Nickname */}
             <div>
-              <label className="block text-gray-700 mb-1">Nick Name</label>
-              <input
+              <Input
+                label="Nick Name"
                 type="text"
                 name="vendor_short"
                 value={vendor.vendor_short}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
             </div>
 
             {/* Company */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Company<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Company"
                 type="text"
                 name="vendor_company"
                 value={vendor.vendor_company}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Mobile No */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Mobile No<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Mobile No"
                 type="text"
                 name="vendor_mobile"
                 maxLength={10}
                 minLength={10}
                 value={vendor.vendor_mobile}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Email<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Email"
                 type="email"
                 name="vendor_email"
                 value={vendor.vendor_email}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Aadhar No */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Aadhar No<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Aadhar No"
                 type="text"
                 name="vendor_aadhar_no"
                 maxLength={12}
                 minLength={12}
                 value={vendor.vendor_aadhar_no}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* GST No */}
             <div>
-              <label className="block text-gray-700 mb-1">GST No</label>
-              <input
+              <Input
+                label="Gst No"
                 type="text"
                 name="vendor_gst_no"
                 maxLength={15}
                 value={vendor.vendor_gst_no}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
             </div>
           </div>
@@ -331,47 +332,42 @@ const EditVendor = () => {
           {/* File Uploads */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div>
-              <label className="block text-gray-700 mb-1">Photo</label>
-              <input
+              <Input
+                label="Photo"
                 type="file"
                 name="vendor_images"
                 onChange={(e) => setSelectedFile1(e.target.files[0])}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
               <small>{vendor.vendor_images}</small>
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                Aadhar Card Front Side
-              </label>
-              <input
+              <Input
+                label="  Aadhar Card Front Side"
                 type="file"
                 name="vendor_documents"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
               <small>{vendor.vendor_aadhar_front}</small>
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                Aadhar Card Back Side
-              </label>
-              <input
+              <label className="block text-gray-700 mb-1"></label>
+              <Input
+                label=" Aadhar Card Back Side"
                 type="file"
                 name="vendor_certificates"
                 onChange={(e) => setSelectedFile3(e.target.files[0])}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
               <small>{vendor.vendor_aadhar_back}</small>
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                GST Certificate
-              </label>
-              <input
+              <Input
+                label="GST Certificate"
                 type="file"
                 name="vendor_license"
                 onChange={(e) => setSelectedFile4(e.target.files[0])}
@@ -384,23 +380,19 @@ const EditVendor = () => {
           {/* Reference Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-gray-700 mb-1">
-                Reference Name 1
-              </label>
-              <input
+              <Input
+                label="Reference Name 1"
                 type="text"
                 name="vendor_ref_name_1"
                 value={vendor.vendor_ref_name_1}
                 onChange={(e) => onInputChange(e)}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                Reference Mobile 1
-              </label>
-              <input
+              <Input
+                label="  Reference Mobile 1"
                 type="text"
                 name="vendor_ref_mobile_1"
                 value={vendor.vendor_ref_mobile_1}
@@ -410,10 +402,8 @@ const EditVendor = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                Reference Name 2
-              </label>
-              <input
+              <Input
+                label="Reference Name 2"
                 type="text"
                 name="vendor_ref_name_2"
                 value={vendor.vendor_ref_name_2}
@@ -423,10 +413,8 @@ const EditVendor = () => {
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-1">
-                Reference Mobile 2
-              </label>
-              <input
+              <Input
+                label="   Reference Mobile 2"
                 type="text"
                 name="vendor_ref_mobile_2"
                 value={vendor.vendor_ref_mobile_2}
@@ -437,28 +425,32 @@ const EditVendor = () => {
           </div>
 
           {/* Status */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div>
-              <label className="block text-gray-700 mb-1">
-                Status<span className="text-red-800">*</span>
-              </label>
-              <select
-                name="vendor_status"
-                value={vendor.vendor_status}
-                onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
-                required
-              >
-                {statusOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                Status <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name="vendor_status"
+              value={vendor.vendor_status}
+              onChange={onInputChange}
+              label="Status *"
+              required
+            >
+              {statusOptions.map((data) => (
+                <MenuItem key={data.value} value={data.value}>
+                  {data.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* service details and adress details  */}
-          <h1 className="text-xl font-semibold mb-4">Service Details</h1>
+          <h1 className="text-xl font-semibold mb-4 mt-3">Service Details</h1>
           <hr className="border-gray-300 mb-4" />
           {users.map((user, index) => (
             <div
@@ -466,22 +458,29 @@ const EditVendor = () => {
               key={index}
             >
               <div className="col-span-3">
-                <label className="block text-gray-700 mb-1">
-                  Service<span className="text-red-800">*</span>
-                </label>
-                <select
-                  name="vendor_service"
-                  required
-                  value={user.vendor_service}
-                  onChange={(e) => onChange(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                >
-                  {servicess.map((servicessdata, key) => (
-                    <option key={key} value={servicessdata.service}>
-                      {servicessdata.service}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Service <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="vendor_service"
+                    value={user.vendor_service}
+                    onChange={(e) => onChange(e, index)}
+                    label="Service *"
+                    required
+                  >
+                    {servicess.map((servicessdata, key) => (
+                      <MenuItem key={key} value={servicessdata.service}>
+                        {servicessdata.service}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <input
                   type="hidden"
                   name="id"
@@ -490,22 +489,29 @@ const EditVendor = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">
-                  Status<span className="text-red-800">*</span>
-                </label>
-                <select
-                  name="vendor_service_status"
-                  required
-                  value={user.vendor_service_status}
-                  onChange={(e) => onChange(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="vendor_service_status"
+                    required
+                    value={user.vendor_service_status}
+                    onChange={(e) => onChange(e, index)}
+                    label="Status *"
+                  >
+                    {statusOptions.map((data) => (
+                      <MenuItem key={data.value} value={data.value}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
             </div>
           ))}
@@ -517,15 +523,13 @@ const EditVendor = () => {
               key={index}
             >
               <div>
-                <label className="block text-gray-700 mb-1">
-                  House #/Flat #/ Plot #
-                </label>
-                <input
+                <Input
+                  label="House/Flat/Plot"
                   type="text"
                   name="vendor_branch_flat"
                   value={user.vendor_branch_flat}
                   onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
+                  className="w-full border border-gray-700 rounded-md p-2"
                 />
                 <input
                   type="hidden"
@@ -535,56 +539,58 @@ const EditVendor = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">
-                  Apartment/Building
-                </label>
-                <input
+                <Input
+                  label="Apartment Building"
                   type="text"
                   name="vendor_branch_building"
                   value={user.vendor_branch_building}
                   onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
+                  className="w-full border border-gray-700 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">Landmark</label>
-                <input
+                <Input
+                  label="Landmark"
                   type="text"
                   name="vendor_branch_landmark"
                   value={user.vendor_branch_landmark}
                   onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
+                  className="w-full border border-gray-700 rounded-md p-2"
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">
-                  Street/Location/Village
-                </label>
-                <input
+                <Input
+                  label="Street/Location/Village"
                   type="text"
                   name="vendor_branch_location"
                   value={user.vendor_branch_location}
                   required
                   disabled
                   onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">City</label>
-                <input
+                <Input
+                  label="City"
                   type="text"
                   name="vendor_branch_city"
                   required
                   disabled
                   value={user.vendor_branch_city}
                   onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">District</label>
-                <input
+                <Input
+                  label="District"
                   type="text"
                   name="vendor_branch_district"
                   required
@@ -592,11 +598,14 @@ const EditVendor = () => {
                   value={user.vendor_branch_district}
                   onChange={(e) => onChange1(e, index)}
                   className="w-full border border-gray-300 rounded-md p-2"
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">State</label>
-                <input
+                <Input
+                  label="State"
                   type="text"
                   name="vendor_branch_state"
                   required
@@ -604,11 +613,14 @@ const EditVendor = () => {
                   value={user.vendor_branch_state}
                   onChange={(e) => onChange1(e, index)}
                   className="w-full border border-gray-300 rounded-md p-2"
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">Pincode</label>
-                <input
+                <Input
+                  label="Pincode"
                   type="text"
                   name="vendor_branch_pincode"
                   required
@@ -616,37 +628,59 @@ const EditVendor = () => {
                   value={user.vendor_branch_pincode}
                   onChange={(e) => onChange1(e, index)}
                   className="w-full border border-gray-300 rounded-md p-2"
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-1">Status</label>
-                <select
-                  name="vendor_branch_status"
-                  value={user.vendor_branch_status}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="vendor_branch_status"
+                    value={user.vendor_branch_status}
+                    onChange={(e) => onChange1(e, index)}
+                    label="Status *"
+                    required
+                  >
+                    {statusOptions.map((data) => (
+                      <MenuItem key={data.value} value={String(data.value)}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
             </div>
           ))}
           <div className="mt-4 text-center">
-            <button
+            <Button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+              className="mr-2 mb-2"
+              color="primary"
+              onClick={onSubmit}
               disabled={isButtonDisabled}
             >
-              Update
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+              </div>
+            </Button>
+
             <Link to="/vendor-list">
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md">
-                Back
-              </button>
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

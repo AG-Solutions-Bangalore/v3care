@@ -3,12 +3,20 @@ import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaBuilding } from "react-icons/fa";
-import { Button, Card } from "@material-tailwind/react";
+import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { toast } from "react-toastify";
+import { MdArrowBack, MdSend } from "react-icons/md";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -107,55 +115,67 @@ const ReferByEditMaster = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Branch Name */}
               <div className="form-group">
-                <label htmlFor="refer_by" className="text-gray-700">
-                  Refer By<span className="text-red-800">*</span>
-                </label>
-                <input
+                <Input
+                  label="Refer By"
                   type="text"
                   name="refer_by"
                   value={referBy.refer_by}
                   onChange={onInputChange}
-                  disabled
-                  className="w-full border border-gray-300 rounded-md p-2 mt-2 focus:ring-2 focus:ring-blue-400"
                   required
+                  disabled
+                  labelProps={{
+                    className: "!text-gray-600 ",
+                  }}
                 />
               </div>
 
               {/* Branch Status */}
-              <div className="form-group">
-                <label htmlFor="refer_by_status" className="text-gray-700">
-                  Status<span className="text-red-800">*</span>
-                </label>
-                <select
+
+              <FormControl fullWidth>
+                <InputLabel id="service-select-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Status <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="service-select-label"
+                  id="service-select"
                   name="refer_by_status"
                   value={referBy.refer_by_status}
                   onChange={onInputChange}
-                  className="w-full border border-gray-300 rounded-md p-2 mt-2 focus:ring-2 focus:ring-blue-400"
+                  label="Status *"
                   required
                 >
-                  <option value="">Select Status</option>
-                  {status.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
+                  {status.map((data) => (
+                    <MenuItem key={data.value} value={String(data.value)}>
+                      {data.label}
+                    </MenuItem>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </FormControl>
             </div>
 
             {/* Buttons */}
             <div className="text-center mt-6">
               <Button
                 type="submit"
-                className="mr-4 mb-4"
-                color="blue"
+                className="mr-2 mb-2"
+                color="primary"
                 disabled={isButtonDisabled}
               >
-                {isButtonDisabled ? "Updating..." : "Update"}
+                <div className="flex gap-1">
+                  <MdSend className="w-4 h-4" />
+                  <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+                </div>
               </Button>
+
               <Link to="/refer-by">
-                <Button className="mr-4 mb-4" color="green">
-                  Back
+                <Button className="mr-2 mb-2" color="primary">
+                  <div className="flex gap-1">
+                    <MdArrowBack className="w-4 h-4" />
+                    <span>Back</span>
+                  </div>
                 </Button>
               </Link>
             </div>

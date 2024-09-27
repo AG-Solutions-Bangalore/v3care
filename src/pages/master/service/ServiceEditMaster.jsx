@@ -2,11 +2,19 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Card } from "@material-tailwind/react";
+import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import { MdArrowBack, MdSend } from "react-icons/md";
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -19,6 +27,7 @@ const ServiceEditMaster = () => {
     service_image: "",
     service_comm: "",
   });
+
   const navigate = useNavigate();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -121,65 +130,69 @@ const ServiceEditMaster = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Service Image */}
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center  rounded-lg shadow-lg shadow-blue-400">
                 <img src={imageUrl} alt="Service" className="w-52 h-52" />
               </div>
               {/* Service Fields */}
-              <div>
-                <div className="mb-4">
-                  <label className="text-gray-700">
-                    Service <span className="text-red-700">*</span>{" "}
-                  </label>
-                  <input
+              <div className=" rounded-lg shadow-lg shadow-orange-400 p-2 ">
+                <div className="mb-6">
+                  <Input
+                    label="Service"
                     type="text"
                     name="service"
                     value={services.service}
                     onChange={onInputChange}
-                    disabled
-                    className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
                     required
+                    disabled
+                    labelProps={{
+                      className: "!text-gray-600   ",
+                    }}
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="text-gray-700">
-                    Service Commission<span className="text-red-700">*</span>
-                  </label>
-                  <input
+                <div className="mb-6">
+                  <Input
+                    label="Service Commission"
                     type="text"
                     name="service_comm"
                     value={services.service_comm}
                     onChange={onInputChange}
-                    className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                    className="w-full border border-gray-700 rounded-md"
                     required
                   />
                 </div>
-                <div className="mb-4">
-                  <label className="text-gray-700">Image</label>
-                  <input
+                <div className="mb-6">
+                  <Input
+                    label="Image"
                     type="file"
                     name="service_image"
                     onChange={(e) => setSelectedFile(e.target.files[0])}
-                    className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                    className="w-full border border-gray-700 rounded-md"
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="text-gray-700">
-                    Status<span className="text-red-700">*</span>
-                  </label>
-                  <select
-                    name="service_status"
-                    value={services.service_status}
-                    onChange={onInputChange}
-                    className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
-                    required
-                  >
-                    <option value="">Select Status</option>
-                    {statusOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="service_status"
+                      value={services.service_status}
+                      onChange={onInputChange}
+                      label="Status *"
+                      required
+                    >
+                      {statusOptions.map((data) => (
+                        <MenuItem key={data.value} value={String(data.value)}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               </div>
             </div>
@@ -187,15 +200,22 @@ const ServiceEditMaster = () => {
             <div className="text-center mt-6">
               <Button
                 type="submit"
-                className="mr-4 mb-4"
-                color="blue"
+                className="mr-2 mb-2"
+                color="primary"
                 disabled={isButtonDisabled}
               >
-                {isButtonDisabled ? "Updating..." : "Update"}
+                <div className="flex gap-1">
+                  <MdSend className="w-4 h-4" />
+                  <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+                </div>
               </Button>
+
               <Link to="/service">
-                <Button className="mr-4 mb-4" color="green">
-                  Back
+                <Button className="mr-2 mb-2" color="primary">
+                  <div className="flex gap-1">
+                    <MdArrowBack className="w-4 h-4" />
+                    <span>Back</span>
+                  </div>
                 </Button>
               </Link>
             </div>

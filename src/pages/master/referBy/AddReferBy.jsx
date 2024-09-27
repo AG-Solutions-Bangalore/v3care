@@ -6,6 +6,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
+import { Button, Input } from "@material-tailwind/react";
 
 const AddReferBy = () => {
   const [referby, setReferBy] = useState({
@@ -65,17 +66,15 @@ const AddReferBy = () => {
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-6 mb-6">
             {/* Branch Name Field */}
+
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Refer By <span className="text-red-700">*</span>
-              </label>
-              <input
-                type="text"
+              <Input
+                fullWidth
+                label="Refer By"
+                required
                 name="refer_by"
                 value={referby.refer_by}
                 onChange={onInputChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
           </div>
@@ -83,24 +82,27 @@ const AddReferBy = () => {
           {/* Buttons */}
           <div className="flex justify-center space-x-4">
             {/* Submit Button */}
-            <button
+
+            <Button
               type="submit"
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-md shadow-lg hover:from-blue-600 hover:to-indigo-600 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 transition-all duration-300"
+              className="mr-2 mb-2"
+              color="primary"
               disabled={isButtonDisabled}
             >
-              <MdSend className="w-5 h-5" />
-              <span>{isButtonDisabled ? "Submiting..." : "Sumbit"}</span>
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Submiting..." : "Sumbit"}</span>
+              </div>
+            </Button>
 
             {/* Back Button */}
             <Link to="/refer-by">
-              <button
-                type="button"
-                className="flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 focus:ring-4 focus:ring-green-300 transition-all duration-300"
-              >
-                <MdArrowBack className="w-5 h-5" />
-                <span>Back</span>
-              </button>
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span> Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

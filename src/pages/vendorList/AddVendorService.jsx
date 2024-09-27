@@ -77,8 +77,10 @@ const AddVendorService = () => {
           onSubmit={onSubmit}
           className="space-y-6"
         >
-          <FormControl fullWidth required>
-            <InputLabel htmlFor="select-multiple-checkbox">Service*</InputLabel>
+          <FormControl fullWidth>
+            <InputLabel htmlFor="select-multiple-checkbox">
+              Service <span className="text-red-700">*</span>
+            </InputLabel>
             <Select
               multiple
               value={selectedServices}
@@ -86,7 +88,7 @@ const AddVendorService = () => {
               input={
                 <Input
                   id="select-multiple-checkbox"
-                  className="bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               }
               renderValue={(selected) => selected.join(", ")}

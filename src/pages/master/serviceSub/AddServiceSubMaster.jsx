@@ -7,6 +7,8 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Button, Input, Select } from "@material-tailwind/react";
+import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 
 const AddServiceSubMaster = () => {
   const [services, setServices] = useState({
@@ -101,49 +103,43 @@ const AddServiceSubMaster = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Select Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service<span className="text-red-700">*</span>
-              </label>
-              <select
+              <Select
+                label="Service"
                 name="service_id"
                 value={services.service_id}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               >
                 {serdata.map((serdatas, key) => (
-                  <option key={key} value={serdatas.id}>
+                  <SelectOption key={key} value={serdatas.id}>
                     {serdatas.service}
-                  </option>
+                  </SelectOption>
                 ))}
-              </select>
+              </Select>
             </div>
 
             {/* Service Sub Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Sub <span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="Service Sub"
                 type="text"
                 name="service_sub"
                 value={services.service_sub}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
 
             {/* File Upload Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Image
-              </label>
-              <input
+              <Input
+                label="Image"
                 type="file"
                 name="service_sub_image"
                 onChange={(e) => setSelectedFile(e.target.files[0])}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full px-4 pb-2 border border-gray-400 rounded-md  transition-all"
               />
             </div>
           </div>
@@ -151,24 +147,28 @@ const AddServiceSubMaster = () => {
           {/* Buttons */}
           <div className="flex justify-center space-x-4">
             {/* Submit Button */}
-            <button
+
+            <Button
               type="submit"
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+              className="mr-2 mb-2"
+              color="primary"
               disabled={isButtonDisabled}
             >
-              <MdSend className="w-5 h-5" />
-              <span>{isButtonDisabled ? "Submiting...." : "Submit"}</span>
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Submiting...." : "Submit"}</span>
+              </div>
+            </Button>
 
             {/* Back Button */}
+
             <Link to="/service-sub">
-              <button
-                type="button"
-                className="flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 focus:ring-4 focus:ring-green-300 transition-all duration-300"
-              >
-                <MdArrowBack className="w-5 h-5" />
-                <span>Back</span>
-              </button>
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-5 h-5" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

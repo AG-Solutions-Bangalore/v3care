@@ -3,6 +3,8 @@ import Layout from "../../layout/Layout";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+import { Button, Input } from "@material-tailwind/react";
+import { MdArrowBack, MdSend } from "react-icons/md";
 
 const VendorPendingEdit = () => {
   const navigate = useNavigate();
@@ -134,105 +136,105 @@ const VendorPendingEdit = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Nickname */}
             <div>
-              <label className="block text-gray-700 mb-1">Nick Name</label>
-              <input
+              <Input
+                label="Nick Name"
                 type="text"
                 name="vendor_short"
                 value={vendor.vendor_short}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
             </div>
 
             {/* Company */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Company<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Company"
                 type="text"
                 name="vendor_company"
                 value={vendor.vendor_company}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Mobile No */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Mobile No<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Mobile No"
                 type="text"
                 name="vendor_mobile"
                 maxLength={10}
                 minLength={10}
                 value={vendor.vendor_mobile}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Email<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Email"
                 type="email"
                 name="vendor_email"
                 value={vendor.vendor_email}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* Aadhar No */}
             <div>
-              <label className="block text-gray-700 mb-1">
-                Aadhar No<span className="text-red-800">*</span>
-              </label>
-              <input
+              <Input
+                label="Aadhar No"
                 type="text"
                 name="vendor_aadhar_no"
                 maxLength={12}
                 minLength={12}
                 value={vendor.vendor_aadhar_no}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
                 required
               />
             </div>
 
             {/* GST No */}
             <div>
-              <label className="block text-gray-700 mb-1">GST No</label>
-              <input
+              <Input
+                label="GST No"
                 type="text"
                 name="vendor_gst_no"
                 maxLength={15}
                 value={vendor.vendor_gst_no}
                 onChange={onInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="w-full border border-gray-700 rounded-md p-2"
               />
             </div>
           </div>
           <div className="mt-4 text-center">
-            <button
+            <Button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
+              className="mr-2 mb-2"
+              color="primary"
               disabled={isButtonDisabled}
             >
-              Update
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+              </div>
+            </Button>
+
             <Link to="/vendor-list">
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md">
-                Back
-              </button>
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

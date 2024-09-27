@@ -6,7 +6,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
-
+import { Input } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
+import SelectInput from "@mui/material/Select/SelectInput";
+import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 const EditVendorUser = () => {
   const { id } = useParams();
   const [vendor, setVendor] = useState({
@@ -100,24 +109,20 @@ const EditVendorUser = () => {
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="form-group">
-                <label className="block mb-2 text-sm font-medium">
-                  Full Name
-                </label>
-                <input
+                <Input
+                  label="Full Name"
                   type="text"
                   name="name"
                   value={vendor.name}
                   onChange={onInputChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-gray-100 border rounded-md "
                 />
               </div>
 
               <div className="form-group">
-                <label className="block mb-2 text-sm font-medium">
-                  Mobile No
-                </label>
-                <input
+                <Input
+                  label="Mobile No"
                   type="text"
                   name="mobile"
                   value={vendor.mobile}
@@ -125,19 +130,19 @@ const EditVendorUser = () => {
                   required
                   maxLength="10"
                   minLength="10"
-                  className="w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-gray-100 border rounded-md "
                 />
               </div>
 
               <div className="form-group">
-                <label className="block mb-2 text-sm font-medium">Email</label>
-                <input
+                <Input
+                  label="Email"
                   type="email"
                   name="email"
                   value={vendor.email}
                   onChange={onInputChange}
                   required
-                  className="w-full px-4 py-2 bg-gray-100 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-gray-100 border rounded-md "
                 />
               </div>
 

@@ -7,6 +7,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Button, Input } from "@material-tailwind/react";
 
 const AddServiceMaster = () => {
   const [services, setServices] = useState({
@@ -75,44 +76,38 @@ const AddServiceMaster = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Name<span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="service"
                 type="text"
                 name="service"
                 value={services.service}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 shadow-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none   transition-all duration-300 shadow-sm"
               />
             </div>
 
             {/* Service Commission Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Commission<span className="text-red-700">*</span>
-              </label>
-              <input
+              <Input
+                label="service commission"
                 type="tel"
                 name="service_comm"
                 value={services.service_comm}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 shadow-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
               />
             </div>
 
             {/* File Upload Field */}
             <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Image
-              </label>
-              <input
+              <Input
+                label="service image"
                 type="file"
                 name="service_image"
                 onChange={(e) => setSelectedFile(e.target.files[0])}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 shadow-sm"
+                className="w-full px-4 pb-2 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
               />
             </div>
           </div>
@@ -120,24 +115,27 @@ const AddServiceMaster = () => {
           {/* Buttons */}
           <div className="flex justify-center space-x-4">
             {/* Submit Button */}
-            <button
+
+            <Button
               type="submit"
-              className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+              className="mr-2 mb-2"
+              color="primary"
               disabled={isButtonDisabled}
             >
-              <MdSend className="w-5 h-5" />
-              <span>{isButtonDisabled ? "Submiting..." : "Submit"}</span>
-            </button>
+              <div className="flex gap-1">
+                <MdSend className="w-4 h-4" />
+                <span>{isButtonDisabled ? "Submiting..." : "Submit"}</span>
+              </div>
+            </Button>
 
             {/* Back Button */}
             <Link to="/service">
-              <button
-                type="button"
-                className="flex items-center space-x-2 bg-green-500 text-white px-6 py-3 rounded-md shadow-lg hover:bg-green-600 focus:ring-4 focus:ring-green-300 transition-all duration-300"
-              >
-                <MdArrowBack className="w-5 h-5" />
-                <span>Back</span>
-              </button>
+              <Button className="mr-2 mb-2" color="primary">
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </Link>
           </div>
         </form>

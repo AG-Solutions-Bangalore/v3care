@@ -14,13 +14,9 @@ const Dropdown = ({
   // Find the selected option to display in the input
   const selectedOption =
     options.find((option) => option.value === value) || null;
-
+  const RequiredIndicator = () => <p sx={{ color: "red" }}>*</p>;
   return (
     <div>
-      <label>
-        {label}
-        {required && "*"}
-      </label>
       <Autocomplete
         disablePortal
         options={options}
@@ -36,7 +32,20 @@ const Dropdown = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            required={required}
+            label={
+              label && (
+                <label
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "sans-serif",
+                    fontWeight: 500,
+                  }}
+                >
+                  {label}
+                  {required ? <span style={{ color: "red" }}>*</span> : ""}
+                </label>
+              )
+            }
             variant="outlined"
             InputProps={{
               ...params.InputProps,
