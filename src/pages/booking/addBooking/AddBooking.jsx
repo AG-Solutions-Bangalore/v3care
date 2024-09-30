@@ -24,6 +24,7 @@ import styles from "./AddBooking.module.css";
 import HomeIcon from "@mui/icons-material/Home";
 import axios from "axios";
 import Fields from "../../../components/addBooking/TextField";
+import { Input } from "@material-tailwind/react";
 
 const baseURL = "https://agsdraft.online/app/public/api";
 
@@ -428,12 +429,17 @@ const AddBooking = () => {
 
   return (
     <Layout>
-      <div className={styles["main-container"]}>
+      <div className=" rounded-lg">
+        <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+          <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
+            Add Booking
+          </h3>
+        </div>
         <div className={styles["sub-container"]}>
           <form>
             <div className={styles["form-container"]}>
               <div>
-                <div>
+                <div className="form-group">
                   <Fields
                     title="Refer By"
                     type="dropdown"
@@ -441,11 +447,10 @@ const AddBooking = () => {
                     autoComplete="Name"
                     value={booking.order_refer_by}
                     onChange={(e) => onInputChange(e)}
-                    startIcon={<Person sx={{ color: "blue" }} />}
                     options={referby}
                   />
                 </div>
-                <div>
+                <div className="form-group">
                   <Fields
                     required="required"
                     title="Customer"
@@ -454,12 +459,13 @@ const AddBooking = () => {
                     name="order_customer"
                     value={booking.order_customer}
                     onChange={(e) => onInputChange(e)}
-                    startIcon={<Person sx={{ color: "blue" }} />}
                   />
                 </div>
                 <div>
-                  <Fields
-                    required="required"
+                  <Input
+                    label="Mobile No"
+                    required
+                    maxLength={10}
                     types="tel"
                     title="Mobile No"
                     type="numberField"
@@ -467,7 +473,6 @@ const AddBooking = () => {
                     name="order_customer_mobile"
                     value={booking.order_customer_mobile}
                     onChange={(e) => onInputChange(e)}
-                    startIcon={<PhoneIphone sx={{ color: "red" }} />}
                   />
                 </div>
                 <div>
@@ -485,11 +490,9 @@ const AddBooking = () => {
               </div>
               <div className={styles["second-div"]}>
                 <div>
-                  <Typography variant="small" className={styles["heading"]}>
-                    Service Date <span style={{ color: "red" }}> *</span>
-                  </Typography>
-                  <TextField
+                  <Input
                     fullWidth
+                    label="Service Date"
                     required
                     id="order_service_date"
                     min={today}
@@ -513,7 +516,6 @@ const AddBooking = () => {
                     onChange={(e) => {
                       onInputChange(e), HalfA(e);
                     }}
-                    startIcon={<MiscellaneousServices sx={{ color: "red" }} />}
                     options={serdata}
                   />
                 </div>
@@ -530,9 +532,6 @@ const AddBooking = () => {
                       onChange={(e) => {
                         onInputChange(e), HalfB(e);
                       }}
-                      startIcon={
-                        <MiscellaneousServices sx={{ color: "red" }} />
-                      }
                       options={serdatasub}
                     />
                   </div>
@@ -553,7 +552,6 @@ const AddBooking = () => {
                       onChange={(e) => {
                         onInputChange(e), HalfC(e);
                       }}
-                      startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                       options={pricedata}
                     />
                   </div>
@@ -618,11 +616,9 @@ const AddBooking = () => {
                     startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                   />
                 </div>
-                <div>
-                  <Typography variant="small" className={styles["heading"]}>
-                    Time Slot <span style={{ color: "red" }}> *</span>
-                  </Typography>
-                  <TextField
+                <div className="form-group">
+                  <Input
+                    label="Time Slot"
                     fullWidth
                     required
                     type="time"
@@ -657,7 +653,6 @@ const AddBooking = () => {
                       name="branch_id"
                       value={booking.branch_id}
                       onChange={(e) => onInputChange(e)}
-                      startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                       options={branch}
                     />
                   </div>
@@ -723,7 +718,6 @@ const AddBooking = () => {
                     name="order_send_whatsapp"
                     value={booking.order_send_whatsapp}
                     onChange={(e) => onInputChange(e)}
-                    startIcon={<WhatsApp sx={{ color: "green" }} />}
                     options={whatsapp}
                   />
                 </div>

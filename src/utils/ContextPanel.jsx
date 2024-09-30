@@ -122,7 +122,9 @@ const AppProvider = ({ children }) => {
         if (
           currentPath === "/" ||
           currentPath === "/register" ||
-          currentPath === "/forget-password"
+          currentPath === "/forget-password" ||
+          currentPath === "/add-booking-outside" ||
+          currentPath === "/become-partner-outside" 
         ) {
           navigate(currentPath);
         } else {

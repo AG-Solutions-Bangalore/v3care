@@ -187,7 +187,7 @@ const CompletedBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Completed Booking List
         </h3>
@@ -195,9 +195,10 @@ const CompletedBooking = () => {
         <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
           + Add Booking
         </Link>
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+          title={"Completed Booking List"}
           data={CompletedBookData ? CompletedBookData : []}
           columns={columns}
           options={options}

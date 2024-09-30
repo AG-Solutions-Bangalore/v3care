@@ -1,12 +1,23 @@
 import React from "react";
 
 import Layout from "../../layout/Layout";
+import Cards from "./cards/Cards";
+import Jobs from "./jobs/Jobs";
+import BookingOrder from "./bookingOrders/BookingOrder";
 
 const Home = () => {
   return (
     <Layout>
-      <div className="mt-12 p-2">
-        <h1>Hey I am Dashboard</h1>
+      <div className="mt-6 p-2">
+        <div className="mt-4">
+          <Cards />
+        </div>
+        <div className="mt-8">
+          <Jobs />
+        </div>
+        <div className="mt-8">
+          <BookingOrder />
+        </div>
       </div>
     </Layout>
   );

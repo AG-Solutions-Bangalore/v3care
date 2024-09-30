@@ -225,9 +225,18 @@ const SignIn = () => {
               variant="paragraph"
               className="text-center text-blue-gray-500 font-medium mt-4"
             >
-              Not registered?
-              <Link to="/register" className="text-gray-900 ml-1">
-                Create account
+            
+              <Link to="/add-booking-outside" className="text-gray-900 ml-1">
+                Book Now
+              </Link>
+            </Typography>
+            <Typography
+              variant="paragraph"
+              className="text-center text-blue-gray-500 font-medium mt-4"
+            >
+            
+              <Link to="/become-partner-outside" className="text-gray-900 ml-1">
+                Become Partner
               </Link>
             </Typography>
           </form>

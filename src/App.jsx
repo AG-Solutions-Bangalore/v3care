@@ -78,6 +78,8 @@ import AddOperationTeam from "./pages/master/operationTeam/AddOperationTeam";
 import AddBackhandTeam from "./pages/master/backhandTeam/AddBackhandTeam";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BookNow from "./pages/bookNowOutside/BookNow";
+import BecomePartner from "./pages/becomePartnerOutside/BecomePartner";
 const App = () => {
   return (
     <>
@@ -86,6 +88,8 @@ const App = () => {
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/add-booking-outside" element={<BookNow />} />
+        <Route path="/become-partner-outside" element={<BecomePartner />} />
         <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
         <Route path="/maintenance" element={<Maintenance />} />
         {/* booking  */}

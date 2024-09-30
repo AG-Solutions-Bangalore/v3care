@@ -166,7 +166,7 @@ const PendingBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Pending Booking List
         </h3>
@@ -174,9 +174,10 @@ const PendingBooking = () => {
         <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
           + Add Booking
         </Link>
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+          title={"Pending Booking List"}
           data={pendingBookData ? pendingBookData : []}
           columns={columns}
           options={options}

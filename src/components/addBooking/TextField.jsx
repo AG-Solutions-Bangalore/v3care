@@ -1,269 +1,278 @@
-import { InputAdornment, MenuItem, TextField, Typography } from "@mui/material";
-import styles from "./TextField.module.css";
+import {
+  Checkbox,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Input } from "@material-tailwind/react";
 
 const Fields = (props) => {
   return (
     <>
-      {props.title && (
-        <Typography variant="small" className={styles["heading"]}>
-          {props.title}{" "}
-          {props.required && <span style={{ color: "red" }}>*</span>}
-        </Typography>
-      )}
       {props.type === "textField" && (
         <>
-          <TextField
-            required={props.required}
-            multiline={props.multiline}
+          <Input
+            label={props.title}
+            required={props.required === true || props.required === "true"}
+            multiline={props.multiline === true || props.multiline === "true"}
             name={props.name}
             type={props.types}
             autoComplete={props.autoComplete}
-            className={styles["customTextField"]}
             value={props.value}
             onChange={props.onChange}
-            fullWidth
-            variant="outlined"
             placeholder={props.placeholder}
             {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
           />
         </>
       )}
-      {props.type === "numberField" && (
+      {props.type === "fileUpload" && (
         <>
-          <TextField
-            required={props.required}
+          <Input
+            label={props.title}
+            required={props.required === true || props.required === "true"}
             name={props.name}
-            type={props.types}
+            type="file"
             autoComplete={props.autoComplete}
-            className={styles["customTextField"]}
             value={props.value}
             onChange={props.onChange}
-            fullWidth
-            variant="outlined"
             placeholder={props.placeholder}
             {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-              inputProps: {
-                maxLength: 10,
-                pattern: "[0-9]*",
-              },
-            }}
           />
         </>
       )}
-      {props.type === "dateField" && (
-        <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            type="date"
-            id={props.id}
-            autoComplete={props.autoComplete}
-            onChange={props.onChange}
-            value={props.value} // Explicitly set value prop here
-            InputLabelProps={{
-              shrink: true,
-            }}
-            {...props} // Spread remaining props
-          />
-        </>
-      )}
+   
       {props.type === "dropdown" && (
         <>
-          <TextField
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.refer_by}>
-                {option.refer_by}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.refer_by}>
+                  {data.refer_by}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </>
+      )}
+      {props.type === "locationDropdown" && (
+        <>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data}>
+                  {data}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
       {props.type === "serviceDropdown" && (
         <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.id}>
-                {option.service}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.id}>
+                  {data.service}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </>
+      )}
+      {props.type === "multiSelectDropdown" && (
+        <>
+          <FormControl fullWidth>
+      <InputLabel id="service-select-label">
+        <span className="text-sm relative bottom-[6px]">
+          {props.title} <span className="text-red-700">*</span>
+        </span>
+      </InputLabel>
+      <Select
+        sx={{ height: "40px", borderRadius: "5px" }}
+        labelId="service-select-label"
+        id="service-select"
+        name={props.name}
+        value={props.value} // Ensure this is an array for multi-select
+        label={props.title}
+        onChange={props.onchange}
+        multiple // Enables multi-select
+        renderValue={(selected) => selected.join(", ")} // Renders selected values
+        {...props}
+        required={props.required === true || props.required === "true"}
+      >
+        {props.options?.map((data, key) => (
+          <MenuItem key={key} value={data.service}>
+            <Checkbox
+              checked={props.value === data.service}
+            />
+            <ListItemText primary={data.service} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
         </>
       )}
       {props.type === "branchDropdown" && (
         <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.id}>
-                {option.branch_name}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.id}>
+                  {data.branch_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
       {props.type === "whatsappDropdown" && (
         <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.value}>
+                  {data.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
       {props.type === "subServiceDropdown" && (
         <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.id}>
-                {option.service_sub}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.id}>
+                  {data.service_sub}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
       {props.type === "priceforDropdown" && (
         <>
-          <TextField
-            fullWidth
-            required={props.required}
-            name={props.name}
-            variant="outlined"
-            autoComplete={props.autoComplete}
-            select
-            SelectProps={{
-              MenuProps: {},
-            }}
-            value={props.value}
-            onChange={props.onchange}
-            {...props}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {props.startIcon}
-                </InputAdornment>
-              ),
-            }}
-          >
-            {props.options?.map((option, key) => (
-              <MenuItem key={key} value={option.id}>
-                {option.service_price_for} - {option.service_price_rate}
-              </MenuItem>
-            ))}
-          </TextField>
+          <FormControl fullWidth>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value}
+              label={props.title}
+              onChange={props.onchange}
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.id}>
+                  {data.service_price_for} - {data.service_price_rate}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
     </>

@@ -13,6 +13,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { MdOutlineAdd, MdToday } from "react-icons/md";
+import logo from "../../public/img/v3logo.png";
 const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
@@ -52,30 +53,18 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
     // Toggle the booking menu open/close
     setOpenBookingMenu((prevState) => !prevState);
   };
-
+  // w - 72;
   return (
     <aside
       ref={sidenavRef}
       className={`${sidenavTypes[sidenavType]} ${
         openSideNav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-[272px] rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
       <div className={`relative`}>
         <Link to="/home" className="flex items-center justify-center p-4">
           <div className="flex items-center">
-            <img
-              src="https://www.ag-solutions.in/assets/images/logo.png"
-              alt="Logo"
-              className="h-12 w-auto"
-            />
-            <div className="ml-3 logo-text">
-              <div className="logo-title text-white text-lg font-bold">
-                <span className="font-black">AG</span> Solution
-              </div>
-              <div className="logo-sub-title text-gray-400 text-sm">
-                Single Click Solution
-              </div>
-            </div>
+            <img src={logo} alt="Logo" className="h-12 w-full " />
           </div>
         </Link>
         <IconButton
@@ -212,7 +201,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
             </NavLink>
           </li> */}
           {/* Booking Dropdown */}
-          <li>
+          {/* <li>
             <div>
               <Button
                 variant="text"
@@ -281,6 +270,26 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </ul>
               )}
             </div>
+          </li> */}
+          <li>
+            <NavLink to="/today">
+              {({ isActive }) => (
+                <Button
+                  variant={isActive ? "gradient" : "text"}
+                  color="white"
+                  className="flex items-center gap-4 px-4 capitalize"
+                  fullWidth
+                >
+                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <Typography
+                    color="inherit"
+                    className="font-medium capitalize"
+                  >
+                    Booking
+                  </Typography>
+                </Button>
+              )}
+            </NavLink>
           </li>
 
           {/* payment  */}
