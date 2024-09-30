@@ -131,7 +131,9 @@ const ServicePriceEditMaster = () => {
     e.preventDefault();
     const form = document.getElementById("editServiceForm");
 
-    if (form.checkValidity()) {
+    if (!form.checkValidity()) {
+      toast.error("Fill all required");
+    } else {
       setIsButtonDisabled(true);
 
       const data = new FormData();
@@ -274,7 +276,7 @@ const ServicePriceEditMaster = () => {
                   name="service_price_for"
                   value={services.service_price_for}
                   onChange={onInputChange}
-                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
                   required
                 />
               </div>
@@ -287,7 +289,7 @@ const ServicePriceEditMaster = () => {
                     name="service_price_rate"
                     value={services.service_price_rate}
                     onChange={onInputChange}
-                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
                     required
                   />
                 </div>
@@ -301,7 +303,7 @@ const ServicePriceEditMaster = () => {
                     name="service_price_amount"
                     value={services.service_price_amount}
                     onChange={onInputChange}
-                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400"
+                    className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
                     required
                   />
                 </div>

@@ -45,19 +45,60 @@ const FieldTeamEditMaster = () => {
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  // const validateOnlyDigits = (inputtxt) => {
+  //   return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
+  // };
+
   const validateOnlyDigits = (inputtxt) => {
-    return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
+    var phoneno = /^\d+$/;
+    if (inputtxt.match(phoneno) || inputtxt.length == 0) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
+  // const onInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if (
+  //     (name === "mobile" || name === "user_aadhar_no") &&
+  //     !validateOnlyDigits(value)
+  //   ) {
+  //     return;
+  //   }
+  //   setTeam({ ...team, [name]: value });
+  // };
+
+  // const onInputChange = (e) => {
+  //   const { name, value } = e.target;
+
+  //   if (
+  //     (name === "mobile" || name === "user_aadhar_no") &&
+  //     !validateOnlyDigits(value)
+  //   ) {
+  //     return;
+  //   }
+
+  //   setTeam((prevState) => ({
+  //     ...prevState,
+  //     [name]: value || prevState[name],
+  //   }));
+  // };
+
   const onInputChange = (e) => {
-    const { name, value } = e.target;
-    if (
-      (name === "mobile" || name === "user_aadhar_no") &&
-      !validateOnlyDigits(value)
-    ) {
-      return;
+    if (e.target.name == "mobile") {
+      if (validateOnlyDigits(e.target.value)) {
+        setTeam({
+          ...team,
+          [e.target.name]: e.target.value,
+        });
+      }
+    } else {
+      setTeam({
+        ...team,
+        [e.target.name]: e.target.value,
+      });
     }
-    setTeam({ ...team, [name]: value });
   };
 
   useEffect(() => {
@@ -74,6 +115,11 @@ const FieldTeamEditMaster = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (!team.name || !team.mobile) {
+      toast.error("Fill all required field");
+      return;
+    }
+
     setIsButtonDisabled(true);
 
     const data = new FormData();

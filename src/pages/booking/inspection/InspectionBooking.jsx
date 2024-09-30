@@ -83,6 +83,9 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
     {

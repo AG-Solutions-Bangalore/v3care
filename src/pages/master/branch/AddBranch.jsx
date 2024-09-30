@@ -34,7 +34,13 @@ const AddBranch = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    var form = document.getElementById("addIndiv").checkValidity();
+    if (!form) {
+      toast.error("Fill all required field");
+      return;
+    }
     setIsButtonDisabled(true);
+
     let data = {
       branch_name: branch.branch_name,
     };

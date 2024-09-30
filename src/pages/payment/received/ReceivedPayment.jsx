@@ -8,6 +8,8 @@ import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 
+import Moment from "moment";
+
 const ReceivedPayment = () => {
   const [receivedData, setReceivedData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,6 +91,9 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
     {
@@ -97,6 +102,9 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
     {

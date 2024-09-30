@@ -25,6 +25,11 @@ const AddReferBy = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    var form = document.getElementById("addIndiv").checkValidity();
+    if (!form) {
+      toast.error("Fill all required field");
+      return;
+    }
     setIsButtonDisabled(true);
     let data = {
       refer_by: referby.refer_by,

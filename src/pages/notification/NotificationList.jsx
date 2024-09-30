@@ -6,6 +6,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
+import Moment from "moment";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
@@ -79,6 +80,9 @@ const NotificationList = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
 

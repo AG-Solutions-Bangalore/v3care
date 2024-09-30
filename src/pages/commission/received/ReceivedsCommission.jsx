@@ -8,6 +8,7 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
+import Moment from "moment";
 const ReceivedsCommission = () => {
   const [receivedCommData, setReceivedCommData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,6 +90,9 @@ const ReceivedsCommission = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
     {
@@ -97,6 +101,9 @@ const ReceivedsCommission = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
       },
     },
     {

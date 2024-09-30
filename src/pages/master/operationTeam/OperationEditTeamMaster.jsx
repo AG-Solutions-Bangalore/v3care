@@ -74,35 +74,39 @@ const OperationEditTeamMaster = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const form = document.getElementById("addIndiv");
+    if (!form.checkValidity()) {
+      toast.error("Fill all required");
+    } else {
+      setIsButtonDisabled(true);
+      const data = new FormData();
+      data.append("name", team.name);
+      data.append("mobile", team.mobile);
+      data.append("email", team.email);
+      data.append("remarks", team.remarks);
+      data.append("status", team.status);
+      data.append("user_aadhar_no", team.user_aadhar_no);
+      data.append("user_aadhar", selectedFile1);
+      data.append("user_pancard_no", team.user_pancard_no);
+      data.append("user_pancard", selectedFile2);
+      data.append("user_type", team.user_type);
 
-    setIsButtonDisabled(true);
-    const data = new FormData();
-    data.append("name", team.name);
-    data.append("mobile", team.mobile);
-    data.append("email", team.email);
-    data.append("remarks", team.remarks);
-    data.append("status", team.status);
-    data.append("user_aadhar_no", team.user_aadhar_no);
-    data.append("user_aadhar", selectedFile1);
-    data.append("user_pancard_no", team.user_pancard_no);
-    data.append("user_pancard", selectedFile2);
-    data.append("user_type", team.user_type);
-
-    axios({
-      url: `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == "200") {
-        toast.success("update succesfull");
-        navigate("/operation-team");
-      } else {
-        toast.error("duplicate entry");
-      }
-    });
+      axios({
+        url: `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
+        method: "POST",
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((res) => {
+        if (res.data.code == "200") {
+          toast.success("update succesfull");
+          navigate("/operation-team");
+        } else {
+          toast.error("duplicate entry");
+        }
+      });
+    }
   };
   return (
     <Layout>

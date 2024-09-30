@@ -1,35 +1,41 @@
-import { useState } from "react";
-import Footer from "../components/Footer";
-import DashboardNavbar from "../components/DashboardNavbar";
-import SideNav from "../components/SideNav";
+const onSubmit = (e) => {
+  e.preventDefault();
+  var form = document.getElementById("addIndiv").checkValidity();
+  if (!form) {
+    toast.error("Fill all required field");
+    return;
+  }
+  setIsButtonDisabled(true);
 
-const Layout = ({ children }) => {
-  const [openSideNav, setOpenSideNav] = useState(false);
+  const data = new FormData();
+  Object.keys(team).forEach((key) => {
+    if (team[key] !== "") {
+      data.append(key, team[key]);
+    } else {
+      data.append(key, ""); // send an empty string instead of null
+    }
+  });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 relative">
-      <SideNav openSideNav={openSideNav} setOpenSideNav={setOpenSideNav} />
-      <div className="p-4 xl:ml-80">
-        <DashboardNavbar
-          openSideNav={openSideNav}
-          setOpenSideNav={setOpenSideNav}
-        />
-        {children}
-        {/* Uncomment Footer if needed */}
-        {/* <div className="text-blue-gray-600">
-          <Footer />
-        </div> */}
-      </div>
+  if (selectedFile1) {
+    data.append("user_aadhar", selectedFile1);
+  }
+  if (selectedFile2) {
+    data.append("user_pancard", selectedFile2);
+  }
 
-      {/* Floating Add Booking Button */}
-      <button
-        className="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition duration-300"
-        onClick={() => alert("Add Booking")}
-      >
-        Add Booking
-      </button>
-    </div>
-  );
+  axios({
+    url: `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
+    method: "POST",
+    data,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }).then((res) => {
+    if (res.data.code == "200") {
+      toast.success("update succesfull");
+      navigate("/field-team");
+    } else {
+      toast.error("duplicate entry");
+    }
+  });
 };
-
-export default Layout;
