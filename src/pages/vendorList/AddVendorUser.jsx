@@ -3,12 +3,15 @@ import { Button, TextField } from "@mui/material";
 import { MdSend } from "react-icons/md";
 
 import Layout from "../../layout/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
+import BASE_URL from "../../base/BaseUrl";
+import axios from "axios";
 
 const AddVendorUser = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [vendor, setVendor] = useState({
     name: "",
     mobile: "",
@@ -37,6 +40,7 @@ const AddVendorUser = () => {
         email: vendor.email,
         vendor_id: id,
       };
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-vendor-user`,
         data,
@@ -47,14 +51,15 @@ const AddVendorUser = () => {
         }
       );
       if (response.data.code == "200") {
-        alert("success");
+        toast.success("Vendor User Created");
+        navigate(`/vendor-user-list/${id}`);
       } else {
         if (response.data.code == "401") {
-          alert("full name duplicate entry");
+          toast.error("full name duplicate entry");
         } else if (response.data.code == "402") {
-          alert("mobile no duplicate entry");
+          toast.error("mobile no duplicate entry");
         } else {
-          alert("email id duplicate entry");
+          toast.error("email id duplicate entry");
         }
       }
     }
@@ -64,7 +69,7 @@ const AddVendorUser = () => {
     <Layout>
       <div className="p-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-          Create Vendor User{id}
+          Create Vendor User
         </h2>
         <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-lg">
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
@@ -90,7 +95,8 @@ const AddVendorUser = () => {
                   required
                   id="mobile"
                   label="Mobile No"
-                  inputProps={{ maxLength: 10, minLength: 10 }}
+                  maxLength={10}
+                  // inputProps={{ maxLength: 10, minLength: 10 }}
                   name="mobile"
                   value={vendor.mobile}
                   onChange={onInputChange}

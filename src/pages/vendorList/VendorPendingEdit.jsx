@@ -127,7 +127,7 @@ const VendorPendingEdit = () => {
       <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
         {/* Title */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Pending Edit Vendor {id}</h1>
+          <h1 className="text-2xl font-semibold">Pending Edit Vendor </h1>
         </div>
 
         {/* Personal Details */}

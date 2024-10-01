@@ -16,6 +16,11 @@ import {
 } from "@mui/material";
 import SelectInput from "@mui/material/Select/SelectInput";
 import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+import { toast } from "react-toastify";
+const status = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+];
 const EditVendorUser = () => {
   const { id } = useParams();
   const [vendor, setVendor] = useState({
@@ -31,10 +36,6 @@ const EditVendorUser = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const status = [
-    { value: "active", label: "Active" },
-    { value: "inactive", label: "Inactive" },
-  ];
   useEffect(() => {
     const fetchEditVendorUserData = async () => {
       try {
@@ -78,6 +79,8 @@ const EditVendorUser = () => {
       status: vendor.status,
       remarks: vendor.remarks,
     };
+    const token = localStorage.getItem("token");
+    const idVendor = localStorage.getItem("idVendor");
     const response = await axios.put(
       `${BASE_URL}/api/panel-update-vendor-user/${id}`,
       data,
@@ -88,14 +91,15 @@ const EditVendorUser = () => {
       }
     );
     if (response.data.code == "200") {
-      alert("success");
+      toast.success("Vendor User Edit Successfull");
+      navigate(`/vendor-user-list/${idVendor}`);
     } else {
       if (response.data.code == "401") {
-        alert("full name duplicate entry");
+        toast.error("full name duplicate entry");
       } else if (response.data.code == "402") {
-        alert("mobile no duplicate entry");
+        toast.error("mobile no duplicate entry");
       } else {
-        alert("email id duplicate entry");
+        toast.error("email id duplicate entry");
       }
     }
   };

@@ -18,6 +18,7 @@ import {
   Select,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../../base/BaseUrl";
+import { toast } from "react-toastify";
 
 const WorkInProgress = () => {
   const { id } = useParams();
@@ -29,7 +30,14 @@ const WorkInProgress = () => {
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
+  var d = document.getElementById("order_service_date");
+  if (d) {
+    document
+      .getElementById("order_service_date")
+      .setAttribute("min", todayback);
+  }
   const navigate = useNavigate();
+
   const [booking, setBooking] = useState({});
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
@@ -67,6 +75,13 @@ const WorkInProgress = () => {
   }, []);
 
   const onSubmit = (e) => {
+    e.preventDefault();
+    // const form = document.getElementById("addIdniv");
+
+    // if (!form.checkValidity()) {
+    //   toast.error("Fill all the filled");
+    //   return;
+    // }
     let data = {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
@@ -76,27 +91,22 @@ const WorkInProgress = () => {
       order_comment: booking.order_comment,
     };
 
-    var v = document.getElementById("addIndiv").checkValidity();
-    var v = document.getElementById("addIndiv").reportValidity();
-    e.preventDefault();
-
-    if (v) {
-      setIsButtonDisabled(true);
-      axios({
-        url: BASE_URL + `/panel-create-booking-reschedule/${id}`,
-        method: "PUT",
-        data,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("login")}`,
-        },
-      }).then((res) => {
-        if (res.data.code == "200") {
-          alert("success");
-        } else {
-          alert("duplicate entery");
-        }
-      });
-    }
+    setIsButtonDisabled(true);
+    axios({
+      url: BASE_URL + `/api/panel-create-booking-reschedule/${id}`,
+      method: "PUT",
+      data,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((res) => {
+      if (res.data.code == "200") {
+        toast.success("Reschedule Creating Success");
+        navigate("/today");
+      } else {
+        toast.error("Network Error");
+      }
+    });
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -202,7 +212,7 @@ const WorkInProgress = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Resechedule Booking{id}
+          Resechedule Booking
         </Typography>
 
         <div className="flex gap-4">
@@ -259,6 +269,7 @@ const WorkInProgress = () => {
             <Card className="mb-6">
               {/* here booking assign table  */}
               <CardBody>
+                {/* <form id="addIdniv"> */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
                     <div className="form-group">
@@ -319,7 +330,8 @@ const WorkInProgress = () => {
 
                 <div className="text-center mt-6">
                   <Button
-                    type="submit"
+                    type="sumbit"
+                    onClick={(e) => onSubmit(e)}
                     className="mr-2 mb-2"
                     color="primary"
                     disabled={isButtonDisabled}
@@ -327,6 +339,7 @@ const WorkInProgress = () => {
                     Update
                   </Button>
                 </div>
+                {/* </form> */}
               </CardBody>
             </Card>
           </div>

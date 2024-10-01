@@ -26,6 +26,8 @@ const CustomInput = forwardRef(
           inputRef={ref}
           required={required}
           type={type}
+          // inputProps={inputProps}
+          // maxLength={maxLength}
           InputProps={{
             startAdornment: Icon ? (
               <InputAdornment position="start">

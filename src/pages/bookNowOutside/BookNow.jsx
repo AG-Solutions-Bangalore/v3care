@@ -28,6 +28,7 @@ import Fields from "../../components/addBooking/TextField";
 import BASE_URL from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../public/img/v3logo.png";
+import { toast } from "react-toastify";
 
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 
@@ -98,6 +99,7 @@ const BookNow = () => {
   const [pricedata, setPriceData] = useState([]);
   const [branch, setBranch] = useState([]);
   const [referby, setReferby] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -301,10 +303,10 @@ const BookNow = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
+    const form = document.getElementById("addIdniv");
 
     if (!form.checkValidity()) {
-      form.reportValidity();
+      toast.error("Fill all the filled");
       return;
     }
 
@@ -331,15 +333,17 @@ const BookNow = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         console.log("Data Inserted Successfully");
+        toast.success("Order created Successfully");
         navigate("/");
       } else {
         console.log("Duplicate Entry");
+        toast.error("Duplicate Entry");
       }
     } catch (error) {
       console.error("Error inserting data:", error);
-      alert("Error inserting data");
+      toast.error("Error inserting data");
     } finally {
       setIsButtonDisabled(false);
     }
@@ -351,290 +355,294 @@ const BookNow = () => {
 
   return (
     <div className="bg-gray-200 ">
-    <div className={styles["main-container-out"]}>
-      <div className={styles["sub-container-out"]}>
-        <div className="flex justify-center mb-4">
-          <img src={logo} alt="logo" className="w-24" />
-        </div>
-        <form>
-          <div className={styles["form-container"]}>
-            <div>
-              <div className="form-group">
-                <Fields
-                  title="Refer By"
-                  type="dropdown"
-                  name="order_refer_by"
-                  autoComplete="Name"
-                  value={booking.order_refer_by}
-                  onChange={(e) => onInputChange(e)}
-                  options={referby}
-                />
-              </div>
-              <div className="form-group">
-                <Fields
-                  required="required"
-                  title="Customer"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_customer"
-                  value={booking.order_customer}
-                  onChange={(e) => onInputChange(e)}
-                />
-              </div>
+      <div className={styles["main-container-out"]}>
+        <div className={styles["sub-container-out"]}>
+          <div className="flex justify-center mb-4">
+            <img src={logo} alt="logo" className="w-24" />
+          </div>
+          <form id="addIdniv">
+            <div className={styles["form-container"]}>
               <div>
-                <Input
-                  maxLength={10}
-                  label="Mobile No"
-                  required
-                  pattern="^\d{10}$"
-                  type="tel"
-                  title="Please enter a valid 10-digit mobile number"
-                  name="order_customer_mobile"
-                  value={booking.order_customer_mobile}
-                  onChange={(e) => onInputChange(e)}
-                />
-              </div>
-              <div>
-                <Fields
-                  types="email"
-                  title="Email"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_customer_email"
-                  value={booking.order_customer_email}
-                  onChange={(e) => onInputChange(e)}
-                  startIcon={<Email sx={{ color: "red" }} />}
-                />
-              </div>
-            </div>
-            <div className={styles["second-div"]}>
-              <div>
-                <Input
-                  fullWidth
-                  label="Service Date"
-                  required
-                  id="order_service_date"
-                  min={today}
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  autoComplete="Name"
-                  name="order_service_date"
-                  value={booking.order_service_date}
-                  onChange={(e) => onInputChange(e)}
-                />
-              </div>
-              <div>
-                <Fields
-                  title="Service"
-                  type="serviceDropdown"
-                  autoComplete="Name"
-                  name="order_service"
-                  value={booking.order_service}
-                  onChange={(e) => {
-                    onInputChange(e), HalfA(e);
-                  }}
-                  options={serdata}
-                />
-              </div>
-              {booking.order_service == "23" ? (
-                ""
-              ) : serdatasub.length > 0 ? (
-                <div>
+                <div className="form-group">
                   <Fields
-                    title="Service Sub"
-                    type="subServiceDropdown"
+                    title="Refer By"
+                    type="dropdown"
+                    name="order_refer_by"
                     autoComplete="Name"
-                    name="order_service_sub"
-                    value={booking.order_service_sub}
-                    onChange={(e) => {
-                      onInputChange(e), HalfB(e);
-                    }}
-                    options={serdatasub}
+                    value={booking.order_refer_by}
+                    onChange={(e) => onInputChange(e)}
+                    options={referby}
                   />
                 </div>
-              ) : (
-                ""
-              )}
-              {booking.order_service == "23" ? (
-                ""
-              ) : (
+                <div className="form-group">
+                  <Fields
+                    required="required"
+                    title="Customer"
+                    type="textField"
+                    autoComplete="Name"
+                    name="order_customer"
+                    value={booking.order_customer}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div>
+                  <Input
+                    maxLength={10}
+                    label="Mobile No"
+                    required
+                    pattern="^\d{10}$"
+                    type="tel"
+                    title="Please enter a valid 10-digit mobile number"
+                    name="order_customer_mobile"
+                    value={booking.order_customer_mobile}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div>
+                  <Fields
+                    types="email"
+                    required="required"
+                    title="Email"
+                    type="textField"
+                    autoComplete="Name"
+                    name="order_customer_email"
+                    value={booking.order_customer_email}
+                    onChange={(e) => onInputChange(e)}
+                    startIcon={<Email sx={{ color: "red" }} />}
+                  />
+                </div>
+              </div>
+              <div className={styles["second-div"]}>
+                <div>
+                  <Input
+                    fullWidth
+                    label="Service Date"
+                    required
+                    id="order_service_date"
+                    min={today}
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    autoComplete="Name"
+                    name="order_service_date"
+                    value={booking.order_service_date}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div>
+                  <Fields
+                    title="Service"
+                    type="serviceDropdown"
+                    autoComplete="Name"
+                    name="order_service"
+                    value={booking.order_service}
+                    onChange={(e) => {
+                      onInputChange(e), HalfA(e);
+                    }}
+                    options={serdata}
+                  />
+                </div>
+                {booking.order_service == "23" ? (
+                  ""
+                ) : serdatasub.length > 0 ? (
+                  <div>
+                    <Fields
+                      title="Service Sub"
+                      type="subServiceDropdown"
+                      autoComplete="Name"
+                      name="order_service_sub"
+                      value={booking.order_service_sub}
+                      onChange={(e) => {
+                        onInputChange(e), HalfB(e);
+                      }}
+                      options={serdatasub}
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
+                {booking.order_service == "23" ? (
+                  ""
+                ) : (
+                  <div>
+                    <Fields
+                      required="required"
+                      title="Price For"
+                      type="priceforDropdown"
+                      autoComplete="Name"
+                      name="order_service_price_for"
+                      value={booking.order_service_price_for}
+                      onChange={(e) => {
+                        onInputChange(e), HalfC(e);
+                      }}
+                      options={pricedata}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className={styles["custom-service-dev"]}>
+                {booking.order_service == "23" && (
+                  <>
+                    <div>
+                      <Fields
+                        types="text"
+                        title="Custom Service"
+                        type="textField"
+                        autoComplete="Name"
+                        name="order_custom"
+                        value={booking.order_custom}
+                        onChange={(e) => onInputChange(e)}
+                        startIcon={
+                          <MiscellaneousServices sx={{ color: "red" }} />
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <Fields
+                        types="text"
+                        title="Custom Price"
+                        type="textField"
+                        autoComplete="Name"
+                        name="order_custom_price"
+                        value={booking.order_custom_price}
+                        onChange={(e) => onInputChange(e)}
+                        startIcon={<CurrencyRupee sx={{ color: "red" }} />}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className={styles["third-div"]}>
                 <div>
                   <Fields
                     required="required"
-                    title="Price For"
-                    type="priceforDropdown"
+                    types="text"
+                    title="Amount"
+                    type="textField"
                     autoComplete="Name"
-                    name="order_service_price_for"
-                    value={booking.order_service_price_for}
-                    onChange={(e) => {
-                      onInputChange(e), HalfC(e);
-                    }}
-                    options={pricedata}
+                    name="order_amount"
+                    value={booking.order_amount}
+                    onChange={(e) => onInputChange(e)}
                   />
                 </div>
-              )}
-            </div>
-            <div className={styles["custom-service-dev"]}>
-              {booking.order_service == "23" && (
-                <>
-                  <div>
-                    <Fields
-                      types="text"
-                      title="Custom Service"
-                      type="textField"
-                      autoComplete="Name"
-                      name="order_custom"
-                      value={booking.order_custom}
-                      onChange={(e) => onInputChange(e)}
-                      startIcon={
-                        <MiscellaneousServices sx={{ color: "red" }} />
-                      }
-                    />
-                  </div>
+                <div className="form-group">
+                  <Input
+                    label="Time Slot"
+                    fullWidth
+                    required
+                    type="time"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    autoComplete="Name"
+                    name="order_time"
+                    value={booking.order_time}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
 
-                  <div>
-                    <Fields
-                      types="text"
-                      title="Custom Price"
-                      type="textField"
-                      autoComplete="Name"
-                      name="order_custom_price"
-                      value={booking.order_custom_price}
-                      onChange={(e) => onInputChange(e)}
-                      startIcon={<CurrencyRupee sx={{ color: "red" }} />}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-            <div className={styles["third-div"]}>
-              <div>
-                <Fields
-                  required="required"
-                  types="text"
-                  title="Amount"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_amount"
-                  value={booking.order_amount}
-                  onChange={(e) => onInputChange(e)}
-                />
+                <div>
+                  <Fields
+                    required="required"
+                    title="Branch"
+                    type="branchDropdown"
+                    autoComplete="Name"
+                    name="branch_id"
+                    value={booking.branch_id}
+                    onChange={(e) => onInputChange(e)}
+                    options={branch}
+                  />
+                </div>
+                <div>
+                  <Fields
+                    types="number"
+                    title="KM"
+                    type="textField"
+                    autoComplete="Name"
+                    name="order_km"
+                    value={booking.order_km}
+                    onChange={(e) => onInputChange(e)}
+                    startIcon={<PinDrop sx={{ color: "orange" }} />}
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <Input
-                  label="Time Slot"
-                  fullWidth
-                  required
-                  type="time"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  autoComplete="Name"
-                  name="order_time"
-                  value={booking.order_time}
-                  onChange={(e) => onInputChange(e)}
-                />
+              <div className="flex justify-center m-4">
+                <h1 className="text-2xl font-bold"> Address</h1>
               </div>
+              <hr />
+              <div className={styles["address-div"]}>
+                <div>
+                  <Typography variant="small" className={styles["heading"]}>
+                    Search Place .. <span style={{ color: "red" }}> *</span>
+                  </Typography>
+                  <input
+                    className={styles["search-div"]}
+                    ref={autoCompleteRef}
+                    id="order_address"
+                    required
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Search Places ..."
+                    value={query}
+                  />
+                </div>
+              </div>
+              <div className={styles["address-first-div"]}>
+                <div>
+                  <Fields
+                    required="required"
+                    types="text"
+                    title="House #/Flat #/ Plot #"
+                    type="textField"
+                    autoComplete="Name"
+                    name="order_flat"
+                    value={booking.order_flat}
+                    onChange={(e) => onInputChange(e)}
+                    startIcon={<HomeIcon sx={{ color: "green" }} />}
+                  />
+                </div>
+                <div>
+                  <Fields
+                    required="required"
+                    types="text"
+                    title="Landmark"
+                    type="textField"
+                    autoComplete="Name"
+                    name="order_landmark"
+                    value={booking.order_landmark}
+                    onChange={(e) => onInputChange(e)}
+                    startIcon={<Place sx={{ color: "green" }} />}
+                  />
+                </div>
+              </div>
+              <div className={styles["address-div"]}>
+                <div>
+                  <Fields
+                    types="text"
+                    title="Remarks"
+                    multiline="multiline"
+                    type="textField"
+                    autoComplete="Name"
+                    fullWidth
+                    name="order_remarks"
+                    value={booking.order_remarks}
+                    onChange={(e) => onInputChange(e)}
+                    startIcon={<Place sx={{ color: "green" }} />}
+                  />
+                </div>
+              </div>
+              <div className={styles["submit-button"]}>
+                <Button onClick={onSubmit} disabled={isButtonDisabled}>
+                  {isButtonDisabled ? "Submitting..." : "Sumbit"}
+                </Button>
 
-              <div>
-                <Fields
-                  required="required"
-                  title="Branch"
-                  type="branchDropdown"
-                  autoComplete="Name"
-                  name="branch_id"
-                  value={booking.branch_id}
-                  onChange={(e) => onInputChange(e)}
-                  options={branch}
-                />
-              </div>
-              <div>
-                <Fields
-                  types="number"
-                  title="KM"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_km"
-                  value={booking.order_km}
-                  onChange={(e) => onInputChange(e)}
-                  startIcon={<PinDrop sx={{ color: "orange" }} />}
-                />
+                <Button onClick={handleBackButton}> Back </Button>
               </div>
             </div>
-            <div className="flex justify-center m-4">
-              <h1 className="text-2xl font-bold"> Address</h1>
-            </div>
-            <hr />
-            <div className={styles["address-div"]}>
-              <div>
-                <Typography variant="small" className={styles["heading"]}>
-                  Search Place .. <span style={{ color: "red" }}> *</span>
-                </Typography>
-                <input
-                  className={styles["search-div"]}
-                  ref={autoCompleteRef}
-                  id="order_address"
-                  required
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search Places ..."
-                  value={query}
-                />
-              </div>
-            </div>
-            <div className={styles["address-first-div"]}>
-              <div>
-                <Fields
-                  required="required"
-                  types="text"
-                  title="House #/Flat #/ Plot #"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_flat"
-                  value={booking.order_flat}
-                  onChange={(e) => onInputChange(e)}
-                  startIcon={<HomeIcon sx={{ color: "green" }} />}
-                />
-              </div>
-              <div>
-                <Fields
-                  required="required"
-                  types="text"
-                  title="Landmark"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_landmark"
-                  value={booking.order_landmark}
-                  onChange={(e) => onInputChange(e)}
-                  startIcon={<Place sx={{ color: "green" }} />}
-                />
-              </div>
-            </div>
-            <div className={styles["address-second-div"]}>
-              <div>
-                <Fields
-                  types="text"
-                  title="Remarks"
-                  multiline="multiline"
-                  type="textField"
-                  autoComplete="Name"
-                  name="order_remarks"
-                  value={booking.order_remarks}
-                  onChange={(e) => onInputChange(e)}
-                  startIcon={<Place sx={{ color: "green" }} />}
-                />
-              </div>
-            </div>
-            <div className={styles["submit-button"]}>
-              <Button onClick={(e) => onSubmit(e)}> Submit </Button>
-
-              <Button onClick={handleBackButton}> Back </Button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };

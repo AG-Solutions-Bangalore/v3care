@@ -18,7 +18,7 @@ const Fields = (props) => {
         <>
           <Input
             label={props.title}
-            required={props.required === true || props.required === "true"}
+            // required={props.required === true || props.required === "true"}
             multiline={props.multiline === true || props.multiline === "true"}
             name={props.name}
             type={props.types}
@@ -34,7 +34,7 @@ const Fields = (props) => {
         <>
           <Input
             label={props.title}
-            required={props.required === true || props.required === "true"}
+            // required={props.required === true || props.required === "true"}
             name={props.name}
             type="file"
             autoComplete={props.autoComplete}
@@ -45,7 +45,7 @@ const Fields = (props) => {
           />
         </>
       )}
-   
+
       {props.type === "dropdown" && (
         <>
           <FormControl fullWidth>
@@ -133,34 +133,32 @@ const Fields = (props) => {
       {props.type === "multiSelectDropdown" && (
         <>
           <FormControl fullWidth>
-      <InputLabel id="service-select-label">
-        <span className="text-sm relative bottom-[6px]">
-          {props.title} <span className="text-red-700">*</span>
-        </span>
-      </InputLabel>
-      <Select
-        sx={{ height: "40px", borderRadius: "5px" }}
-        labelId="service-select-label"
-        id="service-select"
-        name={props.name}
-        value={props.value} // Ensure this is an array for multi-select
-        label={props.title}
-        onChange={props.onchange}
-        multiple // Enables multi-select
-        renderValue={(selected) => selected.join(", ")} // Renders selected values
-        {...props}
-        required={props.required === true || props.required === "true"}
-      >
-        {props.options?.map((data, key) => (
-          <MenuItem key={key} value={data.service}>
-            <Checkbox
-              checked={props.value === data.service}
-            />
-            <ListItemText primary={data.service} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+            <InputLabel id="service-select-label">
+              <span className="text-sm relative bottom-[6px]">
+                {props.title} <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <Select
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="service-select-label"
+              id="service-select"
+              name={props.name}
+              value={props.value} // Ensure this is an array for multi-select
+              label={props.title}
+              onChange={props.onchange}
+              multiple // Enables multi-select
+              renderValue={(selected) => selected.join(", ")} // Renders selected values
+              {...props}
+              required={props.required === true || props.required === "true"}
+            >
+              {props.options?.map((data, key) => (
+                <MenuItem key={key} value={data.service}>
+                  <Checkbox checked={props.value === data.service} />
+                  <ListItemText primary={data.service} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </>
       )}
       {props.type === "branchDropdown" && (

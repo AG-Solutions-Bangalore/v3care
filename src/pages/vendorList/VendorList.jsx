@@ -11,6 +11,7 @@ import { IoMdPeople } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { FiUserPlus, FiUsers } from "react-icons/fi";
 import { RiEditLine } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
@@ -55,16 +56,29 @@ const VendorList = () => {
       }
       setLoading(true);
       const token = localStorage.getItem("token");
-      await axios({
+      const res = await axios({
         url: BASE_URL + "/api/panel-create-vendor-has-users/" + id,
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      alert("success");
+      if (res.data.code == "200") {
+        toast.success("Vendor Activated Successfully");
+        navigate("/vendor-list");
+        // add loader status pending to active
+      } else {
+        if (res.data.code == "401") {
+          toast.error("Company Name Duplicate Entry");
+        } else if (res.data.code == "402") {
+          toast.error("Mobile No Duplicate entry");
+        } else if (res.data.code == "403") {
+          toast.error("Email Duplicate Entry");
+        }
+      }
     } catch (error) {
       console.error("Error fetching pending activate data", error);
+      toast.error("Error fetching pending activate data");
     } finally {
       setLoading(false);
     }
@@ -144,12 +158,12 @@ const VendorList = () => {
                 <>
                   <RiEditLine
                     onClick={() => navigate(`/vendor-edit/${id}`)}
-                    title="View Cylinder Info"
+                    title="Edit Vendor"
                     className="h-5 w-5 cursor-pointer"
                   />
                   <FiUsers
                     onClick={() => navigate(`/vendor-user-list/${id}`)}
-                    title="vendor user list"
+                    title="view Vendor"
                     className="h-5 w-5 cursor-pointer"
                   />
                 </>
@@ -158,12 +172,12 @@ const VendorList = () => {
                   {/* for pending  */}
                   <CiEdit
                     onClick={() => navigate(`/vendor-pending-edit/${id}`)}
-                    title="View pending Info"
+                    title="Edit Pending Vendor"
                     className="h-5 w-5 cursor-pointer"
                   />
                   <FiUserPlus
                     onClick={(e) => handleActivate(e, id)}
-                    title="View Cylinder Info"
+                    title="Activate Vendor"
                     className="h-5 w-5 cursor-pointer"
                   />
                 </>
@@ -172,7 +186,7 @@ const VendorList = () => {
               {/* common  */}
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/vendor-view/${id}`)}
-                title="View Cylinder Info"
+                title="View Vendor Info"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>

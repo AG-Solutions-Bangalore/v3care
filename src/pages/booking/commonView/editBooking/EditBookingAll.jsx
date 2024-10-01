@@ -15,10 +15,11 @@ import {
   Input,
   Option,
   Button,
-  Select,
 } from "@material-tailwind/react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import BASE_URL from "../../../../base/BaseUrl";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+// import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+import { toast } from "react-toastify";
 
 const status = [
   {
@@ -65,7 +66,10 @@ const EditBookingAll = () => {
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
   const navigate = useNavigate();
-  const [booking, setBooking] = useState({});
+  const [booking, setBooking] = useState({
+    order_status: "",
+    order_payment_type: "",
+  });
   const [paymentmode, setPaymentMode] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
@@ -128,44 +132,45 @@ const EditBookingAll = () => {
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-    const form = document.getElementById("addIndiv");
-    if (form.checkValidity()) {
-      setIsButtonDisabled(true);
-      const data = {
-        order_service_date: booking.order_service_date,
-        order_amount: booking.order_amount,
-        order_advance: booking.order_advance,
-        order_time: booking.order_time,
-        order_status: booking.order_status,
-        order_comm: booking.order_comm,
-        order_comment: booking.order_comment,
-        order_payment_amount: booking.order_payment_amount,
-        order_payment_type: booking.order_payment_type,
-        order_transaction_details: booking.order_transaction_details,
-        branch_id: booking.branch_id,
-        order_area: booking.order_area,
-      };
-      axios
-        .put(`${BASE_URL}/api/panel-update-booking/${id}`, data, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("login")}`,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === "200") {
-            alert("Data Updated Successfully");
-          } else {
-            alert("Duplicate Entry");
-          }
-        })
-        .catch((err) => {
-          console.error("Error updating booking", err);
-          alert("Error updating booking");
-        })
-        .finally(() => {
-          setIsButtonDisabled(false);
-        });
-    }
+    // const form = document.getElementById("addIdniv");
+
+    // if (!form.checkValidity()) {
+    //   toast.error("Fill all the filled");
+    //   return;
+    // }
+    setIsButtonDisabled(true);
+    const data = {
+      order_service_date: booking.order_service_date,
+      order_amount: booking.order_amount,
+      order_advance: booking.order_advance,
+      order_time: booking.order_time,
+      order_status: booking.order_status,
+      order_comm: booking.order_comm,
+      order_comment: booking.order_comment,
+      order_payment_amount: booking.order_payment_amount,
+      order_payment_type: booking.order_payment_type,
+      order_transaction_details: booking.order_transaction_details,
+      branch_id: booking.branch_id,
+      order_area: booking.order_area,
+    };
+    axios
+      .put(`${BASE_URL}/api/panel-update-booking/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.code == "200") {
+          toast.success("Booking Updated Successfully");
+          navigate("/today");
+        } else {
+          toast.error("Network Error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error updating booking", err);
+        toast.error("Error updating booking");
+      });
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -332,26 +337,32 @@ const EditBookingAll = () => {
             <Card className="mb-6">
               {/* here booking assign table  */}
               <CardBody>
+                {/* <form id="addIdniv"> */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <div className="form-group">
-                      <Select
-                        id="select-corrpreffer"
-                        required
-                        type="select"
-                        label="Status"
-                        name="order_status"
-                        value={booking.order_status}
-                        onChange={(e) => onInputChange(e)}
-                      >
-                        {status.map((option) => (
-                          <SelectOption key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectOption>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="order_status"
+                      value={booking.order_status}
+                      // defaultValue={booking.order_status}
+                      onChange={(e) => onInputChange(e)}
+                      label="Status *"
+                      required
+                    >
+                      {status.map((data) => (
+                        <MenuItem key={data.value} value={data.value}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
 
                   <div>
                     <div className="form-group">
@@ -361,6 +372,10 @@ const EditBookingAll = () => {
                         id="order_service_date"
                         label="Service Date"
                         type="date"
+                        disabled
+                        labelProps={{
+                          className: "!text-gray-600 ",
+                        }}
                         min={today}
                         name="order_service_date"
                         value={booking.order_service_date}
@@ -447,25 +462,32 @@ const EditBookingAll = () => {
                   </div>
 
                   <div>
-                    <div className="form-group">
+                    <FormControl fullWidth>
+                      <InputLabel id="service-select-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Payment Mode <span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
                       <Select
-                        fullWidth
-                        label="Payment Mode"
-                        type="select"
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="service-select-label"
+                        id="service-select"
                         name="order_payment_type"
                         value={booking.order_payment_type}
                         onChange={(e) => onInputChange(e)}
+                        label="Payment Mode *"
+                        required
                       >
-                        {paymentmode.map((option) => (
-                          <SelectOption
-                            key={option.payment_mode}
-                            value={option.payment_mode}
+                        {paymentmode.map((data) => (
+                          <MenuItem
+                            key={data.payment_mode}
+                            value={data.payment_mode}
                           >
-                            {option.payment_mode}
-                          </SelectOption>
+                            {data.payment_mode}
+                          </MenuItem>
                         ))}
                       </Select>
-                    </div>
+                    </FormControl>
                   </div>
 
                   <div className="col-span-2">
@@ -483,7 +505,8 @@ const EditBookingAll = () => {
 
                 <div className="text-center mt-6">
                   <Button
-                    type="submit"
+                    type="sumbit"
+                    onClick={(e) => onSubmit(e)}
                     className="mr-2 mb-2"
                     color="primary"
                     disabled={isButtonDisabled}
@@ -505,6 +528,7 @@ const EditBookingAll = () => {
                     Postpone
                   </Button>
                 </div>
+                {/* </form> */}
               </CardBody>
             </Card>
           </div>

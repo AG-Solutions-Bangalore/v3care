@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../../../base/BaseUrl";
 import axios from "axios";
 import moment from "moment";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+// import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
@@ -15,8 +15,8 @@ import {
   Input,
   Option,
   Button,
-  Select,
 } from "@material-tailwind/react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 const status = [
   {
@@ -87,7 +87,11 @@ const EditBookingInspection = () => {
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
   const navigate = useNavigate();
-  const [booking, setBooking] = useState({});
+  const [booking, setBooking] = useState({
+    order_status: "",
+    order_payment_type: "",
+    order_inspection_status: "",
+  });
   const [paymentmode, setPaymentMode] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
@@ -150,47 +154,41 @@ const EditBookingInspection = () => {
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-    const form = document.getElementById("addIndiv");
-    if (!form.checkValidity()) {
-      toast.error("Fill all required");
-    } else {
-      setIsButtonDisabled(true);
-      const data = {
-        order_service_date: booking.order_service_date,
-        order_amount: booking.order_amount,
-        order_advance: booking.order_advance,
-        order_time: booking.order_time,
-        order_status: booking.order_status,
-        order_comm: booking.order_comm,
-        order_comment: booking.order_comment,
-        order_payment_amount: booking.order_payment_amount,
-        order_payment_type: booking.order_payment_type,
-        order_transaction_details: booking.order_transaction_details,
-        branch_id: booking.branch_id,
-        order_area: booking.order_area,
-        order_inspection_status: booking.order_inspection_status,
-      };
-      axios
-        .put(`${BASE_URL}/api/panel-update-booking-inspection/${id}`, data, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("login")}`,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === "200") {
-            alert("Data Updated Successfully");
-          } else {
-            alert("Duplicate Entry");
-          }
-        })
-        .catch((err) => {
-          console.error("Error updating booking", err);
-          alert("Error updating booking");
-        })
-        .finally(() => {
-          setIsButtonDisabled(false);
-        });
-    }
+
+    setIsButtonDisabled(true);
+    const data = {
+      order_service_date: booking.order_service_date,
+      order_amount: booking.order_amount,
+      order_advance: booking.order_advance,
+      order_time: booking.order_time,
+      order_status: booking.order_status,
+      order_comm: booking.order_comm,
+      order_comment: booking.order_comment,
+      order_payment_amount: booking.order_payment_amount,
+      order_payment_type: booking.order_payment_type,
+      order_transaction_details: booking.order_transaction_details,
+      branch_id: booking.branch_id,
+      order_area: booking.order_area,
+      order_inspection_status: booking.order_inspection_status,
+    };
+    axios
+      .put(`${BASE_URL}/api/panel-update-booking-inspection/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.code == "200") {
+          toast.success("Booking Updated Successfully");
+          navigate("/inspection");
+        } else {
+          toast.error("Network Error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error updating booking", err);
+        toast.error("Error updating booking");
+      });
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -300,7 +298,7 @@ const EditBookingInspection = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Edit Inspection {id}
+          Edit Inspection
         </Typography>
 
         <div className="flex gap-4">
@@ -358,7 +356,7 @@ const EditBookingInspection = () => {
               {/* here booking assign table  */}
               <CardBody>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
+                  {/* <div>
                     <div className="form-group">
                       <Select
                         id="select-corrpreffer"
@@ -376,9 +374,33 @@ const EditBookingInspection = () => {
                         ))}
                       </Select>
                     </div>
-                  </div>
+                  </div> */}
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Booking Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="order_status"
+                      value={booking.order_status}
+                      // defaultValue={booking.order_status}
+                      onChange={(e) => onInputChange(e)}
+                      label="Booking Status *"
+                      required
+                    >
+                      {status.map((data) => (
+                        <MenuItem key={data.value} value={data.value}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                   <div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <Select
                         id="select-corrpreffer"
                         required
@@ -394,7 +416,31 @@ const EditBookingInspection = () => {
                           </SelectOption>
                         ))}
                       </Select>
-                    </div>
+                    </div> */}
+                    <FormControl fullWidth>
+                      <InputLabel id="service-select-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Inspection Status{" "}
+                          <span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <Select
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="service-select-label"
+                        id="service-select"
+                        name="order_inspection_status"
+                        value={booking.order_inspection_status}
+                        onChange={(e) => onInputChange(e)}
+                        label="Inspection Status *"
+                        required
+                      >
+                        {Istatus.map((data) => (
+                          <MenuItem key={data.value} value={data.value}>
+                            {data.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </div>
 
                   <div>
@@ -405,6 +451,10 @@ const EditBookingInspection = () => {
                         id="order_service_date"
                         label="Service Date"
                         type="date"
+                        disabled
+                        labelProps={{
+                          className: "!text-gray-600 ",
+                        }}
                         min={today}
                         name="order_service_date"
                         value={booking.order_service_date}
@@ -491,7 +541,7 @@ const EditBookingInspection = () => {
                   </div>
 
                   <div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <Select
                         fullWidth
                         label="Payment Mode"
@@ -509,7 +559,33 @@ const EditBookingInspection = () => {
                           </SelectOption>
                         ))}
                       </Select>
-                    </div>
+                    </div> */}
+                    <FormControl fullWidth>
+                      <InputLabel id="service-select-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Payment Mode <span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <Select
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="service-select-label"
+                        id="service-select"
+                        name="order_payment_type"
+                        value={booking.order_payment_type}
+                        onChange={(e) => onInputChange(e)}
+                        label="Payment Mode *"
+                        required
+                      >
+                        {paymentmode.map((data) => (
+                          <MenuItem
+                            key={data.payment_mode}
+                            value={data.payment_mode}
+                          >
+                            {data.payment_mode}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </div>
 
                   <div className="col-span-2">
@@ -530,6 +606,7 @@ const EditBookingInspection = () => {
                     type="submit"
                     className="mr-2 mb-2"
                     color="primary"
+                    onClick={onSubmit}
                     disabled={isButtonDisabled}
                   >
                     Update

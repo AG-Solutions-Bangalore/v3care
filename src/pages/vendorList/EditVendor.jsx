@@ -224,8 +224,6 @@ const EditVendor = () => {
       } catch (error) {
         console.error("Error updating vendor:", error);
         toast.error("Error updating vendor");
-      } finally {
-        setIsButtonDisabled(false);
       }
     }
   };
@@ -235,7 +233,7 @@ const EditVendor = () => {
       <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
         {/* Title */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Edit Vendor {id}</h1>
+          <h1 className="text-2xl font-semibold">Edit Vendor </h1>
           <Link to={`/add-vendor-service/${id}`} className="btn btn-outline">
             <button className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
               <FiPlus className="mr-2" /> Add Vendor Service

@@ -5,10 +5,12 @@ import { Input, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { FiEdit } from "react-icons/fi";
 import BASE_URL from "../../base/BaseUrl";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddVendorService = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedServices, setSelectedServices] = useState([]);
   const [availableServices, setAvailableServices] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -51,10 +53,11 @@ const AddVendorService = () => {
           }
         )
         .then((res) => {
-          if (res.data.code === "200") {
-            alert("Data updated successfully");
+          if (res.data.code == "200") {
+            toast.success("Data updated successfully");
+            navigate("/vendor-list");
           } else {
-            alert("Duplicate Entry");
+            toast.error("Duplicate Entry");
             setIsButtonDisabled(false);
           }
         })
@@ -68,7 +71,7 @@ const AddVendorService = () => {
     <Layout>
       <div className="p-6 w-full  mx-auto bg-white shadow-lg rounded-lg mt-5">
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Add Vendor Service - {id}
+          Add Vendor Service
         </h1>
         <div className="border-t border-gray-300 my-4"></div>
         <form

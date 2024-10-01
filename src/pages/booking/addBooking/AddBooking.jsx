@@ -25,6 +25,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import axios from "axios";
 import Fields from "../../../components/addBooking/TextField";
 import { Input } from "@material-tailwind/react";
+import { toast } from "react-toastify";
+import BASE_URL from "../../../base/BaseUrl";
+import { useNavigate } from "react-router-dom";
 
 const baseURL = "https://agsdraft.online/app/public/api";
 
@@ -111,6 +114,7 @@ const AddBooking = () => {
   });
 
   const [serdata, setSerData] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
 
@@ -366,6 +370,13 @@ const AddBooking = () => {
   }, []);
 
   const onSubmit = (e) => {
+    e.preventDefault();
+    const form = document.getElementById("addIdniv");
+
+    if (!form.checkValidity()) {
+      toast.error("Fill all the filled");
+      return;
+    }
     let data = {
       order_date: booking.order_date,
       order_year: booking.order_year,
@@ -403,14 +414,12 @@ const AddBooking = () => {
     var url = new URL(window.location.href);
     var id = url.searchParams.get("id");
 
-    var v = document.getElementById("addIndiv").checkValidity();
-    var v = document.getElementById("addIndiv").reportValidity();
-    e.preventDefault();
+    var v = document.getElementById("addIdniv").checkValidity();
+    var v = document.getElementById("addIdniv").reportValidity();
 
     if (v) {
-      setIsButtonDisabled(true);
       axios({
-        url: baseURL + "/panel-create-booking",
+        url: BASE_URL + "/api/panel-create-booking",
         method: "POST",
         data,
         headers: {
@@ -419,9 +428,11 @@ const AddBooking = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           console.log("Data Inserted Sucessfully");
-          history.goBack();
+          toast.success("Booking Create Successfully");
+          navigate("/today");
         } else {
           console.log("Duplicate Entry");
+          toast.error("Duplicate Entry");
         }
       });
     }
@@ -436,7 +447,7 @@ const AddBooking = () => {
           </h3>
         </div>
         <div className={styles["sub-container"]}>
-          <form>
+          <form id="addIdniv">
             <div className={styles["form-container"]}>
               <div>
                 <div className="form-group">
@@ -479,6 +490,7 @@ const AddBooking = () => {
                   <Fields
                     types="email"
                     title="Email"
+                    required
                     type="textField"
                     autoComplete="Name"
                     name="order_customer_email"

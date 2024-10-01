@@ -81,6 +81,8 @@ import "react-toastify/dist/ReactToastify.css";
 import BookNow from "./pages/bookNowOutside/BookNow";
 import BecomePartner from "./pages/becomePartnerOutside/BecomePartner";
 import EditBookingInspection from "./pages/booking/commonView/editBooking/EditBookingInspection";
+import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBookingAssignUser";
+import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
 const App = () => {
   return (
     <>
@@ -96,6 +98,12 @@ const App = () => {
         {/* booking  */}
         <Route path="/view-booking/:id" element={<ViewBooking />} />
         <Route path="/booking-assign/:id" element={<BookingAssign />} />
+        <Route
+          path="/add-booking-user/:id"
+          element={<AddBookingAssignUser />}
+        />
+        <Route path="/add-booking-vendor/:id" element={<AddBookingVendor />} />
+
         <Route
           path="/edit-booking-assign/:id"
           element={<EditBookingAssign />}

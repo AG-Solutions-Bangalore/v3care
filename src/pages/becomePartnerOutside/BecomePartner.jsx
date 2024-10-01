@@ -148,14 +148,12 @@ const BecomePartner = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
+    const form = document.getElementById("addIdniv");
 
-    // Check for form validity
     if (!form.checkValidity()) {
-      form.reportValidity();
+      toast.error("Fill all the filled");
       return;
     }
-
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
@@ -205,7 +203,7 @@ const BecomePartner = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success("Data Inserted Successfully");
         // Reset the vendor form
         setVendor({
@@ -239,26 +237,17 @@ const BecomePartner = () => {
         setSelectedFile3(null);
         setSelectedFile4(null);
       } else {
-        handleErrorResponse(response.data.code);
+        if (response.data.code == "402") {
+          toast.error("Email Id Duplicate Entry");
+        } else if (response.data.code == " 403") {
+          toast.error("Mobile No Duplicate Entry");
+        } else {
+          toast.error("Network Issue , Pls Try again later");
+        }
       }
     } catch (error) {
       console.error("Error creating vendor:", error);
       toast.error("Error creating vendor");
-    }
-  };
-
-  // Function to handle error responses based on the response code
-  const handleErrorResponse = (code) => {
-    switch (code) {
-      case "401":
-        toast.error("Company Name Duplicate Entry");
-        break;
-      case "402":
-        toast.error("Mobile No Duplicate Entry");
-        break;
-      default:
-        toast.error("Email Id Duplicate Entry");
-        break;
     }
   };
 
@@ -295,7 +284,7 @@ const BecomePartner = () => {
           <div className="flex justify-center mb-4 border-b-2">
             <h1 className="text-2xl font-bold pb-2">Personal Details</h1>
           </div>
-          <form>
+          <form id="addIdniv">
             <div className={styles["form-container-div"]}>
               <div className="grid  grid-cols-1 md:grid-cols-3 gap-3 w-full">
                 <div className="form-group">
@@ -335,6 +324,7 @@ const BecomePartner = () => {
                   <Fields
                     types="email"
                     title="Email"
+                    required
                     type="textField"
                     autoComplete="Name"
                     name="vendor_email"
@@ -518,6 +508,7 @@ const BecomePartner = () => {
                           label="Pincode"
                           name="vendor_branch_pincode"
                           required
+                          inputProps={{ maxLength: 6 }}
                           value={user.vendor_branch_pincode}
                           onChange={(e) => {
                             onChange1(e, index), CheckPincode(e, index);

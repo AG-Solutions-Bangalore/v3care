@@ -16,6 +16,7 @@ const BookingAssign = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  localStorage.setItem("assignBook", id);
   useEffect(() => {
     const fetchBookingAssignData = async () => {
       try {
@@ -149,11 +150,14 @@ const BookingAssign = () => {
       <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Assign User List{id}
+          Booking User List
         </h3>
 
-        <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
-          + Add Booking
+        <Link
+          to={`/add-booking-user/${id}`}
+          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+        >
+          + Add Booking User
         </Link>
       </div>
       <div className="mt-5">

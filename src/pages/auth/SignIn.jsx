@@ -129,7 +129,7 @@ const SignIn = () => {
                   color="blue-gray"
                   className="-mb-3 font-medium"
                 >
-                  Your email
+                  Username
                 </Typography>
                 <Input
                   id="email"

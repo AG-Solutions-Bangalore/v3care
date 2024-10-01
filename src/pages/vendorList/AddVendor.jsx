@@ -14,6 +14,8 @@ import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
 import BASE_URL from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 // const theme = createTheme();
 
@@ -25,6 +27,7 @@ const AddVendor = () => {
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const navigate = useNavigate();
   const initialVendorState = {
     vendor_short: "",
     vendor_company: "",
@@ -262,18 +265,20 @@ const AddVendor = () => {
       }).then((res) => {
         console.log("res post", res);
         if (res.data.code == "200") {
+          toast.success("Vendor Created Succesfully");
+          navigate("/vendor-list");
         } else {
-          if (res.data.code == "401") {
-            console.log("200");
-          } else if (res.data.code == "402") {
-            console.log("402");
+          if (res.data.code == "402") {
+            toast.error("Mobile No Duplicate");
+          } else if (res.data.code == "403") {
+            toast.error("Email Duplicate");
           } else {
-            console.log("outofrange");
+            toast.error("Network Issue");
           }
         }
       });
     }
-    alert("success");
+
     resetForm();
   };
 
@@ -340,10 +345,11 @@ const AddVendor = () => {
               label="Mobile No"
               icon={PhoneIphone}
               name="vendor_mobile"
+              maxLength={10}
+              // inputProps={{ minLength: 10, maxLength: 10 }}
               required
               type="tel"
               value={vendor.vendor_mobile}
-              inputProps={{ maxLength: 10, minLength: 10 }}
               onChange={(e) => onInputChange(e)}
             />
             <CustomInput
@@ -377,8 +383,9 @@ const AddVendor = () => {
             <CustomInput
               label="Aadhar No"
               name="vendor_aadhar_no"
+              maxLength={12}
               required
-              inputProps={{ maxLength: 12, minLength: 12 }}
+              // inputProps={{ maxLength: 12, minLength: 12 }}
               value={vendor.vendor_aadhar_no}
               onChange={(e) => onInputChange(e)}
             />
@@ -392,6 +399,7 @@ const AddVendor = () => {
             <CustomInput
               label="Photo"
               type="file"
+              required
               name="vendor_images"
               ref={inputRef1}
               onChange={(e) => setSelectedFile1(e.target.files[0])}
@@ -399,6 +407,7 @@ const AddVendor = () => {
             <CustomInput
               label="Aadhar Card Front Side"
               type="file"
+              required
               name="vendor_aadhar_front"
               ref={inputRef2}
               onChange={(e) => setSelectedFile2(e.target.files[0])}
@@ -406,6 +415,7 @@ const AddVendor = () => {
             <CustomInput
               label="Aadhar Card Back Side"
               type="file"
+              required
               name="vendor_aadhar_back"
               ref={inputRef3}
               onChange={(e) => setSelectedFile3(e.target.files[0])}
