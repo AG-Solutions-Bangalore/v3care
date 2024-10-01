@@ -24,7 +24,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const sidenavType = "dark";
 
   const sidenavTypes = {
-    dark: "bg-gradient-to-br from-blue-800 to-red-300 shadow-lg shadow-blue-900",
+    dark: "bg-[#900002] ",
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
@@ -64,7 +64,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       <div className={`relative`}>
         <Link to="/home" className="flex items-center justify-center p-4">
           <div className="flex items-center">
-            <img src={logo} alt="Logo" className="h-12 w-full " />
+            <img src="/velogo.png" alt="Logo" className=" h-20 w-full  " />
           </div>
         </Link>
         <IconButton

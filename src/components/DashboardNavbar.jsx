@@ -52,10 +52,10 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
 
   return (
     <Navbar
-      color={fixedNavbar ? "white" : "transparent"}
+      color={fixedNavbar ? "transparent" : "transparent"}
       className={`rounded-xl transition-all ${
         fixedNavbar
-          ? "sticky top-4 z-40 py-3 bg-gradient-to-br from-red-200 text-white to-blue-700  shadow-lg  shadow-blue-900"
+          ? "sticky top-4 z-40 py-3 bg-[#900002] text-white   "
           : "px-0 py-1"
       }`}
       fullWidth
@@ -73,7 +73,7 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
                 <Typography
                   variant="small"
                   color="white"
-                  className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
+                  className="font-normal  transition-all hover:text-blue-500 hover:opacity-100"
                 >
                   {breadcrumb.name}
                 </Typography>

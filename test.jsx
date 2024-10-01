@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
 import PageTitleBar from "Components/PageTitleBar/PageTitleBar";
 import RctCollapsibleCard from "Components/RctCollapsibleCard/RctCollapsibleCard";
@@ -9,11 +8,28 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { baseURL } from "../../api";
 import MenuItem from "@material-ui/core/MenuItem";
-import { IconButton } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import useEscapeKey from "../escape/useEscapeKey";
 
-const BookingUserAdd = (props) => {
+const status = [
+  {
+    value: "Pending",
+    label: "Pending",
+  },
+  {
+    value: "Confirmed",
+    label: "Confirmed",
+  },
+  {
+    value: "Finish",
+    label: "Finish",
+  },
+  {
+    value: "Cancel",
+    label: "Cancel",
+  },
+];
+
+const BookingVendorEdit = (props) => {
   let history = useHistory();
 
   var url = new URL(window.location.href);
@@ -24,10 +40,8 @@ const BookingUserAdd = (props) => {
     order_start_time: "",
     order_end_time: "",
     order_assign_remarks: "",
-    order_id: id,
+    order_assign_status: "",
   });
-
-  useEscapeKey();
 
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
@@ -38,14 +52,6 @@ const BookingUserAdd = (props) => {
     });
   };
 
-  useEffect(() => {
-    var isLoggedIn = localStorage.getItem("id");
-    if (!isLoggedIn) {
-      window.location = "/signin";
-    } else {
-    }
-  });
-
   const [assisgnUserP, setAssignUserP] = useState([]);
   useEffect(() => {
     var isLoggedIn = localStorage.getItem("id");
@@ -53,34 +59,27 @@ const BookingUserAdd = (props) => {
       window.location = "/signin";
     } else {
     }
-
-    var theLoginToken = localStorage.getItem("login");
-
-    const requestOptions = {
+    axios({
+      url: baseURL + "/panel-fetch-booking-assign-vendor-by-id/" + id,
       method: "GET",
       headers: {
-        Authorization: "Bearer " + theLoginToken,
+        Authorization: `Bearer ${localStorage.getItem("login")}`,
       },
-    };
-
-    fetch(
-      baseURL + "/panel-fetch-user-for-booking-assign/" + id,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((data) => setAssignUserP(data.bookingAssignUser));
+    }).then((res) => {
+      setBookingser(res.data.bookingAssign);
+      setAssignUserP(res.data.bookingAssignUser);
+    });
   }, []);
 
-  const onSubmit = (e) => {
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
+  useEscapeKey();
 
+  const onSubmit = (e) => {
     let data = {
       order_user_id: bookingUser.order_user_id,
       order_start_time: bookingUser.order_start_time,
       order_end_time: bookingUser.order_end_time,
       order_assign_remarks: bookingUser.order_assign_remarks,
-      order_id: id,
+      order_assign_status: bookingUser.order_assign_status,
     };
 
     var v = document.getElementById("addIndiv").checkValidity();
@@ -90,17 +89,15 @@ const BookingUserAdd = (props) => {
     if (v) {
       setIsButtonDisabled(true);
       axios({
-        url: baseURL + "/panel-create-booking-assign",
-        method: "POST",
+        url: baseURL + "/panel-update-booking-assign-vendor/" + id,
+        method: "PUT",
         data,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("login")}`,
         },
       }).then((res) => {
-        if (res.data.code == "200") {
-          NotificationManager.success("Data Inserted Sucessfully");
-          history.push("bookingUser?id=" + id);
-        }
+        NotificationManager.success("Data Updated Sucessfully");
+        history.push("bookingVendors?id=" + res.data.booking.id);
       });
     }
   };
@@ -111,11 +108,11 @@ const BookingUserAdd = (props) => {
 
   return (
     <div className="textfields-wrapper">
-      <PageTitleBar title="Create Booking User" match={props.match} />
+      <PageTitleBar title="Edit Booking Vendor" match={props.match} />
       <RctCollapsibleCard>
         <form id="addIndiv" autoComplete="off">
           <div className="row">
-            <div className="col-sm-12 col-md-12 col-xl-4">
+            <div className="col-sm-12 col-md-12 col-xl-3">
               <div className="form-group">
                 <TextField
                   id="select-corrpreffer"
@@ -138,7 +135,7 @@ const BookingUserAdd = (props) => {
                 </TextField>
               </div>
             </div>
-            {/* <div className="col-sm-12 col-md-12 col-xl-4">
+            {/* <div className="col-sm-12 col-md-12 col-xl-3">
               <div className="form-group">
                 <TextField
                   fullWidth
@@ -156,7 +153,7 @@ const BookingUserAdd = (props) => {
                 />
               </div>
             </div> */}
-            {/* <div className="col-sm-12 col-md-12 col-xl-4">
+            {/* <div className="col-sm-12 col-md-12 col-xl-3">
               <div className="form-group">
                 <TextField
                   fullWidth
@@ -173,8 +170,31 @@ const BookingUserAdd = (props) => {
                 />
               </div>
             </div> */}
+            <div className="col-sm-6 col-md-6 col-xl-3">
+              <div className="form-group">
+                <TextField
+                  id="select-corrpreffer"
+                  required
+                  select
+                  label="Status"
+                  SelectProps={{
+                    MenuProps: {},
+                  }}
+                  name="order_assign_status"
+                  value={bookingUser.order_assign_status}
+                  onChange={(e) => onInputChange(e)}
+                  fullWidth
+                >
+                  {status.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </div>
+            </div>
 
-            <div className="col-sm-12 col-md-8 col-xl-8">
+            <div className="col-sm-12 col-md-6 col-xl-6">
               <div className="form-group">
                 <TextField
                   id="select-corrpreffer"
@@ -198,7 +218,7 @@ const BookingUserAdd = (props) => {
                   onClick={(e) => onSubmit(e)}
                   disabled={isButtonDisabled}
                 >
-                  Submit
+                  Update
                 </Button>
               </div>
             </div>
@@ -210,4 +230,4 @@ const BookingUserAdd = (props) => {
     </div>
   );
 };
-export default BookingUserAdd;
+export default BookingVendorEdit;
