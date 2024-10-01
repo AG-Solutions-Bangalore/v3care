@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 const ForgetPassword = () => {
   return (
     <section className="flex flex-col lg:flex-row min-h-screen">
-      <div className="flex-1 flex items-center bg-[url('/img/home-decor-4.jpeg')] bg-cover bg-center bg-no-repeat justify-center px-4 lg:px-8 py-12 lg:w-1/2">
-        <div className="w-full max-w-md p-8 bg-white/90 rounded-xl shadow-lg  shadow-blue-500 ">
+      <div className="flex-1 flex items-center bg-[url('/img/home-decor-3.jpg')]  bg-cover bg-center bg-no-repeat justify-center px-4 lg:px-8 py-12 lg:w-1/2">
+        <div className="w-full max-w-md p-8 bg-white/90  rounded-xl shadow-lg  shadow-blue-500 ">
           <div className="flex justify-center mb-4">
             <img
               src="/img/v3logo.png"

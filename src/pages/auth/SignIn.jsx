@@ -87,17 +87,17 @@ const SignIn = () => {
         <div className="hidden lg:block lg:w-1/2">
           <Carousel autoplay loop>
             <img
-              src="/img/home-decor-3.jpeg"
+              src="/img/home-decor-3.jpg"
               alt="Slide 1"
               className="h-full w-full object-cover"
             />
             <img
-              src="/img/home-decor-4.jpeg"
+              src="/img/home-decor-4.jpg"
               alt="Slide 2"
               className="h-full w-full object-cover"
             />
             <img
-              src="/img/home-decor-1.jpeg"
+              src="/img/home-decor-1.jpg"
               alt="Slide 3"
               className="h-full w-full object-cover"
             />

@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
+  BuildingStorefrontIcon,
   HomeIcon,
   TableCellsIcon,
   XMarkIcon,
@@ -12,8 +13,18 @@ import {
 } from "@material-tailwind/react";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { MdOutlineAdd, MdToday } from "react-icons/md";
+import {
+  MdOutlineAdd,
+  MdOutlineLibraryBooks,
+  MdOutlinePayment,
+  MdToday,
+} from "react-icons/md";
 import logo from "../../public/img/v3logo.png";
+import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
+import { CiViewList } from "react-icons/ci";
+import { FaBook } from "react-icons/fa";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoDownloadOutline } from "react-icons/io5";
 const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
@@ -109,7 +120,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <RiAdminLine className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -129,7 +140,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -149,7 +160,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <CiViewList className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -280,7 +291,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -302,7 +313,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <MdOutlinePayment className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -323,7 +334,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -344,7 +355,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
@@ -365,7 +376,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   className="flex items-center gap-4 px-4 capitalize"
                   fullWidth
                 >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
+                  <IoDownloadOutline className="w-5 h-5 text-inherit" />
                   <Typography
                     color="inherit"
                     className="font-medium capitalize"
