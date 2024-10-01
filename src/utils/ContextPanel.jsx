@@ -54,6 +54,7 @@ const AppProvider = ({ children }) => {
           "/assign-vendor",
           "/edit-booking-vendor",
           "/edit-booking",
+          "/edit-booking-inspection",
           "/booking-reschedule",
           "/postpone-booking",
           "/branch",
@@ -124,7 +125,7 @@ const AppProvider = ({ children }) => {
           currentPath === "/register" ||
           currentPath === "/forget-password" ||
           currentPath === "/add-booking-outside" ||
-          currentPath === "/become-partner-outside" 
+          currentPath === "/become-partner-outside"
         ) {
           navigate(currentPath);
         } else {

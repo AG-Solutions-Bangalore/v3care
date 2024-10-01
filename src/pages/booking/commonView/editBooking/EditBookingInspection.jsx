@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import BASE_URL from "../../../../base/BaseUrl";
 import axios from "axios";
 import moment from "moment";
-
+import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
@@ -17,9 +17,7 @@ import {
   Button,
   Select,
 } from "@material-tailwind/react";
-import BASE_URL from "../../../../base/BaseUrl";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
-
+import { toast } from "react-toastify";
 const status = [
   {
     value: "Pending",
@@ -54,7 +52,31 @@ const status = [
     label: "Cancel",
   },
 ];
-const EditBookingAll = () => {
+
+const Istatus = [
+  {
+    value: "Pending",
+    label: "Pending",
+  },
+  {
+    value: "On the way",
+    label: "On the way",
+  },
+  {
+    value: "In Progress",
+    label: "In Progress",
+  },
+  {
+    value: "Completed",
+    label: "Completed",
+  },
+  {
+    value: "Cancel",
+    label: "Cancel",
+  },
+];
+
+const EditBookingInspection = () => {
   const { id } = useParams();
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
@@ -129,7 +151,9 @@ const EditBookingAll = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
-    if (form.checkValidity()) {
+    if (!form.checkValidity()) {
+      toast.error("Fill all required");
+    } else {
       setIsButtonDisabled(true);
       const data = {
         order_service_date: booking.order_service_date,
@@ -144,9 +168,10 @@ const EditBookingAll = () => {
         order_transaction_details: booking.order_transaction_details,
         branch_id: booking.branch_id,
         order_area: booking.order_area,
+        order_inspection_status: booking.order_inspection_status,
       };
       axios
-        .put(`${BASE_URL}/api/panel-update-booking/${id}`, data, {
+        .put(`${BASE_URL}/api/panel-update-booking-inspection/${id}`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("login")}`,
           },
@@ -275,7 +300,7 @@ const EditBookingAll = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Edit Booking {id}
+          Edit Inspection {id}
         </Typography>
 
         <div className="flex gap-4">
@@ -339,12 +364,31 @@ const EditBookingAll = () => {
                         id="select-corrpreffer"
                         required
                         type="select"
-                        label="Status"
+                        label="Booking Status"
                         name="order_status"
                         value={booking.order_status}
                         onChange={(e) => onInputChange(e)}
                       >
                         {status.map((option) => (
+                          <SelectOption key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectOption>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="form-group">
+                      <Select
+                        id="select-corrpreffer"
+                        required
+                        type="select"
+                        label="Inspection Status"
+                        name="order_inspection_status"
+                        value={booking.order_inspection_status}
+                        onChange={(e) => onInputChange(e)}
+                      >
+                        {Istatus.map((option) => (
                           <SelectOption key={option.value} value={option.value}>
                             {option.label}
                           </SelectOption>
@@ -514,4 +558,4 @@ const EditBookingAll = () => {
   );
 };
 
-export default EditBookingAll;
+export default EditBookingInspection;

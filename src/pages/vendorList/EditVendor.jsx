@@ -14,6 +14,7 @@ import {
   TextField,
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
+import { toast } from "react-toastify";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -163,68 +164,69 @@ const EditVendor = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
+    const form = document.getElementById("addIndiv");
+
     if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+      toast.error("Fill all required");
+    } else {
+      setIsButtonDisabled(true);
 
-    setIsButtonDisabled(true);
+      const formData = new FormData();
+      Object.keys(vendor).forEach((key) => formData.append(key, vendor[key]));
 
-    const formData = new FormData();
-    Object.keys(vendor).forEach((key) => formData.append(key, vendor[key]));
+      if (selectedFile1) formData.append("vendor_images", selectedFile1);
+      if (selectedFile2) formData.append("vendor_aadhar_front", selectedFile2);
+      if (selectedFile3) formData.append("vendor_aadhar_back", selectedFile3);
+      if (selectedFile4) formData.append("vendor_aadhar_gst", selectedFile4);
 
-    if (selectedFile1) formData.append("vendor_images", selectedFile1);
-    if (selectedFile2) formData.append("vendor_aadhar_front", selectedFile2);
-    if (selectedFile3) formData.append("vendor_aadhar_back", selectedFile3);
-    if (selectedFile4) formData.append("vendor_aadhar_gst", selectedFile4);
-
-    users.forEach((user, index) => {
-      Object.keys(user).forEach((key) => {
-        formData.append(`vendor_service_data[${index}][${key}]`, user[key]);
+      users.forEach((user, index) => {
+        Object.keys(user).forEach((key) => {
+          formData.append(`vendor_service_data[${index}][${key}]`, user[key]);
+        });
       });
-    });
 
-    users1.forEach((user, index) => {
-      Object.keys(user).forEach((key) => {
-        formData.append(`vendor_branch_data[${index}][${key}]`, user[key]);
+      users1.forEach((user, index) => {
+        Object.keys(user).forEach((key) => {
+          formData.append(`vendor_branch_data[${index}][${key}]`, user[key]);
+        });
       });
-    });
 
-    users2.forEach((user, index) => {
-      Object.keys(user).forEach((key) => {
-        formData.append(`vendor_area_data[${index}][${key}]`, user[key]);
+      users2.forEach((user, index) => {
+        Object.keys(user).forEach((key) => {
+          formData.append(`vendor_area_data[${index}][${key}]`, user[key]);
+        });
       });
-    });
 
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-update-vendor/${id}?_method=PUT`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/api/panel-update-vendor/${id}?_method=PUT`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      if (response.data.code == "200") {
-        alert("Data Updated Successfully");
-      } else {
-        if (response.data.code == "401") {
-          alert("Company Short Duplicate Entry");
-        } else if (response.data.code == "402") {
-          alert("Mobile No Duplicate Entry");
+        if (response.data.code == "200") {
+          toast.success("Data Updated Successfully");
+          navigate("/vendor-list");
         } else {
-          alert("Email Id Duplicate Entry");
+          if (response.data.code == "401") {
+            toast.error("Company Short Duplicate Entry");
+          } else if (response.data.code == "402") {
+            toast.error("Mobile No Duplicate Entry");
+          } else {
+            toast.error("Email Id Duplicate Entry");
+          }
         }
+      } catch (error) {
+        console.error("Error updating vendor:", error);
+        toast.error("Error updating vendor");
+      } finally {
+        setIsButtonDisabled(false);
       }
-    } catch (error) {
-      console.error("Error updating vendor:", error);
-      alert("Error updating vendor");
-    } finally {
-      setIsButtonDisabled(false);
     }
   };
 
@@ -245,7 +247,7 @@ const EditVendor = () => {
         <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
         <hr className="mb-4" />
 
-        <form onSubmit={onSubmit} autoComplete="off">
+        <form onSubmit={onSubmit} id="addIndiv" autoComplete="off">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             {/* Nickname */}
             <div>

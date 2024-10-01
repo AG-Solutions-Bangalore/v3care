@@ -5,6 +5,7 @@ import { MdSend } from "react-icons/md";
 import Layout from "../../layout/Layout";
 import { useParams } from "react-router-dom";
 import { Input } from "@material-tailwind/react";
+import { toast } from "react-toastify";
 
 const AddVendorUser = () => {
   const { id } = useParams();
@@ -26,30 +27,35 @@ const AddVendorUser = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    let data = {
-      name: vendor.name,
-      mobile: vendor.mobile,
-      email: vendor.email,
-      vendor_id: id,
-    };
-    const response = await axios.post(
-      `${BASE_URL}/api/panel-create-vendor-user`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (response.data.code == "200") {
-      alert("success");
+    const form = document.getElementById("addIndiv");
+    if (!form.checkValidity()) {
+      toast.error("Fill all required");
     } else {
-      if (response.data.code == "401") {
-        alert("full name duplicate entry");
-      } else if (response.data.code == "402") {
-        alert("mobile no duplicate entry");
+      let data = {
+        name: vendor.name,
+        mobile: vendor.mobile,
+        email: vendor.email,
+        vendor_id: id,
+      };
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-create-vendor-user`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.code == "200") {
+        alert("success");
       } else {
-        alert("email id duplicate entry");
+        if (response.data.code == "401") {
+          alert("full name duplicate entry");
+        } else if (response.data.code == "402") {
+          alert("mobile no duplicate entry");
+        } else {
+          alert("email id duplicate entry");
+        }
       }
     }
   };
