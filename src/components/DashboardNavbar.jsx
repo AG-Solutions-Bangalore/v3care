@@ -68,21 +68,16 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
               fixedNavbar ? "mt-1" : ""
             }`}
           >
-            {breadcrumbs.map((breadcrumb, index) => (
-              <Link key={index} to={breadcrumb.link}>
-                <Typography
-                  variant="small"
-                  color="white"
-                  className="font-normal  transition-all hover:text-blue-500 hover:opacity-100"
-                >
-                  {breadcrumb.name}
-                </Typography>
-              </Link>
-            ))}
+            <Link to="/home">
+              <Typography
+                variant="small"
+                color="white"
+                className="font-normal  transition-all hover:text-blue-500 hover:opacity-100"
+              >
+                Home
+              </Typography>
+            </Link>
           </Breadcrumbs>
-          <Typography variant="h6" color="white">
-            {pageTitle}
-          </Typography>
         </div>
         <div className="flex items-center">
           {/* Search and other elements can be added here */}

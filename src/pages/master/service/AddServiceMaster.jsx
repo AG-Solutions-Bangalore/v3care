@@ -8,6 +8,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddServiceMaster = () => {
   const [services, setServices] = useState({
@@ -15,6 +16,7 @@ const AddServiceMaster = () => {
     service_comm: "",
     service_image: "",
   });
+  UseEscapeKey();
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);

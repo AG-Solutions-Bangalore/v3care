@@ -6,6 +6,7 @@ import BASE_URL from "../../base/BaseUrl";
 import { Button, Input } from "@material-tailwind/react";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const VendorPendingEdit = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const VendorPendingEdit = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  UseEscapeKey();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("id");
     if (!isLoggedIn) {

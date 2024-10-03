@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../../layout/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -17,10 +17,13 @@ import {
   Button,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingCommissionView = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
+  UseEscapeKey();
   const [booking, setBooking] = useState({});
   const [payment, setPayment] = useState({
     order_comm_remark: "",
@@ -67,7 +70,7 @@ const PendingCommissionView = () => {
       order_comm_remark: payment.order_comm_remark,
     };
     try {
-      await axios({
+      const res = await axios({
         url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
         method: "PUT",
         data,
@@ -75,10 +78,15 @@ const PendingCommissionView = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Data Updated Successfully");
+      if (res.data.code == "200") {
+        toast.success("Commission Updated Successfully");
+        navigate("/commission-pending");
+      } else {
+        toast.error("Network Error");
+      }
     } catch (error) {
-      console.error("Error updating payment status:", error);
-      alert("Error updating payment status");
+      console.error("Error updating Commission status:", error);
+      toast.error("Error updating Commission status");
     }
   };
 
@@ -280,7 +288,7 @@ const PendingCommissionView = () => {
                     value={payment.order_comm_remark}
                     onChange={onInputChange}
                   />
-                  <Button type="submit" color="blue">
+                  <Button type="submit" onClick={updateData} color="blue">
                     Receive Commission
                   </Button>
                 </form>

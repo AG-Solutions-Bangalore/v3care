@@ -40,29 +40,29 @@ const Jobs = () => {
         <h1 className="text-black text-2xl font-bold">Today Jobs</h1>
       </div>
       <div className="grid md:grid-cols-6 gap-4 grid-cols-2 mt-4">
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_Inspection_today}</h1>
-          <h1 class="text-xl ">Inspection</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_Inspection_today}</h1>
+          <h1 className="text-xl ">Inspection</h1>
         </div>
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_Confirmed_today}</h1>
-          <h1 class="text-xl ">Confirmed</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_Confirmed_today}</h1>
+          <h1 className="text-xl ">Confirmed</h1>
         </div>
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3  font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_Vendor_today}</h1>
-          <h1 class="text-xl ">Vendor</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3  font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_Vendor_today}</h1>
+          <h1 className="text-xl ">Vendor</h1>
         </div>
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_way_today}</h1>
-          <h1 class="text-xl ">On the Way</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_way_today}</h1>
+          <h1 className="text-xl ">On the Way</h1>
         </div>
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_Progress_today}</h1>
-          <h1 class="text-xl ">In Progress</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_Progress_today}</h1>
+          <h1 className="text-xl ">In Progress</h1>
         </div>
-        <div class="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
-          <h1 class="text-xl ">{data.booking_Completed_today}</h1>
-          <h1 class="text-xl ">Completed</h1>
+        <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">
+          <h1 className="text-xl ">{data.booking_Completed_today}</h1>
+          <h1 className="text-xl ">Completed</h1>
         </div>
       </div>
     </div>

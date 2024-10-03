@@ -15,6 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -27,7 +28,7 @@ const ServiceEditMaster = () => {
     service_image: "",
     service_comm: "",
   });
-
+  UseEscapeKey();
   const navigate = useNavigate();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);

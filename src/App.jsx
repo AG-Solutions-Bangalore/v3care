@@ -83,10 +83,12 @@ import BecomePartner from "./pages/becomePartnerOutside/BecomePartner";
 import EditBookingInspection from "./pages/booking/commonView/editBooking/EditBookingInspection";
 import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBookingAssignUser";
 import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
+import UseEscapeKey from "./utils/UseEscapeKey";
 const App = () => {
   return (
     <>
       <ToastContainer />
+      <UseEscapeKey />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />

@@ -29,6 +29,7 @@ const ServiceSubEditMaster = () => {
     service_sub_status: "",
     service_sub_image: "",
   });
+  UseEscapeKey();
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);

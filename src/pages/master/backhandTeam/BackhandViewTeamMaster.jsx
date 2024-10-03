@@ -15,6 +15,7 @@ import {
   FaEdit,
   FaArrowLeft,
 } from "react-icons/fa";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BackhandViewTeamMaster = () => {
   const { id } = useParams();
@@ -22,7 +23,7 @@ const BackhandViewTeamMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchViewTeamData = async () => {
       try {

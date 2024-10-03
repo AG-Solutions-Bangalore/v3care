@@ -7,13 +7,14 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddReferBy = () => {
   const [referby, setReferBy] = useState({
     refer_by: "",
   });
   const navigate = useNavigate();
-
+  UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {

@@ -8,12 +8,14 @@ import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey()
   useEffect(() => {
     const fetchFieldData = async () => {
       try {

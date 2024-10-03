@@ -7,6 +7,7 @@ import BASE_URL from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import IdealFieldListFilter from "../../components/IdealFieldListFilter";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const IdealFieldList = () => {
   var today = new Date();
@@ -14,7 +15,7 @@ const IdealFieldList = () => {
   var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
   var todayback = yyyy + "-" + mm + "-" + dd;
-
+  UseEscapeKey();
   const [idealData, setIdealData] = useState([]);
 
   const [idealDataDate, setIdealDataDate] = useState({

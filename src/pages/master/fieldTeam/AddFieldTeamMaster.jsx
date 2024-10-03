@@ -8,6 +8,7 @@ import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 import axios from "axios";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const AddFieldTeamMaster = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -22,6 +23,7 @@ const AddFieldTeamMaster = () => {
     remarks: "",
   });
   const navigate = useNavigate();
+  UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);

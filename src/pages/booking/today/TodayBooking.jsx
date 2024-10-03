@@ -9,6 +9,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiSquarePlus } from "react-icons/ci";
 import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -16,6 +17,7 @@ const TodayBooking = () => {
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
 
+  UseEscapeKey();
   useEffect(() => {
     const fetchTodayData = async () => {
       try {

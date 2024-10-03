@@ -8,6 +8,7 @@ import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddVendorUser = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const AddVendorUser = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  UseEscapeKey();
   const onInputChange = (e) => {
     setVendor({
       ...vendor,

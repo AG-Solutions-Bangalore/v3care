@@ -7,12 +7,14 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchReferData = async () => {
       try {

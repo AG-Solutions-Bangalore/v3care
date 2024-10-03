@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../../layout/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -17,11 +17,14 @@ import {
   Button,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReceivedCommissionView = () => {
   const { id } = useParams();
-
+  UseEscapeKey();
   const [booking, setBooking] = useState({});
+  const navigate = useNavigate();
 
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -58,7 +61,7 @@ const ReceivedCommissionView = () => {
     e.preventDefault();
 
     try {
-      await axios({
+      const res = await axios({
         url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
         method: "PUT",
 
@@ -66,10 +69,13 @@ const ReceivedCommissionView = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Data Updated Successfully");
+      if (res.data.code == "200") {
+        toast.success("Commission Updated Successfully");
+        navigate("/commission-received");
+      }
     } catch (error) {
-      console.error("Error updating payment status:", error);
-      alert("Error updating payment status");
+      console.error("Error updating Commission status:", error);
+      toast.error("Error updating Commission status");
     }
   };
 
@@ -120,6 +126,9 @@ const ReceivedCommissionView = () => {
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
               </Typography>
+              <Typography className="text-black">
+                <strong>Commission:</strong> {booking.order_comm}
+              </Typography>
             </div>
             <div className="space-y-2">
               <Typography className="text-black">
@@ -141,8 +150,9 @@ const ReceivedCommissionView = () => {
               <Typography className="text-black">
                 <strong>Vendor:</strong> {vendor.vendor_company}
               </Typography>
+
               <Typography className="text-black">
-                <strong>Commission:</strong> {booking.order_comm}
+                <strong>Commission Remark:</strong> {booking.order_comm_remark}
               </Typography>
             </div>
           </div>

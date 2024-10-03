@@ -9,13 +9,14 @@ import Moment from "moment";
 import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const TomorrowBooking = () => {
   const [tomBookingData, setTomBookingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchTomData = async () => {
       try {

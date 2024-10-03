@@ -6,11 +6,12 @@ import ReactToPrint from "react-to-print";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const ViewVendor = () => {
   const componentRef = useRef();
   const { id } = useParams();
-
+  UseEscapeKey();
   // Custom state for vendor data
   const [vendor, setVendor] = useState({});
   const [vendorArea, setVendorArea] = useState([]);

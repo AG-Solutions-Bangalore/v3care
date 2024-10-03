@@ -22,6 +22,7 @@ import {
   TextField,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -44,7 +45,7 @@ const BackhandEditTeamMaster = () => {
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  UseEscapeKey();
   const validateOnlyDigits = (inputtxt) => {
     return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
   };

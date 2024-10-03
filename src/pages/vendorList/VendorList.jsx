@@ -12,12 +12,14 @@ import { CiEdit } from "react-icons/ci";
 import { FiUserPlus, FiUsers } from "react-icons/fi";
 import { RiEditLine } from "react-icons/ri";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchVendorListData = async () => {
       try {
@@ -65,7 +67,12 @@ const VendorList = () => {
       });
       if (res.data.code == "200") {
         toast.success("Vendor Activated Successfully");
-        navigate("/vendor-list");
+        setVendorListData((prevVendorListData) =>
+          prevVendorListData.map((vendor) =>
+            vendor.id === id ? { ...vendor, vendor_status: "Active" } : vendor
+          )
+        );
+        // navigate("/vendor-list");
         // add loader status pending to active
       } else {
         if (res.data.code == "401") {

@@ -8,12 +8,14 @@ import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BackhandTeamMaster = () => {
   const [BackhandData, setBackhandData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchBackhadnData = async () => {
       try {

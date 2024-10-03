@@ -10,6 +10,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddServicePrice = () => {
   const [services, setServices] = useState({
@@ -19,7 +20,7 @@ const AddServicePrice = () => {
     service_price_rate: "",
     service_price_amount: "",
   });
-
+  UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [serdatasub, setSerDataSub] = useState([]);
   const [serdata, setSerData] = useState([]);

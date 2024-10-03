@@ -9,13 +9,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchVendorData = async () => {
       try {

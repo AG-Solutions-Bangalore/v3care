@@ -11,6 +11,7 @@ import { ContextPanel } from "../../../../utils/ContextPanel";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const EditBookingAssign = () => {
   const { id } = useParams();
 
@@ -24,7 +25,7 @@ const EditBookingAssign = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [assignUserP, setAssignUserP] = useState([]);
-
+  UseEscapeKey();
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();

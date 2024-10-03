@@ -16,6 +16,7 @@ import {
   Button,
   Select,
 } from "@material-tailwind/react";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddBranch = () => {
   const [branch, setBranch] = useState({
@@ -24,7 +25,7 @@ const AddBranch = () => {
   const navigate = useNavigate();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  UseEscapeKey();
   const onInputChange = (e) => {
     setBranch({
       ...branch,

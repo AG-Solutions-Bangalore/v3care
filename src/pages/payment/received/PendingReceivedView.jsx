@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../../layout/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -17,13 +17,16 @@ import {
   Button,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const PendingReceivedView = () => {
   const { id } = useParams();
 
   const [booking, setBooking] = useState({});
-
+  UseEscapeKey();
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
+  const navigate = useNavigate();
   // no need check at once and remove it
   const [vendor, setVendor] = useState({});
   // new design
@@ -55,17 +58,22 @@ const PendingReceivedView = () => {
   const updateData = async (e) => {
     e.preventDefault();
     try {
-      await axios({
+      const res = await axios({
         url: `${BASE_URL}/api/panel-update-payment-status/${id}`,
         method: "PUT",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Data Updated Successfully");
+      if (res.data.code == "200") {
+        toast.success("Received Updated Successfully");
+        navigate("/received-payment");
+      } else {
+        toast.error("Network Error");
+      }
     } catch (error) {
-      console.error("Error updating payment status:", error);
-      alert("Error updating payment status");
+      console.error("Error updating received status:", error);
+      toast.error("Error updating received status");
     }
   };
 
@@ -133,6 +141,14 @@ const PendingReceivedView = () => {
               <Typography className="text-black">
                 <strong>Transaction Details:</strong>{" "}
                 {booking.order_transaction_details}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Payment check:</strong>{" "}
+                {booking?.order_check_payment_type}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Payment Details:</strong>{" "}
+                {booking?.order_check_payment_details}
               </Typography>
             </div>
           </div>
@@ -256,7 +272,7 @@ const PendingReceivedView = () => {
               <CardBody>
                 <form onSubmit={updateData} className="space-y-4">
                   <Button type="submit" color="blue">
-                    Receive Payment
+                    Did Not Received Payment
                   </Button>
                 </form>
               </CardBody>

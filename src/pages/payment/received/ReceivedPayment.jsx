@@ -9,12 +9,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 
 import Moment from "moment";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReceivedPayment = () => {
   const [receivedData, setReceivedData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchReceivedData = async () => {
       try {

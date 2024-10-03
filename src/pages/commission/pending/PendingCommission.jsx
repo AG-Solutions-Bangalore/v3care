@@ -9,12 +9,14 @@ import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 import Moment from "moment";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingCommission = () => {
   const [PendingCommissionData, setPendingCommissionData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchPendingComData = async () => {
       try {

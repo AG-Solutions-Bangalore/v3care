@@ -7,40 +7,65 @@ import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import Moment from "moment";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchNotificationData = async () => {
-      try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-notification-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setNotificationData(response.data?.booking);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
+  UseEscapeKey();
+  const fetchNotificationData = async () => {
+    try {
+      if (!isPanelUp) {
+        navigate("/maintenance");
+        return;
       }
-    };
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-notification-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setNotificationData(response.data?.notification);
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchNotificationData();
     setLoading(false);
   }, []);
+
+  const handleUpdate = async (id) => {
+    try {
+      axios({
+        url: BASE_URL + "/api/panel-update-notification/" + id,
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((res) => {
+        if (res.data.code == "200") {
+          toast.success("Notification Updated Sucessfully");
+          fetchNotificationData();
+        } else {
+          toast.error("Network Error");
+        }
+      });
+    } catch (error) {
+      console.error("Error in Network ", error);
+    }
+  };
 
   const columns = [
     {
@@ -108,19 +133,34 @@ const NotificationList = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
-          return (
+        customBodyRender: (id, tableMeta) => {
+          const tableNot =
+            notificationData[tableMeta.rowIndex].notification_status;
+          console.log("table not ", tableNot);
+
+          return tableNot == "Active" ? (
             <div className="flex items-center space-x-2">
               <FaEdit
-                title="View Cylinder Info"
+                title="Inactive"
+                onClick={() => handleUpdate(id)}
                 className="h-5 w-5 cursor-pointer"
               />
             </div>
+          ) : (
+            ""
           );
         },
       },
     },
   ];
+
+  //   <div className="flex items-center space-x-2">
+  //   <FaEdit
+  //     title="Inactive"
+  //     onClick={() => handleUpdate(id)}
+  //     className="h-5 w-5 cursor-pointer"
+  //   />
+  // </div>
   const options = {
     selectableRows: "none",
     elevation: 0,

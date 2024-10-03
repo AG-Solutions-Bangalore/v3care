@@ -28,6 +28,7 @@ import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import BASE_URL from "../../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const baseURL = "https://agsdraft.online/app/public/api";
 
@@ -66,7 +67,7 @@ const loadScript = (url, callback) => {
 
 const AddBooking = () => {
   const autoCompleteRef = useRef(null);
-
+  UseEscapeKey();
   const [query, setQuery] = useState("");
   const [query1, setQuery1] = useState("");
   var today = new Date();

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -16,10 +16,13 @@ import {
   Button,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
+  UseEscapeKey();
   const [booking, setBooking] = useState({});
   const [payment, setPayment] = useState({
     order_check_payment_type: "",
@@ -81,7 +84,7 @@ const PendingPaymentView = () => {
   const updateData = async (e) => {
     e.preventDefault();
     try {
-      await axios({
+      const res = await axios({
         url: `${BASE_URL}/api/panel-update-payment-status/${id}`,
         method: "PUT",
         data: payment,
@@ -89,10 +92,15 @@ const PendingPaymentView = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      alert("Data Updated Successfully");
+      if (res.data.code == "200") {
+        toast.success("Payment Updated Successfully");
+        navigate("/pending-payment");
+      } else {
+        toast.error("Network Error");
+      }
     } catch (error) {
       console.error("Error updating payment status:", error);
-      alert("Error updating payment status");
+      toast.error("Error updating payment status");
     }
   };
 
@@ -311,7 +319,7 @@ const PendingPaymentView = () => {
                     value={payment.order_check_payment_details}
                     onChange={onInputChange}
                   />
-                  <Button type="submit" color="blue">
+                  <Button type="submit" onClick={updateData} color="blue">
                     Receive Payment
                   </Button>
                 </form>

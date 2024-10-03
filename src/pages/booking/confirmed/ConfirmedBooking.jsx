@@ -10,12 +10,14 @@ import MUIDataTable from "mui-datatables";
 import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
 import OrderRefModal from "../../../components/OrderRefModal";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   // Modal state management
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderRef, setSelectedOrderRef] = useState(null);

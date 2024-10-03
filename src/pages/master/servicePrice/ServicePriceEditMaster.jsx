@@ -25,6 +25,7 @@ import {
 // import { BiStatus } from "react-icons/bi";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -32,7 +33,7 @@ const statusOptions = [
 ];
 const ServicePriceEditMaster = () => {
   const { id } = useParams();
-
+  UseEscapeKey();
   const [services, setService] = useState({
     service_id: "",
     service_sub_id: "",

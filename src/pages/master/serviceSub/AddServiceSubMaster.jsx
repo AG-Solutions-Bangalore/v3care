@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Input, Select } from "@material-tailwind/react";
 import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddServiceSubMaster = () => {
   const [services, setServices] = useState({
@@ -18,7 +19,7 @@ const AddServiceSubMaster = () => {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  UseEscapeKey();
   const [serdata, setSerData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);

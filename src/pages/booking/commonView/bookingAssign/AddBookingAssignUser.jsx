@@ -9,6 +9,7 @@ import axios from "axios";
 import BASE_URL from "../../../../base/BaseUrl";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const AddBookingAssignUser = () => {
   const { id } = useParams();
 
@@ -20,7 +21,7 @@ const AddBookingAssignUser = () => {
     order_id: id,
   });
   const navigate = useNavigate();
-
+  UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // Validation function
 
@@ -88,12 +89,12 @@ const AddBookingAssignUser = () => {
       <BookingFilter />
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Booking User {id}
+          Create Booking User
         </h3>
       </div>
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
             {/* Service Field */}
             <div className="form-group">
               <FormControl fullWidth>

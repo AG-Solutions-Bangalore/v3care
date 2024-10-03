@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { MdTitle, MdDescription, MdImage } from "react-icons/md";
 import { Button } from "@mui/material";
 import Layout from "../../layout/Layout";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddNotification = () => {
   const [notification, setNotification] = useState({
@@ -13,6 +15,8 @@ const AddNotification = () => {
     notification_image: "",
     notification_sub_heading: "",
   });
+  UseEscapeKey();
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -37,33 +41,34 @@ const AddNotification = () => {
     if (v) {
       setIsButtonDisabled(true);
 
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-notification`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.code == "200") {
-        alert("success");
-      } else {
-        alert("duplicate entry");
-      }
+      // const response = await axios.post(
+      //   `${BASE_URL}/api/panel-create-notification`,
+      //   data,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+      // if (response.data.code == "200") {
+      //   alert("success");
+      // } else {
+      //   alert("duplicate entry");
+      // }
 
       axios({
-        url: +"/panel-create-notification",
+        url: BASE_URL + "/api/panel-create-notification",
         method: "POST",
         data,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("login")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }).then((res) => {
         if (res.data.code == "200") {
-          alert("success");
+          toast.success("Notification Created");
+          navigate("/notification");
         } else {
-          alert("Duplicate Entry");
+          toast.error("Duplicate Entry");
         }
       });
     }
@@ -101,13 +106,18 @@ const AddNotification = () => {
   return (
     <Layout>
       <div className="w-full mx-auto p-6">
-        <h1 className="text-2xl text-gray-700 mb-6 ">Create Notification</h1>
-
+        <div className="flex flex-col mb-6 md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+          <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
+            Create Notification
+          </h3>
+        </div>
         <div className="bg-white p-4 rounded-lg">
           <form id="addIndiv" autoComplete="off" className="space-y-6">
             {/* Heading Input */}
             <div>
-              <label className="block text-gray-700 mb-2">Heading</label>
+              <label className="block text-gray-700 mb-2">
+                Heading <span className="text-red-700">*</span>
+              </label>
               <div className="relative">
                 <MdTitle className="absolute top-3 left-3 text-blue-400" />
                 <input
@@ -137,7 +147,9 @@ const AddNotification = () => {
 
             {/* Description Input */}
             <div>
-              <label className="block text-gray-700 mb-2">Description</label>
+              <label className="block text-gray-700 mb-2">
+                Description <span className="text-red-700">*</span>
+              </label>
               <div className="relative">
                 <MdDescription className="absolute top-3 left-3 text-green-400" />
                 <textarea

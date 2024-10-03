@@ -8,6 +8,7 @@ import axios from "axios";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const AddBackhandTeam = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -25,7 +26,7 @@ const AddBackhandTeam = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
-
+  UseEscapeKey();
   const [branch, setBranch] = useState([]);
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");

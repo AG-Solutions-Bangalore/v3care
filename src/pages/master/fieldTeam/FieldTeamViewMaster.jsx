@@ -15,6 +15,7 @@ import {
   FaEdit,
   FaArrowLeft,
 } from "react-icons/fa";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const FieldTeamViewMaster = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const FieldTeamViewMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
 
   useEffect(() => {
     const fetchViewTeamData = async () => {

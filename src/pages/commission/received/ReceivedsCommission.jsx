@@ -9,11 +9,13 @@ import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 import Moment from "moment";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ReceivedsCommission = () => {
   const [receivedCommData, setReceivedCommData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchReceivedComData = async () => {
       try {

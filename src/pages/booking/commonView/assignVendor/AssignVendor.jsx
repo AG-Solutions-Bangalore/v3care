@@ -9,12 +9,14 @@ import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import { FaEdit } from "react-icons/fa";
 import BASE_URL from "../../../../base/BaseUrl";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const AssignVendor = () => {
   const { id } = useParams();
   const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   localStorage.setItem("vendorBook", id);
   useEffect(() => {
     const fetchAssignVendorData = async () => {

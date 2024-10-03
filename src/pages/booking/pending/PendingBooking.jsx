@@ -9,12 +9,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchPendingData = async () => {
       try {

@@ -19,7 +19,6 @@ const BookingOrder = () => {
   const [reload, setReload] = useState(false);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-dashboard-data/${dateyear}`,
@@ -29,6 +28,9 @@ const BookingOrder = () => {
           },
         }
       );
+      if (response.status === "200") {
+        setLoading(true);
+      }
       setData(response.data.booking_tomm);
     } catch (error) {
       console.error("Error fetching booking data:", error);
@@ -47,7 +49,7 @@ const BookingOrder = () => {
     if (reload || data.length === 0) {
       fetchData();
     }
-  }, [dateyear, navigate, reload, data.length]);
+  }, []);
 
   const handleReload = () => {
     setReload(true);

@@ -7,13 +7,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import BASE_URL from "../../../base/BaseUrl";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const IdealFieldListVendor = () => {
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
   var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
   var todayback = yyyy + "-" + mm + "-" + dd;
-
+  UseEscapeKey();
   const [idealData, setIdealData] = useState([]);
 
   const [idealDataDate, setIdealDataDate] = useState({

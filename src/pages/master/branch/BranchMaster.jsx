@@ -7,12 +7,14 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BranchMaster = () => {
   const [branchMasterData, setBranchMasterData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchTodayData = async () => {
       try {

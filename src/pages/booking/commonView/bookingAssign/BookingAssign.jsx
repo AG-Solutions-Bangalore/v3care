@@ -9,6 +9,7 @@ import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import { FaEdit } from "react-icons/fa";
 import BASE_URL from "../../../../base/BaseUrl";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const BookingAssign = () => {
   // api - panel-fetch-booking-assign-list+ id
   const { id } = useParams();
@@ -17,6 +18,7 @@ const BookingAssign = () => {
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("assignBook", id);
+  UseEscapeKey();
   useEffect(() => {
     const fetchBookingAssignData = async () => {
       try {

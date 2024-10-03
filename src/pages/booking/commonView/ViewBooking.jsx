@@ -18,10 +18,13 @@ import {
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
+  UseEscapeKey();
 
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -53,6 +56,37 @@ const ViewBooking = () => {
   useEffect(() => {
     fetchBookingData();
   }, []);
+
+  const notifyUpdate = async () => {
+    e.preventDefault();
+    let vendor_service =
+      booking.order_custom_price <= "1"
+        ? booking.order_service
+        : booking.order_custom;
+    let order_ref = booking.order_ref;
+    let area = booking.order_area;
+
+    let data = {
+      vendor_service: vendor_service,
+      area: area,
+      order_ref: order_ref,
+    };
+    const res = await axios.post(
+      `${BASE_URL}/api/panel-create-booking-vendor-notification`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (res.data.code == "200") {
+      toast.success("Notification Sent Successfully");
+    } else {
+      toast.error("Network Error");
+    }
+  };
+
   const renderActiveTabContent = () => {
     switch (activeTab) {
       case "bookingDetails":
@@ -185,7 +219,7 @@ const ViewBooking = () => {
       <div className="container mx-auto p-4">
         <div className="flex justify-between">
           <Typography variant="h4" color="gray" className="mb-6">
-            View Booking {id}
+            View Booking
           </Typography>
           <div>
             {/* + Assign V3 Button */}
@@ -218,7 +252,7 @@ const ViewBooking = () => {
 
             {/* + Notify All Button */}
             {booking.order_status === "Confirmed" && (
-              <Button onClick={() => console.log("notify clicked")} color="red">
+              <Button onClick={() => notifyUpdate} color="red">
                 + Notify All
               </Button>
             )}

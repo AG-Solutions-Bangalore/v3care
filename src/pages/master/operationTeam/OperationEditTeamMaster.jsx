@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -29,6 +30,7 @@ const status = [
 
 const OperationEditTeamMaster = () => {
   const { id } = useParams();
+  UseEscapeKey();
   const [team, setTeam] = useState({
     name: "",
     mobile: "",

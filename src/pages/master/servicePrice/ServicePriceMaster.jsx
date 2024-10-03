@@ -7,12 +7,14 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  UseEscapeKey();
   useEffect(() => {
     const fetchServicePriceData = async () => {
       try {

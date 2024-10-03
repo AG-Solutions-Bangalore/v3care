@@ -9,13 +9,14 @@ import Moment from "moment";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiSquarePlus } from "react-icons/ci";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const CancelBooking = () => {
   const [cancelBookData, setCancelBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchCancelData = async () => {
       try {

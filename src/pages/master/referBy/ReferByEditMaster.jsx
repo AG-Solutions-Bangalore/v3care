@@ -17,6 +17,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -28,6 +29,7 @@ const ReferByEditMaster = () => {
     { value: "Active", label: "Active" },
     { value: "Inactive", label: "Inactive" },
   ]);
+  UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);

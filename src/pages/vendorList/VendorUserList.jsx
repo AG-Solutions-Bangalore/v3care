@@ -10,6 +10,7 @@ import Moment from "moment";
 import { ContextPanel } from "../../utils/ContextPanel";
 import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 const VendorUserList = () => {
   const { id } = useParams();
   const [vendorUserList, setVendorUserList] = useState(null);
@@ -17,7 +18,7 @@ const VendorUserList = () => {
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("idVendor", id);
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchUserVendorListData = async () => {
       try {

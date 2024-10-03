@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -23,7 +24,7 @@ const statusOptions = [
 const EditVendor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-
+  UseEscapeKey();
   const [vendor, setVendor] = useState({
     vendor_short: "",
     vendor_company: "",

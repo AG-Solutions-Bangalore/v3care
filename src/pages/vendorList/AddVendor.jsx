@@ -16,6 +16,7 @@ import BASE_URL from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 // const theme = createTheme();
 
@@ -24,6 +25,7 @@ import { toast } from "react-toastify";
 // };
 const AddVendor = () => {
   // sajid
+  UseEscapeKey();
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);

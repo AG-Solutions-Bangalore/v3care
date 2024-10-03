@@ -7,9 +7,11 @@ import { FiEdit } from "react-icons/fi";
 import BASE_URL from "../../base/BaseUrl";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddVendorService = () => {
   const { id } = useParams();
+  UseEscapeKey();
   const navigate = useNavigate();
   const [selectedServices, setSelectedServices] = useState([]);
   const [availableServices, setAvailableServices] = useState([]);

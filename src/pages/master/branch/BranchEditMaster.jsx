@@ -17,6 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
@@ -28,6 +29,7 @@ const BranchEditMaster = () => {
     { value: "Active", label: "Active" },
     { value: "Inactive", label: "Inactive" },
   ]);
+  UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);

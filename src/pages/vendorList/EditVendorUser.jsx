@@ -17,12 +17,14 @@ import {
 import SelectInput from "@mui/material/Select/SelectInput";
 import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
 ];
 const EditVendorUser = () => {
   const { id } = useParams();
+  UseEscapeKey();
   const [vendor, setVendor] = useState({
     name: "",
     mobile: "",

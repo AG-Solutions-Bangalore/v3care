@@ -12,9 +12,10 @@ import axios from "axios";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const EditAssignVendor = () => {
   const { id } = useParams();
-
+  UseEscapeKey();
   const [bookingUser, setBookingUser] = useState({
     order_user_id: "",
     order_start_time: "",

@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import BASE_URL from "../../../../base/BaseUrl";
 import axios from "axios";
 import BookingFilter from "../../../../components/BookingFilter";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const AddBookingVendor = () => {
   const { id } = useParams();
 
@@ -19,7 +20,7 @@ const AddBookingVendor = () => {
     order_id: id,
   });
   const navigate = useNavigate();
-
+  UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // Validation function
 
@@ -92,7 +93,7 @@ const AddBookingVendor = () => {
       </div>
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
             {/* Service Field */}
             <div className="form-group">
               <FormControl fullWidth>

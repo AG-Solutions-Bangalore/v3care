@@ -8,13 +8,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const CompletedBooking = () => {
   const [CompletedBookData, setCompletedBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  UseEscapeKey();
   useEffect(() => {
     const fetchCompletedData = async () => {
       try {
