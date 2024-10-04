@@ -12,7 +12,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -113,15 +113,19 @@ const ServicePriceMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div
-              onClick={() => navigate(`/service-price-edit/${id}`)}
-              className="flex items-center space-x-2"
-            >
-              <FaEdit
-                title="View Cylinder Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
+            <>
+              {userType !== "4" && (
+                <div
+                  onClick={() => navigate(`/service-price-edit/${id}`)}
+                  className="flex items-center space-x-2"
+                >
+                  <FaEdit
+                    title="View Cylinder Info"
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+              )}
+            </>
           );
         },
       },
@@ -151,13 +155,14 @@ const ServicePriceMaster = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Service Price List
         </h3>
-
-        <Link
-          to="/add-service-price"
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Service Price
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to="/add-service-price"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Service Price
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

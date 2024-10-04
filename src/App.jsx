@@ -150,7 +150,10 @@ const App = () => {
           </>
         )}
         {/* master  */}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             <Route path="/branch" element={<BranchMaster />} />
             <Route path="/add-branch" element={<AddBranch />} />
@@ -205,7 +208,10 @@ const App = () => {
             />
           </>
         )}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             {/* vendor List  */}
             <Route path="/vendor-list" element={<VendorList />} />
@@ -228,7 +234,10 @@ const App = () => {
             />
           </>
         )}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             {/* ideal field list  */}
             <Route path="/idealfield-list" element={<IdealFieldList />} />
@@ -238,7 +247,10 @@ const App = () => {
             />
           </>
         )}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             {/* payment  */}
             <Route path="/pending-payment" element={<PendingPayment />} />
@@ -253,7 +265,10 @@ const App = () => {
             />
           </>
         )}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             {/* commission  */}
             <Route path="/commission-pending" element={<PendingCommission />} />
@@ -271,7 +286,10 @@ const App = () => {
             />
           </>
         )}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             {/* notification  */}
             <Route path="/notification" element={<NotificationList />} />
@@ -279,7 +297,10 @@ const App = () => {
           </>
         )}
         {/* download  */}
-        {(userType === "6" || userType === "5" || userType === "7") && (
+        {(userType === "6" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
           <>
             <Route path="/booking-download" element={<BookingDownload />} />
             <Route path="/vendor-download" element={<VendorDownload />} />

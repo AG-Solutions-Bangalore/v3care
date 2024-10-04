@@ -13,7 +13,7 @@ import UseEscapeKey from "../../utils/UseEscapeKey";
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   const fetchNotificationData = async () => {
@@ -140,11 +140,13 @@ const NotificationList = () => {
 
           return tableNot == "Active" ? (
             <div className="flex items-center space-x-2">
-              <FaEdit
-                title="Inactive"
-                onClick={() => handleUpdate(id)}
-                className="h-5 w-5 cursor-pointer"
-              />
+              {userType !== "4" && (
+                <FaEdit
+                  title="Inactive"
+                  onClick={() => handleUpdate(id)}
+                  className="h-5 w-5 cursor-pointer"
+                />
+              )}
             </div>
           ) : (
             ""
@@ -184,13 +186,14 @@ const NotificationList = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Notification List
         </h3>
-
-        <Link
-          to="/add-notification"
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Notification
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to="/add-notification"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Notification
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

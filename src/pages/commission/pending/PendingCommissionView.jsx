@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import {
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ContextPanel } from "../../../utils/ContextPanel";
 
 const PendingCommissionView = () => {
   const { id } = useParams();
@@ -28,7 +29,7 @@ const PendingCommissionView = () => {
   const [payment, setPayment] = useState({
     order_comm_remark: "",
   });
-
+  const { userType } = useContext(ContextPanel);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
@@ -279,21 +280,23 @@ const PendingCommissionView = () => {
             </div>
 
             {/* Payment Card */}
-            <Card className="mb-6">
-              <CardBody>
-                <form onSubmit={updateData} className="space-y-4">
-                  <Input
-                    label="Commission Remarks"
-                    name="order_comm_remark"
-                    value={payment.order_comm_remark}
-                    onChange={onInputChange}
-                  />
-                  <Button type="submit" onClick={updateData} color="blue">
-                    Receive Commission
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
+            {userType !== "4" && (
+              <Card className="mb-6">
+                <CardBody>
+                  <form onSubmit={updateData} className="space-y-4">
+                    <Input
+                      label="Commission Remarks"
+                      name="order_comm_remark"
+                      value={payment.order_comm_remark}
+                      onChange={onInputChange}
+                    />
+                    <Button type="submit" onClick={updateData} color="blue">
+                      Receive Commission
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
           </div>
         </div>
       </div>

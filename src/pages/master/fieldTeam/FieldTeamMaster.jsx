@@ -13,7 +13,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -107,11 +107,13 @@ const FieldTeamMaster = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <FaEdit
-                onClick={() => navigate(`/field-team-edit/${id}`)}
-                title="View Cylinder Info"
-                className="h-5 w-5 cursor-pointer"
-              />
+              {userType !== "4" && (
+                <FaEdit
+                  onClick={() => navigate(`/field-team-edit/${id}`)}
+                  title="View Cylinder Info"
+                  className="h-5 w-5 cursor-pointer"
+                />
+              )}
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/field-team-view/${id}`)}
                 title="View Cylinder Info"
@@ -147,13 +149,14 @@ const FieldTeamMaster = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Field Team List
         </h3>
-
-        <Link
-          to="/add-field-team"
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Field Team
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to="/add-field-team"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Field Team
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

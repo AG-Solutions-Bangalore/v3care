@@ -17,7 +17,7 @@ import UseEscapeKey from "../../utils/UseEscapeKey";
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -161,35 +161,38 @@ const VendorList = () => {
           const vendorStatus = vendorListData[tableMeta.rowIndex].vendor_status;
           return (
             <div className="flex items-center space-x-2">
-              {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
+              {userType !== "4" && (
                 <>
-                  <RiEditLine
-                    onClick={() => navigate(`/vendor-edit/${id}`)}
-                    title="Edit Vendor"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                  <FiUsers
-                    onClick={() => navigate(`/vendor-user-list/${id}`)}
-                    title="view Vendor"
-                    className="h-5 w-5 cursor-pointer"
-                  />
+                  {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
+                    <>
+                      <RiEditLine
+                        onClick={() => navigate(`/vendor-edit/${id}`)}
+                        title="Edit Vendor"
+                        className="h-5 w-5 cursor-pointer"
+                      />
+                      <FiUsers
+                        onClick={() => navigate(`/vendor-user-list/${id}`)}
+                        title="view Vendor"
+                        className="h-5 w-5 cursor-pointer"
+                      />
+                    </>
+                  ) : vendorStatus === "Pending" ? (
+                    <>
+                      {/* for pending  */}
+                      <CiEdit
+                        onClick={() => navigate(`/vendor-pending-edit/${id}`)}
+                        title="Edit Pending Vendor"
+                        className="h-5 w-5 cursor-pointer"
+                      />
+                      <FiUserPlus
+                        onClick={(e) => handleActivate(e, id)}
+                        title="Activate Vendor"
+                        className="h-5 w-5 cursor-pointer"
+                      />
+                    </>
+                  ) : null}
                 </>
-              ) : vendorStatus === "Pending" ? (
-                <>
-                  {/* for pending  */}
-                  <CiEdit
-                    onClick={() => navigate(`/vendor-pending-edit/${id}`)}
-                    title="Edit Pending Vendor"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                  <FiUserPlus
-                    onClick={(e) => handleActivate(e, id)}
-                    title="Activate Vendor"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                </>
-              ) : null}
-
+              )}
               {/* common  */}
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/vendor-view/${id}`)}
@@ -225,13 +228,14 @@ const VendorList = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Vendor List
         </h3>
-
-        <Link
-          to={`/add-vendor`}
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Vendor
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to={`/add-vendor`}
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Vendor
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

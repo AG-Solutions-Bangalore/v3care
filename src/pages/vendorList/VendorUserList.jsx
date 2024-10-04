@@ -15,7 +15,7 @@ const VendorUserList = () => {
   const { id } = useParams();
   const [vendorUserList, setVendorUserList] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("idVendor", id);
   UseEscapeKey();
@@ -118,13 +118,14 @@ const VendorUserList = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Vendor User List
         </h3>
-
-        <Link
-          to={`/add-vendor-user/${id}`}
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Vendor User
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to={`/add-vendor-user/${id}`}
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Vendor User
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

@@ -21,7 +21,7 @@ const FieldTeamViewMaster = () => {
   const { id } = useParams();
   const [fieldTeamViewData, setFieldTeamViewData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
 
@@ -72,7 +72,7 @@ const FieldTeamViewMaster = () => {
           <div className="p-6">
             <div className="flex flex-col sm:flex-row justify-between">
               <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                View Field Team{id}
+                View Field Team
               </h1>
               <div className="flex flex-row  gap-2">
                 {/* add condition is userdhar adn pancard is null disabled  */}
@@ -143,13 +143,15 @@ const FieldTeamViewMaster = () => {
             )}
 
             <div className="flex justify-end space-x-4 mt-8">
-              <button
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center"
-                onClick={() => navigate("/field-team-edit/" + id)}
-              >
-                <FaEdit className="mr-2" />
-                Edit
-              </button>
+              {userType !== "4" && (
+                <button
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center"
+                  onClick={() => navigate("/field-team-edit/" + id)}
+                >
+                  <FaEdit className="mr-2" />
+                  Edit
+                </button>
+              )}
               <button
                 className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition duration-150 ease-in-out flex items-center"
                 onClick={() => navigate("/field-team")}

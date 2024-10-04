@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../layout/Layout";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 
@@ -18,6 +18,7 @@ import {
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ContextPanel } from "../../../utils/ContextPanel";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
@@ -28,7 +29,7 @@ const PendingPaymentView = () => {
     order_check_payment_type: "",
     order_check_payment_details: "",
   });
-
+  const { userType } = useContext(ContextPanel);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
@@ -283,48 +284,49 @@ const PendingPaymentView = () => {
                 <CardBody>{renderActiveTabContent()}</CardBody>
               </Card>
             </div>
-
-            {/* Payment Card */}
-            <Card className="mb-6">
-              <CardHeader floated={false} className="h-16 p-4">
-                <Typography variant="h5" color="blue-gray">
-                  Receive Payment
-                </Typography>
-              </CardHeader>
-              <CardBody>
-                <form onSubmit={updateData} className="space-y-4">
-                  <Select
-                    label="Select Payment Mode"
-                    name="order_check_payment_type"
-                    value={payment.order_check_payment_type || ""}
-                  >
-                    {paymentModes.map((mode) => (
-                      <Option
-                        key={mode.payment_mode}
-                        value={mode.payment_mode}
-                        onClick={() =>
-                          setPayment({
-                            ...payment,
-                            order_check_payment_type: mode.payment_mode,
-                          })
-                        }
-                      >
-                        {mode.payment_mode}
-                      </Option>
-                    ))}
-                  </Select>
-                  <Input
-                    label="Referral Number / Remarks"
-                    name="order_check_payment_details"
-                    value={payment.order_check_payment_details}
-                    onChange={onInputChange}
-                  />
-                  <Button type="submit" onClick={updateData} color="blue">
+            {userType !== "4" && (
+              <Card className="mb-6">
+                <CardHeader floated={false} className="h-16 p-4">
+                  <Typography variant="h5" color="blue-gray">
                     Receive Payment
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
+                  </Typography>
+                </CardHeader>
+                <CardBody>
+                  <form onSubmit={updateData} className="space-y-4">
+                    <Select
+                      label="Select Payment Mode"
+                      name="order_check_payment_type"
+                      value={payment.order_check_payment_type || ""}
+                    >
+                      {paymentModes.map((mode) => (
+                        <Option
+                          key={mode.payment_mode}
+                          value={mode.payment_mode}
+                          onClick={() =>
+                            setPayment({
+                              ...payment,
+                              order_check_payment_type: mode.payment_mode,
+                            })
+                          }
+                        >
+                          {mode.payment_mode}
+                        </Option>
+                      ))}
+                    </Select>
+                    <Input
+                      label="Referral Number / Remarks"
+                      name="order_check_payment_details"
+                      value={payment.order_check_payment_details}
+                      onChange={onInputChange}
+                    />
+
+                    <Button type="submit" onClick={updateData} color="blue">
+                      Receive Payment
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
           </div>
         </div>
       </div>

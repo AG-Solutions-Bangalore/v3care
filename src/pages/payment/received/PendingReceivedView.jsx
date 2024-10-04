@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import {
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ContextPanel } from "../../../utils/ContextPanel";
 const PendingReceivedView = () => {
   const { id } = useParams();
 
@@ -30,6 +31,7 @@ const PendingReceivedView = () => {
   // no need check at once and remove it
   const [vendor, setVendor] = useState({});
   // new design
+  const { userType } = useContext(ContextPanel);
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const fetchBookingData = async () => {
     try {
@@ -268,15 +270,17 @@ const PendingReceivedView = () => {
             </div>
 
             {/* Payment Card */}
-            <Card className="mb-6">
-              <CardBody>
-                <form onSubmit={updateData} className="space-y-4">
-                  <Button type="submit" color="blue">
-                    Did Not Received Payment
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
+            {userType !== "4" && (
+              <Card className="mb-6">
+                <CardBody>
+                  <form onSubmit={updateData} className="space-y-4">
+                    <Button type="submit" color="blue">
+                      Did Not Received Payment
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -19,12 +19,14 @@ import {
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ContextPanel } from "../../../utils/ContextPanel";
 
 const ReceivedCommissionView = () => {
   const { id } = useParams();
   UseEscapeKey();
   const [booking, setBooking] = useState({});
   const navigate = useNavigate();
+  const { userType } = useContext(ContextPanel);
 
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -271,15 +273,17 @@ const ReceivedCommissionView = () => {
             </div>
 
             {/* Payment Card */}
-            <Card className="mb-6">
-              <CardBody>
-                <form onSubmit={updateData} className="space-y-4">
-                  <Button type="submit" color="blue">
-                    Did Not Received Commission
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
+            {userType !== "4" && (
+              <Card className="mb-6">
+                <CardBody>
+                  <form onSubmit={updateData} className="space-y-4">
+                    <Button type="submit" color="blue">
+                      Did Not Received Commission
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
           </div>
         </div>
       </div>

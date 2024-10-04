@@ -12,7 +12,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ServiceSubMaster = () => {
   const [serviceSubData, setServiceSubData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -102,15 +102,19 @@ const ServiceSubMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div
-              onClick={() => navigate(`/service-sub-edit/${id}`)}
-              className="flex items-center space-x-2"
-            >
-              <FaEdit
-                title="View Cylinder Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
+            <>
+              {userType !== "4" && (
+                <div
+                  onClick={() => navigate(`/service-sub-edit/${id}`)}
+                  className="flex items-center space-x-2"
+                >
+                  <FaEdit
+                    title="View Cylinder Info"
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+              )}
+            </>
           );
         },
       },
@@ -140,13 +144,14 @@ const ServiceSubMaster = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Service Sub List
         </h3>
-
-        <Link
-          to="/add-service-sub"
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Service Sub
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to="/add-service-sub"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Service Sub
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

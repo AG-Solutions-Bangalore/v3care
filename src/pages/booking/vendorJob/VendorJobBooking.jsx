@@ -14,7 +14,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -135,11 +135,13 @@ const VendorJobBooking = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <CiSquarePlus
-                onClick={() => navigate(`/edit-booking/${id}`)}
-                title="edit booking"
-                className="h-5 w-5 cursor-pointer"
-              />
+              {userType !== "4" && (
+                <CiSquarePlus
+                  onClick={() => navigate(`/edit-booking/${id}`)}
+                  title="edit booking"
+                  className="h-5 w-5 cursor-pointer"
+                />
+              )}
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/view-booking/${id}`)}
                 title="View Cylinder Info"

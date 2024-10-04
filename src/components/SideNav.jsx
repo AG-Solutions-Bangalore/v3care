@@ -79,19 +79,19 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       to: "/refer-by",
       icon: <RiAdminLine className="w-5 h-5 text-inherit" />,
       text: "Master",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/vendor-list",
       icon: <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />,
       text: "Vendor List",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/idealfield-list",
       icon: <CiViewList className="w-5 h-5 text-inherit" />,
       text: "Ideal Field List",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/today",
@@ -103,25 +103,25 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       to: "/pending-payment",
       icon: <MdOutlinePayment className="w-5 h-5 text-inherit" />,
       text: "Payment",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/commission-pending",
       icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
       text: "Commission",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/notification",
       icon: <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />,
       text: "Notification",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/booking-download",
       icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
       text: "Download",
-      roles: ["admin", "superadmin", "operationteam"],
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
   ];
 
