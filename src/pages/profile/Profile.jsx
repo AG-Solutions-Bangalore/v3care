@@ -6,6 +6,7 @@ import {
   CardHeader,
   Button,
   Input,
+  CardFooter,
 } from "@material-tailwind/react";
 import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
@@ -126,60 +127,53 @@ const Profile = () => {
               Profile
             </Typography>
           </CardHeader>
-          <CardBody className=" px-0 pt-0 pb-2 ">
-            <form
-              onSubmit={onUpdateProfile}
-              className="px-8 pt-6 pb-8 w-full flex flex-row gap-2 max-w-lg"
-            >
-              {/* Name field */}
-              <div className="mb-4">
-                <Input
-                  label="Name"
-                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
-                  id="name"
-                  type="text"
-                  value={firstName}
-                  onChange={handleFirstNameChange}
-                  placeholder="Enter your name"
-                />
-              </div>
+          <CardBody className=" flex flex-row gap-4 ">
+            {/* Name field */}
 
-              {/* Mobile field */}
-              <div className="mb-4">
-                <Input
-                  label="Mobile"
-                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
-                  id="mobile"
-                  type="tel"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  placeholder="Enter your mobile number"
-                />
-              </div>
+            <Input
+              label="Name"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
+              id="name"
+              type="text"
+              value={firstName}
+              onChange={handleFirstNameChange}
+              placeholder="Enter your name"
+            />
 
-              {/* Email field */}
-              <div className="mb-4">
-                <Input
-                  label="Email"
-                  className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                />
-              </div>
+            {/* Mobile field */}
 
-              <div className="flex items-center  justify-between">
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  type="sumbit"
-                >
-                  Update Profile
-                </button>
-              </div>
-            </form>
+            <Input
+              label="Mobile"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
+              id="mobile"
+              type="tel"
+              value={phone}
+              onChange={handlePhoneChange}
+              placeholder="Enter your mobile number"
+            />
+
+            {/* Email field */}
+
+            <Input
+              label="Email"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
           </CardBody>
+          <CardFooter className="pt-0 flex justify-center">
+            <Button
+              onClick={onUpdateProfile}
+              variant="gradient"
+              color="blue"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Update Profile
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </Layout>
