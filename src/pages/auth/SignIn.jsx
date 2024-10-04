@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
-import toast, { Toaster } from "react-hot-toast";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -66,58 +66,46 @@ const SignIn = () => {
   };
   return (
     <>
-      <Toaster
-        toastOptions={{
-          success: {
-            style: {
-              background: "green",
-            },
-          },
-          error: {
-            style: {
-              background: "red",
-            },
-          },
-        }}
-        position="top-right"
-        reverseOrder={false}
-      />
-      <section className="flex flex-col lg:flex-row min-h-screen">
-        {/* Left Section for Carousel */}
-        <div className="hidden lg:block lg:w-1/2">
+      {/* min-h-screen to h-screen  */}
+      <section className="flex flex-col lg:flex-row h-screen">
+        {/* Left Section for Carousel // h-full -add */}
+        <div className="hidden lg:block lg:w-1/2 h-full">
           <Carousel autoplay loop>
             <img
-              src="/img/home-decor-3.jpg"
+              src="/img/1.jpg"
               alt="Slide 1"
               className="h-full w-full object-cover"
             />
             <img
-              src="/img/home-decor-4.jpg"
+              src="/img/2.jpg"
               alt="Slide 2"
               className="h-full w-full object-cover"
             />
             <img
-              src="/img/home-decor-1.jpg"
+              src="/img/3.jpg"
               alt="Slide 3"
               className="h-full w-full object-cover"
             />
           </Carousel>
         </div>
 
-        {/* Right Section for Login Form */}
-        <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 lg:w-1/2">
+        {/* Right Section for Login Form  h-full add*/}
+        <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 h-full lg:w-1/2">
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-500 ">
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-between mb-4">
+              <div>
+                <h2 className="font-bold text-2xl text-[#002D74]">Login</h2>
+                <p className="text-xs mt-4 text-[#002D74]">
+                  If you are already a member, easily log in
+                </p>
+              </div>
               <img
                 src="/img/v3logo.png"
                 alt="RK Cylinder Logo"
                 className="h-14 w-auto rounded-lg  "
               />
             </div>
-            <h2 className="font-bold text-2xl text-[#002D74]">Login</h2>
-            <p className="text-xs mt-4 text-[#002D74]">
-              If you are already a member, easily log in
-            </p>
+
             <form
               onSubmit={handleSumbit}
               method="POST"
@@ -143,13 +131,22 @@ const SignIn = () => {
                     className: "before:content-none after:content-none",
                   }}
                 />
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 font-medium"
-                >
-                  Password
-                </Typography>
+                <div className="flex justify-between">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="-mb-3 font-medium"
+                  >
+                    Password
+                  </Typography>
+                  <Typography
+                    variant="small"
+                    className=" -mb-3 font-medium hover:text-orange-600  text-gray-500 border-b border-black   "
+                  >
+                    <Link to="/forget-password">Forgot Password</Link>
+                  </Typography>
+                </div>
+
                 <Input
                   id="password"
                   name="password"
@@ -177,31 +174,27 @@ const SignIn = () => {
               <div className="flex items-center justify-between gap-2 mt-6">
                 <Typography
                   variant="small"
-                  className="font-medium text-gray-900"
+                  className="font-medium p-2 text-gray-900 hover:bg-blue-200 hover:rounded-lg border-b border-blue-500 "
                 >
-                  <Link to="/forget-password">Forgot Password</Link>
+                  <Link
+                    to="/add-booking-outside"
+                    className="text-gray-900 ml-1"
+                  >
+                    Book Now
+                  </Link>
+                </Typography>
+                <Typography
+                  variant="small"
+                  className="font-medium p-2 text-gray-900 hover:bg-blue-200 hover:rounded-lg border-b border-blue-500"
+                >
+                  <Link
+                    to="/become-partner-outside"
+                    className="text-gray-900 ml-1"
+                  >
+                    Become Partner
+                  </Link>
                 </Typography>
               </div>
-
-              <Typography
-                variant="paragraph"
-                className="text-center text-blue-gray-500 font-medium mt-4"
-              >
-                <Link to="/add-booking-outside" className="text-gray-900 ml-1">
-                  Book Now
-                </Link>
-              </Typography>
-              <Typography
-                variant="paragraph"
-                className="text-center text-blue-gray-500 font-medium mt-4"
-              >
-                <Link
-                  to="/become-partner-outside"
-                  className="text-gray-900 ml-1"
-                >
-                  Become Partner
-                </Link>
-              </Typography>
             </form>
           </div>
         </div>

@@ -8,14 +8,14 @@ import BookingOrder from "./bookingOrders/BookingOrder";
 const Home = () => {
   return (
     <Layout>
-      <div className="mt-6 p-2">
-        <div className="mt-4">
+      <div className=" p-2">
+        <div className="mt-2">
           <Cards />
         </div>
-        <div className="mt-8">
+        <div className="mt-4">
           <Jobs />
         </div>
-        <div className="mt-8">
+        <div className="mt-4">
           <BookingOrder />
         </div>
       </div>

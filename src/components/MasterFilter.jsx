@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ContextPanel } from "../utils/ContextPanel";
 
 const MasterFilter = () => {
   //   const [activeButton, setActiveButton] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { userType } = useContext(ContextPanel);
 
   //   const handleButtonClick = (index, path) => {
   //     setActiveButton(index);
@@ -16,7 +18,16 @@ const MasterFilter = () => {
     navigate(path);
   };
   const buttons = [
-    { label: "Branch", path: "/branch", color: "from-pink-500 to-orange-400" },
+    ...(userType !== "5" && userType !== "7"
+      ? [
+          {
+            label: "Branch",
+            path: "/branch",
+            color: "from-pink-500 to-orange-400",
+          },
+        ]
+      : []),
+    // { label: "Branch", path: "/branch", color: "from-pink-500 to-orange-400" },
     {
       label: "Refer By",
       path: "/refer-by",
@@ -48,11 +59,15 @@ const MasterFilter = () => {
       path: "/operation-team",
       color: "from-lime-500 to-green-400",
     },
-    {
-      label: "Backhand",
-      path: "/backhand-team",
-      color: "from-lime-500 to-green-400",
-    },
+    ...(userType !== "5" && userType !== "7"
+      ? [
+          {
+            label: "Backhand",
+            path: "/backhand-team",
+            color: "from-lime-500 to-green-400",
+          },
+        ]
+      : []),
   ];
   return (
     <div className="flex flex-wrap justify-between mt-6 gap-4">

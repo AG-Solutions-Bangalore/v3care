@@ -102,17 +102,13 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
                 <UserCircleIcon className="h-5 w-5 text-red" />
               </IconButton>
             </MenuHandler>
-            <MenuList className="bg-gray-700">
-              <MenuItem>
-                <Link to="/profile" className="text-black">
-                  Profile
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/change-password" className="text-black">
-                  Change Password
-                </Link>
-              </MenuItem>
+            <MenuList className="bg-gray-100">
+              <Link to="/profile" className="text-black ">
+                <MenuItem>Profile</MenuItem>
+              </Link>
+              <Link to="/change-password" className="text-black">
+                <MenuItem>Change Password</MenuItem>
+              </Link>
             </MenuList>
           </Menu>
           {/* Settings icon */}

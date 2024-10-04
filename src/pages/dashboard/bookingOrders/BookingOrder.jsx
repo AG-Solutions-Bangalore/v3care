@@ -69,8 +69,8 @@ const BookingOrder = () => {
   return (
     <>
       {fullClose && (
-        <div className="container mx-auto md:px-4">
-          <h2 className="text-2xl text-center my-5 font-bold">
+        <div className="container mx-auto ">
+          <h2 className="text-xl  my-5 font-bold ">
             Tomorrow's Booking Orders
           </h2>
           <div className="flex justify-between   bg-white p-4 rounded-sm">

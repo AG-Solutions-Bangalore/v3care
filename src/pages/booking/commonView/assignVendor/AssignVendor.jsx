@@ -14,7 +14,7 @@ const AssignVendor = () => {
   const { id } = useParams();
   const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   localStorage.setItem("vendorBook", id);
@@ -118,11 +118,13 @@ const AssignVendor = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <FaEdit
-                onClick={() => navigate(`/edit-booking-vendor/${id}`)}
-                title="Edit Booking Asssign"
-                className="h-5 w-5 cursor-pointer"
-              />
+              {userType !== "4" && (
+                <FaEdit
+                  onClick={() => navigate(`/edit-booking-vendor/${id}`)}
+                  title="Edit Booking Asssign"
+                  className="h-5 w-5 cursor-pointer"
+                />
+              )}
             </div>
           );
         },
@@ -132,8 +134,8 @@ const AssignVendor = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    rowsPerPage: 5,
-    rowsPerPageOptions: [5, 10, 25],
+    // rowsPerPage: 5,
+    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -153,13 +155,14 @@ const AssignVendor = () => {
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Booking Vendor List
         </h3>
-
-        <Link
-          to={`/add-booking-vendor/${id}`}
-          className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-        >
-          + Add Booking Vendor
-        </Link>
+        {userType !== "4" && (
+          <Link
+            to={`/add-booking-vendor/${id}`}
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Add Booking Vendor
+          </Link>
+        )}
       </div>
       <div className="mt-5">
         <MUIDataTable

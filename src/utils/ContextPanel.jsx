@@ -11,6 +11,7 @@ const AppProvider = ({ children }) => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const userType = localStorage.getItem("user_type_id");
 
   const checkPanelStatus = async () => {
     try {
@@ -144,7 +145,7 @@ const AppProvider = ({ children }) => {
   }, []);
 
   return (
-    <ContextPanel.Provider value={{ isPanelUp, setIsPanelUp }}>
+    <ContextPanel.Provider value={{ isPanelUp, setIsPanelUp, userType }}>
       {children}
     </ContextPanel.Provider>
   );

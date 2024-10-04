@@ -36,8 +36,8 @@ const Jobs = () => {
 
   return (
     <div>
-      <div className="flex justify-center">
-        <h1 className="text-black text-2xl font-bold">Today Jobs</h1>
+      <div>
+        <h1 className="text-black text-xl font-bold">Today Jobs</h1>
       </div>
       <div className="grid md:grid-cols-6 gap-4 grid-cols-2 mt-4">
         <div className="bg-white text-[#464D69] shadow-lg rounded-lg p-3 font-semibold text-center">

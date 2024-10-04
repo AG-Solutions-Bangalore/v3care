@@ -14,7 +14,8 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
 
   UseEscapeKey();
@@ -151,11 +152,14 @@ const TodayBooking = () => {
         customBodyRender: (id) => {
           return (
             <div className="flex items-center space-x-2">
-              <CiSquarePlus
-                onClick={() => navigate(`/edit-booking/${id}`)}
-                title="edit booking"
-                className="h-5 w-5 cursor-pointer"
-              />
+              {userType !== "4" && (
+                <CiSquarePlus
+                  onClick={() => navigate(`/edit-booking/${id}`)}
+                  title="edit booking"
+                  className="h-5 w-5 cursor-pointer"
+                />
+              )}
+
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/view-booking/${id}`)}
                 title="View Cylinder Info"
@@ -170,12 +174,15 @@ const TodayBooking = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    rowsPerPage: 5,
-    rowsPerPageOptions: [5, 10, 25],
-    responsive: "standard",
+    // rowsPerPage: rowsPerPage,
+    // rowsPerPageOptions: [5, 10, 25],
+    // responsive: "standard",
     viewColumns: true,
     download: false,
     print: false,
+    // onChangeRowsPerPage: (numberOfRows) => {
+    //   setRowsPerPage(numberOfRows);
+    // },
     setRowProps: (rowData) => {
       const orderStatus = rowData[10];
       let backgroundColor = "";

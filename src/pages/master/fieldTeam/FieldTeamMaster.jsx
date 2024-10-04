@@ -15,7 +15,7 @@ const FieldTeamMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-  UseEscapeKey()
+  UseEscapeKey();
   useEffect(() => {
     const fetchFieldData = async () => {
       try {
@@ -126,8 +126,8 @@ const FieldTeamMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    rowsPerPage: 5,
-    rowsPerPageOptions: [5, 10, 25],
+    // rowsPerPage: 5,
+    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

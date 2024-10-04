@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -20,11 +20,13 @@ import BASE_URL from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ContextPanel } from "../../../utils/ContextPanel";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
   UseEscapeKey();
+  const { userType } = useContext(ContextPanel);
 
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -251,7 +253,7 @@ const ViewBooking = () => {
             )}
 
             {/* + Notify All Button */}
-            {booking.order_status === "Confirmed" && (
+            {booking.order_status === "Confirmed" && userType !== "4" && (
               <Button onClick={() => notifyUpdate} color="red">
                 + Notify All
               </Button>

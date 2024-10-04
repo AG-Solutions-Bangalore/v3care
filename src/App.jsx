@@ -85,6 +85,8 @@ import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBo
 import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
 import UseEscapeKey from "./utils/UseEscapeKey";
 const App = () => {
+  const userType = localStorage.getItem("user_type_id");
+  console.log("usertypeapp", userType);
   return (
     <>
       <ToastContainer />
@@ -95,134 +97,196 @@ const App = () => {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/add-booking-outside" element={<BookNow />} />
         <Route path="/become-partner-outside" element={<BecomePartner />} />
-        <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
         <Route path="/maintenance" element={<Maintenance />} />
-        {/* booking  */}
-        <Route path="/view-booking/:id" element={<ViewBooking />} />
-        <Route path="/booking-assign/:id" element={<BookingAssign />} />
-        <Route
-          path="/add-booking-user/:id"
-          element={<AddBookingAssignUser />}
-        />
-        <Route path="/add-booking-vendor/:id" element={<AddBookingVendor />} />
+        {/* dashboard  */}
+        <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
 
-        <Route
-          path="/edit-booking-assign/:id"
-          element={<EditBookingAssign />}
-        />
-        <Route path="/assign-vendor/:id" element={<AssignVendor />} />
-        <Route path="/edit-booking-vendor/:id" element={<EditAssignVendor />} />
-        <Route path="/edit-booking/:id" element={<EditBookingAll />} />
-        <Route
-          path="/edit-booking-inspection/:id"
-          element={<EditBookingInspection />}
-        />
-        <Route path="/booking-reschedule/:id" element={<WorkInProgress />} />
-        <Route path="/postpone-booking/:id" element={<PostponeBooking />} />
-        <Route path="/add-booking" element={<AddBooking />} />
-        <Route path="/cancel" element={<CancelBooking />} />
-        <Route path="/completed" element={<CompletedBooking />} />
-        <Route path="/confirmed" element={<ConfirmedBooking />} />
-        <Route path="/inspection" element={<InspectionBooking />} />
-        <Route path="/pending" element={<PendingBooking />} />
-        <Route path="/today" element={<TodayBooking />} />
-        <Route path="/tomorrow" element={<TomorrowBooking />} />
-        <Route path="/vendor-job" element={<VendorJobBooking />} />
+        {/* booking  */}
+        {(userType === "6" ||
+          userType === "1" ||
+          userType === "4" ||
+          userType === "5" ||
+          userType === "7") && (
+          <>
+            <Route path="/view-booking/:id" element={<ViewBooking />} />
+            <Route path="/booking-assign/:id" element={<BookingAssign />} />
+            <Route
+              path="/add-booking-user/:id"
+              element={<AddBookingAssignUser />}
+            />
+            <Route
+              path="/add-booking-vendor/:id"
+              element={<AddBookingVendor />}
+            />
+
+            <Route
+              path="/edit-booking-assign/:id"
+              element={<EditBookingAssign />}
+            />
+            <Route path="/assign-vendor/:id" element={<AssignVendor />} />
+            <Route
+              path="/edit-booking-vendor/:id"
+              element={<EditAssignVendor />}
+            />
+            <Route path="/edit-booking/:id" element={<EditBookingAll />} />
+            <Route
+              path="/edit-booking-inspection/:id"
+              element={<EditBookingInspection />}
+            />
+            <Route
+              path="/booking-reschedule/:id"
+              element={<WorkInProgress />}
+            />
+            <Route path="/postpone-booking/:id" element={<PostponeBooking />} />
+            <Route path="/add-booking" element={<AddBooking />} />
+            <Route path="/cancel" element={<CancelBooking />} />
+            <Route path="/completed" element={<CompletedBooking />} />
+            <Route path="/confirmed" element={<ConfirmedBooking />} />
+            <Route path="/inspection" element={<InspectionBooking />} />
+            <Route path="/pending" element={<PendingBooking />} />
+            <Route path="/today" element={<TodayBooking />} />
+            <Route path="/tomorrow" element={<TomorrowBooking />} />
+            <Route path="/vendor-job" element={<VendorJobBooking />} />
+          </>
+        )}
         {/* master  */}
-        <Route path="/branch" element={<BranchMaster />} />
-        <Route path="/add-branch" element={<AddBranch />} />
-        <Route path="/branch-edit/:id" element={<BranchEditMaster />} />
-        <Route path="/refer-by" element={<ReferByMaster />} />
-        <Route path="/add-referby" element={<AddReferBy />} />
-        <Route path="/refer-by-edit/:id" element={<ReferByEditMaster />} />
-        <Route path="/service" element={<ServiceMaster />} />
-        <Route path="/add-service" element={<AddServiceMaster />} />
-        <Route path="/service-edit/:id" element={<ServiceEditMaster />} />
-        <Route path="/service-sub" element={<ServiceSubMaster />} />
-        <Route path="/add-service-sub" element={<AddServiceSubMaster />} />
-        <Route
-          path="/service-sub-edit/:id"
-          element={<ServiceSubEditMaster />}
-        />
-        <Route path="/service-price" element={<ServicePriceMaster />} />
-        <Route path="/add-service-price" element={<AddServicePrice />} />
-        <Route
-          path="/service-price-edit/:id"
-          element={<ServicePriceEditMaster />}
-        />
-        <Route path="/field-team" element={<FieldTeamMaster />} />
-        <Route path="/add-field-team" element={<AddFieldTeamMaster />} />
-        <Route path="/field-team-edit/:id" element={<FieldTeamEditMaster />} />
-        <Route path="/field-team-view/:id" element={<FieldTeamViewMaster />} />
-        <Route path="/operation-team" element={<OperationTeamMaster />} />
-        <Route path="/add-operation-team" element={<AddOperationTeam />} />
-        <Route
-          path="/operation-team-view/:id"
-          element={<OperationViewTeamMaster />}
-        />
-        <Route
-          path="/operation-team-edit/:id"
-          element={<OperationEditTeamMaster />}
-        />
-        <Route path="/backhand-team" element={<BackhandTeamMaster />} />
-        <Route path="/add-backhand-team" element={<AddBackhandTeam />} />
-        <Route
-          path="/backhand-team-view/:id"
-          element={<BackhandViewTeamMaster />}
-        />
-        <Route
-          path="/backhand-team-edit/:id"
-          element={<BackhandEditTeamMaster />}
-        />
-        {/* vendor List  */}
-        <Route path="/vendor-list" element={<VendorList />} />
-        <Route path="/add-vendor" element={<AddVendor />} />
-        <Route path="/vendor-view/:id" element={<ViewVendor />} />
-        <Route path="/vendor-edit/:id" element={<EditVendor />} />
-        <Route path="/vendor-user-list/:id" element={<VendorUserList />} />
-        <Route path="/add-vendor-user/:id" element={<AddVendorUser />} />
-        <Route path="/edit-vendor-user-list/:id" element={<EditVendorUser />} />
-        <Route
-          path="/vendor-pending-edit/:id"
-          element={<VendorPendingEdit />}
-        />
-        <Route path="/add-vendor-service/:id" element={<AddVendorService />} />
-        {/* ideal field list  */}
-        <Route path="/idealfield-list" element={<IdealFieldList />} />
-        <Route
-          path="/idealfield-vendor-list"
-          element={<IdealFieldListVendor />}
-        />
-        {/* payment  */}
-        <Route path="/pending-payment" element={<PendingPayment />} />
-        <Route
-          path="/pending-payment-view/:id"
-          element={<PendingPaymentView />}
-        />
-        <Route path="/received-payment" element={<ReceivedPayment />} />
-        <Route
-          path="/pending-received-view/:id"
-          element={<PendingReceivedView />}
-        />
-        {/* commission  */}
-        <Route path="/commission-pending" element={<PendingCommission />} />
-        <Route
-          path="/pending-commission-view/:id"
-          element={<PendingCommissionView />}
-        />
-        <Route path="/commission-received" element={<ReceivedsCommission />} />
-        <Route
-          path="/received-commission-view/:id"
-          element={<ReceivedCommissionView />}
-        />
-        {/* notification  */}
-        <Route path="/notification" element={<NotificationList />} />
-        <Route path="/add-notification" element={<AddNotification />} />
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            <Route path="/branch" element={<BranchMaster />} />
+            <Route path="/add-branch" element={<AddBranch />} />
+            <Route path="/branch-edit/:id" element={<BranchEditMaster />} />
+            <Route path="/refer-by" element={<ReferByMaster />} />
+            <Route path="/add-referby" element={<AddReferBy />} />
+            <Route path="/refer-by-edit/:id" element={<ReferByEditMaster />} />
+            <Route path="/service" element={<ServiceMaster />} />
+            <Route path="/add-service" element={<AddServiceMaster />} />
+            <Route path="/service-edit/:id" element={<ServiceEditMaster />} />
+            <Route path="/service-sub" element={<ServiceSubMaster />} />
+            <Route path="/add-service-sub" element={<AddServiceSubMaster />} />
+            <Route
+              path="/service-sub-edit/:id"
+              element={<ServiceSubEditMaster />}
+            />
+            <Route path="/service-price" element={<ServicePriceMaster />} />
+            <Route path="/add-service-price" element={<AddServicePrice />} />
+            <Route
+              path="/service-price-edit/:id"
+              element={<ServicePriceEditMaster />}
+            />
+            <Route path="/field-team" element={<FieldTeamMaster />} />
+            <Route path="/add-field-team" element={<AddFieldTeamMaster />} />
+            <Route
+              path="/field-team-edit/:id"
+              element={<FieldTeamEditMaster />}
+            />
+            <Route
+              path="/field-team-view/:id"
+              element={<FieldTeamViewMaster />}
+            />
+            <Route path="/operation-team" element={<OperationTeamMaster />} />
+            <Route path="/add-operation-team" element={<AddOperationTeam />} />
+            <Route
+              path="/operation-team-view/:id"
+              element={<OperationViewTeamMaster />}
+            />
+            <Route
+              path="/operation-team-edit/:id"
+              element={<OperationEditTeamMaster />}
+            />
+            <Route path="/backhand-team" element={<BackhandTeamMaster />} />
+            <Route path="/add-backhand-team" element={<AddBackhandTeam />} />
+            <Route
+              path="/backhand-team-view/:id"
+              element={<BackhandViewTeamMaster />}
+            />
+            <Route
+              path="/backhand-team-edit/:id"
+              element={<BackhandEditTeamMaster />}
+            />
+          </>
+        )}
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            {/* vendor List  */}
+            <Route path="/vendor-list" element={<VendorList />} />
+            <Route path="/add-vendor" element={<AddVendor />} />
+            <Route path="/vendor-view/:id" element={<ViewVendor />} />
+            <Route path="/vendor-edit/:id" element={<EditVendor />} />
+            <Route path="/vendor-user-list/:id" element={<VendorUserList />} />
+            <Route path="/add-vendor-user/:id" element={<AddVendorUser />} />
+            <Route
+              path="/edit-vendor-user-list/:id"
+              element={<EditVendorUser />}
+            />
+            <Route
+              path="/vendor-pending-edit/:id"
+              element={<VendorPendingEdit />}
+            />
+            <Route
+              path="/add-vendor-service/:id"
+              element={<AddVendorService />}
+            />
+          </>
+        )}
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            {/* ideal field list  */}
+            <Route path="/idealfield-list" element={<IdealFieldList />} />
+            <Route
+              path="/idealfield-vendor-list"
+              element={<IdealFieldListVendor />}
+            />
+          </>
+        )}
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            {/* payment  */}
+            <Route path="/pending-payment" element={<PendingPayment />} />
+            <Route
+              path="/pending-payment-view/:id"
+              element={<PendingPaymentView />}
+            />
+            <Route path="/received-payment" element={<ReceivedPayment />} />
+            <Route
+              path="/pending-received-view/:id"
+              element={<PendingReceivedView />}
+            />
+          </>
+        )}
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            {/* commission  */}
+            <Route path="/commission-pending" element={<PendingCommission />} />
+            <Route
+              path="/pending-commission-view/:id"
+              element={<PendingCommissionView />}
+            />
+            <Route
+              path="/commission-received"
+              element={<ReceivedsCommission />}
+            />
+            <Route
+              path="/received-commission-view/:id"
+              element={<ReceivedCommissionView />}
+            />
+          </>
+        )}
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            {/* notification  */}
+            <Route path="/notification" element={<NotificationList />} />
+            <Route path="/add-notification" element={<AddNotification />} />
+          </>
+        )}
         {/* download  */}
-        <Route path="/booking-download" element={<BookingDownload />} />
-        <Route path="/vendor-download" element={<VendorDownload />} />
-        <Route path="/received-download" element={<ReceivedDownload />} />
-        <Route path="/pending-download" element={<PendingDownload />} />
+        {(userType === "6" || userType === "5" || userType === "7") && (
+          <>
+            <Route path="/booking-download" element={<BookingDownload />} />
+            <Route path="/vendor-download" element={<VendorDownload />} />
+            <Route path="/received-download" element={<ReceivedDownload />} />
+            <Route path="/pending-download" element={<PendingDownload />} />
+          </>
+        )}
         <Route
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}

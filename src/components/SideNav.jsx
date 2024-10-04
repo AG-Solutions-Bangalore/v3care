@@ -30,7 +30,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const { pathname } = useLocation();
 
   const [openBookingMenu, setOpenBookingMenu] = useState(false);
-
+  const userType = localStorage.getItem("user_type_id");
   // Hardcoded sidenavType to "dark"
   const sidenavType = "dark";
 
@@ -59,6 +59,86 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
   useEffect(() => {
     setOpenSideNav(false);
   }, [pathname, setOpenSideNav]);
+
+  const menuItems = [
+    {
+      to: "/home",
+      icon: <HomeIcon className="w-5 h-5 text-inherit" />,
+      text: "Dashboard",
+      roles: [
+        "user",
+        "vendoruser",
+        "vendor",
+        "viewer",
+        "admin",
+        "superadmin",
+        "operationteam",
+      ],
+    },
+    {
+      to: "/refer-by",
+      icon: <RiAdminLine className="w-5 h-5 text-inherit" />,
+      text: "Master",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/vendor-list",
+      icon: <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />,
+      text: "Vendor List",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/idealfield-list",
+      icon: <CiViewList className="w-5 h-5 text-inherit" />,
+      text: "Ideal Field List",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/today",
+      icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
+      text: "Booking",
+      roles: ["user", "viewer", "admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/pending-payment",
+      icon: <MdOutlinePayment className="w-5 h-5 text-inherit" />,
+      text: "Payment",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/commission-pending",
+      icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
+      text: "Commission",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/notification",
+      icon: <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />,
+      text: "Notification",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+    {
+      to: "/booking-download",
+      icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
+      text: "Download",
+      roles: ["admin", "superadmin", "operationteam"],
+    },
+  ];
+
+  const roleMap = {
+    1: "user",
+    2: "vendoruser",
+    3: "vendor",
+    4: "viewer",
+    5: "admin",
+    6: "superadmin",
+    7: "operationteam",
+  };
+
+  const getFilteredMenuItems = () => {
+    const role = roleMap[userType];
+    return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
+  };
 
   const handleBookingButtonClick = () => {
     // Toggle the booking menu open/close
@@ -89,9 +169,31 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4">
+      <div className="m-4 overflow-y-auto lg:h-[calc(100vh-150px)]  md:h-[calc(100vh-200px)] h-[calc(100vh-200px)] custom-scroll">
         <ul className="mb-4 flex flex-col gap-1">
-          <li>
+          {getFilteredMenuItems().map((item) => (
+            <li key={item.to}>
+              <NavLink to={item.to}>
+                {({ isActive }) => (
+                  <Button
+                    variant={isActive ? "gradient" : "text"}
+                    color="white"
+                    className="flex items-center gap-4 px-4 capitalize"
+                    fullWidth
+                  >
+                    {item.icon}
+                    <Typography
+                      color="inherit"
+                      className="font-medium capitalize"
+                    >
+                      {item.text}
+                    </Typography>
+                  </Button>
+                )}
+              </NavLink>
+            </li>
+          ))}
+          {/* <li>
             <NavLink to="/home">
               {({ isActive }) => (
                 <Button
@@ -170,7 +272,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
           {/* <li>
             <NavLink to="/add-booking">
               {({ isActive }) => (
@@ -211,6 +313,8 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               )}
             </NavLink>
           </li> */}
+
+          {/* this something  */}
           {/* Booking Dropdown */}
           {/* <li>
             <div>
@@ -282,7 +386,8 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               )}
             </div>
           </li> */}
-          <li>
+          {/* from here  */}
+          {/* <li>
             <NavLink to="/today">
               {({ isActive }) => (
                 <Button
@@ -301,10 +406,10 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
 
           {/* payment  */}
-          <li>
+          {/* <li>
             <NavLink to="/pending-payment">
               {({ isActive }) => (
                 <Button
@@ -323,9 +428,9 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
           {/* commission  */}
-          <li>
+          {/* <li>
             <NavLink to="/commission-pending">
               {({ isActive }) => (
                 <Button
@@ -344,9 +449,9 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
           {/* notification  */}
-          <li>
+          {/* <li>
             <NavLink to="/notification">
               {({ isActive }) => (
                 <Button
@@ -365,9 +470,9 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
           {/* download  */}
-          <li>
+          {/* <li>
             <NavLink to="/booking-download">
               {({ isActive }) => (
                 <Button
@@ -386,7 +491,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                 </Button>
               )}
             </NavLink>
-          </li>
+          </li> */}
 
           {/* Add more hardcoded routes here as needed */}
         </ul>

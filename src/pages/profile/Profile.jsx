@@ -129,7 +129,7 @@ const Profile = () => {
           <CardBody className=" px-0 pt-0 pb-2 ">
             <form
               onSubmit={onUpdateProfile}
-              className="px-8 pt-6 pb-8 w-full max-w-lg"
+              className="px-8 pt-6 pb-8 w-full flex flex-row gap-2 max-w-lg"
             >
               {/* Name field */}
               <div className="mb-4">
@@ -170,7 +170,7 @@ const Profile = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center  justify-between">
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="sumbit"
