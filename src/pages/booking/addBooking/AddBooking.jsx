@@ -491,7 +491,6 @@ const AddBooking = () => {
                   <Fields
                     types="email"
                     title="Email"
-                    required
                     type="textField"
                     autoComplete="Name"
                     name="order_customer_email"
