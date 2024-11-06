@@ -401,7 +401,6 @@ const BookNow = () => {
                 <div>
                   <Fields
                     types="email"
-                    required="required"
                     title="Email"
                     type="textField"
                     autoComplete="Name"
