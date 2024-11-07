@@ -22,6 +22,11 @@ const BookingFilter = () => {
       path: "/tomorrow",
       color: "from-blue-500 to-cyan-400",
     },
+    {
+      label: "RNR",
+      path: "/rnr",
+      color: "from-blue-500 to-cyan-400",
+    },
     { label: "Pending", path: "/pending", color: "from-green-500 to-teal-400" },
     {
       label: "Inspection",

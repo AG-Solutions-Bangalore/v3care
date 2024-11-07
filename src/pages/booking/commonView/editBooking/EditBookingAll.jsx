@@ -27,6 +27,10 @@ const status = [
     label: "Pending",
   },
   {
+    value: "RNR",
+    label: "RNR",
+  },
+  {
     value: "Inspection",
     label: "Inspection",
   },
@@ -280,7 +284,7 @@ const EditBookingAll = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Edit Booking {id}
+          Edit Booking
         </Typography>
 
         <div className="flex gap-4">

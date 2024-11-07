@@ -84,6 +84,7 @@ import EditBookingInspection from "./pages/booking/commonView/editBooking/EditBo
 import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBookingAssignUser";
 import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
 import UseEscapeKey from "./utils/UseEscapeKey";
+import RnrList from "./pages/booking/rnr/RnrList";
 const App = () => {
   const userType = localStorage.getItem("user_type_id");
   console.log("usertypeapp", userType);
@@ -144,6 +145,7 @@ const App = () => {
             <Route path="/confirmed" element={<ConfirmedBooking />} />
             <Route path="/inspection" element={<InspectionBooking />} />
             <Route path="/pending" element={<PendingBooking />} />
+            <Route path="/rnr" element={<RnrList />} />
             <Route path="/today" element={<TodayBooking />} />
             <Route path="/tomorrow" element={<TomorrowBooking />} />
             <Route path="/vendor-job" element={<VendorJobBooking />} />

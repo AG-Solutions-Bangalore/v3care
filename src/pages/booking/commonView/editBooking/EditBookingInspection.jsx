@@ -24,6 +24,10 @@ const status = [
     label: "Pending",
   },
   {
+    value: "RNR",
+    label: "RNR",
+  },
+  {
     value: "Inspection",
     label: "Inspection",
   },
