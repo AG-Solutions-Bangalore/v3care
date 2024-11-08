@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
   Typography,
@@ -25,6 +25,8 @@ import { HiArrowRightStartOnRectangle } from "react-icons/hi2";
 
 const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const useType = localStorage.getItem("user_type_id");
 
   const [openModal, setOpenModal] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -83,6 +85,17 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
           {/* Search and other elements can be added here */}
 
           {/* Sidebar toggle button for mobile view */}
+          {(useType === "1" ||
+        useType === "5" ||
+        useType === "6" ||
+        useType === "7") && (
+        <button
+          className="mt-2 bg-gradient-to-r  from-purple-500 to-indigo-400 transform -translate-y-1 text-white  rounded-sm p-2 shadow-lg hover:bg-blue-700 transition duration-300  "
+          onClick={() => navigate("/add-booking")}
+        >
+          + Add Booking
+        </button>
+)}
           <IconButton
             variant="text"
             color="white"

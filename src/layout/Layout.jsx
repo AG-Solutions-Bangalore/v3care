@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   const [openSideNav, setOpenSideNav] = useState(false);
-  const useType = localStorage.getItem("user_type_id");
+ 
   // xl:ml-80
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 ">
@@ -22,7 +22,7 @@ const Layout = ({ children }) => {
           <Footer />
         </div> */}
       </div>
-      {(useType === "1" ||
+      {/* {(useType === "1" ||
         useType === "5" ||
         useType === "6" ||
         useType === "7") && (
@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
         >
           + Add Booking
         </button>
-      )}
+      )} */}
     </div>
   );
 };
