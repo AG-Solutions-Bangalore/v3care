@@ -79,9 +79,11 @@ const AddBooking = () => {
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
 
+  const [currentYear, setCurrentYear] = useState("");
+
   const [booking, setBooking] = useState({
     order_date: todayback,
-    order_year: "2024-25",
+    order_year: currentYear,
     order_refer_by: "",
     order_customer: "",
     order_customer_mobile: "",
@@ -113,6 +115,25 @@ const AddBooking = () => {
     order_url: "",
     order_send_whatsapp: "",
   });
+
+
+
+  useEffect(() => {
+    const fetchYearData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {
+         
+      
+        });
+
+        setCurrentYear(response.data.year.current_year);
+      } catch (error) {
+        console.error("Error fetching year data:", error);
+      }
+    };
+
+    fetchYearData();
+  }, []);
 
   const [serdata, setSerData] = useState([]);
   const navigate = useNavigate();
@@ -380,7 +401,7 @@ const AddBooking = () => {
     }
     let data = {
       order_date: booking.order_date,
-      order_year: booking.order_year,
+      order_year: currentYear,
       order_refer_by: booking.order_refer_by,
       order_customer: booking.order_customer,
       order_customer_mobile: booking.order_customer_mobile,

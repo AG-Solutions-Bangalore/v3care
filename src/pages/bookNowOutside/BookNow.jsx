@@ -65,9 +65,10 @@ const BookNow = () => {
   today = mm + "/" + dd + "/" + yyyy;
   var todayback = yyyy + "-" + mm + "-" + dd;
 
+  const [currentYear, setCurrentYear] = useState("");
   const [booking, setBooking] = useState({
     order_date: todayback,
-    order_year: "2024-25",
+    order_year: currentYear,
     order_refer_by: "",
     order_customer: "",
     order_customer_mobile: "",
@@ -100,6 +101,25 @@ const BookNow = () => {
   const [branch, setBranch] = useState([]);
   const [referby, setReferby] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+
+
+  useEffect(() => {
+    const fetchYearData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {
+         
+      
+        });
+
+        setCurrentYear(response.data.year.current_year);
+      } catch (error) {
+        console.error("Error fetching year data:", error);
+      }
+    };
+    fetchYearData();
+  }, []);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -320,6 +340,7 @@ const BookNow = () => {
 
     formData.append("order_address", query);
     formData.append("order_url", query1);
+    formData.append("order_year", currentYear);
 
     try {
       const response = await axios.post(
