@@ -30,7 +30,8 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";
 
-const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+// const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
 
 let autoComplete;
 

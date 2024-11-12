@@ -32,7 +32,8 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const baseURL = "https://agsdraft.online/app/public/api";
 
-const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+// const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
 const whatsapp = [
   {
     value: "Yes",
