@@ -27,7 +27,7 @@ const MasterFilter = () => {
           },
         ]
       : []),
-    // { label: "Branch", path: "/branch", color: "from-pink-500 to-orange-400" },
+   
     {
       label: "Refer By",
       path: "/refer-by",

@@ -128,8 +128,6 @@ const BackhandTeamMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -137,15 +135,29 @@ const BackhandTeamMaster = () => {
     setRowProps: (rowData) => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9",
+          borderBottom: "5px solid #f1f7f9",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+       <>
+       {userType !== "4" && (
+          <Link
+            to="/add-backhand-team"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Backhand
+          </Link>
+        )}
+       </>
+      );
     },
   };
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Backhand Team List
         </h3>
@@ -157,9 +169,10 @@ const BackhandTeamMaster = () => {
             + Add Backhand Team
           </Link>
         )}
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+        title ="Backhand Team List"
           data={BackhandData ? BackhandData : []}
           columns={columns}
           options={options}

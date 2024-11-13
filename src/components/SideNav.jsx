@@ -2,45 +2,52 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   BuildingStorefrontIcon,
   HomeIcon,
-  TableCellsIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import {
-  Button,
-  IconButton,
-  Typography,
-  Collapse,
-} from "@material-tailwind/react";
+import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import {
-  MdOutlineAdd,
-  MdOutlineLibraryBooks,
-  MdOutlinePayment,
-  MdToday,
-} from "react-icons/md";
-import logo from "../../public/img/v3logo.png";
+import { MdOutlineLibraryBooks, MdOutlinePayment } from "react-icons/md";
 import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
 import { CiViewList } from "react-icons/ci";
-import { FaBook } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoDownloadOutline } from "react-icons/io5";
 const SideNav = ({ openSideNav, setOpenSideNav }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
-
   const [openBookingMenu, setOpenBookingMenu] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const userType = localStorage.getItem("user_type_id");
-  // Hardcoded sidenavType to "dark"
   const sidenavType = "dark";
 
   const sidenavTypes = {
-    dark: "bg-[#900002] ",
+    dark: "bg-[#001F3F] ",
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
 
-  // close sidebar when clicking outside
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
 
   useEffect(() => {
     function handClickOutside(e) {
@@ -55,7 +62,6 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
     };
   }, [setOpenSideNav]);
 
-  // Close sidebar on route change
   useEffect(() => {
     setOpenSideNav(false);
   }, [pathname, setOpenSideNav]);
@@ -141,16 +147,16 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
   };
 
   const handleBookingButtonClick = () => {
-    // Toggle the booking menu open/close
+    
     setOpenBookingMenu((prevState) => !prevState);
   };
-  // w - 72;
+  
   return (
     <aside
       ref={sidenavRef}
       className={`${sidenavTypes[sidenavType]} ${
         openSideNav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-[272px] rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-[272px] rounded-xl  transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
       <div className={`relative`}>
         <Link to="/home" className="flex items-center justify-center p-4">
@@ -169,7 +175,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4 overflow-y-auto lg:h-[calc(100vh-150px)]  md:h-[calc(100vh-200px)] h-[calc(100vh-200px)] custom-scroll">
+      <div className="m-4 overflow-y-auto lg:h-[calc(100vh-230px)]   md:h-[calc(100vh-230px)] h-[calc(100vh-230px)] custom-scroll">
         <ul className="mb-4 flex flex-col gap-1">
           {getFilteredMenuItems().map((item) => (
             <li key={item.to}>
@@ -193,308 +199,17 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
               </NavLink>
             </li>
           ))}
-          {/* <li>
-            <NavLink to="/home">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Dashboard
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/branch">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <RiAdminLine className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Master
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/vendor-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Vendor List
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/idealfield-list">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <CiViewList className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Ideal Field List
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-          {/* <li>
-            <NavLink to="/add-booking">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Add Booking
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <HomeIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Today
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-
-          {/* this something  */}
-          {/* Booking Dropdown */}
-          {/* <li>
-            <div>
-              <Button
-                variant="text"
-                color="white"
-                className="flex items-center justify-between px-4 capitalize"
-                fullWidth
-                onClick={handleBookingButtonClick}
-              >
-                <div className="flex items-center gap-4">
-                  <HomeIcon className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Booking
-                  </Typography>
-                </div>
-                <ChevronDownIcon
-                  className={`w-5 h-5 transition-transform ${
-                    openBookingMenu ? "rotate-180" : ""
-                  }`}
-                />
-              </Button>
-              {openBookingMenu && (
-                <ul className="ml-8">
-                  <li>
-                    <NavLink to="/add-booking">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdOutlineAdd className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Add Booking
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/today">
-                      {({ isActive }) => (
-                        <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color="white"
-                          className="flex items-center gap-4 px-4 capitalize"
-                          fullWidth
-                        >
-                          <MdToday className="w-5 h-5 text-inherit" />
-                          <Typography
-                            color="inherit"
-                            className="font-medium capitalize"
-                          >
-                            Booking
-                          </Typography>
-                        </Button>
-                      )}
-                    </NavLink>
-                  </li>
-                </ul>
-              )}
-            </div>
-          </li> */}
-          {/* from here  */}
-          {/* <li>
-            <NavLink to="/today">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Booking
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-
-          {/* payment  */}
-          {/* <li>
-            <NavLink to="/pending-payment">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <MdOutlinePayment className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Payment
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-          {/* commission  */}
-          {/* <li>
-            <NavLink to="/commission-pending">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Commission
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-          {/* notification  */}
-          {/* <li>
-            <NavLink to="/notification">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Notification
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-          {/* download  */}
-          {/* <li>
-            <NavLink to="/booking-download">
-              {({ isActive }) => (
-                <Button
-                  variant={isActive ? "gradient" : "text"}
-                  color="white"
-                  className="flex items-center gap-4 px-4 capitalize"
-                  fullWidth
-                >
-                  <IoDownloadOutline className="w-5 h-5 text-inherit" />
-                  <Typography
-                    color="inherit"
-                    className="font-medium capitalize"
-                  >
-                    Download
-                  </Typography>
-                </Button>
-              )}
-            </NavLink>
-          </li> */}
-
-          {/* Add more hardcoded routes here as needed */}
         </ul>
+      </div>
+      <div className="flex flex-row items-center justify-around">
+        <div className=" font-serif font-[400]  text-white   ">
+          {" "}
+          {formatTime(currentTime)}
+        </div>
+        <div className="font-serif font-[400]  text-white  ">
+          {" "}
+          {formatDate(currentTime)}
+        </div>
       </div>
     </aside>
   );

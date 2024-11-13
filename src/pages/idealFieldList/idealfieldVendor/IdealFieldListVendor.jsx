@@ -67,11 +67,11 @@ const IdealFieldListVendor = () => {
       <IdealFieldListFilter />
       <div className="container mx-auto px-4">
         {/* Page Title */}
-        <div className="my-4 text-2xl font-bold text-gray-800">
+        {/* <div className="my-3 bg-white rounded-lg p-2 text-2xl font-bold text-gray-800">
           Vendor Ideal Field List
-        </div>
+        </div> */}
 
-        <Card className="mt-6 p-4">
+        <Card className=" mt-2 p-4">
           <form id="addIndiv" autoComplete="off">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="form-group">
@@ -95,7 +95,7 @@ const IdealFieldListVendor = () => {
           </form>
         </Card>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 bg-white rounded-lg p-2 lg:grid-cols-6 gap-4 mt-4">
           {idealData.map((data, key) => (
             <div key={key} className="flex justify-center">
               <div

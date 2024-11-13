@@ -2,15 +2,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const BookingFilter = () => {
-  //   const [activeButton, setActiveButton] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-
-  //   const handleButtonClick = (index, path) => {
-  //     setActiveButton(index);
-  //     console.log("naviaget", path);
-  //     navigate(path);
-  //   };
 
   const handleButtonClick = (path) => {
     navigate(path);

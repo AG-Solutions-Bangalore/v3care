@@ -14,22 +14,42 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
+  const [assignmentData, setAssignmentData] = useState({});
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   // Modal state management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedOrderRef, setSelectedOrderRef] = useState(null);
 
-  const handleOpenModal = (orderRef) => {
-    setSelectedOrderRef(orderRef);
-    setIsModalOpen(true);
-  };
+  // const handleOpenModal = (orderRef) => {
+  //   setSelectedOrderRef(orderRef);
+  //   setIsModalOpen(true);
+  // };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedOrderRef(null);
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  //   setSelectedOrderRef(null);
+  // };
+  const fetchAssignmentData = async (orderRef) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-booking-assign-by-view/${orderRef}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAssignmentData((prev) => ({
+        ...prev,
+        [orderRef]: response.data?.bookingAssign,
+      }));
+    } catch (error) {
+      console.error("Error fetching assignment data", error);
+    }
   };
 
   useEffect(() => {
@@ -51,6 +71,13 @@ const ConfirmedBooking = () => {
         );
 
         setConfirmBookData(response.data?.booking);
+
+        //  here we are fecthing only those element those order no assign is greater than 0
+        response.data?.booking.forEach((item) => {
+          if (item.order_no_assign > 0) {
+            fetchAssignmentData(item.order_ref);
+          }
+        });
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -64,21 +91,18 @@ const ConfirmedBooking = () => {
   const columns = [
     {
       name: "order_ref",
-      label: "ID",
+      label: "Order/Branch",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[8]; // Assuming order_no_assign is in the 9th column
-          return order_no_assign > 0 ? (
-            <a
-              className="text-blue-600 underline cursor-pointer"
-              onClick={() => handleOpenModal(order_ref)}
-            >
-              {order_ref}
-            </a>
-          ) : (
-            order_ref
+          const order_no_assign = tableMeta.rowData[10];
+          const branchName = tableMeta.rowData[1];
+          return (
+            <div className="flex flex-col w-32">
+              <span>{order_ref}</span>
+              <span>{branchName}</span>
+            </div>
           );
         },
       },
@@ -88,14 +112,19 @@ const ConfirmedBooking = () => {
       label: "Branch",
       options: {
         filter: true,
+        display: "exclude",
+        searchable: true,
         sort: true,
       },
     },
+
     {
       name: "order_customer",
       label: "Customer",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
@@ -104,7 +133,28 @@ const ConfirmedBooking = () => {
       label: "Mobile",
       options: {
         filter: true,
+        display: "exclude",
+        searchable: true,
         sort: false,
+      },
+    },
+
+    {
+      name: "customer_mobile",
+      label: "Customer/Mobile",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[2];
+          const mobileNo = tableMeta.rowData[3];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
+            </div>
+          );
+        },
       },
     },
 
@@ -124,6 +174,8 @@ const ConfirmedBooking = () => {
       label: "Service",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
@@ -132,7 +184,29 @@ const ConfirmedBooking = () => {
       label: "Price",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
+      },
+    },
+    {
+      name: "service_price_advanced",
+      label: "Service/Price/Advanced",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[6];
+          const price = tableMeta.rowData[7];
+          const advnaced = tableMeta.rowData[9];
+          return (
+            <div className=" flex flex-col w-40">
+              <span>{service}</span>
+              <span>{price}</span>
+              <span>{advnaced}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -140,15 +214,57 @@ const ConfirmedBooking = () => {
       label: "Advance",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
     {
       name: "order_no_assign",
-      label: "No of Assign",
+      label: "No.Assign",
       options: {
         filter: false,
         sort: true,
+        customBodyRender: (value) => {
+          
+          return (
+            <span>{value}</span>  );
+        },
+      },
+
+    },
+    {
+      name: "assignment_details",
+      label: "Assignment Details",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderRef = tableMeta.rowData[0];
+          const orderNoAssign = tableMeta.rowData[10];
+          const assignments = assignmentData[orderRef];
+
+          if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
+            return "-";
+          }
+
+          return (
+            <div className="w-48  overflow-x-auto">
+              <table className="min-w-full  table-auto border-collapse text-sm">
+                
+                <tbody  className="flex flex-row    overflow-x-auto w-48   custom-scrolls">
+                  {assignments.map((assignment, index) => (
+                    <tr key={index} className="hover:bg-gray-50 ">
+                      <td className="  px-2 py-1">{assignment.name.split(' ')[0]}</td>
+                     
+                     
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        },
       },
     },
     {
@@ -156,6 +272,8 @@ const ConfirmedBooking = () => {
       label: "Confirm By",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
@@ -164,9 +282,30 @@ const ConfirmedBooking = () => {
       label: "Status",
       options: {
         filter: true,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
+    {
+      name: "confirm/status",
+      label: "Confirm By/Status",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[12];
+          const status = tableMeta.rowData[13];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+            </div>
+          );
+        },
+      },
+    },
+   
     {
       name: "id",
       label: "Action",
@@ -205,7 +344,7 @@ const ConfirmedBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[10];
+      const orderStatus = rowData[13];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green
@@ -226,7 +365,7 @@ const ConfirmedBooking = () => {
       return {
         style: {
           backgroundColor: backgroundColor,
-          borderBottom: "10px solid #f1f7f9",
+          borderBottom: "5px solid #f1f7f9",
         },
       };
     },
@@ -234,15 +373,7 @@ const ConfirmedBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Confirmed Booking List
-        </h3>
 
-        <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
-          + Add Booking
-        </Link>
-      </div> */}
       <div className="mt-5">
         <MUIDataTable
           title={"Confirmed Booking List"}
@@ -251,11 +382,11 @@ const ConfirmedBooking = () => {
           options={options}
         />
       </div>
-      <OrderRefModal
+      {/* <OrderRefModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         orderRef={selectedOrderRef}
-      />
+      /> */}
     </Layout>
   );
 };

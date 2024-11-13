@@ -53,6 +53,8 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
+        display:"exclude",
+        searchable: true,
       },
     },
     {
@@ -61,14 +63,37 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: true,
+        display:"exclude",
+        searchable: true,
       },
     },
+    {
+      name: "order_branch",
+      label: "Order/Branch",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const brancName = tableMeta.rowData[1]
+          const orderRef = tableMeta.rowData[0]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{orderRef}</span>
+             <span>{brancName}</span>
+            </div>
+          );
+        },
+      },
+    },
+    
     {
       name: "order_customer",
       label: "Customer",
       options: {
         filter: false,
         sort: false,
+        display:"exclude",
+        searchable: true,
       },
     },
     {
@@ -77,6 +102,26 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
+        display:"exclude",
+        searchable: true,
+      },
+    },
+    {
+      name: "customer_mobile",
+      label: "Customer/Mobile",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const customeName = tableMeta.rowData[3]
+          const mobileNo = tableMeta.rowData[4]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{customeName}</span>
+             <span>{mobileNo}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -85,6 +130,8 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
+        display:"exclude",
+        searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -96,8 +143,28 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
+        display:"exclude",
+        searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
+        },
+      },
+    },
+    {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value ,tableMeta) => {
+          const bookingDate = tableMeta.rowData[6]
+          const serviceDate = tableMeta.rowData[7]
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+              </div>
+          )
         },
       },
     },
@@ -106,6 +173,8 @@ const InspectionBooking = () => {
       label: "Service",
       options: {
         filter: false,
+        display:"exclude",
+        searchable:true,
         sort: false,
       },
     },
@@ -114,7 +183,27 @@ const InspectionBooking = () => {
       label: "Price",
       options: {
         filter: false,
+        display:"exclude",
+        searchable:true,
         sort: false,
+      },
+    },
+    {
+      name: "service_price",
+      label: "Service/Price",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[9]
+          const price = tableMeta.rowData[10]
+          return (
+            <div className=" flex flex-col  w-40">
+             <span>{service}</span>
+             <span>{price}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -164,8 +253,6 @@ const InspectionBooking = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

@@ -179,10 +179,24 @@ const NotificationList = () => {
         },
       };
     },
+    customToolbar: () => {
+      return (
+        <>
+       {userType !== "4" && (
+          <Link
+            to="/add-notification"
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Notification
+          </Link>
+        )}
+        </>
+      );
+    },
   };
   return (
     <Layout>
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Notification List
         </h3>
@@ -194,9 +208,10 @@ const NotificationList = () => {
             + Add Notification
           </Link>
         )}
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+        title="Notification List"
           data={notificationData ? notificationData : []}
           columns={columns}
           options={options}

@@ -52,6 +52,8 @@ const PendingCommission = () => {
       label: "ID",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
       },
     },
@@ -60,7 +62,27 @@ const PendingCommission = () => {
       label: "Branch",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
+      },
+    },
+    {
+      name: "order_branch",
+      label: "Order/Branch",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const brancName = tableMeta.rowData[1]
+          const orderRef = tableMeta.rowData[0]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{orderRef}</span>
+             <span>{brancName}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -76,6 +98,8 @@ const PendingCommission = () => {
       label: "Vendor",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
       },
     },
@@ -84,7 +108,27 @@ const PendingCommission = () => {
       label: "Mobile",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
+      },
+    },
+    {
+      name: "vendor_mobile",
+      label: "Vendor/Mobile",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const vendor = tableMeta.rowData[4]
+          const mobileNo = tableMeta.rowData[5]
+          return (
+            <div className=" flex flex-col w-44">
+             <span>{vendor}</span>
+             <span>{mobileNo}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -93,6 +137,8 @@ const PendingCommission = () => {
       options: {
         filter: true,
         sort: true,
+        display:"exclude",
+        searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -103,9 +149,29 @@ const PendingCommission = () => {
       label: "Service Date",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
+        },
+      },
+    },
+    {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value ,tableMeta) => {
+          const bookingDate = tableMeta.rowData[7]
+          const serviceDate = tableMeta.rowData[8]
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+              </div>
+          )
         },
       },
     },
@@ -114,6 +180,8 @@ const PendingCommission = () => {
       label: "Service",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: true,
       },
     },
@@ -123,7 +191,27 @@ const PendingCommission = () => {
       label: "Commission",
       options: {
         filter: true,
+        display:"exclude",
+        searchable: true,
         sort: false,
+      },
+    },
+    {
+      name: "service_commision",
+      label: "Service/Commission",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[10]
+          const commision = tableMeta.rowData[11]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{service}</span>
+             <span>{commision}</span>
+            </div>
+          );
+        },
       },
     },
 
@@ -152,8 +240,7 @@ const PendingCommission = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
+   
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -161,7 +248,7 @@ const PendingCommission = () => {
     setRowProps: (rowData) => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9",
+          borderBottom: "5px solid #f1f7f9",
         },
       };
     },
@@ -170,13 +257,14 @@ const PendingCommission = () => {
   return (
     <Layout>
       <CommissionFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Commission Pending List
         </h3>
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+        title ="Commission Pending List"
           data={PendingCommissionData ? PendingCommissionData : []}
           columns={columns}
           options={options}

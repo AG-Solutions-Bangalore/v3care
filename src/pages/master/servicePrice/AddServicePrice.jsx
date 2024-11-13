@@ -319,7 +319,7 @@ const AddServicePrice = () => {
 
             {/* Back Button */}
 
-            <Link to="/branch">
+            <Link to="/service-price">
               <Button className="mr-2 mb-2" color="primary">
                 <div className="flex gap-1">
                   <MdArrowBack className="w-5 h-5" />

@@ -51,6 +51,8 @@ const ReceivedsCommission = () => {
       label: "ID",
       options: {
         filter: true,
+        display:"exclude",
+        searchable:true,
         sort: true,
       },
     },
@@ -59,7 +61,27 @@ const ReceivedsCommission = () => {
       label: "Branch",
       options: {
         filter: true,
+        display:"exclude",
+        searchable:true,
         sort: true,
+      },
+    },
+    {
+      name: "order_branch",
+      label: "Order/Branch",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const brancName = tableMeta.rowData[1]
+          const orderRef = tableMeta.rowData[0]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{orderRef}</span>
+             <span>{brancName}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -91,6 +113,8 @@ const ReceivedsCommission = () => {
       label: "Booking Date",
       options: {
         filter: true,
+        display:"exclude",
+        searchable:true,
         sort: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -102,9 +126,29 @@ const ReceivedsCommission = () => {
       label: "Service Date",
       options: {
         filter: true,
+        display:"exclude",
+        searchable:true,
         sort: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
+        },
+      },
+    },
+    {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value ,tableMeta) => {
+          const bookingDate = tableMeta.rowData[6]
+          const serviceDate = tableMeta.rowData[7]
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+              </div>
+          )
         },
       },
     },
@@ -168,13 +212,14 @@ const ReceivedsCommission = () => {
   return (
     <Layout>
       <CommissionFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Commission Received List
         </h3>
-      </div>
+      </div> */}
       <div className="mt-5">
         <MUIDataTable
+        title="Commission Received List"
           data={receivedCommData ? receivedCommData : []}
           columns={columns}
           options={options}

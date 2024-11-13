@@ -1,25 +1,44 @@
-import axios from "axios";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useEffect, useState } from "react";
+import { 
+  Card, 
+  CardHeader, 
+  CardBody, 
+  Typography,
+  IconButton,
+  Chip 
+} from "@material-tailwind/react";
 import { HiMiniMinus } from "react-icons/hi2";
 import { TfiReload } from "react-icons/tfi";
 import { MdCancel } from "react-icons/md";
+import { FaCalendarAlt, FaPhoneAlt, FaStore, FaUser } from "react-icons/fa";
+import moment from "moment";
+import axios from "axios";
+import toast from "react-hot-toast";
 import BASE_URL from "../../../base/BaseUrl";
-import Loader from "./Loader";
 
 const BookingOrder = () => {
   const dateyear = ["2024-25"];
   const [data, setData] = useState([]);
   const [fullClose, setFullClose] = useState(true);
-  const [showTable, setShowTable] = useState(true); // State to control table visibility
-  const navigate = useNavigate(); // Use useNavigate hook
+  const [showTable, setShowTable] = useState(true);
   const [loading, setLoading] = useState(false);
-
   const [reload, setReload] = useState(false);
+
+  const getStatusColor = (status) => {
+    const statusColors = {
+      "Pending": "blue",
+      "Confirmed": "green",
+      "Cancelled": "red",
+      "In Progress": "amber",
+      "Completed": "green",
+      // Add more status colors as needed
+    };
+    return statusColors[status] || "gray";
+  };
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-dashboard-data/${dateyear}`,
         {
@@ -28,160 +47,184 @@ const BookingOrder = () => {
           },
         }
       );
-      if (response.status === "200") {
-        setLoading(true);
-      }
       setData(response.data.booking_tomm);
     } catch (error) {
       console.error("Error fetching booking data:", error);
+      toast.error("Failed to fetch booking data");
     } finally {
       setLoading(false);
-      setReload(false); // Reset reload flag
+      setReload(false);
     }
   };
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("token");
     if (!isLoggedIn) {
-      navigate("/"); // Navigate if not logged in
+      navigate("/");
       return;
     }
     if (reload || data.length === 0) {
       fetchData();
     }
-  }, []);
+  }, [reload]);
 
-  const handleReload = () => {
-    setReload(true);
-    console.log("Reload triggered");
-  };
-
-  const handleClose = () => {
-    // Close the table
-    setShowTable((prev) => !prev);
-  };
-
-  const handleFullClose = () => {
-    // Close the table
-    setFullClose(false);
-  };
+  if (!fullClose) return null;
 
   return (
-    <>
-      {fullClose && (
-        <div className="container mx-auto ">
-          <h2 className="text-xl  my-5 font-bold ">
-            Tomorrow's Booking Orders
-          </h2>
-          <div className="flex justify-between   bg-white p-4 rounded-sm">
-            <div className="content-center">
-              <h1>Tomorrow Booking Orders</h1>
+    <div >
+      <Card className="w-full shadow-lg ">
+        <CardHeader 
+          floated={false} 
+          className="bg-white shadow-none rounded-none"
+        >
+          <div className="flex items-center justify-between gap-4 ">
+            <div className="flex items-center gap-3">
+              <FaCalendarAlt className="text-red-400 text-xl" />
+              <Typography variant="h5" color="blue-gray" className="font-medium">
+                Tomorrow's Booking Orders
+              </Typography>
             </div>
-            <div className="flex gap-3">
-              <div>
-                <HiMiniMinus
-                  className="text-2xl cursor-pointer"
-                  onClick={handleClose}
-                />
-              </div>
-              <div>
-                <TfiReload
-                  className="text-xl cursor-pointer"
-                  onClick={handleReload}
-                />
-              </div>
-              <div>
-                <MdCancel
-                  className="text-2xl cursor-pointer"
-                  onClick={handleFullClose}
-                />
-              </div>
+            
+            <div className="flex gap-2">
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                size="sm"
+                onClick={() => setShowTable(!showTable)}
+              >
+                <HiMiniMinus className="h-5 w-5" />
+              </IconButton>
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                size="sm"
+                onClick={() => setReload(true)}
+              >
+                <TfiReload className="h-4 w-4" />
+              </IconButton>
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                size="sm"
+                onClick={() => setFullClose(false)}
+              >
+                <MdCancel className="h-5 w-5" />
+              </IconButton>
             </div>
           </div>
-          {loading ? (
-            <Loader />
-          ) : (
-            showTable && (
-              <div className="flex flex-col">
-                <div className="overflow-x-auto ">
-                  <div className="inline-block min-w-full  ">
-                    <div className="overflow-hidden">
-                      <table className="min-w-full text-center text-sm font-light text-surface dark:text-white">
-                        <thead className="bg-gray-400 font-medium text-white dark:border-white/10">
-                          <tr>
-                            <th scope="col" className="px-6 py-4">
-                              ID
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Branch
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Customer
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Mobile
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Booking Date
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Service Date
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Service
-                            </th>
-                            <th scope="col" className="px-6 py-4">
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.map((order, key) => (
-                            <tr
-                              key={key}
-                              className="border-b border-neutral-200 bg-white"
-                            >
-                              <td className="whitespace-nowrap px-6 py-4 font-medium">
-                                {order.order_ref}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {order.branch_name}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {order.order_customer}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {order.order_customer_mobile}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {moment(order.order_date).format("DD-MM-YYYY")}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {moment(order.order_service_date).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {order.order_custom_price <= 1
-                                  ? order.order_service
-                                  : order.order_custom}
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4">
-                                {order.order_status}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
-        </div>
-      )}
-    </>
+        </CardHeader>
+
+        {showTable && (
+          <CardBody className="overflow-x-auto px-0">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {[
+                    "ID",
+                    "Branch",
+                    "Customer",
+                    "Mobile",
+                    "Booking Date",
+                    "Service Date",
+                    "Service",
+                    "Status",
+                  ].map((head) => (
+                    <th
+                      key={head}
+                      className="border-b border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                    >
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-medium leading-none"
+                      >
+                        {head}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={8} className="text-center p-4">
+                      <div className="flex justify-center items-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-400"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  data.map((order, index) => {
+                    const isLast = index === data.length - 1;
+                    const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+
+                    return (
+                      <tr key={order.order_ref} className="hover:bg-blue-gray-50/50">
+                        <td className={classes}>
+                          <Typography variant="small" color="blue-gray" className="font-normal">
+                            {order.order_ref}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex items-center gap-2">
+                            <FaStore className="text-red-300" />
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                              {order.branch_name}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex items-center gap-2">
+                            <FaUser className="text-blue-gray-300" />
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                              {order.order_customer}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex items-center gap-2">
+                            <FaPhoneAlt className="text-green-300" />
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                              {order.order_customer_mobile}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <Typography variant="small" color="blue-gray" className="font-normal">
+                            {moment(order.order_date).format("DD-MM-YYYY")}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography variant="small" color="blue-gray" className="font-normal">
+                            {moment(order.order_service_date).format("DD-MM-YYYY")}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Typography variant="small" color="blue-gray" className="font-normal">
+                            {order.order_custom_price <= 1
+                              ? order.order_service
+                              : order.order_custom}
+                          </Typography>
+                        </td>
+                        <td className={classes}>
+                          <Chip
+                            size="sm"
+                            variant="ghost"
+                            color={getStatusColor(order.order_status)}
+                            value={order.order_status}
+                            className="text-center"
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </CardBody>
+        )}
+      </Card>
+    </div>
   );
 };
 

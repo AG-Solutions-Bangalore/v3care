@@ -23,3 +23,25 @@
     scrollbar-width: thin; 
     scrollbar-color: #900002 transparent; 
   }
+
+
+  /* for assign member  */
+.custom-scrolls::-webkit-scrollbar {
+    width: 4px; 
+    background-color: #001F3F; 
+  }
+  
+  .custom-scrolls::-webkit-scrollbar-thumb {
+    background-color: #001F3F; 
+    border-radius: 10px; 
+  }
+  
+  .custom-scrolls::-webkit-scrollbar-thumb:hover {
+    background-color: #001F3F; 
+  }
+  
+  /* work on firebox browser */
+  .custom-scrolls {
+    scrollbar-width: thin; 
+    scrollbar-color: #001F3F transparent ; 
+  }

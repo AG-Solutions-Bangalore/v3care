@@ -86,16 +86,16 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav }) => {
 
           {/* Sidebar toggle button for mobile view */}
           {(useType === "1" ||
-        useType === "5" ||
-        useType === "6" ||
-        useType === "7") && (
-        <button
-          className="mt-2 bg-gradient-to-r  from-purple-500 to-indigo-400 transform -translate-y-1 text-white  rounded-sm p-2 shadow-lg hover:bg-blue-700 transition duration-300  "
-          onClick={() => navigate("/add-booking")}
-        >
-          + Add Booking
-        </button>
-)}
+            useType === "5" ||
+            useType === "6" ||
+            useType === "7") && (
+            <button
+              className=" text-white  hover:text-blue-700 animate-pulse   "
+              onClick={() => navigate("/add-booking")}
+            >
+              + Booking
+            </button>
+          )}
           <IconButton
             variant="text"
             color="white"
