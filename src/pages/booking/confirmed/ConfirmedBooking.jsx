@@ -202,8 +202,11 @@ const ConfirmedBooking = () => {
           return (
             <div className=" flex flex-col w-40">
               <span>{service}</span>
-              <span>{price}</span>
-              <span>{advnaced}</span>
+           <div className="flex flex-row gap-2">
+           <span >{price}</span>
+           <span >-</span>
+           <span>{advnaced}</span>
+           </div>
             </div>
           );
         },
@@ -221,7 +224,7 @@ const ConfirmedBooking = () => {
     },
     {
       name: "order_no_assign",
-      label: "No.Assign",
+      label: "Assign",
       options: {
         filter: false,
         sort: true,
@@ -249,24 +252,14 @@ const ConfirmedBooking = () => {
           }
 
           return (
-            <div className="w-48  overflow-x-auto">
-              <table className="min-w-full  table-auto border-collapse text-sm">
-                
-                <tbody  className="flex flex-row    overflow-x-auto w-48   custom-scrolls">
-                  {assignments.map((assignment, index) => (
-                    <tr key={index} className="hover:bg-gray-50 ">
-                      <td className="  px-2 py-1">
-                        
-                        
-                        {assignment.name.split(' ')[0]}
-
-
-
-                      </td>
-                     
-                     
-                    </tr>
-                  ))}
+            <div className="w-48 overflow-x-auto">
+              <table className="min-w-full table-auto border-collapse text-sm">
+                <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
+                  <tr>
+                    <td className="text-xs px-[2px] leading-[12px]">
+                      {assignments.map((assignment) => assignment.name.split(' ')[0]).join(', ')}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

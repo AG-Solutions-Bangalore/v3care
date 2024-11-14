@@ -85,9 +85,14 @@ import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBo
 import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
 import UseEscapeKey from "./utils/UseEscapeKey";
 import RnrList from "./pages/booking/rnr/RnrList";
+import { useContext } from "react";
+import { ContextPanel } from "./utils/ContextPanel";
 const App = () => {
-  const userType = localStorage.getItem("user_type_id");
-  console.log("usertypeapp", userType);
+  
+  
+  const {userType} = useContext(ContextPanel)
+ 
+
   return (
     <>
       <ToastContainer />
