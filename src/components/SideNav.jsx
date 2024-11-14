@@ -210,7 +210,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
-            <div className="text-sm font-medium opacity-80">Version: 1.2.14</div>
+            <div className="text-sm font-medium opacity-80">Version: 1.2.15</div>
           </div>
         </div>
       )}
