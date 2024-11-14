@@ -18,6 +18,12 @@ const MasterFilter = () => {
     navigate(path);
   };
   const buttons = [
+
+    {
+      label: "Refer By",
+      path: "/refer-by",
+      color: "from-blue-500 to-cyan-400",
+    },
     ...(userType !== "5" && userType !== "7"
       ? [
           {
@@ -28,11 +34,7 @@ const MasterFilter = () => {
         ]
       : []),
    
-    {
-      label: "Refer By",
-      path: "/refer-by",
-      color: "from-blue-500 to-cyan-400",
-    },
+    
     {
       label: "Service",
       path: "/service",

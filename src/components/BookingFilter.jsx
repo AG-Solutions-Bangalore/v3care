@@ -32,7 +32,7 @@ const BookingFilter = () => {
       color: "from-yellow-500 to-orange-300",
     },
     {
-      label: "Vendor Job",
+      label: "Vendor",
       path: "/vendor-job",
       color: "from-red-500 to-pink-400",
     },
@@ -44,13 +44,13 @@ const BookingFilter = () => {
     },
   ];
 
-  //total 8
+  //total 8 sajid
   return (
     <div className="flex flex-wrap justify-between mt-6 gap-4">
       {buttons.map((button, index) => (
         <button
           key={index}
-          className={`w-full md:w-auto flex-1 py-2 px-4 text-white rounded-lg transition-all ${
+          className={`w-full md:w-auto h-10 flex-1 py-2 px-4 text-white rounded-lg transition-all ${
             location.pathname === button.path
               ? `bg-gradient-to-r ${button.color} shadow-lg transform -translate-y-1`
               : "bg-blue-200"

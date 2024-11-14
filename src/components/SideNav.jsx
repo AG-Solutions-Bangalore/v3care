@@ -11,48 +11,27 @@ import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
 import { CiViewList } from "react-icons/ci";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoDownloadOutline } from "react-icons/io5";
-const SideNav = ({ openSideNav, setOpenSideNav }) => {
+const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
   const [openBookingMenu, setOpenBookingMenu] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
+
   const userType = localStorage.getItem("user_type_id");
   const sidenavType = "dark";
-
+  //sajid
   const sidenavTypes = {
     dark: "bg-[#001F3F] ",
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    });
-  };
 
   useEffect(() => {
     function handClickOutside(e) {
       if (sidenavRef.current && !sidenavRef.current.contains(e.target)) {
-        setOpenSideNav(false);
+        if (window.innerWidth < 1280) { // xl breakpoint
+          setOpenSideNav(false);
+        }
       }
     }
 
@@ -63,7 +42,9 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
   }, [setOpenSideNav]);
 
   useEffect(() => {
-    setOpenSideNav(false);
+    if (window.innerWidth < 1280) { // xl breakpoint
+      setOpenSideNav(false);
+    }
   }, [pathname, setOpenSideNav]);
 
   const menuItems = [
@@ -71,6 +52,7 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       to: "/home",
       icon: <HomeIcon className="w-5 h-5 text-inherit" />,
       text: "Dashboard",
+      title: "Dashboard",
       roles: [
         "user",
         "vendoruser",
@@ -85,48 +67,56 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
       to: "/refer-by",
       icon: <RiAdminLine className="w-5 h-5 text-inherit" />,
       text: "Master",
+      title: "Master",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/vendor-list",
       icon: <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />,
       text: "Vendor List",
+      title: "Vendor List",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/idealfield-list",
       icon: <CiViewList className="w-5 h-5 text-inherit" />,
       text: "Ideal Field List",
+      title: "Ideal Field List",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/today",
       icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
       text: "Booking",
+      title: "Booking",
       roles: ["user", "viewer", "admin", "superadmin", "operationteam"],
     },
     {
       to: "/pending-payment",
       icon: <MdOutlinePayment className="w-5 h-5 text-inherit" />,
       text: "Payment",
+      title: "Payment",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/commission-pending",
       icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
       text: "Commission",
+      title: "Commission",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/notification",
       icon: <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />,
       text: "Notification",
+      title: "Notification",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
       to: "/booking-download",
       icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
       text: "Download",
+      title: "Download",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
   ];
@@ -146,22 +136,29 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
     return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
   };
 
-  const handleBookingButtonClick = () => {
-    
-    setOpenBookingMenu((prevState) => !prevState);
-  };
+
+
   
+
   return (
     <aside
       ref={sidenavRef}
       className={`${sidenavTypes[sidenavType]} ${
         openSideNav ? "translate-x-0" : "-translate-x-80"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-[272px] rounded-xl  transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
+      } ${
+        isCollapsed ? "xl:w-[5.5rem] w-[272px]" : " w-[272px] xl:w-[272px]"
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)]  rounded-xl transition-all duration-300 ease-in-out xl:translate-x-0 border border-blue-gray-100`}
     >
       <div className={`relative`}>
         <Link to="/home" className="flex items-center justify-center p-4">
           <div className="flex items-center">
-            <img src="/velogo.png" alt="Logo" className=" h-20 w-full  " />
+            <img
+              src="/velogo.png"
+              alt="Logo"
+              className={`h-20 ${
+                isCollapsed ? "w-12" : "w-full"
+              } transition-all duration-300`}
+            />
           </div>
         </Link>
         <IconButton
@@ -175,7 +172,11 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
         </IconButton>
       </div>
-      <div className="m-4 overflow-y-auto lg:h-[calc(100vh-230px)]   md:h-[calc(100vh-230px)] h-[calc(100vh-230px)] custom-scroll">
+      <div
+        className={`m-4 overflow-y-auto ${
+          isCollapsed ? "lg:h-[calc(100vh-200px)]    md:h-[calc(100vh-200px)] h-[calc(100vh-200px)]" : "lg:h-[calc(100vh-240px)]    md:h-[calc(100vh-2400px)] h-[calc(100vh-240px)]"
+        }    custom-scroll`}
+      >
         <ul className="mb-4 flex flex-col gap-1">
           {getFilteredMenuItems().map((item) => (
             <li key={item.to}>
@@ -184,16 +185,20 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
                   <Button
                     variant={isActive ? "gradient" : "text"}
                     color="white"
+                    title={item.title}
                     className="flex items-center gap-4 px-4 capitalize"
                     fullWidth
                   >
                     {item.icon}
-                    <Typography
-                      color="inherit"
-                      className="font-medium capitalize"
-                    >
-                      {item.text}
-                    </Typography>
+                    {(!isCollapsed || window.innerWidth < 1280  ) && (
+                      <Typography
+                        color="inherit"
+                      
+                        className="font-medium capitalize"
+                      >
+                        {item.text}
+                      </Typography>
+                    )}
                   </Button>
                 )}
               </NavLink>
@@ -201,16 +206,14 @@ const SideNav = ({ openSideNav, setOpenSideNav }) => {
           ))}
         </ul>
       </div>
-      <div className="flex flex-row items-center justify-around">
-        <div className=" font-serif font-[400]  text-white   ">
-          {" "}
-          {formatTime(currentTime)}
+      {!isCollapsed && (
+        <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-2 text-white">
+            {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
+            <div className="text-sm font-medium opacity-80">Version: 1.2.14</div>
+          </div>
         </div>
-        <div className="font-serif font-[400]  text-white  ">
-          {" "}
-          {formatDate(currentTime)}
-        </div>
-      </div>
+      )}
     </aside>
   );
 };

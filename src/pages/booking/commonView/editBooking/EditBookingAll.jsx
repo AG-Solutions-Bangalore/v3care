@@ -77,6 +77,12 @@ const EditBookingAll = () => {
   const [paymentmode, setPaymentMode] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
+  const [branch, setBranch] = useState([
+    {
+      id:"",
+      branch_name:"",
+    }
+  ]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
@@ -128,8 +134,23 @@ const EditBookingAll = () => {
       console.error("Error fetching booking data:", error);
     }
   };
+  const fetchBranchData = async () => {
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/api/panel-fetch-branch`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setBranch(response.data?.branch);
+    } catch (error) {
+      console.error("Error fetching bracnh data:", error);
+    }
+  };
 
   useEffect(() => {
+    fetchBranchData();
     fetchBookingData();
     fetchpaymentData();
   }, []);
@@ -279,6 +300,7 @@ const EditBookingAll = () => {
         return null;
     }
   };
+  const disabledStatuses = ["On the way", "In Progress", "Completed","Vendor","Cancel"];
   return (
     <Layout>
       <BookingFilter />
@@ -343,30 +365,65 @@ const EditBookingAll = () => {
               <CardBody>
                 {/* <form id="addIdniv"> */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <FormControl fullWidth>
-                    <InputLabel id="service-select-label">
-                      <span className="text-sm relative bottom-[6px]">
-                        Status <span className="text-red-700">*</span>
-                      </span>
-                    </InputLabel>
-                    <Select
-                      sx={{ height: "40px", borderRadius: "5px" }}
-                      labelId="service-select-label"
-                      id="service-select"
-                      name="order_status"
-                      value={booking.order_status}
-                      // defaultValue={booking.order_status}
-                      onChange={(e) => onInputChange(e)}
-                      label="Status *"
-                      required
-                    >
-                      {status.map((data) => (
-                        <MenuItem key={data.value} value={data.value}>
-                          {data.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <div>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="service-select-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Status <span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <Select
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="service-select-label"
+                          id="service-select"
+                          name="order_status"
+                          value={booking.order_status}
+                          // defaultValue={booking.order_status}
+                          onChange={(e) => onInputChange(e)}
+                          label="Status *"
+                          required
+                        >
+                          {status.map((data) => (
+                            <MenuItem key={data.value} value={data.value}>
+                              {data.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                  {/* add branch  */}
+                  <div>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="service-select-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Branch <span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <Select
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="service-select-label"
+                          id="service-select"
+                          name="branch_id"
+                          value={booking?.branch_id || ""}
+                          onChange={(e) => onInputChange(e)}
+                          label="Branch *"
+                          required
+                          disabled={disabledStatuses.includes(booking.order_status)}
+                        >
+                          {branch.map((data, key) => (
+                            <MenuItem key={data.id} value={data.id}>
+                              {data.branch_name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+
+                  
 
                   <div>
                     <div className="form-group">

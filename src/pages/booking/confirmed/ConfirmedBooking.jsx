@@ -235,7 +235,7 @@ const ConfirmedBooking = () => {
     },
     {
       name: "assignment_details",
-      label: "Assignment Details",
+      label: "Assign Details",
       options: {
         filter: false,
         sort: false,
@@ -255,7 +255,14 @@ const ConfirmedBooking = () => {
                 <tbody  className="flex flex-row    overflow-x-auto w-48   custom-scrolls">
                   {assignments.map((assignment, index) => (
                     <tr key={index} className="hover:bg-gray-50 ">
-                      <td className="  px-2 py-1">{assignment.name.split(' ')[0]}</td>
+                      <td className="  px-2 py-1">
+                        
+                        
+                        {assignment.name.split(' ')[0]}
+
+
+
+                      </td>
                      
                      
                     </tr>
