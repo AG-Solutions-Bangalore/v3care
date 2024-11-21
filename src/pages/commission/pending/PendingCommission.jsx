@@ -51,7 +51,7 @@ const PendingCommission = () => {
       name: "order_ref",
       label: "ID",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable: true,
         sort: true,
@@ -61,7 +61,7 @@ const PendingCommission = () => {
       name: "branch_name",
       label: "Branch",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable: true,
         sort: true,
@@ -71,7 +71,7 @@ const PendingCommission = () => {
       name: "order_branch",
       label: "Order/Branch",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const brancName = tableMeta.rowData[1]
@@ -117,7 +117,7 @@ const PendingCommission = () => {
       name: "vendor_mobile",
       label: "Vendor/Mobile",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const vendor = tableMeta.rowData[4]
@@ -161,7 +161,7 @@ const PendingCommission = () => {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
           const bookingDate = tableMeta.rowData[7]
@@ -179,7 +179,7 @@ const PendingCommission = () => {
       name: "order_service",
       label: "Service",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable: true,
         sort: true,
@@ -190,7 +190,7 @@ const PendingCommission = () => {
       name: "order_comm",
       label: "Commission",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable: true,
         sort: false,
@@ -200,7 +200,7 @@ const PendingCommission = () => {
       name: "service_commision",
       label: "Service/Commission",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const service = tableMeta.rowData[10]

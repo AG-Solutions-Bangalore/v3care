@@ -3,7 +3,6 @@ import Home from "./pages/dashboard/Home";
 import SignIn from "./pages/auth/SignIn";
 import SIgnUp from "./pages/auth/SIgnUp";
 import Maintenance from "./pages/maintenance/Maintenance";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import Profile from "./pages/profile/Profile";
 import ChangePassword from "./pages/profile/ChangePassword";
@@ -96,7 +95,8 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <UseEscapeKey />
+    
+      
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -105,7 +105,7 @@ const App = () => {
         <Route path="/become-partner-outside" element={<BecomePartner />} />
         <Route path="/maintenance" element={<Maintenance />} />
         {/* dashboard  */}
-        <Route path="/home" element={<ProtectedRoute element={<Home />} />} />
+        <Route path="/home" element={<Home />} />
 
         {/* booking  */}
         {(userType === "6" ||
@@ -317,17 +317,14 @@ const App = () => {
         )}
         <Route
           path="/profile"
-          element={<ProtectedRoute element={<Profile />} />}
+          element={<Profile />}
         />
         <Route
           path="/change-password"
-          element={<ProtectedRoute element={<ChangePassword />} />}
+          element={<ChangePassword />}
         />
 
-        {/* <Route
-          path="*"
-          element={<ProtectedRoute element={<Navigate to="/" />} />}
-        /> */}
+      
       </Routes>
     </>
   );

@@ -70,7 +70,7 @@ const CompletedBooking = () => {
       name: "order_branch",
       label: "Order/Branch",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const brancName = tableMeta.rowData[1]
@@ -108,7 +108,7 @@ const CompletedBooking = () => {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const customeName = tableMeta.rowData[3]
@@ -152,7 +152,7 @@ const CompletedBooking = () => {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
           const bookingDate = tableMeta.rowData[6]
@@ -190,7 +190,7 @@ const CompletedBooking = () => {
       name: "service_price",
       label: "Service/Price",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const service = tableMeta.rowData[9]
@@ -221,6 +221,44 @@ const CompletedBooking = () => {
       },
     },
     {
+      name: "order_payment_amount",
+      label: "Amount",
+      options: {
+        filter: false,
+        display:"exclude",
+        searchable:true,
+        sort: true,
+      },
+    },
+    {
+      name: "order_payment_type",
+      label: "Type",
+      options: {
+        filter: false,
+        display:"exclude",
+        searchable:true,
+        sort: true,
+      },
+    },
+    {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[14]
+          const price = tableMeta.rowData[15]
+          return (
+            <div className=" flex flex-col w-32">
+             <span>{service}</span>
+             <span>{price}</span>
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "updated_by",
       label: "Confirm By",
       options: {
@@ -244,11 +282,11 @@ const CompletedBooking = () => {
       name: "confirm/status",
       label: "Confirm By/Status",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
-          const confirmBy = tableMeta.rowData[14]
-          const status = tableMeta.rowData[15]
+          const confirmBy = tableMeta.rowData[17]
+          const status = tableMeta.rowData[18]
           return (
             <div className=" flex flex-col ">
              <span>{confirmBy}</span>

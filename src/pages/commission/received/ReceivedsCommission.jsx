@@ -50,7 +50,7 @@ const ReceivedsCommission = () => {
       name: "order_ref",
       label: "ID",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable:true,
         sort: true,
@@ -70,7 +70,7 @@ const ReceivedsCommission = () => {
       name: "order_branch",
       label: "Order/Branch",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const brancName = tableMeta.rowData[1]
@@ -112,7 +112,7 @@ const ReceivedsCommission = () => {
       name: "order_date",
       label: "Booking Date",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable:true,
         sort: true,
@@ -138,7 +138,7 @@ const ReceivedsCommission = () => {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
           const bookingDate = tableMeta.rowData[6]
@@ -156,7 +156,7 @@ const ReceivedsCommission = () => {
       name: "order_service",
       label: "Service",
       options: {
-        filter: true,
+        filter: false,
         sort: true,
       },
     },
@@ -165,7 +165,7 @@ const ReceivedsCommission = () => {
       name: "order_comm",
       label: "Commission",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
       },
     },

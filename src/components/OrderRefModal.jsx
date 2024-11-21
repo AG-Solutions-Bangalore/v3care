@@ -9,8 +9,10 @@ import { ContextPanel } from "../utils/ContextPanel";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../base/BaseUrl";
+import UseEscapeKey from "../utils/UseEscapeKey";
 
 const OrderRefModal = ({ isOpen, onClose, orderRef }) => {
+  <UseEscapeKey />
   const [orderRefData, setOrderRefData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);

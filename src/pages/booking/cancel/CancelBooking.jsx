@@ -71,7 +71,7 @@ const CancelBooking = () => {
       name: "order_branch",
       label: "Order/Branch",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const brancName = tableMeta.rowData[1]
@@ -109,7 +109,7 @@ const CancelBooking = () => {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const customeName = tableMeta.rowData[3]
@@ -153,7 +153,7 @@ const CancelBooking = () => {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
           const bookingDate = tableMeta.rowData[6]
@@ -191,7 +191,7 @@ const CancelBooking = () => {
       name: "service_price",
       label: "Service/Price",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const service = tableMeta.rowData[9]

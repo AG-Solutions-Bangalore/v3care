@@ -51,7 +51,7 @@ const ReceivedPayment = () => {
       name: "order_ref",
       label: "ID",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         serchable:true,
         sort: true,
@@ -71,7 +71,7 @@ const ReceivedPayment = () => {
       name: "order_branch",
       label: "Order/Branch",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const brancName = tableMeta.rowData[1]
@@ -89,7 +89,7 @@ const ReceivedPayment = () => {
       name: "order_area",
       label: "Area",
       options: {
-        filter: true,
+        filter: false,
         sort: true,
       },
     },
@@ -117,7 +117,7 @@ const ReceivedPayment = () => {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const customeName = tableMeta.rowData[4]
@@ -161,7 +161,7 @@ const ReceivedPayment = () => {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
           const bookingDate = tableMeta.rowData[6]
@@ -200,7 +200,7 @@ const ReceivedPayment = () => {
       name: "service_price",
       label: "Service/Price",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const service = tableMeta.rowData[10]
@@ -218,7 +218,7 @@ const ReceivedPayment = () => {
       name: "order_payment_amount",
       label: "Paid Amount",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable:true,
         sort: false,
@@ -228,7 +228,7 @@ const ReceivedPayment = () => {
       name: "order_payment_type",
       label: "Paid Type",
       options: {
-        filter: true,
+        filter: false,
         display:"exclude",
         searchable:true,
         sort: false,
@@ -238,7 +238,7 @@ const ReceivedPayment = () => {
       name: "amount_type",
       label: "Paid Amount/Type",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         customBodyRender:  (value,tableMeta) => {
           const amountType = tableMeta.rowData[13]
