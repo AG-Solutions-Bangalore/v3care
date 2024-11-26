@@ -17,11 +17,11 @@ const DashboardCard = ({ title, value, icon: Icon, trend }) => (
         </div>
       </div>
     </div>
-    <div className="px-6 py-3 bg-gray-50">
+    {/* <div className="px-6 py-3 bg-gray-50">
       <div className="flex items-center text-sm">
         <span className="text-gray-600">Updated just now</span>
       </div>
-    </div>
+    </div> */}
   </div>
 );
 

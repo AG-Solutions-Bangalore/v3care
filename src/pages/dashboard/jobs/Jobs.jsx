@@ -39,9 +39,9 @@ const JobCard = ({ title, value, icon: Icon, status }) => {
           <p className="text-sm font-medium text-gray-600">{title}</p>
         </div>
       </div>
-      <div className="px-4 py-2 bg-gray-50 text-center">
+      {/* <div className="px-4 py-2 bg-gray-50 text-center">
         <span className="text-xs font-medium text-gray-500">Today</span>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -125,7 +125,7 @@ const Jobs = () => {
 
   return (
     <div >
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
             <FaCalendarAlt className="text-red-600 text-lg" />

@@ -164,8 +164,8 @@ const PendingPayment = () => {
         filter: false,
         sort: false,
         customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+          const bookingDate = tableMeta.rowData[7]
+          const serviceDate = tableMeta.rowData[8]
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>

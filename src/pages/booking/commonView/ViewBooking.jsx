@@ -221,7 +221,7 @@ const ViewBooking = () => {
       <div className="container mx-auto p-4">
         <div className="flex justify-between">
           <Typography variant="h4" color="gray" className="mb-6">
-            View Booking
+            Booking for <span className="text-[#F44336]">{booking?.order_service} </span> 
           </Typography>
           <div>
             {/* + Assign V3 Button */}
@@ -270,16 +270,16 @@ const ViewBooking = () => {
                   onClick={() => setActiveTab("bookingDetails")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
+                      ? "border-green-500 bg-green-100 text-green-600"
+                      : "border-transparent hover:bg-green-50"
                   }`}
                 >
-                  <FaHome />
-                  {booking?.order_service}
+                      <FaClipboardList />
+                      Booking Overview
                 </button>
 
                 {/* Booking Overview Button */}
-                <button
+                {/* <button
                   onClick={() => setActiveTab("customerInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "customerInfo"
@@ -289,7 +289,7 @@ const ViewBooking = () => {
                 >
                   <FaClipboardList />
                   Booking Overview
-                </button>
+                </button> */}
 
                 {/* Other Details Button */}
                 <button

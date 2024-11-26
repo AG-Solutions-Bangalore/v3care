@@ -7,6 +7,7 @@ import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { Card, CardBody } from "@material-tailwind/react";
 
 const ViewVendor = () => {
   const componentRef = useRef();
@@ -139,17 +140,20 @@ const ViewVendor = () => {
               </table>
             </div>
 
-            <div className="  p-4">
-              <h3 className="font-semibold text-lg">Services</h3>
-              <table className="w-full mt-2 border-collapse border border-black">
-                <tbody>
-                  {vendorService.map((service, index) => (
-                    <tr key={index} className="border-b border-black">
-                      <td className="p-2">{service.vendor_service}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-4">
+              <h3 className="font-semibold text-lg mb-4">Services</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4">
+                {vendorService.map((service, index) => (
+                  <div
+                    key={index}
+                    className=" p-4 border border-black rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                  >
+                    <p className="text-black font-medium">
+                      {service.vendor_service}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="  p-4">

@@ -51,8 +51,11 @@ const IdealFieldListVendor = () => {
             },
           }
         );
-
-        setIdealData(response.data?.stock);
+        const sortedData = response.data?.stock.sort((a, b) =>
+          a.branch_name.localeCompare(b.branch_name)
+        );
+  
+        setIdealData(sortedData);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -71,17 +74,11 @@ const IdealFieldListVendor = () => {
           Vendor Ideal Field List
         </div> */}
 
-        <Card className=" mt-2 p-4">
+        <Card className=" mt-2 p-2">
           <form id="addIndiv" autoComplete="off">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="form-group">
-                <label
-                  htmlFor="from_date"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <FaCalendarAlt />
-                  <span>Date</span>
-                </label>
+              
                 <input
                   type="date"
                   name="from_date"
@@ -95,17 +92,17 @@ const IdealFieldListVendor = () => {
           </form>
         </Card>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 bg-white rounded-lg p-2 lg:grid-cols-6 gap-4 mt-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 bg-white rounded-lg p-1 lg:grid-cols-6 gap-4 mt-4">
           {idealData.map((data, key) => (
             <div key={key} className="flex justify-center">
               <div
-                className={`social-card w-full p-4 text-center rounded-md shadow-md ${
+                className={`social-card w-full p-2 text-center rounded-md shadow-md ${
                   data.o_id === "0"
                     ? "bg-gray-200 text-gray-800"
                     : "bg-green-200 text-green-800"
                 }`}
               >
-                <div className="text-sm font-semibold">{data.name}</div>
+                <div className="text-sm font-semibold">{data.name.split(' ')[0]}</div>
                 <div className="text-xs">{data.branch_name}</div>
               </div>
             </div>

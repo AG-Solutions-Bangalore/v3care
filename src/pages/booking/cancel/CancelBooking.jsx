@@ -227,7 +227,7 @@ const CancelBooking = () => {
               className="flex items-center space-x-2"
             >
               <MdOutlineRemoveRedEye
-                title="View Cylinder Info"
+                title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>

@@ -9,12 +9,16 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import OperationViewTeamMaster from "./OperationViewTeamMaster";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 const OperationTeamMaster = () => {
   const [operationData, setOperationData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [operationDrawer, setOperationDrawer] = useState(false);
+  const [selectedOperationId, setSelectedOperationId] = useState(null);
   UseEscapeKey();
   useEffect(() => {
     const fetchOperationData = async () => {
@@ -44,6 +48,20 @@ const OperationTeamMaster = () => {
     fetchOperationData();
     setLoading(false);
   }, []);
+
+  const toogleViewOperation =
+  (open, id = null) =>
+  (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOperationDrawer(open);
+    if (id) setSelectedOperationId(id);
+  };
 
   const columns = [
     {
@@ -110,15 +128,22 @@ const OperationTeamMaster = () => {
               {userType !== "4" && (
                 <FaEdit
                   onClick={() => navigate(`/operation-team-edit/${id}`)}
-                  title="View Cylinder Info"
+                  title="Booking Info"
                   className="h-5 w-5 cursor-pointer"
                 />
               )}
-              <MdOutlineRemoveRedEye
+              {/* <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/operation-team-view/${id}`)}
-                title="View Cylinder Info"
+                title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
-              />
+              /> */}
+                <div
+                onClick={toogleViewOperation(true, id)}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <MdOutlineRemoveRedEye   className="h-5 w-5 cursor-pointer" />
+              </div>
             </div>
           );
         },
@@ -178,6 +203,20 @@ const OperationTeamMaster = () => {
           options={options}
         />
       </div>
+
+      <SwipeableDrawer
+        anchor="right"
+        open={operationDrawer}
+        onClose={toogleViewOperation(false)}
+        onOpen={toogleViewOperation(true)}
+      >
+       {selectedOperationId && (
+    <OperationViewTeamMaster
+      operationId={selectedOperationId}
+      onClose={toogleViewOperation(false)}
+    />
+  )}
+      </SwipeableDrawer>
     </Layout>
   );
 };

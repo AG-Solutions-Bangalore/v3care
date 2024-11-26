@@ -38,8 +38,6 @@ import ServiceEditMaster from "./pages/master/service/ServiceEditMaster";
 import ServiceSubEditMaster from "./pages/master/serviceSub/ServiceSubEditMaster";
 import ServicePriceEditMaster from "./pages/master/servicePrice/ServicePriceEditMaster";
 import FieldTeamEditMaster from "./pages/master/fieldTeam/FieldTeamEditMaster";
-import FieldTeamViewMaster from "./pages/master/fieldTeam/FieldTeamViewMaster";
-import OperationViewTeamMaster from "./pages/master/operationTeam/OperationViewTeamMaster";
 import OperationEditTeamMaster from "./pages/master/operationTeam/OperationEditTeamMaster";
 import BackhandViewTeamMaster from "./pages/master/backhandTeam/BackhandViewTeamMaster";
 import BackhandEditTeamMaster from "./pages/master/backhandTeam/BackhandEditTeamMaster";
@@ -189,16 +187,10 @@ const App = () => {
               path="/field-team-edit/:id"
               element={<FieldTeamEditMaster />}
             />
-            <Route
-              path="/field-team-view/:id"
-              element={<FieldTeamViewMaster />}
-            />
+          
             <Route path="/operation-team" element={<OperationTeamMaster />} />
             <Route path="/add-operation-team" element={<AddOperationTeam />} />
-            <Route
-              path="/operation-team-view/:id"
-              element={<OperationViewTeamMaster />}
-            />
+           
             <Route
               path="/operation-team-edit/:id"
               element={<OperationEditTeamMaster />}

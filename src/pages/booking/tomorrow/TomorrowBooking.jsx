@@ -159,7 +159,7 @@ const TomorrowBooking = () => {
               )}
               <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/view-booking/${id}`)}
-                title="View Cylinder Info"
+                title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
               />
             </div>

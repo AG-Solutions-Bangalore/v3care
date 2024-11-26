@@ -93,7 +93,7 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollap
           {/* Booking Button */}
           {(useType === "1" || useType === "5" || useType === "6" || useType === "7") && (
             <button
-              className="text-white hover:text-blue-700 animate-pulse"
+              className=" p-1 bg-white rounded-xl text-black shadow-xl hover:text-blue-700 animate-pulse"
               onClick={() => navigate("/add-booking")}
             >
               + Booking

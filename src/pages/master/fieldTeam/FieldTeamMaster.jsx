@@ -9,12 +9,16 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import FieldTeamViewMaster from "./FieldTeamViewMaster";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [fieldDrawer, setFieldDrawer] = useState(false);
+  const [selectedFieldId, setSelectedFieldId] = useState(null);
   UseEscapeKey();
   useEffect(() => {
     const fetchFieldData = async () => {
@@ -44,6 +48,20 @@ const FieldTeamMaster = () => {
     fetchFieldData();
     setLoading(false);
   }, []);
+
+  const toogleViewServiceSub =
+    (open, id = null) =>
+    (event) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        (event.key === "Tab" || event.key === "Shift")
+      ) {
+        return;
+      }
+      setFieldDrawer(open);
+      if (id) setSelectedFieldId(id);
+    };
 
   const columns = [
     {
@@ -110,15 +128,22 @@ const FieldTeamMaster = () => {
               {userType !== "4" && (
                 <FaEdit
                   onClick={() => navigate(`/field-team-edit/${id}`)}
-                  title="View Cylinder Info"
+                  title="Booking Info"
                   className="h-5 w-5 cursor-pointer"
                 />
               )}
-              <MdOutlineRemoveRedEye
+              {/* <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/field-team-view/${id}`)}
-                title="View Cylinder Info"
+                title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
-              />
+              /> */}
+              <div
+                onClick={toogleViewServiceSub(true, id)}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <MdOutlineRemoveRedEye                 className="h-5 w-5 cursor-pointer" />
+              </div>
             </div>
           );
         },
@@ -141,19 +166,20 @@ const FieldTeamMaster = () => {
     },
     customToolbar: () => {
       return (
-       <>
-       {userType !== "4" && (
-          <Link
-            to="/add-field-team"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Field Team
-          </Link>
-        )}
-       </>
+        <>
+          {userType !== "4" && (
+            <Link
+              to="/add-field-team"
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Add Field Team
+            </Link>
+          )}
+        </>
       );
     },
   };
+ 
   return (
     <Layout>
       <MasterFilter />
@@ -172,12 +198,26 @@ const FieldTeamMaster = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Field Team List"
+          title="Field Team List"
           data={fieldTeamData ? fieldTeamData : []}
           columns={columns}
           options={options}
         />
       </div>
+
+      <SwipeableDrawer
+        anchor="right"
+        open={fieldDrawer}
+        onClose={toogleViewServiceSub(false)}
+        onOpen={toogleViewServiceSub(true)}
+      >
+       {selectedFieldId && (
+    <FieldTeamViewMaster
+      fieldId={selectedFieldId}
+      onClose={toogleViewServiceSub(false)}
+    />
+  )}
+      </SwipeableDrawer>
     </Layout>
   );
 };

@@ -8,6 +8,8 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ToggleSwitch from "../../../components/ToggleSwitch";
+import { toast } from "react-toastify";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
@@ -43,6 +45,8 @@ const ReferByMaster = () => {
     fetchReferData();
     setLoading(false);
   }, []);
+
+  
 
   const columns = [
     {
@@ -80,18 +84,22 @@ const ReferByMaster = () => {
         filter: false,
         sort: false,
         customBodyRender: (id) => {
+      
           return (
             <>
               {userType !== "4" && (
+                <>
+               
                 <div
                   onClick={() => navigate(`/refer-by-edit/${id}`)}
                   className="flex items-center space-x-2"
                 >
                   <FaEdit
-                    title="View Cylinder Info"
+                    title="Booking Info"
                     className="h-5 w-5 cursor-pointer"
                   />
                 </div>
+                </>
               )}
             </>
           );

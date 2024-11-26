@@ -9,12 +9,16 @@ import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import BackhandViewTeamMaster from "./BackhandViewTeamMaster";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 
 const BackhandTeamMaster = () => {
   const [BackhandData, setBackhandData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [backhandDrawer, setBackhandDrawer] = useState(false);
+  const [selectedBackhandId, setSelectedBackhandId] = useState(null);
   UseEscapeKey();
   useEffect(() => {
     const fetchBackhadnData = async () => {
@@ -44,6 +48,22 @@ const BackhandTeamMaster = () => {
     fetchBackhadnData();
     setLoading(false);
   }, []);
+
+  
+  const toogleViewBackhand =
+  (open, id = null) =>
+  (event) => {
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setBackhandDrawer(open);
+    if (id) setSelectedBackhandId(id);
+  };
+
 
   const columns = [
     {
@@ -110,15 +130,22 @@ const BackhandTeamMaster = () => {
               {userType !== "4" && (
                 <FaEdit
                   onClick={() => navigate(`/backhand-team-edit/${id}`)}
-                  title="View Cylinder Info"
+                  title="Booking Info"
                   className="h-5 w-5 cursor-pointer"
                 />
               )}
-              <MdOutlineRemoveRedEye
+              {/* <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/backhand-team-view/${id}`)}
-                title="View Cylinder Info"
+                title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
-              />
+              /> */}
+                <div
+                onClick={toogleViewBackhand(true, id)}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <MdOutlineRemoveRedEye   className="h-5 w-5 cursor-pointer" />
+              </div>
             </div>
           );
         },
@@ -178,6 +205,19 @@ const BackhandTeamMaster = () => {
           options={options}
         />
       </div>
+      <SwipeableDrawer
+        anchor="right"
+        open={backhandDrawer}
+        onClose={toogleViewBackhand(false)}
+        onOpen={toogleViewBackhand(true)}
+      >
+       {selectedBackhandId && (
+    <BackhandViewTeamMaster
+      backhandId={selectedBackhandId}
+      onClose={toogleViewBackhand(false)}
+    />
+  )}
+      </SwipeableDrawer>
     </Layout>
   );
 };

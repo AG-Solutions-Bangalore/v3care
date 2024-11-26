@@ -120,7 +120,7 @@ const ServicePriceMaster = () => {
                   className="flex items-center space-x-2"
                 >
                   <FaEdit
-                    title="View Cylinder Info"
+                    title="Booking Info"
                     className="h-5 w-5 cursor-pointer"
                   />
                 </div>
