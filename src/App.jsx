@@ -84,17 +84,14 @@ import UseEscapeKey from "./utils/UseEscapeKey";
 import RnrList from "./pages/booking/rnr/RnrList";
 import { useContext } from "react";
 import { ContextPanel } from "./utils/ContextPanel";
+import AllBooking from "./pages/booking/allBooking/AllBooking";
 const App = () => {
-  
-  
-  const {userType} = useContext(ContextPanel)
- 
+  const { userType } = useContext(ContextPanel);
 
   return (
     <>
       <ToastContainer />
-    
-      
+
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -152,6 +149,7 @@ const App = () => {
             <Route path="/today" element={<TodayBooking />} />
             <Route path="/tomorrow" element={<TomorrowBooking />} />
             <Route path="/vendor-job" element={<VendorJobBooking />} />
+            <Route path="/all-booking" element={<AllBooking />} />
           </>
         )}
         {/* master  */}
@@ -187,10 +185,10 @@ const App = () => {
               path="/field-team-edit/:id"
               element={<FieldTeamEditMaster />}
             />
-          
+
             <Route path="/operation-team" element={<OperationTeamMaster />} />
             <Route path="/add-operation-team" element={<AddOperationTeam />} />
-           
+
             <Route
               path="/operation-team-edit/:id"
               element={<OperationEditTeamMaster />}
@@ -307,16 +305,8 @@ const App = () => {
             <Route path="/pending-download" element={<PendingDownload />} />
           </>
         )}
-        <Route
-          path="/profile"
-          element={<Profile />}
-        />
-        <Route
-          path="/change-password"
-          element={<ChangePassword />}
-        />
-
-      
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/change-password" element={<ChangePassword />} />
       </Routes>
     </>
   );
