@@ -306,7 +306,7 @@ const EditBookingAll = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <Typography variant="h4" color="gray" className="mb-6">
-          Edit Booking
+          Edit Booking 
         </Typography>
 
         <div className="flex gap-4">

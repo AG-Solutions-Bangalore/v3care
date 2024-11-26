@@ -44,6 +44,7 @@ const AppProvider = ({ children }) => {
           "/completed",
           "/confirmed",
           "/inspection",
+          "/all-booking",
           "/today",
           "/tomorrow",
           "/pending",

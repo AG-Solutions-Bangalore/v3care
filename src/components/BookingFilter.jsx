@@ -10,6 +10,7 @@ const BookingFilter = () => {
   };
   const buttons = [
     { label: "Today", path: "/today", color: "from-pink-500 to-orange-400" },
+
     {
       label: "Tomorrow",
       path: "/tomorrow",
@@ -42,6 +43,7 @@ const BookingFilter = () => {
       path: "/completed",
       color: "from-lime-500 to-green-400",
     },
+    { label: "All", path: "/all-booking", color: "from-teal-500 to-green-400" },
   ];
 
   //total 8 sajid

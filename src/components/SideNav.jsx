@@ -25,11 +25,11 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     transparent: "bg-transparent",
   };
 
-
   useEffect(() => {
     function handClickOutside(e) {
       if (sidenavRef.current && !sidenavRef.current.contains(e.target)) {
-        if (window.innerWidth < 1280) { // xl breakpoint
+        if (window.innerWidth < 1280) {
+          // xl breakpoint
           setOpenSideNav(false);
         }
       }
@@ -42,7 +42,8 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   }, [setOpenSideNav]);
 
   useEffect(() => {
-    if (window.innerWidth < 1280) { // xl breakpoint
+    if (window.innerWidth < 1280) {
+      // xl breakpoint
       setOpenSideNav(false);
     }
   }, [pathname, setOpenSideNav]);
@@ -136,10 +137,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
   };
 
-
-
-  
-
   return (
     <aside
       ref={sidenavRef}
@@ -174,7 +171,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       </div>
       <div
         className={`m-4 overflow-y-auto ${
-          isCollapsed ? "lg:h-[calc(100vh-200px)]    md:h-[calc(100vh-200px)] h-[calc(100vh-200px)]" : "lg:h-[calc(100vh-240px)]    md:h-[calc(100vh-2400px)] h-[calc(100vh-240px)]"
+          isCollapsed
+            ? "lg:h-[calc(100vh-200px)]    md:h-[calc(100vh-200px)] h-[calc(100vh-200px)]"
+            : "lg:h-[calc(100vh-240px)]    md:h-[calc(100vh-2400px)] h-[calc(100vh-240px)]"
         }    custom-scroll`}
       >
         <ul className="mb-4 flex flex-col gap-1">
@@ -190,10 +189,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                     fullWidth
                   >
                     {item.icon}
-                    {(!isCollapsed || window.innerWidth < 1280  ) && (
+                    {(!isCollapsed || window.innerWidth < 1280) && (
                       <Typography
                         color="inherit"
-                      
                         className="font-medium capitalize"
                       >
                         {item.text}
@@ -210,7 +208,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
-            <div className="text-sm font-medium opacity-80">Version: 1.2.16</div>
+            <div className="text-sm font-medium opacity-80">
+              Version: 1.2.16
+            </div>
           </div>
         </div>
       )}
