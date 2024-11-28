@@ -51,9 +51,10 @@ const ReceivedsCommission = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -61,9 +62,10 @@ const ReceivedsCommission = () => {
       label: "Branch",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -72,13 +74,13 @@ const ReceivedsCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -113,9 +115,11 @@ const ReceivedsCommission = () => {
       label: "Booking Date",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -126,9 +130,11 @@ const ReceivedsCommission = () => {
       label: "Service Date",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -140,15 +146,15 @@ const ReceivedsCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -219,7 +225,7 @@ const ReceivedsCommission = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Commission Received List"
+          title="Commission Received List"
           data={receivedCommData ? receivedCommData : []}
           columns={columns}
           options={options}

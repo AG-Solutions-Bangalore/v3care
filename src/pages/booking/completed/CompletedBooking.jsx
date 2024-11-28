@@ -51,9 +51,10 @@ const CompletedBooking = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -61,9 +62,10 @@ const CompletedBooking = () => {
       label: "Branch",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -72,13 +74,13 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -90,8 +92,9 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
+        viewColumns: false,
       },
     },
     {
@@ -99,9 +102,10 @@ const CompletedBooking = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -110,13 +114,13 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const customeName = tableMeta.rowData[3]
-          const mobileNo = tableMeta.rowData[4]
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
             <div className=" flex flex-col w-38">
-             <span>{customeName}</span>
-             <span>{mobileNo}</span>
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -128,7 +132,9 @@ const CompletedBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -140,8 +146,10 @@ const CompletedBooking = () => {
       label: "Service Date",
       options: {
         filter: true,
+        viewColumns: false,
+
         sort: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -154,15 +162,15 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -172,8 +180,10 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        display:"exclude",
-        searchable:true,
+        viewColumns: false,
+
+        display: "exclude",
+        searchable: true,
       },
     },
     {
@@ -181,9 +191,10 @@ const CompletedBooking = () => {
       label: "Price",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -192,13 +203,13 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[9]
-          const price = tableMeta.rowData[10]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
           return (
             <div className=" flex flex-col w-40">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -225,9 +236,10 @@ const CompletedBooking = () => {
       label: "Amount",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -235,8 +247,10 @@ const CompletedBooking = () => {
       label: "Type",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        viewColumns: false,
+
+        display: "exclude",
+        searchable: true,
         sort: true,
       },
     },
@@ -246,13 +260,13 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[14]
-          const price = tableMeta.rowData[15]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[14];
+          const price = tableMeta.rowData[15];
           return (
             <div className=" flex flex-col w-32">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -263,9 +277,10 @@ const CompletedBooking = () => {
       label: "Confirm By",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -273,9 +288,10 @@ const CompletedBooking = () => {
       label: "Status",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -284,13 +300,13 @@ const CompletedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const confirmBy = tableMeta.rowData[17]
-          const status = tableMeta.rowData[18]
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[17];
+          const status = tableMeta.rowData[18];
           return (
             <div className=" flex flex-col ">
-             <span>{confirmBy}</span>
-             <span>{status}</span>
+              <span>{confirmBy}</span>
+              <span>{status}</span>
             </div>
           );
         },
@@ -337,7 +353,7 @@ const CompletedBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      
+
       <div className="mt-5">
         <MUIDataTable
           title={"Completed Booking List"}

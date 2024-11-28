@@ -54,6 +54,8 @@ const RnrList = () => {
         filter: false,
         display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         sort: false,
       },
     },
@@ -62,6 +64,8 @@ const RnrList = () => {
       label: "Branch",
       options: {
         filter: true,
+        viewColumns: false,
+
         display: "exclude",
         searchable: true,
         sort: true,
@@ -91,6 +95,8 @@ const RnrList = () => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         sort: false,
       },
@@ -101,6 +107,8 @@ const RnrList = () => {
       options: {
         filter: true,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         sort: false,
       },
@@ -130,6 +138,8 @@ const RnrList = () => {
         filter: true,
         sort: false,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -144,6 +154,8 @@ const RnrList = () => {
         filter: true,
         sort: false,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -173,8 +185,10 @@ const RnrList = () => {
       label: "Service",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        viewColumns: false,
+
+        searchable: true,
         sort: false,
       },
     },
@@ -183,8 +197,10 @@ const RnrList = () => {
       label: "Price",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        viewColumns: false,
+
+        searchable: true,
         sort: false,
       },
     },

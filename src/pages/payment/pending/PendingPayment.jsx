@@ -52,9 +52,10 @@ const PendingPayment = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -62,9 +63,10 @@ const PendingPayment = () => {
       label: "Branch",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -73,13 +75,13 @@ const PendingPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -98,9 +100,10 @@ const PendingPayment = () => {
       label: "Customer",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -108,9 +111,10 @@ const PendingPayment = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -119,13 +123,13 @@ const PendingPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const customeName = tableMeta.rowData[4]
-          const mobileNo = tableMeta.rowData[5]
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-38">
-             <span>{customeName}</span>
-             <span>{mobileNo}</span>
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -137,8 +141,10 @@ const PendingPayment = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -150,8 +156,10 @@ const PendingPayment = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -163,15 +171,15 @@ const PendingPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[7]
-          const serviceDate = tableMeta.rowData[8]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -180,8 +188,10 @@ const PendingPayment = () => {
       label: "Service",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
+        viewColumns: false,
+
         sort: true,
       },
     },
@@ -191,8 +201,10 @@ const PendingPayment = () => {
       label: "Price",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        viewColumns: false,
+
+        searchable: true,
         sort: false,
       },
     },
@@ -202,13 +214,13 @@ const PendingPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[10]
-          const price = tableMeta.rowData[11]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[10];
+          const price = tableMeta.rowData[11];
           return (
             <div className=" flex flex-col w-40">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -219,8 +231,10 @@ const PendingPayment = () => {
       label: "Paid Amount",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        viewColumns: false,
+
+        searchable: true,
         sort: false,
       },
     },
@@ -229,9 +243,10 @@ const PendingPayment = () => {
       label: "Paid Type",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -240,13 +255,13 @@ const PendingPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const amountType = tableMeta.rowData[13]
-          const paidType = tableMeta.rowData[14]
+        customBodyRender: (value, tableMeta) => {
+          const amountType = tableMeta.rowData[13];
+          const paidType = tableMeta.rowData[14];
           return (
             <div className=" flex flex-col ">
-             <span>{amountType}</span>
-             <span>{paidType}</span>
+              <span>{amountType}</span>
+              <span>{paidType}</span>
             </div>
           );
         },
@@ -302,7 +317,7 @@ const PendingPayment = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Payment Pending List"
+          title="Payment Pending List"
           data={pendingData ? pendingData : []}
           columns={columns}
           options={options}
