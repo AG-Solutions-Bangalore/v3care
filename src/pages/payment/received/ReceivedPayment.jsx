@@ -55,6 +55,8 @@ const ReceivedPayment = () => {
         display:"exclude",
         serchable:true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -65,6 +67,8 @@ const ReceivedPayment = () => {
         display:"exclude",
         serchable:true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -101,6 +105,8 @@ const ReceivedPayment = () => {
         display:"exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -111,6 +117,8 @@ const ReceivedPayment = () => {
         display:"exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -139,6 +147,8 @@ const ReceivedPayment = () => {
         sort: true,
         display:"exclude",
         serchable:true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -152,6 +162,8 @@ const ReceivedPayment = () => {
         sort: true,
         display:"exclude",
         serchable:true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -182,6 +194,8 @@ const ReceivedPayment = () => {
         filter: true,
         sort: true,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
       },
     },
@@ -192,6 +206,8 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
         sort: false,
       },
@@ -221,6 +237,8 @@ const ReceivedPayment = () => {
         filter: false,
         display:"exclude",
         searchable:true,
+        viewColumns: false,
+
         sort: false,
       },
     },
@@ -230,6 +248,8 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
         sort: false,
       },

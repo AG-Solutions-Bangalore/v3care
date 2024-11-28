@@ -52,9 +52,10 @@ const PendingCommission = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -62,9 +63,10 @@ const PendingCommission = () => {
       label: "Branch",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -73,13 +75,13 @@ const PendingCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -98,9 +100,10 @@ const PendingCommission = () => {
       label: "Vendor",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -108,9 +111,10 @@ const PendingCommission = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
     {
@@ -119,13 +123,13 @@ const PendingCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const vendor = tableMeta.rowData[4]
-          const mobileNo = tableMeta.rowData[5]
+        customBodyRender: (value, tableMeta) => {
+          const vendor = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-44">
-             <span>{vendor}</span>
-             <span>{mobileNo}</span>
+              <span>{vendor}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -137,8 +141,10 @@ const PendingCommission = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -149,8 +155,10 @@ const PendingCommission = () => {
       label: "Service Date",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         sort: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -163,15 +171,15 @@ const PendingCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[7]
-          const serviceDate = tableMeta.rowData[8]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -180,9 +188,10 @@ const PendingCommission = () => {
       label: "Service",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
 
@@ -191,9 +200,10 @@ const PendingCommission = () => {
       label: "Commission",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -202,13 +212,13 @@ const PendingCommission = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[10]
-          const commision = tableMeta.rowData[11]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[10];
+          const commision = tableMeta.rowData[11];
           return (
             <div className=" flex flex-col w-32">
-             <span>{service}</span>
-             <span>{commision}</span>
+              <span>{service}</span>
+              <span>{commision}</span>
             </div>
           );
         },
@@ -240,7 +250,7 @@ const PendingCommission = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-   
+
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -264,7 +274,7 @@ const PendingCommission = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title ="Commission Pending List"
+          title="Commission Pending List"
           data={PendingCommissionData ? PendingCommissionData : []}
           columns={columns}
           options={options}

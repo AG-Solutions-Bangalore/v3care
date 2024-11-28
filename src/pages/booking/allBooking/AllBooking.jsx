@@ -116,6 +116,7 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
       },
     },
 
@@ -127,6 +128,7 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -137,6 +139,7 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -164,6 +167,8 @@ const AllBooking = () => {
         filter: true,
         sort: false,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -178,6 +183,8 @@ const AllBooking = () => {
         sort: false,
         display: "exclude",
         searchable: true,
+        viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -209,6 +216,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {
@@ -219,6 +228,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {
@@ -307,6 +318,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -317,6 +330,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: true,
+        viewColumns: false,
+
       },
     },
     {
@@ -345,6 +360,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {
@@ -355,6 +372,8 @@ const AllBooking = () => {
         display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {

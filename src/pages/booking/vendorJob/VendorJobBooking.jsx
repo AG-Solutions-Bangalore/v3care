@@ -53,6 +53,8 @@ const VendorJobBooking = () => {
       options: {
         filter: false,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
         sort: false,
       },
@@ -65,6 +67,8 @@ const VendorJobBooking = () => {
         filter: true,
         sort: true,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
       },
     },
@@ -93,6 +97,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         display:"exclude",
+        viewColumns: false,
+
         searchable: true,
       },
     },
@@ -103,6 +109,8 @@ const VendorJobBooking = () => {
         filter: true,
         sort: false,
         display:"exclude",
+        viewColumns: false,
+
         searchable: true,
       },
     },
@@ -131,6 +139,8 @@ const VendorJobBooking = () => {
         filter: true,
         sort: false,
         display:"exclude",
+                viewColumns: false,
+
         searchable:true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -144,6 +154,8 @@ const VendorJobBooking = () => {
         filter: true,
         sort: false,
         display:"exclude",
+        viewColumns: false,
+
         searchable:true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -176,6 +188,8 @@ const VendorJobBooking = () => {
         display:"exclude",
         searchable:true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {
@@ -186,6 +200,8 @@ const VendorJobBooking = () => {
         display:"exclude",
         searchable:true,
         sort: false,
+        viewColumns: false,
+
       },
     },
     {
