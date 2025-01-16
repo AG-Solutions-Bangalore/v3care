@@ -96,14 +96,16 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
+        
           const branchName = tableMeta.rowData[1];
 
           return (
             <div className="flex flex-col w-32">
-              <span>{order_ref}</span>
-              <span>{branchName}</span>
-            </div>
-          );
+            <span>{order_ref}</span>
+            <span>{branchName}</span>
+          </div>
+          )
+          
         },
       },
     },
@@ -114,7 +116,6 @@ const ConfirmedBooking = () => {
         filter: true,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: true,
       },
@@ -127,7 +128,6 @@ const ConfirmedBooking = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -139,7 +139,6 @@ const ConfirmedBooking = () => {
         filter: true,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -182,7 +181,6 @@ const ConfirmedBooking = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -194,7 +192,17 @@ const ConfirmedBooking = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
+        searchable: true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
       },
@@ -208,15 +216,28 @@ const ConfirmedBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[6];
           const price = tableMeta.rowData[7];
-          const advnaced = tableMeta.rowData[9];
+          const advnaced = tableMeta.rowData[10];
+          const customeDetails = tableMeta.rowData[8];
+          if (service == "Custom") {
+            return (
+              <div className=" flex flex-col w-40">
+              <span>{customeDetails}</span>
+           <div className="flex flex-row gap-2">
+           <span >{price}</span>
+           <span >-</span>
+           <span>{advnaced}</span>
+           </div>
+            </div>
+            );
+          }
           return (
             <div className=" flex flex-col w-40">
               <span>{service}</span>
-              <div className="flex flex-row gap-2">
-                <span>{price}</span>
-                <span>-</span>
-                <span>{advnaced}</span>
-              </div>
+           <div className="flex flex-row gap-2">
+           <span >{price}</span>
+           <span >-</span>
+           <span>{advnaced}</span>
+           </div>
             </div>
           );
         },
@@ -229,7 +250,6 @@ const ConfirmedBooking = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -240,26 +260,31 @@ const ConfirmedBooking = () => {
       options: {
         filter: false,
         sort: true,
-        customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[10];
+        customBodyRender: ( value,tableMeta) => {
+          const order_no_assign = tableMeta.rowData[11];
           const order_ref = tableMeta.rowData[0];
+   
 
           return order_no_assign > 0 ? (
             <div className="flex flex-col w-32">
-              <button
-                className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-                onClick={() => handleOpenModal(order_ref)}
-              >
-                {value}
-              </button>
+            <button
+              className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+              onClick={() => handleOpenModal(order_ref)}
+            >
+              {value}
+            </button>
+            
             </div>
           ) : (
             <div className="flex flex-col w-32">
-              <span>{value}</span>
-            </div>
+            <span>{value}</span>
+           
+          </div>
           );
+       
         },
       },
+
     },
     {
       name: "assignment_details",
@@ -269,7 +294,7 @@ const ConfirmedBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[10];
+          const orderNoAssign = tableMeta.rowData[11];
           const assignments = assignmentData[orderRef];
 
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
@@ -282,9 +307,7 @@ const ConfirmedBooking = () => {
                 <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {assignments
-                        .map((assignment) => assignment.name.split(" ")[0])
-                        .join(", ")}
+                      {assignments.map((assignment) => assignment.name.split(' ')[0]).join(', ')}
                     </td>
                   </tr>
                 </tbody>
@@ -300,10 +323,9 @@ const ConfirmedBooking = () => {
       label: "Amount",
       options: {
         filter: false,
-        display: "exclude",
-        searchable: true,
+        display:"exclude",
         viewColumns: false,
-
+        searchable:true,
         sort: true,
       },
     },
@@ -312,10 +334,9 @@ const ConfirmedBooking = () => {
       label: "Type",
       options: {
         filter: false,
-        display: "exclude",
+        display:"exclude",
         viewColumns: false,
-
-        searchable: true,
+        searchable:true,
         sort: true,
       },
     },
@@ -325,14 +346,13 @@ const ConfirmedBooking = () => {
       options: {
         filter: false,
         sort: false,
-
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[12];
-          const price = tableMeta.rowData[13];
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[13]
+          const price = tableMeta.rowData[14]
           return (
             <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
+             <span>{service}</span>
+             <span>{price}</span>
             </div>
           );
         },
@@ -345,7 +365,6 @@ const ConfirmedBooking = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -357,7 +376,6 @@ const ConfirmedBooking = () => {
         filter: true,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -369,8 +387,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[15];
-          const status = tableMeta.rowData[16];
+          const confirmBy = tableMeta.rowData[16];
+          const status = tableMeta.rowData[17];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -380,7 +398,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-
+   
     {
       name: "id",
       label: "Action",
@@ -419,7 +437,7 @@ const ConfirmedBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[16];
+      const orderStatus = rowData[17];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green
@@ -457,11 +475,12 @@ const ConfirmedBooking = () => {
           options={options}
         />
       </div>
-      <OrderRefModal
+     <OrderRefModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         orderRef={selectedOrderRef}
-      />
+
+      /> 
     </Layout>
   );
 };

@@ -204,7 +204,16 @@ const RnrList = () => {
         sort: false,
       },
     },
-
+    {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+      },
+    },
     {
       name: "service_price",
       label: "Service/Price",
@@ -214,6 +223,15 @@ const RnrList = () => {
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[9];
           const price = tableMeta.rowData[10];
+          const customeDetails = tableMeta.rowData[11];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col w-32">
+                <span>{customeDetails}</span>
+                <span>{price}</span>
+              </div>
+            );
+          }
           return (
             <div className=" flex flex-col w-38">
               <span>{service}</span>

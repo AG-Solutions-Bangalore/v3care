@@ -52,7 +52,7 @@ const CancelBooking = () => {
       label: "ID",
       options: {
         filter: false,
-        display: "exclude",
+        display:"exclude",
         searchable: true,
         sort: false,
         viewColumns: false,
@@ -63,7 +63,7 @@ const CancelBooking = () => {
       label: "Branch",
       options: {
         filter: true,
-        display: "exclude",
+        display:"exclude",
         searchable: true,
         sort: true,
         viewColumns: false,
@@ -75,13 +75,13 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const brancName = tableMeta.rowData[1];
-          const orderRef = tableMeta.rowData[0];
+        customBodyRender:  (value,tableMeta) => {
+          const brancName = tableMeta.rowData[1]
+          const orderRef = tableMeta.rowData[0]
           return (
             <div className=" flex flex-col w-32">
-              <span>{orderRef}</span>
-              <span>{brancName}</span>
+             <span>{orderRef}</span>
+             <span>{brancName}</span>
             </div>
           );
         },
@@ -92,10 +92,10 @@ const CancelBooking = () => {
       label: "Customer",
       options: {
         filter: false,
-        display: "exclude",
+        display:"exclude",
         searchable: true,
-        sort: false,
         viewColumns: false,
+        sort: false,
       },
     },
     {
@@ -103,10 +103,10 @@ const CancelBooking = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display: "exclude",
+        display:"exclude",
         searchable: true,
-        sort: false,
         viewColumns: false,
+        sort: false,
       },
     },
     {
@@ -115,13 +115,13 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[3];
-          const mobileNo = tableMeta.rowData[4];
+        customBodyRender:  (value,tableMeta) => {
+          const customeName = tableMeta.rowData[3]
+          const mobileNo = tableMeta.rowData[4]
           return (
             <div className=" flex flex-col w-40">
-              <span>{customeName}</span>
-              <span>{mobileNo}</span>
+             <span>{customeName}</span>
+             <span>{mobileNo}</span>
             </div>
           );
         },
@@ -133,10 +133,9 @@ const CancelBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display: "exclude",
-        searchable: true,
+        display:"exclude",
         viewColumns: false,
-
+        searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -148,9 +147,8 @@ const CancelBooking = () => {
       options: {
         filter: true,
         sort: false,
+        display:"exclude",
         viewColumns: false,
-
-        display: "exclude",
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -163,16 +161,15 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-
-        customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
+        customBodyRender: (value ,tableMeta) => {
+          const bookingDate = tableMeta.rowData[6]
+          const serviceDate = tableMeta.rowData[7]
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-            </div>
-          );
+              </div>
+          )
         },
       },
     },
@@ -181,11 +178,10 @@ const CancelBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
+        display:"exclude",
+        searchable:true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -193,11 +189,21 @@ const CancelBooking = () => {
       label: "Price",
       options: {
         filter: false,
-        display: "exclude",
+        display:"exclude",
+        searchable:true,
         viewColumns: false,
-
+        sort: false,
+      },
+    },
+    {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
+        display: "exclude",
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
     {
@@ -206,13 +212,22 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[9];
-          const price = tableMeta.rowData[10];
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[9]
+          const price = tableMeta.rowData[10]
+          const customeDetails = tableMeta.rowData[11];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col w-32">
+                <span>{customeDetails}</span>
+                <span>{price}</span>
+              </div>
+            );
+          }
           return (
             <div className=" flex flex-col w-38">
-              <span>{service}</span>
-              <span>{price}</span>
+             <span>{service}</span>
+             <span>{price}</span>
             </div>
           );
         },
@@ -267,7 +282,7 @@ const CancelBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-
+    
       <div className="mt-5">
         <MUIDataTable
           title={"Cancel Booking List"}

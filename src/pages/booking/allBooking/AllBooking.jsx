@@ -233,6 +233,17 @@ const AllBooking = () => {
       },
     },
     {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    {
       name: "service_price",
       label: "Service/Price",
       options: {
@@ -241,6 +252,15 @@ const AllBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[8];
           const price = tableMeta.rowData[9];
+          const customeDetails = tableMeta.rowData[10];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col w-32">
+                <span>{customeDetails}</span>
+                <span>{price}</span>
+              </div>
+            );
+          }
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -257,7 +277,7 @@ const AllBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[11];
+          const order_no_assign = tableMeta.rowData[12];
           const order_ref = tableMeta.rowData[0];
 
           return order_no_assign > 0 ? (
@@ -285,7 +305,7 @@ const AllBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[11];
+          const orderNoAssign = tableMeta.rowData[12];
           const assignments = assignmentData[orderRef];
 
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
@@ -341,8 +361,8 @@ const AllBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[13];
-          const price = tableMeta.rowData[14];
+          const service = tableMeta.rowData[14];
+          const price = tableMeta.rowData[15];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -383,8 +403,8 @@ const AllBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[16];
-          const status = tableMeta.rowData[17];
+          const confirmBy = tableMeta.rowData[17];
+          const status = tableMeta.rowData[18];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -431,7 +451,7 @@ const AllBooking = () => {
     print: false,
 
     setRowProps: (rowData) => {
-      const orderStatus = rowData[17];
+      const orderStatus = rowData[18];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green

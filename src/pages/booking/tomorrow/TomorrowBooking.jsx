@@ -107,6 +107,20 @@ const TomorrowBooking = () => {
       options: {
         filter: false,
         sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const customValue = tableMeta.rowData[7]; 
+          return value == "Custom" ? ` (${customValue || "-"})` : value;
+        },
+      },
+    },
+    {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
       },
     },
     {
@@ -178,7 +192,7 @@ const TomorrowBooking = () => {
     download: false,
     print: false,
     setRowProps: (rowData) => {
-      const orderStatus = rowData[10];
+      const orderStatus = rowData[11];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green
