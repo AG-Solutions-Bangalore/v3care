@@ -143,7 +143,7 @@ const SignIn = () => {
                     variant="small"
                     className=" -mb-3 font-medium hover:text-orange-600  text-gray-500 border-b border-black   "
                   >
-                    <Link to="/forget-password">Forgot Password</Link>
+                    <Link tabIndex={-1} to="/forget-password">Forgot Password</Link>
                   </Typography>
                 </div>
 

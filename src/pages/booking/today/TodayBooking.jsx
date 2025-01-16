@@ -114,8 +114,8 @@ const TodayBooking = () => {
       options: {
         filter: true,
         display: "exclude",
-        viewColumns: false,
         searchable: true,
+        viewColumns: false,
         sort: true,
       },
     },
@@ -180,8 +180,8 @@ const TodayBooking = () => {
       options: {
         filter: true,
         sort: false,
-        viewColumns: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -211,8 +211,8 @@ const TodayBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display: "exclude",
         viewColumns: false,
+        display: "exclude",
         searchable: true,
         sort: false,
       },
@@ -220,6 +220,17 @@ const TodayBooking = () => {
     {
       name: "order_amount",
       label: "Price",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_custom",
+      label: "Custom",
       options: {
         filter: false,
         display: "exclude",
@@ -237,6 +248,15 @@ const TodayBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[8];
           const price = tableMeta.rowData[9];
+          const customeDetails = tableMeta.rowData[10];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col w-32">
+                <span>{customeDetails}</span>
+                <span>{price}</span>
+              </div>
+            );
+          }
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -253,7 +273,7 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[11];
+          const order_no_assign = tableMeta.rowData[12];
           const order_ref = tableMeta.rowData[0];
 
           return order_no_assign > 0 ? (
@@ -281,7 +301,7 @@ const TodayBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[11];
+          const orderNoAssign = tableMeta.rowData[12];
           const assignments = assignmentData[orderRef];
 
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
@@ -335,8 +355,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[13];
-          const price = tableMeta.rowData[14];
+          const service = tableMeta.rowData[14];
+          const price = tableMeta.rowData[15];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -374,10 +394,9 @@ const TodayBooking = () => {
       options: {
         filter: false,
         sort: false,
-
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[16];
-          const status = tableMeta.rowData[17];
+          const confirmBy = tableMeta.rowData[17];
+          const status = tableMeta.rowData[18];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -424,7 +443,7 @@ const TodayBooking = () => {
     print: false,
 
     setRowProps: (rowData) => {
-      const orderStatus = rowData[17];
+      const orderStatus = rowData[18];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#d4edda"; // light green

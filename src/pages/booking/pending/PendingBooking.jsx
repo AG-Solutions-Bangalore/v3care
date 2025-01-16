@@ -52,10 +52,9 @@ const PendingBooking = () => {
       label: "ID",
       options: {
         filter: false,
-        display: "exclude",
-        searchable: true,
+        display:"exclude",
+        searchable:true,
         viewColumns: false,
-
         sort: false,
       },
     },
@@ -64,10 +63,9 @@ const PendingBooking = () => {
       label: "Branch",
       options: {
         filter: true,
-        display: "exclude",
+        display:"exclude",
+        searchable:true,
         viewColumns: false,
-
-        searchable: true,
         sort: true,
       },
     },
@@ -77,13 +75,13 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const brancName = tableMeta.rowData[1];
-          const orderRef = tableMeta.rowData[0];
+        customBodyRender:  (value,tableMeta) => {
+          const brancName = tableMeta.rowData[1]
+          const orderRef = tableMeta.rowData[0]
           return (
             <div className=" flex flex-col w-32">
-              <span>{orderRef}</span>
-              <span>{brancName}</span>
+             <span>{orderRef}</span>
+             <span>{brancName}</span>
             </div>
           );
         },
@@ -94,10 +92,9 @@ const PendingBooking = () => {
       label: "Customer",
       options: {
         filter: false,
-        display: "exclude",
-        searchable: true,
+        display:"exclude",
+        searchable:true,
         viewColumns: false,
-
         sort: false,
       },
     },
@@ -106,10 +103,9 @@ const PendingBooking = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display: "exclude",
         viewColumns: false,
-
-        searchable: true,
+        display:"exclude",
+        searchable:true,
         sort: false,
       },
     },
@@ -137,10 +133,9 @@ const PendingBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display: "exclude",
+        display:"exclude",
         viewColumns: false,
-
-        searchable: true,
+        searchable:true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -151,10 +146,9 @@ const PendingBooking = () => {
       label: "Service Date",
       options: {
         filter: true,
-        display: "exclude",
+        display:"exclude",
         viewColumns: false,
-
-        searchable: true,
+        searchable:true,
         sort: false,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -167,15 +161,15 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
+        customBodyRender: (value ,tableMeta) => {
+          const bookingDate = tableMeta.rowData[6]
+          const serviceDate = tableMeta.rowData[7]
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-            </div>
-          );
+              </div>
+          )
         },
       },
     },
@@ -184,10 +178,9 @@ const PendingBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display: "exclude",
-        searchable: true,
+        display:"exclude",
         viewColumns: false,
-
+        searchable:true,
         sort: false,
       },
     },
@@ -196,9 +189,19 @@ const PendingBooking = () => {
       label: "Price",
       options: {
         filter: false,
+        display:"exclude",
+        viewColumns: false,
+        searchable:true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_custom",
+      label: "Custom",
+      options: {
+        filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
@@ -209,18 +212,28 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[9];
-          const price = tableMeta.rowData[10];
+        customBodyRender:  (value,tableMeta) => {
+          const service = tableMeta.rowData[9]
+          const price = tableMeta.rowData[10]
+          const customeDetails = tableMeta.rowData[11];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col  w-36">
+                <span>{customeDetails}</span>
+                <span>{price}</span>
+              </div>
+            );
+          }
           return (
-            <div className=" flex flex-col w-38">
-              <span>{service}</span>
-              <span>{price}</span>
+            <div className=" flex flex-col w-36">
+             <span>{service}</span>
+             <span>{price}</span>
             </div>
           );
         },
       },
     },
+    
 
     {
       name: "order_status",
@@ -260,7 +273,7 @@ const PendingBooking = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-
+ 
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -276,7 +289,7 @@ const PendingBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-
+     
       <div className="mt-5">
         <MUIDataTable
           title={"Pending Booking List"}
