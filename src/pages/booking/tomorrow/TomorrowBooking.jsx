@@ -10,6 +10,7 @@ import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const TomorrowBooking = () => {
   const [tomBookingData, setTomBookingData] = useState(null);
@@ -43,7 +44,7 @@ const TomorrowBooking = () => {
       }
     };
     fetchTomData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -108,7 +109,7 @@ const TomorrowBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customValue = tableMeta.rowData[7]; 
+          const customValue = tableMeta.rowData[7];
           return value == "Custom" ? ` (${customValue || "-"})` : value;
         },
       },
@@ -195,23 +196,29 @@ const TomorrowBooking = () => {
       const orderStatus = rowData[11];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
-        backgroundColor = "#d4edda"; // light green
+        backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus === "Completed") {
-        backgroundColor = "#fff3cd"; // light yellow
+        backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
-        backgroundColor = "#e2e3e5"; // light gray
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus === "RNR") {
+        backgroundColor = "#B9CCF4"; // light blue
       } else if (orderStatus === "Pending") {
-        backgroundColor = "#f8d7da"; // light red
+        backgroundColor = "#fff"; // white
       } else if (orderStatus === "Cancel") {
-        backgroundColor = "#ADD8E6"; // light  blue
+        backgroundColor = "#F76E6E"; // light  red
       } else if (orderStatus === "On the way") {
-        backgroundColor = "#b68dee"; // light  purple
+        backgroundColor = "#fff3cd"; // light  yellow
+      } else if (orderStatus === "In Progress") {
+        backgroundColor = "#A7FCA7"; // light  green
+      } else if (orderStatus === "Vendor") {
+        backgroundColor = "#F38121"; // light  ornage
       }
 
       return {
         style: {
           backgroundColor: backgroundColor,
-          borderBottom: "10px solid #f1f7f9",
+          borderBottom: "5px solid #f1f7f9",
         },
       };
     },
@@ -220,23 +227,20 @@ const TomorrowBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          
-        </h3>
-
-        <Link className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md">
-          + Add Booking
-        </Link>
-      </div> */}
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Tomorrow Booking List"}
-          data={tomBookingData ? tomBookingData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Tomorrow Booking List"}
+            data={tomBookingData ? tomBookingData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

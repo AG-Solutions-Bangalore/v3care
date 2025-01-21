@@ -317,11 +317,11 @@ const ServicePriceEditMaster = () => {
                 className="mr-2 mb-2"
                 color="primary"
                 onClick={onSubmit}
-                disabled={isButtonDisabled}
+                // disabled={isButtonDisabled}
               >
                 <div className="flex gap-1">
                   <MdSend className="w-4 h-4" />
-                  <span>{isButtonDisabled ? "Updating..." : "Update"}</span>
+                  <span>Update</span>
                 </div>
               </Button>
 

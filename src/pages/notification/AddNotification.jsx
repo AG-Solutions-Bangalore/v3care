@@ -170,9 +170,9 @@ const AddNotification = () => {
                 variant="contained"
                 color="primary"
                 onClick={onSubmit}
-                disabled={isButtonDisabled}
+                // disabled={isButtonDisabled}
               >
-              {isButtonDisabled ? "Sumbitting.." : "Sumbit"}  
+              Sumbit 
               </Button>
               <Link to="/notification">
                 <Button variant="contained" color="success">

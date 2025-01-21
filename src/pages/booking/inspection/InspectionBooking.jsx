@@ -10,6 +10,7 @@ import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const InspectionBooking = () => {
   const [InspectionBookData, setInspectionBookData] = useState(null);
@@ -20,10 +21,10 @@ const InspectionBooking = () => {
   useEffect(() => {
     const fetchInspectionData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -43,7 +44,7 @@ const InspectionBooking = () => {
       }
     };
     fetchInspectionData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -53,7 +54,7 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
         searchable: true,
       },
@@ -64,7 +65,7 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
         searchable: true,
       },
@@ -75,26 +76,26 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
       },
     },
-    
+
     {
       name: "order_customer",
       label: "Customer",
       options: {
         filter: false,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         viewColumns: false,
       },
@@ -105,7 +106,7 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         viewColumns: false,
       },
@@ -116,13 +117,13 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const customeName = tableMeta.rowData[3]
-          const mobileNo = tableMeta.rowData[4]
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
             <div className=" flex flex-col w-32">
-             <span>{customeName}</span>
-             <span>{mobileNo}</span>
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -134,7 +135,7 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         viewColumns: false,
         customBodyRender: (value) => {
@@ -148,7 +149,7 @@ const InspectionBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
         searchable: true,
         customBodyRender: (value) => {
@@ -162,15 +163,15 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -179,9 +180,9 @@ const InspectionBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: false,
       },
     },
@@ -190,8 +191,8 @@ const InspectionBooking = () => {
       label: "Price",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
         sort: false,
       },
@@ -213,9 +214,9 @@ const InspectionBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[9]
-          const price = tableMeta.rowData[10]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
           const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
@@ -227,8 +228,8 @@ const InspectionBooking = () => {
           }
           return (
             <div className=" flex flex-col  w-40">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -305,14 +306,20 @@ const InspectionBooking = () => {
           + Add Booking
         </Link>
       </div> */}
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Inspection Booking List"}
-          data={InspectionBookData ? InspectionBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Inspection Booking List"}
+            data={InspectionBookData ? InspectionBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

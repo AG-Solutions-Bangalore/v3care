@@ -10,6 +10,7 @@ import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const RnrList = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
@@ -20,10 +21,6 @@ const RnrList = () => {
   useEffect(() => {
     const fetchPendingData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -43,7 +40,7 @@ const RnrList = () => {
       }
     };
     fetchPendingData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -295,15 +292,20 @@ const RnrList = () => {
   return (
     <Layout>
       <BookingFilter />
-
-      <div className="mt-5">
-        <MUIDataTable
-          title={"RNR Booking List"}
-          data={pendingBookData ? pendingBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"RNR Booking List"}
+            data={pendingBookData ? pendingBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

@@ -24,7 +24,6 @@ import UseEscapeKey from "../../utils/UseEscapeKey";
 //   fontSize: "1px",
 // };
 const AddVendor = () => {
-  // sajid
   UseEscapeKey();
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);

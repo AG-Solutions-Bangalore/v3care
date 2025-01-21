@@ -10,6 +10,7 @@ import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
@@ -20,10 +21,10 @@ const VendorJobBooking = () => {
   useEffect(() => {
     const fetchVendorData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -43,7 +44,7 @@ const VendorJobBooking = () => {
       }
     };
     fetchVendorData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -294,15 +295,20 @@ const VendorJobBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Vendor Booking List"}
-          data={vendorBookData ? vendorBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Vendor Booking List"}
+            data={vendorBookData ? vendorBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

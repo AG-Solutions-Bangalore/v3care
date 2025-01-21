@@ -117,7 +117,7 @@ const PendingDownload = () => {
                 <button
                   type="submit"
                   className={`flex items-center justify-center w-full px-4 py-4 text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:bg-gray-400`}
-                  disabled={isButtonDisabled}
+                  // disabled={isButtonDisabled}
                 >
                   <FiDownload className="mr-2" /> Download
                 </button>
