@@ -381,7 +381,7 @@ const EditBookingInspection = () => {
           </div>
         );
       case "followUp":
-      case "followUp":
+      case "followUplocation":
         return (
           <div>
             {loading ? (

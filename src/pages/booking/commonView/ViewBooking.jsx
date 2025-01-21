@@ -267,7 +267,7 @@ const ViewBooking = () => {
           </div>
         );
       case "followUp":
-      case "followUp":
+      case "followUplocation":
         return (
           <div>
             <div className="mt-5">
