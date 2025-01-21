@@ -345,7 +345,7 @@ const PostponeBooking = () => {
                     onClick={(e) => onSubmit(e)}
                     className="mr-2 mb-2"
                     color="primary"
-                    disabled={isButtonDisabled}
+                    // disabled={isButtonDisabled}
                   >
                     Update
                   </Button>

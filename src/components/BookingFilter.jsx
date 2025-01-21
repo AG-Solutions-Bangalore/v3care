@@ -16,6 +16,8 @@ const BookingFilter = () => {
       path: "/tomorrow",
       color: "from-blue-500 to-cyan-400",
     },
+    { label: "All", path: "/all-booking", color: "from-teal-500 to-green-400" },
+
     {
       label: "RNR",
       path: "/rnr",
@@ -43,7 +45,6 @@ const BookingFilter = () => {
       path: "/completed",
       color: "from-lime-500 to-green-400",
     },
-    { label: "All", path: "/all-booking", color: "from-teal-500 to-green-400" },
   ];
 
   //total 8 sajid

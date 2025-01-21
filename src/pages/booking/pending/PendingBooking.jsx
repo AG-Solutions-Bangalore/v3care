@@ -10,6 +10,7 @@ import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
@@ -20,10 +21,6 @@ const PendingBooking = () => {
   useEffect(() => {
     const fetchPendingData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -43,7 +40,7 @@ const PendingBooking = () => {
       }
     };
     fetchPendingData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -52,8 +49,8 @@ const PendingBooking = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
         sort: false,
       },
@@ -63,8 +60,8 @@ const PendingBooking = () => {
       label: "Branch",
       options: {
         filter: true,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
         sort: true,
       },
@@ -75,13 +72,13 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -92,8 +89,8 @@ const PendingBooking = () => {
       label: "Customer",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
         sort: false,
       },
@@ -104,8 +101,8 @@ const PendingBooking = () => {
       options: {
         filter: true,
         viewColumns: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
       },
     },
@@ -133,9 +130,9 @@ const PendingBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -146,9 +143,9 @@ const PendingBooking = () => {
       label: "Service Date",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: false,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
@@ -161,15 +158,15 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -178,9 +175,9 @@ const PendingBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: false,
       },
     },
@@ -189,9 +186,9 @@ const PendingBooking = () => {
       label: "Price",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: false,
       },
     },
@@ -212,9 +209,9 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[9]
-          const price = tableMeta.rowData[10]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
           const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
@@ -226,14 +223,13 @@ const PendingBooking = () => {
           }
           return (
             <div className=" flex flex-col w-36">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
       },
     },
-    
 
     {
       name: "order_status",
@@ -273,7 +269,7 @@ const PendingBooking = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
- 
+
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -289,15 +285,20 @@ const PendingBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-     
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Pending Booking List"}
-          data={pendingBookData ? pendingBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Pending Booking List"}
+            data={pendingBookData ? pendingBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

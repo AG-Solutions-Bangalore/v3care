@@ -153,11 +153,11 @@ const AddServiceSubMaster = () => {
               type="submit"
               className="mr-2 mb-2"
               color="primary"
-              disabled={isButtonDisabled}
+              // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
-                <span>{isButtonDisabled ? "Submiting...." : "Submit"}</span>
+                <span>Submit</span>
               </div>
             </Button>
 

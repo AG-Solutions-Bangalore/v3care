@@ -203,7 +203,7 @@ const EditAssignVendor = () => {
                 className=" p-1 text-center   mb-2 text-white"
                 type="submit"
                 onClick={onSubmit}
-                disabled={isButtonDisabled}
+                // disabled={isButtonDisabled}
               >
                 Update
               </button>

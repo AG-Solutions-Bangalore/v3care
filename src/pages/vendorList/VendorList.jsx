@@ -23,10 +23,10 @@ const VendorList = () => {
   useEffect(() => {
     const fetchVendorListData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(

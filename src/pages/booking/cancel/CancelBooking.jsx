@@ -10,6 +10,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiSquarePlus } from "react-icons/ci";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const CancelBooking = () => {
   const [cancelBookData, setCancelBookData] = useState(null);
@@ -20,10 +21,10 @@ const CancelBooking = () => {
   useEffect(() => {
     const fetchCancelData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -43,7 +44,7 @@ const CancelBooking = () => {
       }
     };
     fetchCancelData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -52,7 +53,7 @@ const CancelBooking = () => {
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: false,
         viewColumns: false,
@@ -63,7 +64,7 @@ const CancelBooking = () => {
       label: "Branch",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
         viewColumns: false,
@@ -75,13 +76,13 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -92,7 +93,7 @@ const CancelBooking = () => {
       label: "Customer",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         viewColumns: false,
         sort: false,
@@ -103,7 +104,7 @@ const CancelBooking = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         viewColumns: false,
         sort: false,
@@ -115,13 +116,13 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const customeName = tableMeta.rowData[3]
-          const mobileNo = tableMeta.rowData[4]
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
             <div className=" flex flex-col w-40">
-             <span>{customeName}</span>
-             <span>{mobileNo}</span>
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -133,7 +134,7 @@ const CancelBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
         searchable: true,
         customBodyRender: (value) => {
@@ -147,7 +148,7 @@ const CancelBooking = () => {
       options: {
         filter: true,
         sort: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
         searchable: true,
         customBodyRender: (value) => {
@@ -161,15 +162,15 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -178,8 +179,8 @@ const CancelBooking = () => {
       label: "Service",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         sort: false,
         viewColumns: false,
       },
@@ -189,8 +190,8 @@ const CancelBooking = () => {
       label: "Price",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
         sort: false,
       },
@@ -212,9 +213,9 @@ const CancelBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[9]
-          const price = tableMeta.rowData[10]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
           const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
@@ -226,8 +227,8 @@ const CancelBooking = () => {
           }
           return (
             <div className=" flex flex-col w-38">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -282,15 +283,20 @@ const CancelBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-    
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Cancel Booking List"}
-          data={cancelBookData ? cancelBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Cancel Booking List"}
+            data={cancelBookData ? cancelBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

@@ -11,6 +11,7 @@ import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import OrderRefModal from "../../../components/OrderRefModal";
+import { Spinner } from "@material-tailwind/react";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -57,10 +58,6 @@ const TodayBooking = () => {
   useEffect(() => {
     const fetchTodayData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -86,7 +83,7 @@ const TodayBooking = () => {
       }
     };
     fetchTodayData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -108,7 +105,7 @@ const TodayBooking = () => {
         },
       },
     },
-//1
+    //1
     {
       name: "branch_name",
       label: "Branch",
@@ -120,7 +117,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-//2
+    //2
     {
       name: "order_customer",
       label: "Customer",
@@ -288,12 +285,12 @@ const TodayBooking = () => {
           return (
             <div className=" flex flex-col w-32">
               <span>{value}</span>
-              <span style={{fontSize:'9px'}}>{area}</span>
+              <span style={{ fontSize: "9px" }}>{area}</span>
             </div>
           );
         },
       },
-    },	
+    },
     //13
     {
       name: "order_no_assign",
@@ -485,6 +482,8 @@ const TodayBooking = () => {
   ];
   const options = {
     selectableRows: "none",
+    // filterType: "textField",
+
     elevation: 0,
     responsive: "standard",
     viewColumns: true,
@@ -495,17 +494,23 @@ const TodayBooking = () => {
       const orderStatus = rowData[19];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
-        backgroundColor = "#d4edda"; // light green
+        backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus === "Completed") {
-        backgroundColor = "#fff3cd"; // light yellow
+        backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
-        backgroundColor = "#e2e3e5"; // light gray
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus === "RNR") {
+        backgroundColor = "#B9CCF4"; // light blue
       } else if (orderStatus === "Pending") {
-        backgroundColor = "#f8d7da"; // light red
+        backgroundColor = "#fff"; // white
       } else if (orderStatus === "Cancel") {
-        backgroundColor = "#ADD8E6"; // light  blue
+        backgroundColor = "#F76E6E"; // light  red
       } else if (orderStatus === "On the way") {
-        backgroundColor = "#b68dee"; // light  purple
+        backgroundColor = "#fff3cd"; // light  yellow
+      } else if (orderStatus === "In Progress") {
+        backgroundColor = "#A7FCA7"; // light  green
+      } else if (orderStatus === "Vendor") {
+        backgroundColor = "#F38121"; // light  ornage
       }
 
       return {
@@ -516,19 +521,25 @@ const TodayBooking = () => {
       };
     },
   };
-  //sajid hussain
+
+
   return (
     <Layout>
       <BookingFilter />
-
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Today Booking List"}
-          data={todayBookingData ? todayBookingData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Today Booking List"}
+            data={todayBookingData ? todayBookingData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
       <OrderRefModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

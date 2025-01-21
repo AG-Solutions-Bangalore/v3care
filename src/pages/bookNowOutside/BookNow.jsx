@@ -103,15 +103,10 @@ const BookNow = () => {
   const [referby, setReferby] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-
-
   useEffect(() => {
     const fetchYearData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {
-         
-      
-        });
+        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {});
 
         setCurrentYear(response.data.year.current_year);
       } catch (error) {
@@ -120,7 +115,6 @@ const BookNow = () => {
     };
     fetchYearData();
   }, []);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -654,9 +648,7 @@ const BookNow = () => {
                 </div>
               </div>
               <div className={styles["submit-button"]}>
-                <Button onClick={onSubmit} disabled={isButtonDisabled}>
-                  {isButtonDisabled ? "Submitting..." : "Sumbit"}
-                </Button>
+                <Button onClick={onSubmit}>Sumbit</Button>
 
                 <Button onClick={handleBackButton}> Back </Button>
               </div>

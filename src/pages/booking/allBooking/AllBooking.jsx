@@ -11,6 +11,8 @@ import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import OrderRefModal from "../../../components/OrderRefModal";
+import { Spinner } from "@material-tailwind/react";
+import { TextField } from "@mui/material";
 
 const AllBooking = () => {
   const [allBookingData, setAllBookingData] = useState(null);
@@ -18,7 +20,24 @@ const AllBooking = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
 
+    // Filter the data based on the selected date
+    if (date) {
+      const filteredData = allBookingData.filter((item) => {
+        const itemDate = new Date(item.order_date); 
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString(); 
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(allBookingData); 
+    }
+  };
   UseEscapeKey();
 
   // Modal state management
@@ -57,10 +76,6 @@ const AllBooking = () => {
   useEffect(() => {
     const fetchTodayData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -73,7 +88,7 @@ const AllBooking = () => {
         );
 
         setAllBookingData(response.data?.booking);
-
+        setFilteredBookingData(response.data?.booking);
         response.data?.booking.forEach((item) => {
           if (item.order_no_assign > 0) {
             fetchAssignmentData(item.order_ref);
@@ -86,7 +101,7 @@ const AllBooking = () => {
       }
     };
     fetchTodayData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -108,7 +123,7 @@ const AllBooking = () => {
         },
       },
     },
-//1
+    //1
     {
       name: "branch_name",
       label: "Branch",
@@ -120,7 +135,7 @@ const AllBooking = () => {
         viewColumns: false,
       },
     },
-//2
+    //2
     {
       name: "order_customer",
       label: "Customer",
@@ -224,7 +239,6 @@ const AllBooking = () => {
         searchable: true,
         sort: false,
         viewColumns: false,
-
       },
     },
     //9
@@ -237,7 +251,6 @@ const AllBooking = () => {
         searchable: true,
         sort: false,
         viewColumns: false,
-
       },
     },
     //10
@@ -292,12 +305,12 @@ const AllBooking = () => {
           return (
             <div className=" flex flex-col w-32">
               <span>{value}</span>
-              <span style={{fontSize:'9px'}}>{area}</span>
+              <span style={{ fontSize: "9px" }}>{area}</span>
             </div>
           );
         },
       },
-    },	
+    },
     //13
     {
       name: "order_no_assign",
@@ -370,7 +383,6 @@ const AllBooking = () => {
         searchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     //16
@@ -383,7 +395,6 @@ const AllBooking = () => {
         searchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     //17
@@ -415,7 +426,6 @@ const AllBooking = () => {
         searchable: true,
         sort: false,
         viewColumns: false,
-
       },
     },
     //19
@@ -428,7 +438,6 @@ const AllBooking = () => {
         searchable: true,
         sort: false,
         viewColumns: false,
-
       },
     },
     //20
@@ -439,8 +448,8 @@ const AllBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[17];
-          const status = tableMeta.rowData[18];
+          const confirmBy = tableMeta.rowData[18];
+          const status = tableMeta.rowData[19];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -491,6 +500,7 @@ const AllBooking = () => {
       },
     },
   ];
+
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -498,22 +508,27 @@ const AllBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-
     setRowProps: (rowData) => {
       const orderStatus = rowData[19];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
-        backgroundColor = "#d4edda"; // light green
+        backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus === "Completed") {
-        backgroundColor = "#fff3cd"; // light yellow
+        backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
-        backgroundColor = "#e2e3e5"; // light gray
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus === "RNR") {
+        backgroundColor = "#B9CCF4"; // light blue
       } else if (orderStatus === "Pending") {
-        backgroundColor = "#f8d7da"; // light red
+        backgroundColor = "#fff"; // white
       } else if (orderStatus === "Cancel") {
-        backgroundColor = "#ADD8E6"; // light  blue
+        backgroundColor = "#F76E6E"; // light  red
       } else if (orderStatus === "On the way") {
-        backgroundColor = "#b68dee"; // light  purple
+        backgroundColor = "#fff3cd"; // light  yellow
+      } else if (orderStatus === "In Progress") {
+        backgroundColor = "#A7FCA7"; // light  green
+      } else if (orderStatus === "Vendor") {
+        backgroundColor = "#F38121"; // light  orange
       }
 
       return {
@@ -523,20 +538,43 @@ const AllBooking = () => {
         },
       };
     },
+
+    // Custom Toolbar with Date Input
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+        </>
+      );
+    },
   };
-  //sajid hussain
   return (
     <Layout>
       <BookingFilter />
-
-      <div className="mt-5">
-        <MUIDataTable
-          title={"All Booking List"}
-          data={allBookingData ? allBookingData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"All Booking List"}
+            data={filteredBookingData}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
       <OrderRefModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

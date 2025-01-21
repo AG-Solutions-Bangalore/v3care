@@ -11,6 +11,7 @@ import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
 import OrderRefModal from "../../../components/OrderRefModal";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { Spinner } from "@material-tailwind/react";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
@@ -55,10 +56,10 @@ const ConfirmedBooking = () => {
   useEffect(() => {
     const fetchConfirmData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -85,7 +86,7 @@ const ConfirmedBooking = () => {
       }
     };
     fetchConfirmData();
-    setLoading(false);
+    // setLoading(false);
   }, []);
 
   const columns = [
@@ -96,16 +97,14 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-        
           const branchName = tableMeta.rowData[1];
 
           return (
             <div className="flex flex-col w-32">
-            <span>{order_ref}</span>
-            <span>{branchName}</span>
-          </div>
-          )
-          
+              <span>{order_ref}</span>
+              <span>{branchName}</span>
+            </div>
+          );
         },
       },
     },
@@ -221,23 +220,23 @@ const ConfirmedBooking = () => {
           if (service == "Custom") {
             return (
               <div className=" flex flex-col w-40">
-              <span>{customeDetails}</span>
-           <div className="flex flex-row gap-2">
-           <span >{price}</span>
-           <span >-</span>
-           <span>{advnaced}</span>
-           </div>
-            </div>
+                <span>{customeDetails}</span>
+                <div className="flex flex-row gap-2">
+                  <span>{price}</span>
+                  <span>-</span>
+                  <span>{advnaced}</span>
+                </div>
+              </div>
             );
           }
           return (
             <div className=" flex flex-col w-40">
               <span>{service}</span>
-           <div className="flex flex-row gap-2">
-           <span >{price}</span>
-           <span >-</span>
-           <span>{advnaced}</span>
-           </div>
+              <div className="flex flex-row gap-2">
+                <span>{price}</span>
+                <span>-</span>
+                <span>{advnaced}</span>
+              </div>
             </div>
           );
         },
@@ -260,31 +259,26 @@ const ConfirmedBooking = () => {
       options: {
         filter: false,
         sort: true,
-        customBodyRender: ( value,tableMeta) => {
+        customBodyRender: (value, tableMeta) => {
           const order_no_assign = tableMeta.rowData[11];
           const order_ref = tableMeta.rowData[0];
-   
 
           return order_no_assign > 0 ? (
             <div className="flex flex-col w-32">
-            <button
-              className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-              onClick={() => handleOpenModal(order_ref)}
-            >
-              {value}
-            </button>
-            
+              <button
+                className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                onClick={() => handleOpenModal(order_ref)}
+              >
+                {value}
+              </button>
             </div>
           ) : (
             <div className="flex flex-col w-32">
-            <span>{value}</span>
-           
-          </div>
+              <span>{value}</span>
+            </div>
           );
-       
         },
       },
-
     },
     {
       name: "assignment_details",
@@ -307,7 +301,9 @@ const ConfirmedBooking = () => {
                 <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {assignments.map((assignment) => assignment.name.split(' ')[0]).join(', ')}
+                      {assignments
+                        .map((assignment) => assignment.name.split(" ")[0])
+                        .join(", ")}
                     </td>
                   </tr>
                 </tbody>
@@ -323,9 +319,9 @@ const ConfirmedBooking = () => {
       label: "Amount",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: true,
       },
     },
@@ -334,9 +330,9 @@ const ConfirmedBooking = () => {
       label: "Type",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
-        searchable:true,
+        searchable: true,
         sort: true,
       },
     },
@@ -346,13 +342,13 @@ const ConfirmedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[13]
-          const price = tableMeta.rowData[14]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[13];
+          const price = tableMeta.rowData[14];
           return (
             <div className=" flex flex-col w-32">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -398,7 +394,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-   
+
     {
       name: "id",
       label: "Action",
@@ -440,19 +436,23 @@ const ConfirmedBooking = () => {
       const orderStatus = rowData[17];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
-        backgroundColor = "#d4edda"; // light green
+        backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus === "Completed") {
-        backgroundColor = "#fff3cd"; // light yellow
+        backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
-        backgroundColor = "#e2e3e5"; // light gray
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus === "RNR") {
+        backgroundColor = "#B9CCF4"; // light blue
       } else if (orderStatus === "Pending") {
-        backgroundColor = "#f8d7da"; // light red
+        backgroundColor = "#fff"; // white
       } else if (orderStatus === "Cancel") {
-        backgroundColor = "#ADD8E6"; // light  blue
+        backgroundColor = "#F76E6E"; // light  red
       } else if (orderStatus === "On the way") {
-        backgroundColor = "#b68dee"; // light  purple
+        backgroundColor = "#fff3cd"; // light  yellow
       } else if (orderStatus === "In Progress") {
-        backgroundColor = "#f7f588"; // light  yellow
+        backgroundColor = "#A7FCA7"; // light  green
+      } else if (orderStatus === "Vendor") {
+        backgroundColor = "#F38121"; // light  ornage
       }
 
       return {
@@ -466,21 +466,25 @@ const ConfirmedBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-
-      <div className="mt-5">
-        <MUIDataTable
-          title={"Confirmed Booking List"}
-          data={confirmBookData ? confirmBookData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
-     <OrderRefModal
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner className="h-10 w-10" color="red" />
+        </div>
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title={"Confirmed Booking List"}
+            data={confirmBookData ? confirmBookData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
+      <OrderRefModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         orderRef={selectedOrderRef}
-
-      /> 
+      />
     </Layout>
   );
 };

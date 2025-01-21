@@ -18,7 +18,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
 
   const userType = localStorage.getItem("user_type_id");
   const sidenavType = "dark";
-  //sajid
+
   const sidenavTypes = {
     dark: "bg-[#001F3F] ",
     white: "bg-white shadow-sm",
@@ -209,7 +209,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
             <div className="text-sm font-medium opacity-80">
-              Version: 1.2.16
+              Version: 1.2.17
             </div>
           </div>
         </div>
