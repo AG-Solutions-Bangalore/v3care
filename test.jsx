@@ -1,567 +1,322 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
-import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSquarePlus } from "react-icons/ci";
-import Moment from "moment";
-import BookingFilter from "../../../components/BookingFilter";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import OrderRefModal from "../../../components/OrderRefModal";
-import { Spinner } from "@material-tailwind/react";
+import React, { useEffect, useRef, useState } from "react";
+import { FileText, Loader2, Printer } from "lucide-react";
+import html2pdf from "html2pdf.js";
+import ReactToPrint from "react-to-print";
+import moment from "moment";
+import { FaRegFileWord } from "react-icons/fa";
+import { FaRegFilePdf } from "react-icons/fa";
+import logo from "../../../public/v3.png";
+import stamplogo from "../../../public/stamplogo.png";
+import Layout from "../../layout/Layout";
+const QuatationReport = () => {
+  const containerRef = useRef();
 
-const AllBooking = () => {
-  const [allBookingData, setAllBookingData] = useState(null);
-  const [assignmentData, setAssignmentData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
-  const navigate = useNavigate();
+  const handleSaveAsPdf = () => {
+    const element = containerRef.current;
 
-  UseEscapeKey();
+    const images = element.getElementsByTagName("img");
+    let loadedImages = 0;
 
-  // Modal state management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState(null);
-
-  const handleOpenModal = (orderRef) => {
-    setSelectedOrderRef(orderRef);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedOrderRef(null);
-  };
-
-  const fetchAssignmentData = async (orderRef) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-booking-assign-by-view/${orderRef}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setAssignmentData((prev) => ({
-        ...prev,
-        [orderRef]: response.data?.bookingAssign,
-      }));
-    } catch (error) {
-      console.error("Error fetching assignment data", error);
+    if (images.length === 0) {
+      generatePdf(element);
+      return;
     }
-  };
-  useEffect(() => {
-    const fetchTodayData = async () => {
-      try {
-     
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-list-all`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        setAllBookingData(response.data?.booking);
-
-        response.data?.booking.forEach((item) => {
-          if (item.order_no_assign > 0) {
-            fetchAssignmentData(item.order_ref);
+    Array.from(images).forEach((img) => {
+      if (img.complete) {
+        loadedImages++;
+        if (loadedImages === images.length) {
+          generatePdf(element);
+        }
+      } else {
+        img.onload = () => {
+          loadedImages++;
+          if (loadedImages === images.length) {
+            generatePdf(element);
           }
-        });
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
+        };
       }
+    });
+  };
+
+  const generatePdf = (element) => {
+    const options = {
+      margin: [0, 0, 0, 0],
+      filename: "Invoice_Packing.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        windowHeight: element.scrollHeight,
+        scrollY: 0,
+      },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+      },
+      pagebreak: { mode: "avoid" },
     };
-    fetchTodayData();
-    // setLoading(false);
-  }, []);
 
-  const columns = [
-    //0
-    {
-      name: "order_ref",
-      label: "Order/Branch",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[1];
-          return (
-            <div className="flex flex-col w-32">
-              <span>{order_ref}</span>
-              <span>{branchName}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //1
-    {
-      name: "branch_name",
-      label: "Branch",
-      options: {
-        filter: true,
-        display: "exclude",
-        searchable: true,
-        sort: true,
-        viewColumns: false,
-      },
-    },
-    //2
-    {
-      name: "order_customer",
-      label: "Customer",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //3
-    {
-      name: "order_customer_mobile",
-      label: "Mobile",
-      options: {
-        filter: true,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //4
-    {
-      name: "customer_mobile",
-      label: "Customer/Mobile",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[2];
-          const mobileNo = tableMeta.rowData[3];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{customeName}</span>
-              <span>{mobileNo}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //5
-    {
-      name: "order_date",
-      label: "Booking Date",
-      options: {
-        filter: true,
-        sort: false,
-        display: "exclude",
-        viewColumns: false,
+    html2pdf()
+      .from(element)
+      .set(options)
+      .toPdf()
+      .get("pdf")
+      .then((pdf) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
 
-        searchable: true,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
-    //6
-    {
-      name: "order_service_date",
-      label: "Service Date",
-      options: {
-        filter: true,
-        sort: false,
-        display: "exclude",
-        searchable: true,
-        viewColumns: false,
+        console.log(`Element Height: ${element.scrollHeight}`);
+        console.log(`Page Width: ${pageWidth}, Page Height: ${pageHeight}`);
 
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
-    //7
-    {
-      name: "booking_service_date",
-      label: "Booking/Service",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[5];
-          const serviceDate = tableMeta.rowData[6];
-          return (
-            <div className=" flex flex-col justify-center">
-              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
-              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //8
-    {
-      name: "order_service",
-      label: "Service",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //9
-    {
-      name: "order_amount",
-      label: "Price",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //10
-    {
-      name: "order_custom",
-      label: "Custom",
-      options: {
-        filter: false,
-        display: "exclude",
-        viewColumns: false,
-        searchable: true,
-        sort: false,
-      },
-    },
-    //11
-    {
-      name: "service_price",
-      label: "Service/Price",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[8];
-          const price = tableMeta.rowData[9];
-          const customeDetails = tableMeta.rowData[10];
-          if (service == "Custom") {
-            return (
-              <div className="flex flex-col w-32">
-                <span>{customeDetails}</span>
-                <span>{price}</span>
-              </div>
-            );
-          }
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //12
-    {
-      name: "order_time",
-      label: "Time/Area",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[21];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{value}</span>
-              <span style={{ fontSize: "9px" }}>{area}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //13
-    {
-      name: "order_no_assign",
-      label: "No of Assign",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[13];
-          const order_ref = tableMeta.rowData[0];
-
-          return order_no_assign > 0 ? (
-            <div className="flex flex-col w-32">
-              <button
-                className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-                onClick={() => handleOpenModal(order_ref)}
-              >
-                {value}
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col w-32">
-              <span>{value}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //14
-    {
-      name: "assignment_details",
-      label: "Assign Details",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[13];
-          const assignments = assignmentData[orderRef];
-
-          if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
-            return "-";
-          }
-
-          return (
-            <div className="w-48 overflow-x-auto">
-              <table className="min-w-full table-auto border-collapse text-sm">
-                <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
-                  <tr>
-                    <td className="text-xs px-[2px] leading-[12px]">
-                      {assignments
-                        .map((assignment) => assignment.name.split(" ")[0])
-                        .join(", ")}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          );
-        },
-      },
-    },
-    //15
-    {
-      name: "order_payment_amount",
-      label: "Amount",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: true,
-        viewColumns: false,
-      },
-    },
-    //16
-    {
-      name: "order_payment_type",
-      label: "Type",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: true,
-        viewColumns: false,
-      },
-    },
-    //17
-    {
-      name: "amount_type",
-      label: "Paid Amount/Type",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[16];
-          const price = tableMeta.rowData[15];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //18
-    {
-      name: "updated_by",
-      label: "Confirm By",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //19
-    {
-      name: "order_status",
-      label: "Status",
-      options: {
-        filter: true,
-        display: "exclude",
-        searchable: true,
-        sort: false,
-        viewColumns: false,
-      },
-    },
-    //20
-    {
-      name: "confirm/status",
-      label: "Confirm By/Status",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[18];
-          const status = tableMeta.rowData[19];
-          return (
-            <div className=" flex flex-col ">
-              <span>{confirmBy}</span>
-              <span>{status}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //21
-    {
-      name: "order_address",
-      label: "Address",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-        searchable: true,
-        sort: false,
-      },
-    },
-    //22
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <CiSquarePlus
-                  onClick={() => navigate(`/edit-booking/${id}`)}
-                  title="edit booking"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-
-              <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
-  ];
-  const options = {
-    selectableRows: "none",
-    elevation: 0,
-    responsive: "standard",
-    viewColumns: true,
-    download: false,
-    print: false,
-
-    setRowProps: (rowData) => {
-      const orderStatus = rowData[19];
-      let backgroundColor = "";
-      if (orderStatus === "Confirmed") {
-        backgroundColor = "#F7D5F1"; // light pink
-      } else if (orderStatus === "Completed") {
-        backgroundColor = "#F0A7FC"; // light
-      } else if (orderStatus === "Inspection") {
-        backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "RNR") {
-        backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "Pending") {
-        backgroundColor = "#fff"; // white
-      } else if (orderStatus === "Cancel") {
-        backgroundColor = "#F76E6E"; // light  red
-      } else if (orderStatus === "On the way") {
-        backgroundColor = "#fff3cd"; // light  yellow
-      } else if (orderStatus === "In Progress") {
-        backgroundColor = "#A7FCA7"; // light  green
-      } else if (orderStatus === "Vendor") {
-        backgroundColor = "#F38121"; // light  ornage
-      }
-
-      return {
-        style: {
-          backgroundColor: backgroundColor,
-          borderBottom: "5px solid #f1f7f9",
-        },
-
-
-
-            customToolbar: () => {
-      return (
-        <>
-          <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
-        </>
-      );
-    },
-      };
-      
-    },
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+          pdf.setFontSize(10);
+          pdf.setTextColor(0, 0, 0);
+          const text = `Page ${i} of ${totalPages}`;
+          const textWidth =
+            (pdf.getStringUnitWidth(text) * 10) / pdf.internal.scaleFactor;
+          const x = pageWidth - textWidth - 10;
+          const y = pageHeight - 10;
+          pdf.text(text, x, y);
+        }
+      })
+      .save();
   };
+
   return (
     <Layout>
-      <BookingFilter />
-      {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
+      <div className="relative">
+        <button
+          onClick={handleSaveAsPdf}
+          className="fixed top-20 right-36 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center"
+        >
+          <FaRegFilePdf className="w-4 h-4 mr-2" />
+          Save as PDF
+        </button>
+
+        <ReactToPrint
+          trigger={() => (
+            <button className="fixed top-20 right-10 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center">
+              <Printer className="h-4 w-4 mr-2" />
+              Print
+            </button>
+          )}
+          content={() => containerRef.current}
+          documentTitle="contract-view"
+          pageStyle={`
+            @page {
+              size: auto;
+              margin: 0mm;
+            }
+            @media print {
+              body {
+                min-height: 100vh;
+              }
+              .print-hide {
+                display: none;
+              }
+              .page-break {
+                page-break-before: always;
+              }
+            }
+          `}
+        />
+
+        <div ref={containerRef} className="font-normal text-sm mt-10 ">
+          <div className=" p-6 m-[3rem]">
+            <div className="max-w-4xl mx-auto border border-black">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 my-4">
+                <div className="sm:col-span-4 flex justify-center">
+                  <img
+                    src={logo}
+                    alt="V3care"
+                    className="w-full max-w-[140px] h-auto"
+                  />
+                </div>
+                <div className="sm:col-span-8 flex flex-col items-center justify-center text-center">
+                  <h2 className="text-xl font-semibold mb-2">V3care</h2>
+                  <p className="font-bold text-md">
+                    # 2296, 24th Main Road, 16th Cross, <br />
+                    HSR Layout, Sector 1, <br />
+                    Bangalore – 560 102
+                  </p>
+                </div>
+              </div>
+              <div className="bg-blue-300 text-lg flex justify-center font-bold  border-y border-black ">
+                <h1 className="my-2">Quotation</h1>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-11 gap-4 my-2">
+                <div className="sm:col-span-5  pr-4">
+                  <div className="grid grid-cols-2 gap-2">
+                    <p className="font-bold text-md flex justify-center">
+                      Balram
+                    </p>
+                    <p className="text-gray-700">72591 92444</p>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-6 pl-4">
+                  <p className="text-md">
+                    AUSA Medical Devices Pvt Ltd Bommasandra
+                  </p>
+                </div>
+              </div>
+              <div className=" flex justify-center my-4 text-sm">
+                <h1>https://maps.app.goo.gl/i2TsrXbdxjgbCZaz8%22</h1>
+              </div>
+
+              <div className="mt-6">
+                <table className="w-full border-t border-black text-sm">
+                  {/* Table Header */}
+                  <thead className="bg-blue-300">
+                    <tr className="border-b border-black">
+                      <th className="w-16 border-r border-black p-2 text-left">
+                        S. No
+                      </th>
+                      <th className="w-64 border-r border-black p-2 text-left">
+                        Description of Service
+                      </th>
+                      <th className="w-24 border-r border-black p-2 text-center">
+                        Quantity
+                      </th>
+                      <th className="w-32 border-r border-black p-2 text-center">
+                        Unit Price (Per Sft)
+                      </th>
+                      <th className="w-32 p-2 text-center">Cost</th>
+                    </tr>
+                  </thead>
+
+                  {/* Table Body */}
+                  <tbody>
+                    <tr className="border-b border-black">
+                      <td className="border-r border-black p-2 text-left">1</td>
+                      <td className="border-r border-black p-2">
+                        Ladies bathroom ( 8 toilets + 2 wash besan )
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        10
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        $5.00
+                      </td>
+                      <td className="p-2 text-center">$50.00</td>
+                    </tr>
+                    <tr className="border-b border-black">
+                      <td className="border-r border-black p-2 text-left">2</td>
+                      <td className="border-r border-black p-2">
+                        Gents bathroom 2 toilets + 2 urinals + 1 wash basin
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        10
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        $5.00
+                      </td>
+                      <td className="p-2 text-center">$50.00</td>
+                    </tr>
+                    <tr className="border-b border-black">
+                      <td className="border-r border-black p-2 text-left">3</td>
+                      <td className="border-r border-black p-2">
+                        Gents bathrooom 3 urinals + 2 wash besan + 7 toilets +
+                        floor
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        10
+                      </td>
+                      <td className="border-r border-black p-2 text-center">
+                        $5.00
+                      </td>
+                      <td className="p-2 text-center">$50.00</td>
+                    </tr>
+                    {/* // */}
+                    <tr className="border-b border-black">
+                      <td className="border-r border-black p-2 text-left"></td>
+                      <td className="border-r border-black p-2 font-bold">
+                        All the Chemicals and Machines will be provided by Our
+                        Company
+                      </td>
+                      <td className="border-r border-black p-2 text-center"></td>
+                      <td className="border-r border-black p-2 text-center"></td>
+                      <td className="p-2 text-center"></td>
+                    </tr>
+                    {/* //total */}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td className="border-l border-black"></td>
+                      <td className="p-2">Total</td>
+                      <td className="p-2 text-end font-bold border-b border-l border-black">
+                        15,000.00
+                      </td>
+                    </tr>
+                    {/* //down gst */}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td className="border-l border-black p-2">GST - 18%</td>
+                      <td></td>
+                      <td className="p-2 text-end ">2,700.00</td>
+                    </tr>
+                    {/* //down gst */}
+                    <tr>
+                      <td colSpan={2} className="p-2">
+                        Terms & Conditions:
+                      </td>
+                      <td className="p-2 text-start font-bold border-b border-l border-black">
+                        Total
+                      </td>
+
+                      <td className="p-2 text-end font-bold border-b border-black"></td>
+                      <td className="p-2 text-end font-bold border-b border-black">
+                        17,700.00
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div>
+                <h2 className="p-2">
+                  Payment : 50% at the start of the work and Balance After
+                  completion of Service
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-2">
+                  <p className="font-bold underline">Company Details:</p>
+                  <p>PAN NO. BVHPK7881A</p>
+                </div>
+
+                <div>
+                  <p className="font-bold underline">Bank Details :</p>
+                  <p>V3Care</p>
+                  <p>A/c No : 50200012354428,</p>
+                  <p>IFSC CODE : HDFC0003758</p>
+                </div>
+              </div>
+
+              <div>
+                <img
+                  src={stamplogo}
+                  alt="V3care"
+                  className="w-full max-w-[150px] h-auto"
+                />
+              </div>
+              <div>
+                <h2 className="p-2">Your truly,</h2>
+                <h2 className="p-2">V3care</h2>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : (
-        <div className="mt-5">
-          <MUIDataTable
-            title={"All Booking List"}
-            data={allBookingData ? allBookingData : []}
-            columns={columns}
-            options={options}
-          />
-        </div>
-      )}
-      <OrderRefModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        orderRef={selectedOrderRef}
-      />
+      </div>
     </Layout>
   );
 };
 
-export default AllBooking;
+export default QuatationReport;
