@@ -8,6 +8,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import logo from "../../../public/v3.png";
 import stamplogo from "../../../public/stamplogo.png";
 import Layout from "../../layout/Layout";
+import RepoortFilter from "../../components/ReportFilter";
 const QuatationReport = () => {
   const containerRef = useRef();
 
@@ -69,10 +70,11 @@ const QuatationReport = () => {
 
   return (
     <Layout>
+      <RepoortFilter />
       <div className="relative">
         <button
           onClick={handleSaveAsPdf}
-          className="fixed top-20 right-36 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center"
+          className="fixed bottom-3 right-36 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center"
         >
           <FaRegFilePdf className="w-4 h-4 mr-2" />
           Save as PDF
@@ -80,7 +82,7 @@ const QuatationReport = () => {
 
         <ReactToPrint
           trigger={() => (
-            <button className="fixed top-20 right-10 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center">
+            <button className="fixed bottom-3 right-10 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center">
               <Printer className="h-4 w-4 mr-2" />
               Print
             </button>
