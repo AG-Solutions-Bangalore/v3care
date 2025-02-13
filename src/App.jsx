@@ -86,6 +86,7 @@ import { useContext } from "react";
 import { ContextPanel } from "./utils/ContextPanel";
 import AllBooking from "./pages/booking/allBooking/AllBooking";
 import QuatationReport from "./pages/report/QuatationReport";
+import TaxInvoice from "./pages/report/TaxInvoice";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -308,6 +309,7 @@ const App = () => {
         )}
         {/* {userType === "3" && ( */}
           <Route path="/report-quatation" element={<QuatationReport />} />
+          <Route path="/report-tax-invoice" element={<TaxInvoice />} />
         {/* )} */}
 
         <Route path="/profile" element={<Profile />} />

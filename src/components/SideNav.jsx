@@ -17,6 +17,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const [openBookingMenu, setOpenBookingMenu] = useState(false);
 
   const userType = localStorage.getItem("user_type_id");
+  const userName = localStorage.getItem("username");
   const sidenavType = "dark";
 
   const sidenavTypes = {
@@ -125,7 +126,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
       text: "Report",
       title: "Report",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["superadmin"],
     },
   ];
 
@@ -139,9 +140,21 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     7: "operationteam",
   };
 
+  // const getFilteredMenuItems = () => {
+  //   const role = roleMap[userType];
+  //   return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
+  // };
+
   const getFilteredMenuItems = () => {
     const role = roleMap[userType];
-    return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
+
+    return role
+      ? menuItems.filter((item) =>
+          item.text == "Report"
+            ? userName == "superadmins"
+            : item.roles.includes(role)
+        )
+      : [];
   };
 
   return (
@@ -216,7 +229,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
             <div className="text-sm font-medium opacity-80">
-              Version: 1.2.18
+              Version: 1.2.19
             </div>
           </div>
         </div>

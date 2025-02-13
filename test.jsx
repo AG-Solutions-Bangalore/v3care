@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FileText, Loader2, Printer } from "lucide-react";
+import { FileText, Globe, Loader2, Mail, Phone, Printer } from "lucide-react";
 import html2pdf from "html2pdf.js";
 import ReactToPrint from "react-to-print";
 import moment from "moment";
@@ -8,7 +8,8 @@ import { FaRegFilePdf } from "react-icons/fa";
 import logo from "../../../public/v3.png";
 import stamplogo from "../../../public/stamplogo.png";
 import Layout from "../../layout/Layout";
-const QuatationReport = () => {
+import RepoortFilter from "../../components/ReportFilter";
+const TaxInvoice = () => {
   const containerRef = useRef();
 
   const handleSaveAsPdf = () => {
@@ -42,7 +43,7 @@ const QuatationReport = () => {
   const generatePdf = (element) => {
     const options = {
       margin: [0, 0, 0, 0],
-      filename: "Invoice_Packing.pdf",
+      filename: "Quatation.pdf",
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
         scale: 2,
@@ -63,31 +64,13 @@ const QuatationReport = () => {
       .set(options)
       .toPdf()
       .get("pdf")
-      .then((pdf) => {
-        const totalPages = pdf.internal.getNumberOfPages();
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-
-        console.log(`Element Height: ${element.scrollHeight}`);
-        console.log(`Page Width: ${pageWidth}, Page Height: ${pageHeight}`);
-
-        for (let i = 1; i <= totalPages; i++) {
-          pdf.setPage(i);
-          pdf.setFontSize(10);
-          pdf.setTextColor(0, 0, 0);
-          const text = `Page ${i} of ${totalPages}`;
-          const textWidth =
-            (pdf.getStringUnitWidth(text) * 10) / pdf.internal.scaleFactor;
-          const x = pageWidth - textWidth - 10;
-          const y = pageHeight - 10;
-          pdf.text(text, x, y);
-        }
-      })
+      .then((pdf) => {})
       .save();
   };
 
   return (
     <Layout>
+      <RepoortFilter />
       <div className="relative">
         <button
           onClick={handleSaveAsPdf}
@@ -105,218 +88,219 @@ const QuatationReport = () => {
             </button>
           )}
           content={() => containerRef.current}
-          documentTitle="contract-view"
+          documentTitle="Quatation"
           pageStyle={`
             @page {
-              size: auto;
-              margin: 0mm;
+                size: auto;
+                margin: 0mm;
             }
             @media print {
-              body {
-                min-height: 100vh;
-              }
-              .print-hide {
-                display: none;
-              }
-              .page-break {
-                page-break-before: always;
-              }
+                body {
+              
+                     min-height:100vh
+                }
+            
+            .page-break {
+                  page-break-before: always;
+                       }
+
             }
-          `}
+        `}
         />
 
         <div ref={containerRef} className="font-normal text-sm mt-10 ">
-          <div className=" p-6 m-[3rem]">
-            <div className="max-w-4xl mx-auto border border-black">
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 my-4">
-                <div className="sm:col-span-4 flex justify-center">
-                  <img
-                    src={logo}
-                    alt="V3care"
-                    className="w-full max-w-[140px] h-auto"
-                  />
-                </div>
-                <div className="sm:col-span-8 flex flex-col items-center justify-center text-center">
-                  <h2 className="text-xl font-semibold mb-2">V3care</h2>
-                  <p className="font-bold text-md">
-                    # 2296, 24th Main Road, 16th Cross, <br />
-                    HSR Layout, Sector 1, <br />
-                    Bangalore – 560 102
-                  </p>
-                </div>
-              </div>
-              <div className="bg-blue-300 text-lg flex justify-center font-bold  border-y border-black ">
-                <h1 className="my-2">Quotation</h1>
-              </div>
+          <>
+            <div className=" p-4 m-[1rem] font-normal text-[12px]">
+              <div className=" max-w-4xl mx-auto border-2 border-black">
+                <div className=" grid grid-cols-2 gap-2 my-1">
+                  <div className="grid grid-cols-12">
+                    <div className="col-span-3 flex justify-center items-center">
+                      <img
+                        src={logo}
+                        alt="V3care"
+                        className="w-full max-w-[140px] h-auto"
+                      />
+                    </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-11 gap-4 my-2">
-                <div className="sm:col-span-5  pr-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    <p className="font-bold text-md flex justify-center">
-                      Balram
-                    </p>
-                    <p className="text-gray-700">72591 92444</p>
+                    <div className="col-span-9">
+                      <p className="text-sm leading-relaxed">
+                        <strong>V3 CARE</strong> <br />
+                        D.No-287, Gaurav Villa, 5th Main Road, 15th Cross,{" "}
+                        <br />
+                        HSR Layout, Sector-6, Bangalore <br />
+                        <strong>GSTIN/UIN:</strong> 29BVHPK7881A1ZB <br />
+                        <strong>State Name:</strong> Karnataka,{" "}
+                        <strong>Code:</strong> 29 <br />
+                        <strong>Email:</strong> info@v3care.in
+                      </p>
+                    </div>
+                  </div>
+                  {/* <div className="grid grid-rows-3 gap-2 my-1">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Invoice No.</h3>
+                        <p>V3C/G155/24-25</p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Dated</h3>
+                        <p>5-Aug-24</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Delivery Note</h3>
+                        <p></p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Mode/Terms of Payment</h3>
+                        <p></p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Reference No. & Date.</h3>
+                        <p></p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Other References</h3>
+                        <p></p>
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="grid grid-rows-3 gap-2">
+                    {/* Row 1 */}
+                    <div className="grid grid-cols-2  border-b border-l border-black">
+                      <div>
+                        <h3>Invoice No.</h3>
+                        <p className="font-semibold text-black">
+                          V3C/G155/24-25
+                        </p>
+                      </div>
+                      <div>
+                        <h3>Dated</h3>
+                        <p className="font-semibold text-black">5-Aug-24</p>
+                      </div>
+                    </div>
+
+                    {/* Row 2 */}
+                    <div className="grid grid-cols-2  border-b border-l border-black ">
+                      <div>
+                        <h3>Delivery Note</h3>
+                        <p></p>
+                      </div>
+                      <div>
+                        <h3>Mode/Terms of Payment</h3>
+                        <p></p>
+                      </div>
+                    </div>
+
+                    {/* Row 3 */}
+                    <div className="grid grid-cols-2 border-l border-black">
+                      <div>
+                        <h3>Reference No. & Date.</h3>
+                        <p></p>
+                      </div>
+                      <div>
+                        <h3>Other References</h3>
+                        <p></p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <div className="sm:col-span-6 pl-4">
-                  <p className="text-md">
-                    AUSA Medical Devices Pvt Ltd Bommasandra
-                  </p>
-                </div>
-              </div>
-              <div className=" flex justify-center my-4 text-sm">
-                <h1>https://maps.app.goo.gl/i2TsrXbdxjgbCZaz8%22</h1>
-              </div>
-
-              <div className="mt-6">
-                <table className="w-full border-t border-black text-sm">
-                  {/* Table Header */}
-                  <thead className="bg-blue-300">
-                    <tr className="border-b border-black">
-                      <th className="w-16 border-r border-black p-2 text-left">
-                        S. No
-                      </th>
-                      <th className="w-64 border-r border-black p-2 text-left">
-                        Description of Service
-                      </th>
-                      <th className="w-24 border-r border-black p-2 text-center">
-                        Quantity
-                      </th>
-                      <th className="w-32 border-r border-black p-2 text-center">
-                        Unit Price (Per Sft)
-                      </th>
-                      <th className="w-32 p-2 text-center">Cost</th>
-                    </tr>
-                  </thead>
-
-                  {/* Table Body */}
-                  <tbody>
-                    <tr className="border-b border-black">
-                      <td className="border-r border-black p-2 text-left">1</td>
-                      <td className="border-r border-black p-2">
-                        Ladies bathroom ( 8 toilets + 2 wash besan )
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        10
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        $5.00
-                      </td>
-                      <td className="p-2 text-center">$50.00</td>
-                    </tr>
-                    <tr className="border-b border-black">
-                      <td className="border-r border-black p-2 text-left">2</td>
-                      <td className="border-r border-black p-2">
-                        Gents bathroom 2 toilets + 2 urinals + 1 wash basin
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        10
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        $5.00
-                      </td>
-                      <td className="p-2 text-center">$50.00</td>
-                    </tr>
-                    <tr className="border-b border-black">
-                      <td className="border-r border-black p-2 text-left">3</td>
-                      <td className="border-r border-black p-2">
-                        Gents bathrooom 3 urinals + 2 wash besan + 7 toilets +
-                        floor
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        10
-                      </td>
-                      <td className="border-r border-black p-2 text-center">
-                        $5.00
-                      </td>
-                      <td className="p-2 text-center">$50.00</td>
-                    </tr>
-                    {/* // */}
-                    <tr className="border-b border-black">
-                      <td className="border-r border-black p-2 text-left"></td>
-                      <td className="border-r border-black p-2 font-bold">
-                        All the Chemicals and Machines will be provided by Our
-                        Company
-                      </td>
-                      <td className="border-r border-black p-2 text-center"></td>
-                      <td className="border-r border-black p-2 text-center"></td>
-                      <td className="p-2 text-center"></td>
-                    </tr>
-                    {/* //total */}
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td className="border-l border-black"></td>
-                      <td className="p-2">Total</td>
-                      <td className="p-2 text-end font-bold border-b border-l border-black">
-                        15,000.00
-                      </td>
-                    </tr>
-                    {/* //down gst */}
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td className="border-l border-black p-2">GST - 18%</td>
-                      <td></td>
-                      <td className="p-2 text-end ">2,700.00</td>
-                    </tr>
-                    {/* //down gst */}
-                    <tr>
-                      <td colSpan={2} className="p-2">
-                        Terms & Conditions:
-                      </td>
-                      <td className="p-2 text-start font-bold border-b border-l border-black">
-                        Total
-                      </td>
-
-                      <td className="p-2 text-end font-bold border-b border-black"></td>
-                      <td className="p-2 text-end font-bold border-b border-black">
-                        17,700.00
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div>
-                <h2 className="p-2">
-                  Payment : 50% at the start of the work and Balance After
-                  completion of Service
-                </h2>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-2">
-                  <p className="font-bold underline">Company Details:</p>
-                  <p>PAN NO. BVHPK7881A</p>
-                </div>
-
-                <div>
-                  <p className="font-bold underline">Bank Details :</p>
-                  <p>V3Care</p>
-                  <p>A/c No : 50200012354428,</p>
-                  <p>IFSC CODE : HDFC0003758</p>
-                </div>
-              </div>
-
-              <div>
-                <img
-                  src={stamplogo}
-                  alt="V3care"
-                  className="w-full max-w-[150px] h-auto"
-                />
-              </div>
-              <div>
-                <h2 className="p-2">Your truly,</h2>
-                <h2 className="p-2">V3care</h2>
               </div>
             </div>
-          </div>
+
+            <div className="page-break"></div>
+          </>
         </div>
       </div>
     </Layout>
   );
 };
 
-export default QuatationReport;
+export default TaxInvoice;
+{
+  {
+    /* <tr className="border-b border-black bg-gray-200">
+                      <th className="border-r border-black px-2 py-1 text-center align-bottom">
+                        HSN/SAC
+                      </th>
+                      <th className="border-r border-black px-2 py-1 text-center align-bottom">
+                        Taxable Value
+                      </th>
+
+                      <th
+                        colSpan="2"
+                        className="border-r border-black text-center relative"
+                      >
+                        Central Tax
+                        <div className="border-t border-black mt-1 flex justify-center text-xs font-normal">
+                          <span className="border-r border-black px-2 w-14">
+                            Rate
+                          </span>
+                          <span className="px-2 w-14">Amount</span>
+                        </div>
+                      </th>
+
+                      <th
+                        colSpan="2"
+                        className="border-r border-black text-center relative"
+                      >
+                        State Tax
+                        <div className="border-t border-black mt-1 flex justify-center text-xs font-normal">
+                          <span className="border-r border-black px-2 w-14">
+                            Rate
+                          </span>
+                          <span className="px-2 w-14">Amount</span>
+                        </div>
+                      </th>
+
+                      <th className="px-2 py-1 text-center align-bottom">
+                        Total Tax Amount
+                      </th>
+                    </tr> */
+  }
+}
+
+{
+  /* <tr className="border-b border-black bg-gray-200">
+                      <th className="border-r border-black px-2 py-1 text-center align-bottom">
+                        HSN/SAC
+                      </th>
+                      <th className="border-r border-black px-2 py-1 text-center align-bottom">
+                        Taxable Value
+                      </th>
+
+                      <th
+                        colSpan="2"
+                        className="border-r border-black text-center relative"
+                      >
+                        Central Tax
+                        <div className="border-t border-black mt-1 flex justify-center text-xs font-normal">
+                          <span className="border-r border-black px-2 w-14">
+                            Rate
+                          </span>
+                          <span className="px-2 w-14">Amount</span>
+                        </div>
+                      </th>
+
+                      <th
+                        colSpan="2"
+                        className="border-r border-black text-center relative"
+                      >
+                        State Tax
+                        <div className="border-t border-black mt-1 flex justify-center text-xs font-normal">
+                          <span className="border-r border-black px-2 w-14">
+                            Rate
+                          </span>
+                          <span className="px-2 w-14">Amount</span>
+                        </div>
+                      </th>
+
+                      <th className="px-2 py-1 text-center align-bottom">
+                        Total Tax Amount
+                      </th>
+                    </tr> */
+}

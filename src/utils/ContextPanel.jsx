@@ -114,6 +114,7 @@ const AppProvider = ({ children }) => {
           "/received-download",
           "/change-password",
           "/report-quatation",
+          "/report-tax-invoice",
         ];
         const isAllowedPath = allowedPaths.some((path) =>
           currentPath.startsWith(path)
