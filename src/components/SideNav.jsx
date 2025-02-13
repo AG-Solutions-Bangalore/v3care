@@ -120,6 +120,13 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       title: "Download",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
+    {
+      to: "/report-quatation",
+      icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
+      text: "Report",
+      title: "Report",
+      roles: ["admin", "superadmin", "operationteam", "viewer"],
+    },
   ];
 
   const roleMap = {
@@ -209,7 +216,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
             <div className="text-sm font-medium opacity-80">
-              Version: 1.2.17
+              Version: 1.2.18
             </div>
           </div>
         </div>

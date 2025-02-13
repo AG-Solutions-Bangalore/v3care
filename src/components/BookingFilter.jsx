@@ -47,7 +47,7 @@ const BookingFilter = () => {
     },
   ];
 
-  //total 8 sajid
+
   return (
     <div className="flex flex-wrap justify-between mt-6 gap-4">
       {buttons.map((button, index) => (

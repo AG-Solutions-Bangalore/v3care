@@ -85,6 +85,7 @@ import RnrList from "./pages/booking/rnr/RnrList";
 import { useContext } from "react";
 import { ContextPanel } from "./utils/ContextPanel";
 import AllBooking from "./pages/booking/allBooking/AllBooking";
+import QuatationReport from "./pages/report/QuatationReport";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -305,6 +306,10 @@ const App = () => {
             <Route path="/pending-download" element={<PendingDownload />} />
           </>
         )}
+        {/* {userType === "3" && ( */}
+          <Route path="/report-quatation" element={<QuatationReport />} />
+        {/* )} */}
+
         <Route path="/profile" element={<Profile />} />
         <Route path="/change-password" element={<ChangePassword />} />
       </Routes>
