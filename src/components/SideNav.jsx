@@ -156,7 +156,10 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         )
       : [];
   };
-
+  const handleItemClick = () => {
+    // Clear page-no from localStorage
+    localStorage.removeItem("page-no");
+  };
   return (
     <aside
       ref={sidenavRef}
@@ -199,7 +202,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <ul className="mb-4 flex flex-col gap-1">
           {getFilteredMenuItems().map((item) => (
             <li key={item.to}>
-              <NavLink to={item.to}>
+              <NavLink to={item.to} onClick={handleItemClick}>
                 {({ isActive }) => (
                   <Button
                     variant={isActive ? "gradient" : "text"}

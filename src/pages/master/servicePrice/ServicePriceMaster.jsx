@@ -1,19 +1,39 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/service-price?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchServicePriceData = async () => {
@@ -43,7 +63,11 @@ const ServicePriceMaster = () => {
     fetchServicePriceData();
     setLoading(false);
   }, []);
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/service-price-edit/${id}`);
+  };
   const columns = [
     {
       name: "slNo",
@@ -116,8 +140,8 @@ const ServicePriceMaster = () => {
             <>
               {userType !== "4" && (
                 <div
-                  onClick={() => navigate(`/service-price-edit/${id}`)}
-                  className="flex items-center space-x-2"
+                onClick={(e) => handleEdit(e, id)}
+                className="flex items-center space-x-2"
                 >
                   <FaEdit
                     title="Booking Info"
@@ -138,6 +162,13 @@ const ServicePriceMaster = () => {
     viewColumns: true,
     download: false,
     print: false,
+    count: servicePriceData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/service-price?page=${currentPage + 1}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
@@ -148,15 +179,43 @@ const ServicePriceMaster = () => {
     customToolbar: () => {
       return (
         <>
-        {userType !== "4" && (
-          <Link
-            to="/add-service-price"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Service Price
-          </Link>
-        )}
+          {userType !== "4" && (
+            <Link
+              to="/add-service-price"
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Service Price
+            </Link>
+          )}
         </>
+      );
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
       );
     },
   };
@@ -178,7 +237,7 @@ const ServicePriceMaster = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Service Price List"
+          title="Service Price List"
           data={servicePriceData ? servicePriceData : []}
           columns={columns}
           options={options}

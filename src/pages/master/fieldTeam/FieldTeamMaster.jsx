@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -11,6 +11,7 @@ import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import FieldTeamViewMaster from "./FieldTeamViewMaster";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
@@ -19,6 +20,25 @@ const FieldTeamMaster = () => {
   const navigate = useNavigate();
   const [fieldDrawer, setFieldDrawer] = useState(false);
   const [selectedFieldId, setSelectedFieldId] = useState(null);
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/field-team?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchFieldData = async () => {
@@ -62,7 +82,11 @@ const FieldTeamMaster = () => {
       setFieldDrawer(open);
       if (id) setSelectedFieldId(id);
     };
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/field-team-edit/${id}`);
+  };
   const columns = [
     {
       name: "slNo",
@@ -127,7 +151,7 @@ const FieldTeamMaster = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <FaEdit
-                  onClick={() => navigate(`/field-team-edit/${id}`)}
+                  onClick={(e) => handleEdit(e, id)}
                   title="Booking Info"
                   className="h-5 w-5 cursor-pointer"
                 />
@@ -142,7 +166,7 @@ const FieldTeamMaster = () => {
                 className="flex items-center space-x-2"
                 title="View"
               >
-                <MdOutlineRemoveRedEye                 className="h-5 w-5 cursor-pointer" />
+                <MdOutlineRemoveRedEye className="h-5 w-5 cursor-pointer" />
               </div>
             </div>
           );
@@ -157,6 +181,13 @@ const FieldTeamMaster = () => {
     viewColumns: true,
     download: false,
     print: false,
+    count: fieldTeamData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/field-team?page=${currentPage + 1}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
@@ -178,8 +209,36 @@ const FieldTeamMaster = () => {
         </>
       );
     },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
+    },
   };
- 
+
   return (
     <Layout>
       <MasterFilter />
@@ -211,12 +270,12 @@ const FieldTeamMaster = () => {
         onClose={toogleViewServiceSub(false)}
         onOpen={toogleViewServiceSub(true)}
       >
-       {selectedFieldId && (
-    <FieldTeamViewMaster
-      fieldId={selectedFieldId}
-      onClose={toogleViewServiceSub(false)}
-    />
-  )}
+        {selectedFieldId && (
+          <FieldTeamViewMaster
+            fieldId={selectedFieldId}
+            onClose={toogleViewServiceSub(false)}
+          />
+        )}
       </SwipeableDrawer>
     </Layout>
   );

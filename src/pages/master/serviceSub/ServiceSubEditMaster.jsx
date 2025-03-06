@@ -30,6 +30,9 @@ const ServiceSubEditMaster = () => {
     service_sub_status: "",
     service_sub_image: "",
   });
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -76,7 +79,10 @@ const ServiceSubEditMaster = () => {
       [name]: value,
     });
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/service-sub?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -102,7 +108,7 @@ const ServiceSubEditMaster = () => {
         if (res.data.code == "200") {
           toast.success("Branch Create succesfull");
 
-          navigate("/service-sub");
+          navigate(`/service-sub?page=${pageNo}`);
         } else {
           toast.error("duplicate entry");
         }
@@ -211,7 +217,6 @@ const ServiceSubEditMaster = () => {
               <Button
                 type="submit"
                 className="mr-2 mb-2"
-                color="primary"
                 // disabled={isButtonDisabled}
               >
                 <div className="flex gap-1">
@@ -220,14 +225,12 @@ const ServiceSubEditMaster = () => {
                 </div>
               </Button>
 
-              <Link to="/service-sub">
-                <Button className="mr-2 mb-2" color="primary">
-                  <div className="flex gap-1">
-                    <MdArrowBack className="w-4 h-4" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-              </Link>
+              <Button className="mr-2 mb-2" onClick={handleBack}>
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </div>
           </form>
         </Card>

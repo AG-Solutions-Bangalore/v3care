@@ -46,7 +46,9 @@ const OperationEditTeamMaster = () => {
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const validateOnlyDigits = (inputtxt) => {
     return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
   };
@@ -73,7 +75,10 @@ const OperationEditTeamMaster = () => {
       setTeam(res.data.adminUser);
     });
   }, [id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/operation-team?page=${pageNo}`);
+  };
   const onSubmit = (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -103,7 +108,7 @@ const OperationEditTeamMaster = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           toast.success("update succesfull");
-          navigate("/operation-team");
+          navigate(`/operation-team"?page=${pageNo}`);
         } else {
           toast.error("duplicate entry");
         }
@@ -257,7 +262,6 @@ const OperationEditTeamMaster = () => {
             <Button
               type="submit"
               className="mr-2 mb-2"
-              color="primary"
               onClick={onSubmit}
               // disabled={isButtonDisabled}
             >
@@ -267,14 +271,12 @@ const OperationEditTeamMaster = () => {
               </div>
             </Button>
 
-            <Link to="/operation-team">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <Button className="mr-2 mb-2" onClick={handleBack}>
+              <div className="flex gap-1">
+                <MdArrowBack className="w-4 h-4" />
+                <span>Back</span>
+              </div>
+            </Button>
           </div>
         </form>
       </div>

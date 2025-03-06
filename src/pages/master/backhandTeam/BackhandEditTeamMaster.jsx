@@ -42,6 +42,9 @@ const BackhandEditTeamMaster = () => {
     user_pancard: "",
   });
   const navigate = useNavigate();
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -72,7 +75,10 @@ const BackhandEditTeamMaster = () => {
       setTeam(res.data.adminUser);
     });
   }, [id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/backhand-team?page=${pageNo}`);
+  };
   const onSubmit = (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -103,7 +109,7 @@ const BackhandEditTeamMaster = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           toast.success("update succesfull");
-          navigate("/backhand-team");
+          navigate(`/backhand-team?page=${pageNo}`);
         } else {
           toast.error("duplicate entry");
         }
@@ -254,27 +260,19 @@ const BackhandEditTeamMaster = () => {
           </div>
 
           <div className="flex justify-center mt-6 space-x-4">
-            <Button
-              type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              onClick={onSubmit}
-              // disabled={isButtonDisabled}
-            >
+            <Button type="submit" className="mr-2 mb-2" onClick={onSubmit}>
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
                 <span>Update</span>
               </div>
             </Button>
 
-            <Link to="/backhand-team">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <Button className="mr-2 mb-2" onClick={handleBack}>
+              <div className="flex gap-1">
+                <MdArrowBack className="w-4 h-4" />
+                <span>Back</span>
+              </div>
+            </Button>
           </div>
         </form>
       </div>

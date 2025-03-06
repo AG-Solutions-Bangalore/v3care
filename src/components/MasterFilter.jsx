@@ -3,22 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ContextPanel } from "../utils/ContextPanel";
 
 const MasterFilter = () => {
-  //   const [activeButton, setActiveButton] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { userType } = useContext(ContextPanel);
-
-  //   const handleButtonClick = (index, path) => {
-  //     setActiveButton(index);
-  //     console.log("naviaget", path);
-  //     navigate(path);
-  //   };
-
   const handleButtonClick = (path) => {
     navigate(path);
+    localStorage.removeItem("page-no");
   };
   const buttons = [
-
     {
       label: "Refer By",
       path: "/refer-by",
@@ -33,8 +25,7 @@ const MasterFilter = () => {
           },
         ]
       : []),
-   
-    
+
     {
       label: "Service",
       path: "/service",
@@ -71,6 +62,7 @@ const MasterFilter = () => {
         ]
       : []),
   ];
+
   return (
     <div className="flex flex-wrap justify-between mt-6 gap-4">
       {buttons.map((button, index) => (

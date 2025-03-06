@@ -8,6 +8,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { Card, CardBody } from "@material-tailwind/react";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const ViewVendor = () => {
   const componentRef = useRef();
@@ -20,6 +21,9 @@ const ViewVendor = () => {
   const [vendorBranch, setVendorBranch] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const navigate = useNavigate();
   useEffect(() => {
     const fetchVendorViewData = async () => {
@@ -52,13 +56,20 @@ const ViewVendor = () => {
     fetchVendorViewData();
     setLoading(false);
   }, []);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/vendor-list?page=${pageNo}`);
+  };
   return (
     <Layout>
       <div className="container mx-auto p-6">
         <div className="w-full bg-white shadow-md rounded-lg p-8">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold border-b  border-blue-700">
+            <h1 className="text-2xl font-bold border-b  border-blue-700 flex ">
+              <IoMdArrowRoundBack
+                className="cursor-pointer"
+                onClick={handleBack}
+              />{" "}
               Vendor Details
             </h1>
             <ReactToPrint

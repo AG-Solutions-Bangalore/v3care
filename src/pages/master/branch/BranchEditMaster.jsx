@@ -34,7 +34,9 @@ const BranchEditMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {
@@ -72,7 +74,10 @@ const BranchEditMaster = () => {
     fetchBranchData();
     setLoading(false);
   }, []);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/branch?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     let data = {
@@ -96,7 +101,7 @@ const BranchEditMaster = () => {
       console.log("Form submitted", branch);
       if (response.data.code == "200") {
         toast.success("update succesfull");
-        navigate("/branch");
+        navigate(`/branch?page=${pageNo}`);
       } else {
         toast.error("duplicate entry");
       }
@@ -168,7 +173,7 @@ const BranchEditMaster = () => {
               <Button
                 type="submit"
                 className="mr-2 mb-2"
-                color="primary"
+                // color="primary"
                 // disabled={isButtonDisabled}
               >
                 <div className="flex gap-1">
@@ -177,14 +182,16 @@ const BranchEditMaster = () => {
                 </div>
               </Button>
 
-              <Link to="/branch">
-                <Button className="mr-2 mb-2" color="primary">
-                  <div className="flex gap-1">
-                    <MdArrowBack className="w-5 h-5" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-              </Link>
+              <Button
+                className="mr-2 mb-2"
+                // color="primary"
+                onClick={handleBack}
+              >
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-5 h-5" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </div>
           </form>
         </Card>

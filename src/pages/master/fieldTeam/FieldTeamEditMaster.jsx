@@ -46,9 +46,6 @@ const FieldTeamEditMaster = () => {
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   UseEscapeKey();
-  // const validateOnlyDigits = (inputtxt) => {
-  //   return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
-  // };
 
   const validateOnlyDigits = (inputtxt) => {
     var phoneno = /^\d+$/;
@@ -59,32 +56,9 @@ const FieldTeamEditMaster = () => {
     }
   };
 
-  // const onInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   if (
-  //     (name === "mobile" || name === "user_aadhar_no") &&
-  //     !validateOnlyDigits(value)
-  //   ) {
-  //     return;
-  //   }
-  //   setTeam({ ...team, [name]: value });
-  // };
-
-  // const onInputChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   if (
-  //     (name === "mobile" || name === "user_aadhar_no") &&
-  //     !validateOnlyDigits(value)
-  //   ) {
-  //     return;
-  //   }
-
-  //   setTeam((prevState) => ({
-  //     ...prevState,
-  //     [name]: value || prevState[name],
-  //   }));
-  // };
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
 
   const onInputChange = (e) => {
     if (e.target.name == "mobile") {
@@ -113,7 +87,10 @@ const FieldTeamEditMaster = () => {
       setTeam(res.data.adminUser);
     });
   }, [id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/field-team?page=${pageNo}`);
+  };
   const onSubmit = (e) => {
     e.preventDefault();
     if (!team.name || !team.mobile) {
@@ -145,7 +122,7 @@ const FieldTeamEditMaster = () => {
     }).then((res) => {
       if (res.data.code == "200") {
         toast.success("update succesfull");
-        navigate("/field-team");
+        navigate(`/field-team?page=${pageNo}`);
       } else {
         toast.error("duplicate entry");
       }
@@ -300,9 +277,7 @@ const FieldTeamEditMaster = () => {
             <Button
               type="submit"
               className="mr-2 mb-2"
-              color="primary"
               onClick={onSubmit}
-              // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
@@ -310,14 +285,15 @@ const FieldTeamEditMaster = () => {
               </div>
             </Button>
 
-            <Link to="/field-team">
-              <Button className="mr-2 mb-2" color="primary">
+              <Button
+                className="mr-2 mb-2"
+                onClick={handleBack}
+              >
                 <div className="flex gap-1">
                   <MdArrowBack className="w-4 h-4" />
                   <span>Back</span>
                 </div>
               </Button>
-            </Link>
           </div>
         </form>
       </div>

@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { IoMdPeople } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward, IoMdPeople } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { FiUserPlus, FiUsers } from "react-icons/fi";
 import { RiEditLine } from "react-icons/ri";
@@ -17,6 +17,25 @@ import UseEscapeKey from "../../utils/UseEscapeKey";
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/vendor-list?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
@@ -89,6 +108,26 @@ const VendorList = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/vendor-edit/${id}`);
+  };
+  const handleViewVendorInfo = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/vendor-view/${id}`);
+  };
+  const handleEditPendingVendor = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/vendor-pending-edit/${id}`);
+  };
+  const handleViewVendor = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/vendor-user-list/${id}`);
   };
   const columns = [
     {
@@ -166,12 +205,14 @@ const VendorList = () => {
                   {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
                     <>
                       <RiEditLine
-                        onClick={() => navigate(`/vendor-edit/${id}`)}
+                        onClick={(e) => handleEdit(e, id)}
                         title="Edit Vendor"
                         className="h-5 w-5 cursor-pointer"
                       />
                       <FiUsers
-                        onClick={() => navigate(`/vendor-user-list/${id}`)}
+                        onClick={(e) => handleViewVendor(e, id)}
+                        // onClick={() => navigate(`/vendor-user-list/${id}`)}
+
                         title="view Vendor"
                         className="h-5 w-5 cursor-pointer"
                       />
@@ -180,7 +221,8 @@ const VendorList = () => {
                     <>
                       {/* for pending  */}
                       <CiEdit
-                        onClick={() => navigate(`/vendor-pending-edit/${id}`)}
+                        onClick={(e) => handleEditPendingVendor(e, id)}
+                        // onClick={() => navigate(`/vendor-pending-edit/${id}`)}
                         title="Edit Pending Vendor"
                         className="h-5 w-5 cursor-pointer"
                       />
@@ -195,7 +237,7 @@ const VendorList = () => {
               )}
               {/* common  */}
               <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/vendor-view/${id}`)}
+                onClick={(e) => handleViewVendorInfo(e, id)}
                 title="View Vendor Info"
                 className="h-5 w-5 cursor-pointer"
               />
@@ -214,6 +256,13 @@ const VendorList = () => {
     viewColumns: true,
     download: false,
     print: false,
+    count: vendorListData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/vendor-list?page=${currentPage + 1}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
@@ -223,37 +272,52 @@ const VendorList = () => {
     },
     customToolbar: () => {
       return (
-      <>
-       {userType !== "4" && (
-          <Link
-            to={`/add-vendor`}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Vendor
-          </Link>
-        )}
-      </>
+        <>
+          {userType !== "4" && (
+            <Link
+              to={`/add-vendor`}
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Vendor
+            </Link>
+          )}
+        </>
+      );
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
       );
     },
   };
   return (
     <Layout>
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Vendor List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to={`/add-vendor`}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Vendor
-          </Link>
-        )}
-      </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Vendor List"
+          title="Vendor List"
           data={vendorListData ? vendorListData : []}
           columns={columns}
           options={options}

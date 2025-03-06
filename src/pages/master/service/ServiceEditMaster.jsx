@@ -30,7 +30,9 @@ const ServiceEditMaster = () => {
   });
   UseEscapeKey();
   const navigate = useNavigate();
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -75,7 +77,10 @@ const ServiceEditMaster = () => {
 
     fetchServiceData();
   }, [id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/service?page=${pageNo}`);
+  };
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -100,7 +105,7 @@ const ServiceEditMaster = () => {
         .then((res) => {
           if (res.data.code == "200") {
             toast.success("update succesfull");
-            navigate("/service");
+            navigate(`/service?page=${pageNo}`);
           } else {
             toast.error("duplicate entry");
           }
@@ -211,14 +216,16 @@ const ServiceEditMaster = () => {
                 </div>
               </Button>
 
-              <Link to="/service">
-                <Button className="mr-2 mb-2" color="primary">
-                  <div className="flex gap-1">
-                    <MdArrowBack className="w-4 h-4" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-              </Link>
+              <Button
+                className="mr-2 mb-2"
+                color="primary"
+                onClick={handleBack}
+              >
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </div>
           </form>
         </Card>

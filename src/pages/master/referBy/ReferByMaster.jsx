@@ -1,21 +1,40 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import MUIDataTable from "mui-datatables";
+import React, { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import BASE_URL from "../../../base/BaseUrl";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import ToggleSwitch from "../../../components/ToggleSwitch";
-import { toast } from "react-toastify";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  //
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/refer-by?page=${storedPageNo}`); 
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchReferData = async () => {
@@ -45,9 +64,11 @@ const ReferByMaster = () => {
     fetchReferData();
     setLoading(false);
   }, []);
-
-  
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/refer-by-edit/${id}`);
+  };
   const columns = [
     {
       name: "slNo",
@@ -84,21 +105,19 @@ const ReferByMaster = () => {
         filter: false,
         sort: false,
         customBodyRender: (id) => {
-      
           return (
             <>
               {userType !== "4" && (
                 <>
-               
-                <div
-                  onClick={() => navigate(`/refer-by-edit/${id}`)}
-                  className="flex items-center space-x-2"
-                >
-                  <FaEdit
-                    title="Booking Info"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                </div>
+                  <div
+                    onClick={(e) => handleEdit(e, id)}
+                    className="flex items-center space-x-2"
+                  >
+                    <FaEdit
+                      title="Booking Info"
+                      className="h-5 w-5 cursor-pointer"
+                    />
+                  </div>
                 </>
               )}
             </>
@@ -110,12 +129,19 @@ const ReferByMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
+
     responsive: "standard",
     viewColumns: true,
     download: false,
     print: false,
+
+    count: referData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/refer-by?page=${currentPage + 1}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
@@ -126,15 +152,43 @@ const ReferByMaster = () => {
     customToolbar: () => {
       return (
         <>
-        {userType !== "4" && (
-          <Link
-            to="/add-referby"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Refer by
-          </Link>
-        )}
+          {userType !== "4" && (
+            <Link
+              to="/add-referby"
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Refer by
+            </Link>
+          )}
         </>
+      );
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
       );
     },
   };
@@ -142,22 +196,9 @@ const ReferByMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Refer By List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to="/add-referby"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Refer by
-          </Link>
-        )}
-      </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Refer By List"
+          title="Refer By List"
           data={referData ? referData : []}
           columns={columns}
           options={options}
