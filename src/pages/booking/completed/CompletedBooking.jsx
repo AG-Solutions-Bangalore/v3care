@@ -329,27 +329,27 @@ const CompletedBooking = () => {
         },
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              onClick={() => navigate(`/view-booking/${id}`)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+    // {
+    //   name: "id",
+    //   label: "Action",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (id) => {
+    //       return (
+    //         <div
+    //           onClick={() => navigate(`/view-booking/${id}`)}
+    //           className="flex items-center space-x-2"
+    //         >
+    //           <MdOutlineRemoveRedEye
+    //             title="Booking Info"
+    //             className="h-5 w-5 cursor-pointer"
+    //           />
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
   ];
   const options = {
     selectableRows: "none",
@@ -358,10 +358,15 @@ const CompletedBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
+    onRowClick: (rowData, rowMeta) => {
+      const id = CompletedBookData[rowMeta.dataIndex].id;
+      navigate(`/view-booking/${id}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor: "pointer", 
         },
       };
     },

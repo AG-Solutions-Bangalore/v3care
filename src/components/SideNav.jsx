@@ -121,13 +121,13 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       title: "Download",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
-    {
-      to: "/report-quatation",
-      icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
-      text: "Report",
-      title: "Report",
-      roles: ["superadmin"],
-    },
+    // {
+    //   to: "/report-quatation",
+    //   icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
+    //   text: "Report",
+    //   title: "Report",
+    //   roles: ["superadmin"],
+    // },
   ];
 
   const roleMap = {

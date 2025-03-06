@@ -266,20 +266,7 @@ const ViewBooking = () => {
             </div>
           </div>
         );
-      case "followUp":
-      case "followUplocation":
-        return (
-          <div>
-            <div className="mt-5">
-              <MUIDataTable
-                // title={"Followup"}
-                data={followup ? followup : []}
-                columns={columns}
-                options={options}
-              />
-            </div>
-          </div>
-        );
+     
       default:
         return null;
     }
@@ -374,17 +361,7 @@ const ViewBooking = () => {
                   Other Details
                 </button>
 
-                <button
-                  onClick={() => setActiveTab("followUp")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "followUp"
-                      ? "border-purple-500 bg-red-100 text-purple-600"
-                      : "border-transparent hover:bg-purple-50"
-                  }`}
-                >
-                  <FaCommentDots />
-                  Follow Up
-                </button>
+               
               </div>
 
               {/* Main Content Based on Active Tab */}
@@ -392,11 +369,11 @@ const ViewBooking = () => {
                 <CardBody>{renderActiveTabContent()}</CardBody>
               </Card>
             </div>
-            <div className={`${activeTab === "followUp" ? "hidden" : ""}`}>
+            <div >
               {/* Payment Card */}
               <Card className="mb-6">
-                <CardHeader floated={false} className="h-16 p-4">
-                  <Typography variant="h5" color="blue-gray">
+                <CardHeader floated={false} className="h-12 p-4">
+                  <Typography variant="h6" color="blue-gray">
                     Booking Assign
                   </Typography>
                 </CardHeader>
@@ -485,6 +462,25 @@ const ViewBooking = () => {
                   )}
                 </CardBody>
               </Card>
+              <div className="mt-5">
+              <Card className="mb-6">
+                <CardHeader floated={false} className="h-12 p-4">
+                  <Typography variant="h6" color="blue-gray">
+                    Follow Up
+                  </Typography>
+                </CardHeader>
+                {/* here booking assign table  */}
+                <CardBody>
+                <MUIDataTable
+                // title={"Followup"}
+                data={followup ? followup : []}
+                columns={columns}
+                options={options}
+              />
+                </CardBody>
+              </Card>
+              
+            </div>
             </div>
           </div>
         </div>

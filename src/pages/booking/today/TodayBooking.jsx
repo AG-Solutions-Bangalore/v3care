@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiSquarePlus } from "react-icons/ci";
 import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
@@ -87,7 +86,31 @@ const TodayBooking = () => {
   }, []);
 
   const columns = [
-    //0
+    {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <CiSquarePlus
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click event
+                    navigate(`/edit-booking/${id}`);
+                  }}
+                  title="edit booking"
+                  className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                />
+              )}
+            </div>
+          );
+        },
+      },
+    },
+    //1
     {
       name: "order_ref",
       label: "Order/Branch",
@@ -95,7 +118,7 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[1];
+          const branchName = tableMeta.rowData[2];
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
@@ -105,7 +128,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //1
+    //2
     {
       name: "branch_name",
       label: "Branch",
@@ -117,7 +140,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    //2
+    //3
     {
       name: "order_customer",
       label: "Customer",
@@ -129,7 +152,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //3
+    //4
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -141,7 +164,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //4
+    //5
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -149,8 +172,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[2];
-          const mobileNo = tableMeta.rowData[3];
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
             <div className=" flex flex-col w-32">
               <span>{customeName}</span>
@@ -160,7 +183,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //5
+    //6
     {
       name: "order_date",
       label: "Booking Date",
@@ -175,7 +198,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //6
+    //7
     {
       name: "order_service_date",
       label: "Service Date",
@@ -190,7 +213,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //7
+    //8
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -198,8 +221,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[5];
-          const serviceDate = tableMeta.rowData[6];
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
@@ -209,7 +232,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //8
+    //9
     {
       name: "order_service",
       label: "Service",
@@ -221,7 +244,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //9
+    //10
     {
       name: "order_amount",
       label: "Price",
@@ -233,7 +256,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //10
+    //11
     {
       name: "order_custom",
       label: "Custom",
@@ -245,7 +268,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //11
+    //12
     {
       name: "service_price",
       label: "Service/Price",
@@ -253,9 +276,9 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[8];
-          const price = tableMeta.rowData[9];
-          const customeDetails = tableMeta.rowData[10];
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
+          const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
@@ -273,7 +296,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //12
+    //13
     {
       name: "order_time",
       label: "Time/Area",
@@ -281,7 +304,7 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[21];
+          const area = tableMeta.rowData[22];
           return (
             <div className=" flex flex-col w-32">
               <span>{value}</span>
@@ -291,7 +314,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //13
+    //14
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -299,14 +322,17 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[13];
-          const order_ref = tableMeta.rowData[0];
+          const order_no_assign = tableMeta.rowData[14];
+          const order_ref = tableMeta.rowData[1];
 
           return order_no_assign > 0 ? (
             <div className="flex flex-col w-32">
               <button
-                className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-                onClick={() => handleOpenModal(order_ref)}
+                className=" w-16  hover:bg-red-200 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  handleOpenModal(order_ref);
+                }}
               >
                 {value}
               </button>
@@ -319,7 +345,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //14
+    //15
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -327,8 +353,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[13];
+          const orderRef = tableMeta.rowData[1];
+          const orderNoAssign = tableMeta.rowData[14];
           const assignments = assignmentData[orderRef];
 
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
@@ -353,7 +379,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //15
+    //16
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -365,7 +391,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    //16
+    //17
     {
       name: "order_payment_type",
       label: "Type",
@@ -377,7 +403,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    //17
+    //18
     {
       name: "amount_type",
       label: "Paid Amount/Type",
@@ -385,8 +411,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[16];
-          const price = tableMeta.rowData[15];
+          const service = tableMeta.rowData[17];
+          const price = tableMeta.rowData[16];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -396,7 +422,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //18
+    //19
     {
       name: "updated_by",
       label: "Confirm By",
@@ -408,7 +434,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //19
+    //20
     {
       name: "order_status",
       label: "Status",
@@ -420,7 +446,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //20
+    //21
     {
       name: "confirm/status",
       label: "Confirm By/Status",
@@ -428,8 +454,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[18];
-          const status = tableMeta.rowData[19];
+          const confirmBy = tableMeta.rowData[19];
+          const status = tableMeta.rowData[20];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -439,7 +465,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //21
+    //22
     {
       name: "order_address",
       label: "Address",
@@ -451,47 +477,22 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //22
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <CiSquarePlus
-                  onClick={() => navigate(`/edit-booking/${id}`)}
-                  title="edit booking"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-
-              <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
   ];
+  
   const options = {
     selectableRows: "none",
-    // filterType: "textField",
-
     elevation: 0,
     responsive: "standard",
     viewColumns: true,
     download: false,
     print: false,
-
+    onRowClick: (rowData, rowMeta) => {
+      const id = todayBookingData[rowMeta.dataIndex].id;
+      navigate(`/view-booking/${id}`);
+    },
+  
     setRowProps: (rowData) => {
-      const orderStatus = rowData[19];
+      const orderStatus = rowData[20];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
@@ -517,11 +518,11 @@ const TodayBooking = () => {
         style: {
           backgroundColor: backgroundColor,
           borderBottom: "5px solid #f1f7f9",
+          cursor: "pointer", // Add pointer cursor to indicate clickable rows
         },
       };
     },
   };
-
 
   return (
     <Layout>
