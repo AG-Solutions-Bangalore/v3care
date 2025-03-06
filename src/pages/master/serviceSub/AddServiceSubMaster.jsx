@@ -59,12 +59,18 @@ const AddServiceSubMaster = () => {
       [e.target.name]: e.target.value,
     });
   };
-
+  const onServiceChange = (value) => {
+    setServices((prev) => ({
+      ...prev,
+      service_id: value,
+    }));
+  };
+  
   const onSubmit = (e) => {
     e.preventDefault();
     setIsButtonDisabled(true);
     const data = new FormData();
-    data.append("service_id", services.service_id);
+    data.append("service_id", services?.service_id);
     data.append("service_sub", services.service_sub);
     data.append("service_sub_image", selectedFile);
 
@@ -104,20 +110,26 @@ const AddServiceSubMaster = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Select Field */}
             <div className="form-group">
-              <Select
-                label="Service"
-                name="service_id"
-                value={services.service_id}
-                onChange={onInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-              >
-                {serdata.map((serdatas, key) => (
-                  <SelectOption key={key} value={serdatas.id}>
-                    {serdatas.service}
-                  </SelectOption>
-                ))}
-              </Select>
+          
+            <Select
+  label="Service"
+  name="service_id"
+  required
+  className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+  onChange={onServiceChange} 
+>
+  {serdata.map((ser) => (
+    <SelectOption 
+      key={ser.id} 
+      value={ser.id}
+      selected={services.service_id === ser.id} 
+    >
+      {ser.service}
+    </SelectOption>
+  ))}
+</Select>
+
+
             </div>
 
             {/* Service Sub Field */}

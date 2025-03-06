@@ -218,7 +218,7 @@ const ServicePriceEditMaster = () => {
                   <FormControl fullWidth>
                     <InputLabel id="service-select-label">
                       <span className="text-sm relative bottom-[6px]">
-                        Service Sub <span className="text-red-700">*</span>
+                        Service Sub
                       </span>
                     </InputLabel>
                     <Select
@@ -229,7 +229,7 @@ const ServicePriceEditMaster = () => {
                       value={services.service_sub_id}
                       onChange={onInputChange}
                       label="Service Sub *"
-                      required
+                      
                     >
                       {serdatasub.map((subService) => (
                         <MenuItem key={subService.id} value={subService.id}>
