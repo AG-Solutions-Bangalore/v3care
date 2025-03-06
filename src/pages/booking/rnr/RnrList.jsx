@@ -258,16 +258,19 @@ const RnrList = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={() => navigate(`/edit-booking/${id}`)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  navigate(`/edit-booking/${id}`);
+                }}
                   title="edit booking"
                   className="h-5 w-5 cursor-pointer"
                 />
               )}
-              <MdOutlineRemoveRedEye
+              {/* <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/view-booking/${id}`)}
                 title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
-              />
+              /> */}
             </div>
           );
         },
@@ -281,10 +284,15 @@ const RnrList = () => {
     viewColumns: true,
     download: false,
     print: false,
+    onRowClick: (rowData, rowMeta) => {
+      const id = pendingBookData[rowMeta.dataIndex].id;
+      navigate(`/view-booking/${id}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor: "pointer", 
         },
       };
     },
