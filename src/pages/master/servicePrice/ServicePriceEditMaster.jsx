@@ -34,6 +34,9 @@ const statusOptions = [
 const ServicePriceEditMaster = () => {
   const { id } = useParams();
   UseEscapeKey();
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [services, setService] = useState({
     service_id: "",
     service_sub_id: "",
@@ -127,7 +130,10 @@ const ServicePriceEditMaster = () => {
       fetchServiceSubOptions();
     }
   }, [services.service_id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/service-price?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("editServiceForm");
@@ -158,7 +164,7 @@ const ServicePriceEditMaster = () => {
 
         if (response.data.code == "200") {
           toast.success("update succesfull");
-          navigate("/service-price");
+          navigate(`/service-price?page=${pageNo}`);
         } else {
           toast.error("duplicate entry");
         }
@@ -229,7 +235,6 @@ const ServicePriceEditMaster = () => {
                       value={services.service_sub_id}
                       onChange={onInputChange}
                       label="Service Sub *"
-                      
                     >
                       {serdatasub.map((subService) => (
                         <MenuItem key={subService.id} value={subService.id}>
@@ -315,7 +320,6 @@ const ServicePriceEditMaster = () => {
               <Button
                 type="submit"
                 className="mr-2 mb-2"
-                color="primary"
                 onClick={onSubmit}
                 // disabled={isButtonDisabled}
               >
@@ -325,14 +329,12 @@ const ServicePriceEditMaster = () => {
                 </div>
               </Button>
 
-              <Link to="/service-price">
-                <Button className="mr-2 mb-2" color="primary">
-                  <div className="flex gap-1">
-                    <MdArrowBack className="w-4 h-4" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-              </Link>
+              <Button className="mr-2 mb-2" onClick={handleBack}>
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </div>
           </form>
         </Card>

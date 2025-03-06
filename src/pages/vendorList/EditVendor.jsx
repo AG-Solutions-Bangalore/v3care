@@ -24,6 +24,9 @@ const statusOptions = [
 const EditVendor = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
   const [vendor, setVendor] = useState({
     vendor_short: "",
@@ -162,7 +165,10 @@ const EditVendor = () => {
     );
     setUsers1(updatedUsers);
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/vendor-list?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -212,7 +218,7 @@ const EditVendor = () => {
 
         if (response.data.code == "200") {
           toast.success("Data Updated Successfully");
-          navigate("/vendor-list");
+          navigate(`/vendor-list?page=${pageNo}`);
         } else {
           if (response.data.code == "401") {
             toast.error("Company Short Duplicate Entry");
@@ -665,9 +671,7 @@ const EditVendor = () => {
             <Button
               type="submit"
               className="mr-2 mb-2"
-              color="primary"
               onClick={onSubmit}
-              // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
@@ -675,14 +679,15 @@ const EditVendor = () => {
               </div>
             </Button>
 
-            <Link to="/vendor-list">
-              <Button className="mr-2 mb-2" color="primary">
+              <Button
+                className="mr-2 mb-2"
+                onClick={handleBack}
+              >
                 <div className="flex gap-1">
                   <MdArrowBack className="w-4 h-4" />
                   <span>Back</span>
                 </div>
               </Button>
-            </Link>
           </div>
         </form>
       </div>

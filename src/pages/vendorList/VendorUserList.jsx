@@ -11,6 +11,7 @@ import { ContextPanel } from "../../utils/ContextPanel";
 import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { IoMdArrowRoundBack } from "react-icons/io";
 const VendorUserList = () => {
   const { id } = useParams();
   const [vendorUserList, setVendorUserList] = useState(null);
@@ -18,6 +19,9 @@ const VendorUserList = () => {
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("idVendor", id);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
   useEffect(() => {
     const fetchUserVendorListData = async () => {
@@ -47,7 +51,10 @@ const VendorUserList = () => {
     fetchUserVendorListData();
     setLoading(false);
   }, []);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/vendor-list?page=${pageNo}`);
+  };
   const columns = [
     {
       name: "name",
@@ -115,7 +122,8 @@ const VendorUserList = () => {
   return (
     <Layout>
       <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
+        <h3 className="text-center md:text-left text-lg md:text-xl font-bold flex">
+          <IoMdArrowRoundBack onClick={handleBack} className="cursor-pointer mt-1"/>
           Vendor User List
         </h3>
         {userType !== "4" && (

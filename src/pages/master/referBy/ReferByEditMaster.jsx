@@ -34,7 +34,9 @@ const ReferByEditMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {
@@ -72,7 +74,10 @@ const ReferByEditMaster = () => {
     fetchReferByData();
     setLoading(false);
   }, [id]);
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/refer-by?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     let data = {
@@ -95,7 +100,7 @@ const ReferByEditMaster = () => {
       );
 
       toast.success("Update successful");
-      navigate("/refer-by");
+      navigate(`/refer-by?page=${pageNo}`);
     } catch (error) {
       console.error("Error updating refer by", error);
       toast.error("Update failed. Please try again.");
@@ -172,14 +177,16 @@ const ReferByEditMaster = () => {
                 </div>
               </Button>
 
-              <Link to="/refer-by">
-                <Button className="mr-2 mb-2" color="primary">
-                  <div className="flex gap-1">
-                    <MdArrowBack className="w-4 h-4" />
-                    <span>Back</span>
-                  </div>
-                </Button>
-              </Link>
+              <Button
+                onClick={handleBack}
+                className="mr-2 mb-2"
+                color="primary"
+              >
+                <div className="flex gap-1">
+                  <MdArrowBack className="w-4 h-4" />
+                  <span>Back</span>
+                </div>
+              </Button>
             </div>
           </form>
         </Card>

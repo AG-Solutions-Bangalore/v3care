@@ -25,6 +25,9 @@ const VendorPendingEdit = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("id");
@@ -68,7 +71,10 @@ const VendorPendingEdit = () => {
     }
     setVendor({ ...vendor, [name]: value });
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/vendor-list?page=${pageNo}`);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -104,7 +110,7 @@ const VendorPendingEdit = () => {
 
         if (response.data.code == "200") {
           toast.success("Data Updated Successfully");
-          navigate("/vendor-list");
+          navigate(`/vendor-list?page=${pageNo}`);
         } else {
           if (response.data.code == "401") {
             toast.error("Company Short Duplicate Entry");
@@ -222,7 +228,6 @@ const VendorPendingEdit = () => {
             <Button
               type="submit"
               className="mr-2 mb-2"
-              color="primary"
               // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
@@ -231,14 +236,12 @@ const VendorPendingEdit = () => {
               </div>
             </Button>
 
-            <Link to="/vendor-list">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <Button className="mr-2 mb-2" onClick={handleBack}>
+              <div className="flex gap-1">
+                <MdArrowBack className="w-4 h-4" />
+                <span>Back</span>
+              </div>
+            </Button>
           </div>
         </form>
       </div>
