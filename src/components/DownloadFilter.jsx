@@ -23,6 +23,11 @@ const DownloadFilter = () => {
       color: "from-pink-500 to-orange-400",
     },
     {
+      label: "Download All Booking",
+      path: "/allBooking-download",
+      color: "from-pink-500 to-orange-400",
+    },
+    {
       label: "Download Vendor",
       path: "/vendor-download",
       color: "from-blue-500 to-cyan-400",

@@ -49,6 +49,35 @@ const VendorJobBooking = () => {
 
   const columns = [
     {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <CiSquarePlus
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  navigate(`/edit-booking/${id}`);
+                }}
+                  title="edit booking"
+                  className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                />
+              )}
+              {/* <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/view-booking/${id}`)}
+                title="Booking Info"
+                className="h-5 w-5 cursor-pointer"
+              /> */}
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "order_ref",
       label: "ID",
       options: {
@@ -79,8 +108,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const brancName = tableMeta.rowData[1];
-          const orderRef = tableMeta.rowData[0];
+          const brancName = tableMeta.rowData[2];
+          const orderRef = tableMeta.rowData[1];
           return (
             <div className=" flex flex-col w-32">
               <span>{orderRef}</span>
@@ -121,8 +150,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[3];
-          const mobileNo = tableMeta.rowData[4];
+          const customeName = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-38">
               <span>{customeName}</span>
@@ -169,8 +198,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
@@ -221,9 +250,9 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[9];
-          const price = tableMeta.rowData[10];
-          const customeDetails = tableMeta.rowData[11];
+          const service = tableMeta.rowData[10];
+          const price = tableMeta.rowData[11];
+          const customeDetails = tableMeta.rowData[12];
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
@@ -249,35 +278,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <CiSquarePlus
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click event
-                  navigate(`/edit-booking/${id}`);
-                }}
-                  title="edit booking"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-            </div>
-          );
-        },
-      },
-    },
+    
   ];
   const options = {
     selectableRows: "none",
