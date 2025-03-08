@@ -13,6 +13,7 @@ import { FiUserPlus, FiUsers } from "react-icons/fi";
 import { RiEditLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { SquarePen } from "lucide-react";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
@@ -111,36 +112,99 @@ const VendorList = () => {
   };
   const handleEdit = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-edit/${id}`);
   };
   const handleViewVendorInfo = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-view/${id}`);
   };
   const handleEditPendingVendor = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-pending-edit/${id}`);
   };
   const handleViewVendor = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-user-list/${id}`);
   };
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id, tableMeta) => {
+          const vendorStatus = vendorListData[tableMeta.rowIndex].vendor_status;
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <>
+                  {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
+                    <>
+                      {/* <SquarePen
+                        onClick={(e) => handleEdit(e, id)}
+                        title="Edit Vendor"
+                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
+                      /> */}
+                        <SquarePen    onClick={(e) => handleEdit(e, id)} className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                                                                         <title>Edit Vendor</title>
+                                                                       </SquarePen>
+                      <FiUsers
+                        onClick={(e) => handleViewVendor(e, id)}
+                        // onClick={() => navigate(`/vendor-user-list/${id}`)}
+
+                        title="view Vendor"
+                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
+                      />
+                    </>
+                  ) : vendorStatus === "Pending" ? (
+                    <>
+                      {/* for pending  */}
+                      <RiEditLine
+                        onClick={(e) => handleEditPendingVendor(e, id)}
+                        // onClick={() => navigate(`/vendor-pending-edit/${id}`)}
+                        title="Edit Pending Vendor"
+                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
+                      />
+                      <FiUserPlus
+                        onClick={(e) => handleActivate(e, id)}
+                        title="Activate Vendor"
+                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
+                      />
+                    </>
+                  ) : null}
+                </>
+              )}
+              {/* common  */}
+              {/* <MdOutlineRemoveRedEye
+                onClick={(e) => handleViewVendorInfo(e, id)}
+                title="View Vendor Info"
+                className="h-5 w-5 cursor-pointer  hover:text-blue-500"
+              /> */}
+            </div>
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "branch_name",
       label: "Branch",
@@ -190,62 +254,7 @@ const VendorList = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id, tableMeta) => {
-          const vendorStatus = vendorListData[tableMeta.rowIndex].vendor_status;
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <>
-                  {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
-                    <>
-                      <RiEditLine
-                        onClick={(e) => handleEdit(e, id)}
-                        title="Edit Vendor"
-                        className="h-5 w-5 cursor-pointer"
-                      />
-                      <FiUsers
-                        onClick={(e) => handleViewVendor(e, id)}
-                        // onClick={() => navigate(`/vendor-user-list/${id}`)}
-
-                        title="view Vendor"
-                        className="h-5 w-5 cursor-pointer"
-                      />
-                    </>
-                  ) : vendorStatus === "Pending" ? (
-                    <>
-                      {/* for pending  */}
-                      <CiEdit
-                        onClick={(e) => handleEditPendingVendor(e, id)}
-                        // onClick={() => navigate(`/vendor-pending-edit/${id}`)}
-                        title="Edit Pending Vendor"
-                        className="h-5 w-5 cursor-pointer"
-                      />
-                      <FiUserPlus
-                        onClick={(e) => handleActivate(e, id)}
-                        title="Activate Vendor"
-                        className="h-5 w-5 cursor-pointer"
-                      />
-                    </>
-                  ) : null}
-                </>
-              )}
-              {/* common  */}
-              <MdOutlineRemoveRedEye
-                onClick={(e) => handleViewVendorInfo(e, id)}
-                title="View Vendor Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+   
   ];
   const options = {
     selectableRows: "none",
@@ -259,6 +268,7 @@ const VendorList = () => {
     count: vendorListData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
+   
     onChangePage: (currentPage) => {
       setPage(currentPage);
       navigate(`/vendor-list?page=${currentPage + 1}`);
@@ -267,8 +277,13 @@ const VendorList = () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
+          cursor:'pointer',
         },
       };
+    },
+    onRowClick: (rowData, rowMeta,e) => {
+      const id = vendorListData[rowMeta.dataIndex].id;
+      handleViewVendorInfo(e, id)();
     },
     customToolbar: () => {
       return (

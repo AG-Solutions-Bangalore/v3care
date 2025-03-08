@@ -176,27 +176,27 @@ const ReceivedsCommission = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              onClick={() => navigate(`/received-commission-view/${id}`)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="View pending Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+    // {
+    //   name: "id",
+    //   label: "Action",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (id) => {
+    //       return (
+    //         <div
+    //           onClick={() => navigate(`/received-commission-view/${id}`)}
+    //           className="flex items-center space-x-2"
+    //         >
+    //           <MdOutlineRemoveRedEye
+    //             title="View pending Info"
+    //             className="h-5 w-5 cursor-pointer"
+    //           />
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
   ];
   const options = {
     selectableRows: "none",
@@ -207,10 +207,15 @@ const ReceivedsCommission = () => {
     viewColumns: true,
     download: false,
     print: false,
+    onRowClick: (rowData, rowMeta) => {
+      const id = receivedCommData[rowMeta.dataIndex].id;
+      navigate(`/received-commission-view/${id}`)
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
+          cursor:'pointer',
         },
       };
     },

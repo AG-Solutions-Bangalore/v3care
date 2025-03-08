@@ -9,6 +9,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { SquarePen } from "lucide-react";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
@@ -70,16 +71,40 @@ const ServicePriceMaster = () => {
   };
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id) => {
+          return (
+            <>
+              {userType !== "4" && (
+                <div
+                onClick={(e) => handleEdit(e, id)}
+                className="flex items-center space-x-2"
+                >
+                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                   <title>Booking Info</title>
+                 </SquarePen>
+                </div>
+              )}
+            </>
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "service",
       label: "Service",
@@ -129,31 +154,7 @@ const ServicePriceMaster = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <>
-              {userType !== "4" && (
-                <div
-                onClick={(e) => handleEdit(e, id)}
-                className="flex items-center space-x-2"
-                >
-                  <FaEdit
-                    title="Booking Info"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                </div>
-              )}
-            </>
-          );
-        },
-      },
-    },
+    
   ];
   const options = {
     selectableRows: "none",
@@ -235,7 +236,7 @@ const ServicePriceMaster = () => {
           </Link>
         )}
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Service Price List"
           data={servicePriceData ? servicePriceData : []}

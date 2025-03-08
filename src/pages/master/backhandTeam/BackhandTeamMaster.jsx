@@ -12,6 +12,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import BackhandViewTeamMaster from "./BackhandViewTeamMaster";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { SquarePen } from "lucide-react";
 
 const BackhandTeamMaster = () => {
   const [BackhandData, setBackhandData] = useState(null);
@@ -89,16 +90,52 @@ const BackhandTeamMaster = () => {
   };
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                // <SquarePen
+                //   onClick={(e) => handleEdit(e, id)}
+                //   title="Booking Info"
+                //   className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                // />
+                  <SquarePen   onClick={(e) => handleEdit(e, id)} className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                                                   <title>Booking Info</title>
+                                                 </SquarePen>
+              )}
+              {/* <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/backhand-team-view/${id}`)}
+                title="Booking Info"
+                className="h-5 w-5 cursor-pointer"
+              /> */}
+              {/* <div
+                onClick={toogleViewBackhand(true, id)}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <MdOutlineRemoveRedEye className="h-5 w-5 cursor-pointer" />
+              </div> */}
+            </div>
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "branch_name",
       label: "Branch",
@@ -140,39 +177,7 @@ const BackhandTeamMaster = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <FaEdit
-                  onClick={(e) => handleEdit(e, id)}
-                  title="Booking Info"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/backhand-team-view/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-              <div
-                onClick={toogleViewBackhand(true, id)}
-                className="flex items-center space-x-2"
-                title="View"
-              >
-                <MdOutlineRemoveRedEye className="h-5 w-5 cursor-pointer" />
-              </div>
-            </div>
-          );
-        },
-      },
-    },
+   
   ];
   const options = {
     selectableRows: "none",
@@ -188,10 +193,15 @@ const BackhandTeamMaster = () => {
       setPage(currentPage);
       navigate(`/backhand-team?page=${currentPage + 1}`);
     },
+    onRowClick: (rowData, rowMeta) => {
+      const id = BackhandData[rowMeta.dataIndex].id;
+      toogleViewBackhand(true, id)();
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor:'pointer',
         },
       };
     },
@@ -242,7 +252,7 @@ const BackhandTeamMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Backhand Team List"
           data={BackhandData ? BackhandData : []}

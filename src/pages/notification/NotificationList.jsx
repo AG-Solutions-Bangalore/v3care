@@ -9,6 +9,7 @@ import MUIDataTable from "mui-datatables";
 import Moment from "moment";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { RefreshCw, SquarePen } from "lucide-react";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
@@ -69,16 +70,45 @@ const NotificationList = () => {
 
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id, tableMeta) => {
+          const tableNot =
+            notificationData[tableMeta.rowIndex].notification_status;
+          console.log("table not ", tableNot);
+
+          return tableNot == "Active" ? (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <RefreshCw 
+                 
+                  onClick={() => handleUpdate(id)}
+                  className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                >
+                  <title>Inactive</title>
+                </RefreshCw>
+              )}
+            </div>
+          ) : (
+            ""
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "notification_image",
       label: "Image",
@@ -127,33 +157,7 @@ const NotificationList = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id, tableMeta) => {
-          const tableNot =
-            notificationData[tableMeta.rowIndex].notification_status;
-          console.log("table not ", tableNot);
-
-          return tableNot == "Active" ? (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <FaEdit
-                  title="Inactive"
-                  onClick={() => handleUpdate(id)}
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-            </div>
-          ) : (
-            ""
-          );
-        },
-      },
-    },
+    
   ];
 
   //   <div className="flex items-center space-x-2">

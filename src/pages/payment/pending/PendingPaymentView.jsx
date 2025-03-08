@@ -253,7 +253,7 @@ const PendingPaymentView = () => {
                 </button>
 
                 {/* Booking Overview Button */}
-                <button
+                {/* <button
                   onClick={() => setActiveTab("customerInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "customerInfo"
@@ -263,7 +263,7 @@ const PendingPaymentView = () => {
                 >
                   <FaClipboardList />
                   Booking Overview
-                </button>
+                </button> */}
 
                 {/* Other Details Button */}
                 <button
