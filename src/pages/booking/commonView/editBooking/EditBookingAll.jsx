@@ -35,6 +35,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import { ArrowLeft } from "lucide-react";
 
 const status = [
   {
@@ -95,6 +96,9 @@ const EditBookingAll = () => {
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [loading, setLoading] = useState(false);
   const [followup, setFollowUp] = useState([]);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [followups, setFollowUps] = useState({
     order_followup_date: moment().format("YYYY-MM-DD"),
     order_followup_description: "",
@@ -192,6 +196,10 @@ const EditBookingAll = () => {
     fetchBookingData();
     fetchpaymentData();
   }, []);
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(-1);
+  };
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
@@ -225,7 +233,7 @@ const EditBookingAll = () => {
       .then((res) => {
         if (res.data.code == "200") {
           toast.success("Booking Updated Successfully");
-          navigate("/today");
+          navigate(`/today?page=${pageNo}`);
         } else {
           toast.error("Network Error");
         }
@@ -467,8 +475,12 @@ const EditBookingAll = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
+      <div className="container mx-auto p-4 ">
+        <Typography variant="h4" color="gray" className="mb-6 flex">
+          <ArrowLeft
+            className="text-center cursor-pointer"
+            onClick={handleBack}
+          />{" "}
           Edit Booking
         </Typography>
 
@@ -763,30 +775,30 @@ const EditBookingAll = () => {
                 </CardBody>
               </Card>
             </div>
-             <Card className="mb-6">
-                            <CardHeader floated={false} className="h-12 p-4">
-                              <Typography variant="h6" color="blue-gray">
-                                Follow Up
-                              </Typography>
-                            </CardHeader>
-                            {/* here booking assign table  */}
-                            <CardBody>
-                            {loading ? (
-              <div className="flex justify-center items-center h-screen">
-                <Spinner className="h-10 w-10" color="red" />
-              </div>
-            ) : (
-              <div className="mt-5">
-                <MUIDataTable
-                  // title={"Followup"}
-                  data={followup ? followup : []}
-                  columns={columns}
-                  options={options}
-                />
-              </div>
-            )}
-                            </CardBody>
-                          </Card>
+            <Card className="mb-6">
+              <CardHeader floated={false} className="h-12 p-4">
+                <Typography variant="h6" color="blue-gray">
+                  Follow Up
+                </Typography>
+              </CardHeader>
+              {/* here booking assign table  */}
+              <CardBody>
+                {loading ? (
+                  <div className="flex justify-center items-center h-screen">
+                    <Spinner className="h-10 w-10" color="red" />
+                  </div>
+                ) : (
+                  <div className="mt-5">
+                    <MUIDataTable
+                      // title={"Followup"}
+                      data={followup ? followup : []}
+                      columns={columns}
+                      options={options}
+                    />
+                  </div>
+                )}
+              </CardBody>
+            </Card>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ const BookingFilter = () => {
 
   const handleButtonClick = (path) => {
     navigate(path);
+    localStorage.removeItem("page-no");
   };
   const buttons = [
     { label: "Today", path: "/today", color: "from-pink-500 to-orange-400" },
@@ -46,7 +47,6 @@ const BookingFilter = () => {
       color: "from-lime-500 to-green-400",
     },
   ];
-
 
   return (
     <div className="flex flex-wrap justify-between mt-6 gap-4">

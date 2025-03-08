@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { CiSquarePlus } from "react-icons/ci";
@@ -11,12 +11,32 @@ import MUIDataTable from "mui-datatables";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const RnrList = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/rnr?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchPendingData = async () => {
@@ -55,12 +75,12 @@ const RnrList = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click event
-                  navigate(`/edit-booking/${id}`);
-                }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click event
+                    navigate(`/edit-booking/${id}`);
+                  }}
                   title="edit booking"
-               className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                  className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
               {/* <MdOutlineRemoveRedEye
@@ -276,7 +296,6 @@ const RnrList = () => {
         sort: false,
       },
     },
-    
   ];
   const options = {
     selectableRows: "none",
@@ -285,6 +304,14 @@ const RnrList = () => {
     viewColumns: true,
     download: false,
     print: false,
+
+    count: pendingBookData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/rnr?page=${currentPage + 1}`);
+    },
     onRowClick: (rowData, rowMeta) => {
       const id = pendingBookData[rowMeta.dataIndex].id;
       navigate(`/view-booking/${id}`);
@@ -293,9 +320,37 @@ const RnrList = () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
-          cursor: "pointer", 
+          cursor: "pointer",
         },
       };
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
     },
   };
   return (
