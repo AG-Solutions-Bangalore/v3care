@@ -20,6 +20,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { ArrowLeft } from "lucide-react";
 
 const PendingCommissionView = () => {
   const { id } = useParams();
@@ -30,6 +31,10 @@ const PendingCommissionView = () => {
     order_comm_remark: "",
   });
   const { userType } = useContext(ContextPanel);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
@@ -64,7 +69,10 @@ const PendingCommissionView = () => {
   const onInputChange = (e) => {
     setPayment({ ...payment, [e.target.name]: e.target.value });
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/commission-pending?page=${pageNo}`);
+  };
   const updateData = async (e) => {
     e.preventDefault();
     let data = {
@@ -81,7 +89,7 @@ const PendingCommissionView = () => {
       });
       if (res.data.code == "200") {
         toast.success("Commission Updated Successfully");
-        navigate("/commission-pending");
+        navigate(`/commission-pending?page=${pageNo}`);
       } else {
         toast.error("Network Error");
       }
@@ -225,8 +233,9 @@ const PendingCommissionView = () => {
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          View Pending Commission
+        <Typography variant="h4" color="gray" className="mb-6 flex">
+          <ArrowLeft className="cursor-pointer" onClick={handleBack} /> View
+          Pending Commission
         </Typography>
 
         <div className="flex gap-4">

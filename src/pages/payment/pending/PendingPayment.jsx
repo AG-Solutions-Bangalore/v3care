@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import PaymentFilter from "../../../components/PaymentFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -16,6 +17,25 @@ const PendingPayment = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/pending-payment?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchPendingData = async () => {
@@ -45,7 +65,11 @@ const PendingPayment = () => {
     fetchPendingData();
     setLoading(false);
   }, []);
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/pending-payment-view/${id}`);
+  };
   const columns = [
     {
       name: "order_ref",
@@ -277,7 +301,8 @@ const PendingPayment = () => {
         customBodyRender: (id) => {
           return (
             <div
-              onClick={() => navigate(`/pending-payment-view/${id}`)}
+              // onClick={() => navigate(`/pending-payment-view/${id}`)}
+              onClick={(e) => handleEdit(e, id)}
               className="flex items-center space-x-2"
             >
               <MdOutlineRemoveRedEye
@@ -299,12 +324,48 @@ const PendingPayment = () => {
     viewColumns: true,
     download: false,
     print: false,
+
+    count: pendingData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/pending-payment?page=${currentPage + 1}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
         },
       };
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
     },
   };
   return (

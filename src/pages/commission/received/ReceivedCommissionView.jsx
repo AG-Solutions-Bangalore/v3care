@@ -20,6 +20,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { ArrowLeft } from "lucide-react";
 
 const ReceivedCommissionView = () => {
   const { id } = useParams();
@@ -34,7 +35,9 @@ const ReceivedCommissionView = () => {
   const [vendor, setVendor] = useState({});
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const fetchBookingData = async () => {
     try {
       const response = await axios({
@@ -215,11 +218,16 @@ const ReceivedCommissionView = () => {
         return null;
     }
   };
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/commission-received?page=${pageNo}`);
+  };
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          View Received Commission
+        <Typography variant="h4" color="gray" className="mb- flex">
+          <ArrowLeft className="cursor-pointer " onClick={handleBack} /> View
+          Received Commission
         </Typography>
 
         <div className="flex gap-4">

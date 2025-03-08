@@ -13,6 +13,7 @@ const CommissionFilter = () => {
   //   };
 
   const handleButtonClick = (path) => {
+    localStorage.removeItem("page-no");
     navigate(path);
   };
   const buttons = [

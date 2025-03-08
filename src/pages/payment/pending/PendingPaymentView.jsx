@@ -19,6 +19,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { ArrowLeft } from "lucide-react";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
@@ -37,7 +38,9 @@ const PendingPaymentView = () => {
   const [paymentModes, setPaymentModes] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
-
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const fetchBookingData = async () => {
     try {
       const response = await axios({
@@ -81,7 +84,10 @@ const PendingPaymentView = () => {
   const onInputChange = (e) => {
     setPayment({ ...payment, [e.target.name]: e.target.value });
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/pending-payment?page=${pageNo}`);
+  };
   const updateData = async (e) => {
     e.preventDefault();
     try {
@@ -95,7 +101,7 @@ const PendingPaymentView = () => {
       });
       if (res.data.code == "200") {
         toast.success("Payment Updated Successfully");
-        navigate("/pending-payment");
+        navigate(`/pending-payment?page=${pageNo}`);
       } else {
         toast.error("Network Error");
       }
@@ -231,8 +237,9 @@ const PendingPaymentView = () => {
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          View Pending Payment
+        <Typography variant="h4" color="gray" className="mb-6 flex">
+          <ArrowLeft className="cursor-pointer" onClick={handleBack} /> View
+          Pending Payment
         </Typography>
 
         <div className="flex gap-4">

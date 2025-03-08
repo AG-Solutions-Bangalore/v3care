@@ -20,6 +20,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import { ArrowLeft } from "lucide-react";
 const PendingReceivedView = () => {
   const { id } = useParams();
 
@@ -32,6 +33,10 @@ const PendingReceivedView = () => {
   const [vendor, setVendor] = useState({});
   // new design
   const { userType } = useContext(ContextPanel);
+  const storedPageNo = localStorage.getItem("page-no");
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const fetchBookingData = async () => {
     try {
@@ -211,12 +216,16 @@ const PendingReceivedView = () => {
         return null;
     }
   };
-
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(`/received-payment?page=${pageNo}`);
+  };
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          View Received Payment
+        <Typography variant="h4" color="gray" className="mb-6 flex">
+          <ArrowLeft onClick={handleBack} className="cursor-pointer" /> View
+          Received Payment
         </Typography>
 
         <div className="flex gap-4">

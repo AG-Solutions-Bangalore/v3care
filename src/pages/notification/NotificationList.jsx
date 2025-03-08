@@ -15,6 +15,25 @@ const NotificationList = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+    const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/refer-by?page=${storedPageNo}`); 
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   const fetchNotificationData = async () => {
     try {
@@ -156,18 +175,10 @@ const NotificationList = () => {
     },
   ];
 
-  //   <div className="flex items-center space-x-2">
-  //   <FaEdit
-  //     title="Inactive"
-  //     onClick={() => handleUpdate(id)}
-  //     className="h-5 w-5 cursor-pointer"
-  //   />
-  // </div>
+
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -196,19 +207,6 @@ const NotificationList = () => {
   };
   return (
     <Layout>
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Notification List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to="/add-notification"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Notification
-          </Link>
-        )}
-      </div> */}
       <div className="mt-5">
         <MUIDataTable
         title="Notification List"
