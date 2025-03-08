@@ -51,13 +51,24 @@ const AllBookingDownload = () => {
     }, []);
    
   
+ 
     const onSubmitView = (e) => {
       e.preventDefault();
       localStorage.setItem('booking_date_from', downloadBooking.booking_date_from);
       localStorage.setItem('booking_date_to', downloadBooking.booking_date_to);
       localStorage.setItem('branch_id', downloadBooking.branch_id);
+    
+      
+      const selectedBranch = branch.find(b => b.id.toString() === downloadBooking.branch_id);
+      if (selectedBranch) {
+        localStorage.setItem('branch_name', selectedBranch.branch_name);
+      } else {
+        localStorage.removeItem('branch_name'); 
+      }
+    
       navigate('/view-allBooking');
     };
+    
   return (
    <Layout>
      <DownloadFilter />

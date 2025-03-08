@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { SquarePen } from "lucide-react";
 
 const ServiceSubMaster = () => {
   const [serviceSubData, setServiceSubData] = useState(null);
@@ -70,16 +71,40 @@ const ServiceSubMaster = () => {
   };
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id) => {
+          return (
+            <>
+              {userType !== "4" && (
+                <div
+                  onClick={(e) => handleEdit(e, id)}
+                  className="flex items-center space-x-2"
+                >
+                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                   <title>Booking Info</title>
+                 </SquarePen>
+                </div>
+              )}
+            </>
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "service_sub_image",
       label: "Image",
@@ -118,31 +143,7 @@ const ServiceSubMaster = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <>
-              {userType !== "4" && (
-                <div
-                  onClick={(e) => handleEdit(e, id)}
-                  className="flex items-center space-x-2"
-                >
-                  <FaEdit
-                    title="Booking Info"
-                    className="h-5 w-5 cursor-pointer"
-                  />
-                </div>
-              )}
-            </>
-          );
-        },
-      },
-    },
+  
   ];
   const options = {
     selectableRows: "none",
@@ -223,7 +224,7 @@ const ServiceSubMaster = () => {
           </Link>
         )}
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Service Sub List"
           data={serviceSubData ? serviceSubData : []}

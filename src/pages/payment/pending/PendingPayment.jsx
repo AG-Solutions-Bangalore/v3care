@@ -47,6 +47,27 @@ const PendingPayment = () => {
   }, []);
 
   const columns = [
+    // {
+    //   name: "id",
+    //   label: "Action",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (id) => {
+    //       return (
+    //         <div
+    //           onClick={() => navigate(`/pending-payment-view/${id}`)}
+    //           className="flex items-center space-x-2"
+    //         >
+    //           <MdOutlineRemoveRedEye
+    //             title="View pending Info"
+    //             className="h-5 w-5 cursor-pointer"
+    //           />
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
     {
       name: "order_ref",
       label: "ID",
@@ -268,27 +289,7 @@ const PendingPayment = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              onClick={() => navigate(`/pending-payment-view/${id}`)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="View pending Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+   
   ];
   const options = {
     selectableRows: "none",
@@ -299,10 +300,15 @@ const PendingPayment = () => {
     viewColumns: true,
     download: false,
     print: false,
+    onRowClick: (rowData, rowMeta) => {
+      const id = pendingData[rowMeta.dataIndex].id;
+      navigate(`/pending-payment-view/${id}`)
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor:'pointer',
         },
       };
     },

@@ -9,6 +9,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { SquarePen } from "lucide-react";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
@@ -71,16 +72,48 @@ const ReferByMaster = () => {
   };
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id) => {
+          return (
+            <>
+              {userType !== "4" && (
+                <>
+                  <div
+                    onClick={(e) => handleEdit(e, id)}
+                    className="flex items-center space-x-2"
+                  >
+                    {/* <SquarePen
+                      title="Booking Info"
+                      className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                    /> */}
+                    <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+  <title>Booking Info</title>
+</SquarePen>
+
+             
+                  </div>
+                </>
+              )}
+            </>
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "refer_by",
       label: "Refer By",
@@ -98,33 +131,7 @@ const ReferByMaster = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <>
-              {userType !== "4" && (
-                <>
-                  <div
-                    onClick={(e) => handleEdit(e, id)}
-                    className="flex items-center space-x-2"
-                  >
-                    <FaEdit
-                      title="Booking Info"
-                      className="h-5 w-5 cursor-pointer"
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          );
-        },
-      },
-    },
+    
   ];
   const options = {
     selectableRows: "none",
@@ -196,7 +203,7 @@ const ReferByMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="mt-5">
+      <div className=" mt-1">
         <MUIDataTable
           title="Refer By List"
           data={referData ? referData : []}

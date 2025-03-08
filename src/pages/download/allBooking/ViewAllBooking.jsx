@@ -127,7 +127,7 @@ const ViewAllBooking = () => {
               {moment(bookingDateTo).format("DD-MMM-YYYY")}
             </span>
             <Button
-              className="ml-1 print-hide flex flex-row items-center gap-1  bg-blue-400 hover:bg-gray-900 text-black px-3 py-2 rounded-md transition-all duration-300 ease-in-out shadow-sm"
+              className="ml-1 print-hide flex flex-row items-center gap-1  bg-blue-400 hover:bg-blue-900 text-black hover:text-white px-3 py-2 rounded-md transition-all duration-300 ease-in-out shadow-sm"
               onClick={handlePrintPdf}
             >
               <Download className="h-4 w-4" /> <span>Print</span>
@@ -236,7 +236,7 @@ const ViewAllBooking = () => {
           </div>
 
           {/* Financial Summary and Payment Methods in Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 print:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
             {/* Amount Section Table */}
             <div>
               <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">FINANCIAL SUMMARY</h2>
