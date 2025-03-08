@@ -195,6 +195,7 @@ const BranchMaster = () => {
       <MasterFilter />
 
       <div className="mt-1">
+        
         <MUIDataTable
           title="Branch List"
           data={branchMasterData ? branchMasterData : []}
