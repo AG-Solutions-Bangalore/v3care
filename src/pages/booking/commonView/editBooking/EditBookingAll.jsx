@@ -490,7 +490,7 @@ const EditBookingAll = () => {
                 </button>
 
                 {/* Booking Overview Button */}
-                <button
+                {/* <button
                   onClick={() => setActiveTab("customerInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "customerInfo"
@@ -500,7 +500,7 @@ const EditBookingAll = () => {
                 >
                   <FaClipboardList />
                   Booking Overview
-                </button>
+                </button> */}
 
                 {/* Other Details Button */}
                 <button
@@ -515,7 +515,7 @@ const EditBookingAll = () => {
                   Other Details
                 </button>
                 {/* //folllowup */}
-                <button
+                {/* <button
                   onClick={() => setActiveTab("followUp")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "followUp"
@@ -525,7 +525,7 @@ const EditBookingAll = () => {
                 >
                   <FaCommentDots />
                   Follow Up
-                </button>
+                </button> */}
               </div>
 
               {/* Main Content Based on Active Tab */}
@@ -763,6 +763,30 @@ const EditBookingAll = () => {
                 </CardBody>
               </Card>
             </div>
+             <Card className="mb-6">
+                            <CardHeader floated={false} className="h-12 p-4">
+                              <Typography variant="h6" color="blue-gray">
+                                Follow Up
+                              </Typography>
+                            </CardHeader>
+                            {/* here booking assign table  */}
+                            <CardBody>
+                            {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <Spinner className="h-10 w-10" color="red" />
+              </div>
+            ) : (
+              <div className="mt-5">
+                <MUIDataTable
+                  // title={"Followup"}
+                  data={followup ? followup : []}
+                  columns={columns}
+                  options={options}
+                />
+              </div>
+            )}
+                            </CardBody>
+                          </Card>
           </div>
         </div>
       </div>

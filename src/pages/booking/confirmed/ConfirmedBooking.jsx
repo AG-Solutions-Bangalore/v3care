@@ -91,13 +91,42 @@ const ConfirmedBooking = () => {
 
   const columns = [
     {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <CiSquarePlus
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  navigate(`/edit-booking/${id}`);
+                }}
+                  title="edit booking"
+                    className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                />
+              )}
+              {/* <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/view-booking/${id}`)}
+                title="Booking Info"
+                className="h-5 w-5 cursor-pointer"
+              /> */}
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "order_ref",
       label: "Order/Branch",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[1];
+          const branchName = tableMeta.rowData[2];
 
           return (
             <div className="flex flex-col w-32">
@@ -150,8 +179,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[2];
-          const mobileNo = tableMeta.rowData[3];
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
             <div className=" flex flex-col w-32">
               <span>{customeName}</span>
@@ -213,10 +242,10 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[6];
-          const price = tableMeta.rowData[7];
-          const advnaced = tableMeta.rowData[10];
-          const customeDetails = tableMeta.rowData[8];
+          const service = tableMeta.rowData[7];
+          const price = tableMeta.rowData[8];
+          const advnaced = tableMeta.rowData[11];
+          const customeDetails = tableMeta.rowData[9];
           if (service == "Custom") {
             return (
               <div className=" flex flex-col w-40">
@@ -260,14 +289,17 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: true,
         customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[11];
-          const order_ref = tableMeta.rowData[0];
+          const order_no_assign = tableMeta.rowData[12];
+          const order_ref = tableMeta.rowData[1];
 
           return order_no_assign > 0 ? (
             <div className="flex flex-col w-32">
               <button
                 className=" w-16 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-                onClick={() => handleOpenModal(order_ref)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  handleOpenModal(order_ref);
+                }}
               >
                 {value}
               </button>
@@ -287,8 +319,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderRef = tableMeta.rowData[0];
-          const orderNoAssign = tableMeta.rowData[11];
+          const orderRef = tableMeta.rowData[1];
+          const orderNoAssign = tableMeta.rowData[12];
           const assignments = assignmentData[orderRef];
 
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
@@ -343,8 +375,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[13];
-          const price = tableMeta.rowData[14];
+          const service = tableMeta.rowData[14];
+          const price = tableMeta.rowData[15];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -383,8 +415,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[16];
-          const status = tableMeta.rowData[17];
+          const confirmBy = tableMeta.rowData[17];
+          const status = tableMeta.rowData[18];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -395,35 +427,7 @@ const ConfirmedBooking = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <CiSquarePlus
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click event
-                  navigate(`/edit-booking/${id}`);
-                }}
-                  title="edit booking"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-            </div>
-          );
-        },
-      },
-    },
+   
   ];
 
   const options = {
@@ -440,7 +444,7 @@ const ConfirmedBooking = () => {
       navigate(`/view-booking/${id}`);
     },
     setRowProps: (rowData) => {
-      const orderStatus = rowData[17];
+      const orderStatus = rowData[18];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink

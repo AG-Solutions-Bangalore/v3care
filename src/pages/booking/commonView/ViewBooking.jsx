@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Layout from "../../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -42,7 +42,7 @@ const ViewBooking = () => {
   const [booking, setBooking] = useState({});
   UseEscapeKey();
   const { userType } = useContext(ContextPanel);
-
+  const [open, setOpen] = useState(false);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
@@ -50,7 +50,17 @@ const ViewBooking = () => {
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [followup, setFollowUp] = useState([]);
-
+   const [followups, setFollowUps] = useState({
+     order_followup_date: moment().format("YYYY-MM-DD"),
+     order_followup_description: "",
+   });
+   const onInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setFollowUps((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const fetchBookingData = async () => {
     try {
       const response = await axios({
@@ -61,11 +71,8 @@ const ViewBooking = () => {
         },
       });
       setBooking(response.data?.booking);
-      console.log("set booking", response.data?.booking);
       setBookingAssign(response.data.bookingAssign);
-      console.log("setbooking assign", response.data?.bookingAssign);
       setVendor(response.data.vendor);
-      console.log("vendor data", response.data?.vendor);
       setFollowUp(response.data?.bookingFollowup);
     } catch (error) {
       console.error("Error fetching booking data:", error);
@@ -105,6 +112,15 @@ const ViewBooking = () => {
       toast.error("Network Error");
     }
   };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const columns = [
     {
       name: "order_followup_date",
@@ -143,6 +159,18 @@ const ViewBooking = () => {
         },
       };
     },
+    customToolbar: () => {
+          return (
+            <>
+              <Link
+                onClick={handleClickOpen}
+                className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+              >
+                + Follow up
+              </Link>
+            </>
+          );
+        },
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -271,6 +299,45 @@ const ViewBooking = () => {
         return null;
     }
   };
+
+
+  const onSubmitFollowup = (e) => {
+      e.preventDefault();
+      if (!followups.order_followup_description.trim()) {
+        toast.error("Order Follow-up Description is required");
+        return;
+      }
+      setIsButtonDisabled(true);
+      const data = {
+        order_ref: orderref,
+        order_followup_date: followups.order_followup_date,
+        order_followup_description: followups.order_followup_description,
+      };
+      axios
+        .post(`${BASE_URL}/api/panel-create-booking-followup`, data, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          if (res.data.code == "200") {
+            toast.success("Followup Created Successfully");
+            handleClose();
+            fetchBookingData();
+  
+            setFollowUps({
+              order_followup_description: "",
+              order_followup_date: moment().format("YYYY-MM-DD"),
+            });
+          } else {
+            toast.error("Network Error");
+          }
+        })
+        .catch((err) => {
+          console.error("Error updating Followup", err);
+          toast.error("Error updating Followup");
+        });
+    };
   return (
     <Layout>
       <BookingFilter />
@@ -332,7 +399,7 @@ const ViewBooking = () => {
                   }`}
                 >
                   <FaClipboardList />
-                  Booking Overview
+                  Booking Overview 
                 </button>
 
                 {/* Booking Overview Button */}
@@ -485,6 +552,57 @@ const ViewBooking = () => {
           </div>
         </div>
       </div>
+          <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+              {/* <DialogTitle>Follow Up</DialogTitle> */}
+              <DialogContent>
+                <div className="mb-5">
+                  <h1 className="font-bold text-xl"> Create Follow Up</h1>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <Input
+                      fullWidth
+                      label="Order Follow up Date"
+                      name="order_followup_date"
+                      value={followups.order_followup_date}
+                      onChange={(e) => onInputChange(e)}
+                      type="date"
+                      disabled
+                      labelProps={{
+                        className: "!text-gray-900",
+                      }}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="text"
+                      fullWidth
+                      label="Order Follow up"
+                      name="order_followup_description"
+                      value={followups.order_followup_description}
+                      onChange={onInputChange1}
+                      required
+                    />
+                  </div>
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <button
+                  onClick={handleClose}
+                  className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+                  type="sumbit"
+                  onClick={(e) => onSubmitFollowup(e)}
+                >
+                  Submit
+                </button>
+              </DialogActions>
+            </Dialog>
     </Layout>
   );
 };

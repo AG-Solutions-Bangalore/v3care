@@ -7,6 +7,7 @@ import { AiFillAlert } from "react-icons/ai";
 import axios from "axios";
 import Moment from "moment";
 import BASE_URL from "../../../base/BaseUrl";
+import { useNavigate } from "react-router-dom";
 const PendingDownload = () => {
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
@@ -21,7 +22,7 @@ const PendingDownload = () => {
     booking_date_from: firstdate,
     booking_date_to: todayback,
   });
-
+  const navigate = useNavigate()
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {
@@ -69,6 +70,13 @@ const PendingDownload = () => {
     );
     // Handle the form submission logic here
   };
+
+  const onSubmitView = (e) => {
+    e.preventDefault();
+    localStorage.setItem('booking_date_from', downloadReceived.booking_date_from);
+    localStorage.setItem('booking_date_to', downloadReceived.booking_date_to);
+    navigate('/view-pending-download');
+  };
   return (
     <Layout>
       <DownloadFilter />
@@ -113,13 +121,20 @@ const PendingDownload = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="flex items-center gap-5">
                 <button
                   type="submit"
                   className={`flex items-center justify-center w-full px-4 py-4 text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:bg-gray-400`}
                   // disabled={isButtonDisabled}
                 >
                   <FiDownload className="mr-2" /> Download
+                </button>
+                <button
+                  type="button"
+                  className={`flex items-center justify-center w-full px-4 py-4 text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:bg-gray-400`}
+                  onClick={onSubmitView}
+                >
+                  <FiDownload className="mr-2" /> View
                 </button>
               </div>
             </div>

@@ -87,6 +87,10 @@ import { ContextPanel } from "./utils/ContextPanel";
 import AllBooking from "./pages/booking/allBooking/AllBooking";
 import QuatationReport from "./pages/report/QuatationReport";
 import TaxInvoice from "./pages/report/TaxInvoice";
+import ViewPendingDownload from "./pages/download/pending/ViewPendingDownload";
+import ViewReceivedDownload from "./pages/download/received/ViewReceivedDownload";
+import AllBookingDownload from "./pages/download/allBooking/AllBookingDownload";
+import ViewAllBooking from "./pages/download/allBooking/ViewAllBooking";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -302,9 +306,13 @@ const App = () => {
           userType === "7") && (
           <>
             <Route path="/booking-download" element={<BookingDownload />} />
+            <Route path="/allBooking-download" element={<AllBookingDownload />} />
+            <Route path="/view-allBooking" element={<ViewAllBooking />} />
             <Route path="/vendor-download" element={<VendorDownload />} />
             <Route path="/received-download" element={<ReceivedDownload />} />
             <Route path="/pending-download" element={<PendingDownload />} />
+            <Route path="/view-pending-download" element={<ViewPendingDownload />} />
+            <Route path="/view-received-download" element={<ViewReceivedDownload />} />
           </>
         )}
         {/* {userType === "3" && ( */}

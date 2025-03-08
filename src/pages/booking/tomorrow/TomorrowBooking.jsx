@@ -49,6 +49,36 @@ const TomorrowBooking = () => {
 
   const columns = [
     {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <CiSquarePlus
+                
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click event
+                  navigate(`/edit-booking/${id}`);
+                }}
+                  title="edit booking"
+                 className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                />
+              )}
+              {/* <MdOutlineRemoveRedEye
+                onClick={() => navigate(`/view-booking/${id}`)}
+                title="Booking Info"
+                className="h-5 w-5 cursor-pointer"
+              /> */}
+            </div>
+          );
+        },
+      },
+    },
+    {
       name: "order_ref",
       label: "ID",
       options: {
@@ -109,7 +139,7 @@ const TomorrowBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customValue = tableMeta.rowData[7];
+          const customValue = tableMeta.rowData[8];
           return value == "Custom" ? ` (${customValue || "-"})` : value;
         },
       },
@@ -156,36 +186,7 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <CiSquarePlus
-                
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click event
-                  navigate(`/edit-booking/${id}`);
-                }}
-                  title="edit booking"
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-            </div>
-          );
-        },
-      },
-    },
+   
   ];
   const options = {
     selectableRows: "none",
@@ -201,7 +202,7 @@ const TomorrowBooking = () => {
       navigate(`/view-booking/${id}`);
     },
     setRowProps: (rowData) => {
-      const orderStatus = rowData[11];
+      const orderStatus = rowData[12];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
