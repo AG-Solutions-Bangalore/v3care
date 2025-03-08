@@ -223,6 +223,7 @@ const ServiceMaster = () => {
     <Layout>
       <MasterFilter />
       <div className="mt-1">
+        
         <MUIDataTable
           title="Service List"
           data={serviceData ? serviceData : []}

@@ -205,6 +205,7 @@ const OperationTeamMaster = () => {
       const id = operationData[rowMeta.dataIndex].id;
       toogleViewOperation(true, id)();
     },
+   
     customToolbar: () => {
       return (
         <>
