@@ -164,13 +164,6 @@ const ServiceSubMaster = () => {
         },
       };
     },
-    setRowProps: (rowData) => {
-      return {
-        style: {
-          borderBottom: "5px solid #f1f7f9",
-        },
-      };
-    },
     customToolbar: () => {
       return (
         <>
