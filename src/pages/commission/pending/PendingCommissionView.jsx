@@ -15,13 +15,23 @@ import {
   Select,
   Option,
   Button,
+  Textarea,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
-
+const CommissionBy = [
+  {
+    value: "Vendor",
+    label: "Vendor",
+  },
+  {
+    value: "V3 Care",
+    label: "V3 Care",
+  },
+];
 const PendingCommissionView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -292,13 +302,38 @@ const PendingCommissionView = () => {
             {userType !== "4" && (
               <Card className="mb-6">
                 <CardBody>
-                  <form onSubmit={updateData} className="space-y-4">
-                    <Input
+                  <form
+                    onSubmit={updateData}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <Select
+                      label="Select Commision received By"
+                      name="order_comm_received_by"
+                      value={payment.order_comm_received_by || ""}
+                    >
+                      {CommissionBy.map((mode) => (
+                        <Option
+                          key={mode.value}
+                          value={mode.value}
+                          // onClick={() =>
+                          //   setPayment({
+                          //     ...payment,
+                          //     order_comm_received_by: mode.payment_mode,
+                          //   })
+                          // }
+                          onChange={onInputChange}
+                        >
+                          {mode.label}
+                        </Option>
+                      ))}
+                    </Select>
+                    <Textarea
                       label="Commission Remarks"
                       name="order_comm_remark"
                       value={payment.order_comm_remark}
                       onChange={onInputChange}
                     />
+
                     <Button type="submit" onClick={updateData} color="blue">
                       Receive Commission
                     </Button>

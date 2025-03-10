@@ -104,6 +104,7 @@ const TodayBooking = () => {
     // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
+    e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
