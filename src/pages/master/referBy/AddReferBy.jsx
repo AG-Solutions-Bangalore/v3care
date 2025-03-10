@@ -8,6 +8,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../components/ButtonConfig/ButtonConfigColor";
 
 const AddReferBy = () => {
   const [referby, setReferBy] = useState({
@@ -16,6 +17,7 @@ const AddReferBy = () => {
   const navigate = useNavigate();
   UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
     setReferBy({
@@ -26,36 +28,48 @@ const AddReferBy = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    var form = document.getElementById("addIndiv").checkValidity();
-    if (!form) {
-      toast.error("Fill all required field");
+    setLoading(true);
+
+    // Ensure form is valid
+    const form = document.getElementById("addIndiv");
+    if (!form || !form.checkValidity()) {
+      toast.error("Fill all required fields");
+      setLoading(false);
       return;
     }
-    setIsButtonDisabled(true);
-    let data = {
-      refer_by: referby.refer_by,
-    };
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${BASE_URL}/api/panel-create-referby`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (response.data.code == "200") {
-      toast.success("ReferBy Create succesfull");
 
-      setReferBy({
-        refer_by: "",
-      });
-      navigate("/refer-by");
-    } else {
-      toast.error("duplicate entry");
+    setIsButtonDisabled(true);
+
+    try {
+      let data = {
+        refer_by: referby.refer_by,
+      };
+
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-create-refe`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.code === "200") {
+        toast.success("ReferBy Created Successfully");
+        setReferBy({ refer_by: "" });
+        navigate("/refer-by");
+      } else {
+        toast.error("Duplicate entry");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+      console.error("Error:", error);
     }
+
     setIsButtonDisabled(false);
+    setLoading(false);
   };
 
   return (
@@ -89,7 +103,7 @@ const AddReferBy = () => {
           <div className="flex justify-center space-x-4">
             {/* Submit Button */}
 
-            <Button
+            {/* <Button
               type="submit"
               className="mr-2 mb-2"
               color="primary"
@@ -99,7 +113,13 @@ const AddReferBy = () => {
                 <MdSend className="w-4 h-4" />
                 <span>Sumbit</span>
               </div>
-            </Button>
+            </Button> */}
+            <ButtonConfigColor
+              type="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
 
             {/* Back Button */}
             <Link to="/refer-by">
