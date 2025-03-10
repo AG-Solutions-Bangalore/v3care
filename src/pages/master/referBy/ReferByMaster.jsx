@@ -10,7 +10,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { SquarePen } from "lucide-react";
-
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
@@ -23,7 +23,7 @@ const ReferByMaster = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-  
+
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -31,16 +31,16 @@ const ReferByMaster = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/refer-by?page=${storedPageNo}`); 
+        navigate(`/refer-by?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
       }
     }
   }, [location]);
-  
+
   UseEscapeKey();
-  
+
   useEffect(() => {
     const fetchReferData = async () => {
       try {
@@ -68,13 +68,13 @@ const ReferByMaster = () => {
     };
     fetchReferData();
   }, []);
-  
+
   const handleEdit = (e, id) => {
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
     navigate(`/refer-by-edit/${id}`);
   };
-  
+
   const columns = [
     {
       name: "id",
@@ -119,7 +119,7 @@ const ReferByMaster = () => {
       },
     },
   ];
-  
+
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -145,12 +145,11 @@ const ReferByMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-referby"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Refer by
-            </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Refer by"
+              onClick={() => navigate("/add-referby")}
+            />
           )}
         </>
       );
@@ -189,15 +188,19 @@ const ReferByMaster = () => {
     <Layout>
       <MasterFilter />
       <div className="mt-1">
-     
-          <MUIDataTable
-            title="Refer By List"
-            data={referData ? referData : []}
-            columns={columns}
-            options={options}
-          />
-       
+        <MUIDataTable
+          title="Refer By List"
+          data={referData ? referData : []}
+          columns={columns}
+          options={options}
+        />
       </div>
+      {/* <ButtonConfigColor type="submit" label="Submit" />
+      <ButtonConfigColor type="back" label="Back" />
+      <ButtonConfigColor type="create" label="Create" />
+      <ButtonConfigColor type="edit" label="Edit" />
+      <ButtonConfigColor type="delete" label="Delete" />
+      <ButtonConfigColor type="submit" label="Saving..." loading={true} /> */}
     </Layout>
   );
 };

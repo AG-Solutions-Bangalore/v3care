@@ -10,6 +10,7 @@ import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ServiceMaster = () => {
   const [serviceData, setServiceData] = useState(null);
@@ -179,12 +180,11 @@ const ServiceMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-service"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Service
-            </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Service"
+              onClick={() => navigate("/add-service")}
+            />
           )}
         </>
       );

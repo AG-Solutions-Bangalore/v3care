@@ -17,12 +17,15 @@ import {
   Select,
 } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const AddBranch = () => {
   const [branch, setBranch] = useState({
     branch_name: "",
   });
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   UseEscapeKey();
@@ -35,47 +38,60 @@ const AddBranch = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    // Start Loading
+    setLoading(true);
+    setIsButtonDisabled(true);
+
     var form = document.getElementById("addIndiv").checkValidity();
     if (!form) {
-      toast.error("Fill all required field");
+      toast.error("Fill all required fields");
+      setLoading(false);
+      setIsButtonDisabled(false);
       return;
     }
-    setIsButtonDisabled(true);
 
     let data = {
       branch_name: branch.branch_name,
     };
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${BASE_URL}/api/panel-create-branch`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (response.data.code == "200") {
-      toast.success("Branch Create succesfull");
 
-      setBranch({
-        branch_name: "",
-      });
-      navigate("/branch");
-    } else {
-      toast.error("duplicate entry");
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-create-branch`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.code === "200") {
+        toast.success("Branch Created Successfully");
+
+        setBranch({ branch_name: "" });
+
+        navigate("/branch");
+      } else {
+        toast.error("Duplicate entry");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
     }
+
+    // Stop Loading
+    setLoading(false);
     setIsButtonDisabled(false);
   };
 
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Branch
-        </h3>
-      </div>
+
+      <PageHeader title={"Create Branch"} />
+
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-6 mb-6">
@@ -93,32 +109,23 @@ const AddBranch = () => {
               />
             </div>
           </div>
-          <div className="col-span-2"></div>
 
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            <Button
+            <ButtonConfigColor
               type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Create</span>
-              </div>
-            </Button>
+              buttontype="submit"
+              label="Create"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
 
-            {/* Back Button */}
-            <Link to="/branch">
-              <Button className="mr-2 mb-2" color="primary">
-                Back
-              </Button>
-            </Link>
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
-
           {/* //edit  */}
         </form>
       </div>

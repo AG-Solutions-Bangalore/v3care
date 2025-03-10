@@ -13,6 +13,7 @@ import BackhandViewTeamMaster from "./BackhandViewTeamMaster";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const BackhandTeamMaster = () => {
   const [BackhandData, setBackhandData] = useState(null);
@@ -104,9 +105,12 @@ const BackhandTeamMaster = () => {
                 //   title="Booking Info"
                 //   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 // />
-                  <SquarePen   onClick={(e) => handleEdit(e, id)} className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                                                   <title>Booking Info</title>
-                                                 </SquarePen>
+                <SquarePen
+                  onClick={(e) => handleEdit(e, id)}
+                  className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                >
+                  <title>Booking Info</title>
+                </SquarePen>
               )}
               {/* <MdOutlineRemoveRedEye
                 onClick={() => navigate(`/backhand-team-view/${id}`)}
@@ -177,7 +181,6 @@ const BackhandTeamMaster = () => {
         sort: false,
       },
     },
-   
   ];
   const options = {
     selectableRows: "none",
@@ -201,7 +204,7 @@ const BackhandTeamMaster = () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
-          cursor:'pointer',
+          cursor: "pointer",
         },
       };
     },
@@ -209,12 +212,11 @@ const BackhandTeamMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-backhand-team"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Backhand
-            </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Backhand"
+              onClick={() => navigate("/add-backhand-team")}
+            />
           )}
         </>
       );

@@ -44,6 +44,9 @@ const AllBooking = () => {
   }, [location]);
   const handleDateChange = (event) => {
     const date = event.target.value;
+    console.log(date);
+    localStorage.setItem("AllBookingDate", date);
+
     setSelectedDate(date);
 
     // Filter the data based on the selected date
@@ -135,6 +138,13 @@ const AllBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
+  const getDate = localStorage.getItem("AllBookingDate");
+  useEffect(() => {
+    console.log("in");
+
+    setSelectedDate(getDate);
+    console.log("out");
+  }, [getDate]);
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -153,21 +163,11 @@ const AllBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  // onClick={(e) => {
-                  //   e.stopPropagation(); // Prevent row click event
-                  // navigate(`/edit-booking/${id}`);
                   onClick={(e) => handleEdit(e, id)}
-                  // }}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
             </div>
           );
         },
@@ -612,7 +612,7 @@ const AllBooking = () => {
           <TextField
             label="Filter by Date"
             type="date"
-            value={selectedDate}
+            value={selectedDate || null}
             onChange={handleDateChange}
             size="small"
             InputLabelProps={{

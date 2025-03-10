@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
@@ -53,7 +55,6 @@ const BranchEditMaster = () => {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-branch-by-id/${id}`,
@@ -67,18 +68,17 @@ const BranchEditMaster = () => {
         setBranch(response.data?.branch);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchBranchData();
-    setLoading(false);
   }, []);
   const handleBack = (e) => {
     e.preventDefault();
     navigate(`/branch?page=${pageNo}`);
   };
   const onSubmit = async (e) => {
+    setLoading(true);
+
     e.preventDefault();
     let data = {
       branch_name: branch.branch_name,
@@ -108,19 +108,18 @@ const BranchEditMaster = () => {
     } catch (error) {
       console.error("Error updating refer by", error);
       toast.error("Update failed. Please try again.");
+      setLoading(false);
     } finally {
       setIsButtonDisabled(false);
+      setLoading(false);
     }
   };
 
   return (
     <Layout>
       <MasterFilter />
-      <div className="container mx-auto px-4">
-        {/* Page Title */}
-        <div className="my-4 text-2xl font-bold text-gray-800">
-          <FaBuilding className="inline mr-2" /> Edit Branch
-        </div>
+      <div className="container mx-auto">
+        <PageHeader title={" Edit Branch"} onClick={handleBack} />
 
         <Card className="p-6 mt-6">
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
@@ -168,30 +167,22 @@ const BranchEditMaster = () => {
               </FormControl>
             </div>
 
-            {/* Buttons */}
-            <div className="text-center mt-6">
-              <Button
-                type="submit"
-                className="mr-2 mb-2"
-                // color="primary"
-                // disabled={isButtonDisabled}
-              >
-                <div className="flex gap-1">
-                  <MdSend className="w-4 h-4" />
-                  <span>Update</span>
-                </div>
-              </Button>
+           
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
 
-              <Button
-                className="mr-2 mb-2"
-                // color="primary"
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
                 onClick={handleBack}
-              >
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-5 h-5" />
-                  <span>Back</span>
-                </div>
-              </Button>
+              />
             </div>
           </form>
         </Card>

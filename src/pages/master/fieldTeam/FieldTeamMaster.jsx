@@ -13,6 +13,7 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import FieldTeamViewMaster from "./FieldTeamViewMaster";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
@@ -99,43 +100,19 @@ const FieldTeamMaster = () => {
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
-                // <SquarePen
-                  
-                //   title="Booking Info"
-                //   className="h-5 w-5 cursor-pointer hover:text-blue-700"
-                // />
-                  <SquarePen onClick={(e) => handleEdit(e, id)} className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                <SquarePen
+                  onClick={(e) => handleEdit(e, id)}
+                  className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                >
                   <title>Booking Info</title>
                 </SquarePen>
               )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/field-team-view/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-              {/* <div
-                onClick={toogleViewServiceSub(true, id)}
-                className="flex items-center space-x-2"
-                title="View"
-              >
-                <MdOutlineRemoveRedEye className="h-5 w-5 cursor-pointer" />
-              </div> */}
             </div>
           );
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "branch_name",
       label: "Branch",
@@ -177,7 +154,6 @@ const FieldTeamMaster = () => {
         sort: false,
       },
     },
-   
   ];
   const options = {
     selectableRows: "none",
@@ -202,7 +178,6 @@ const FieldTeamMaster = () => {
         style: {
           borderBottom: "5px solid #f1f7f9",
           cursor: "pointer",
-         
         },
       };
     },
@@ -210,12 +185,11 @@ const FieldTeamMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-field-team"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Add Field Team
-            </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Add Field Team"
+              onClick={() => navigate("/add-field-team")}
+            />
           )}
         </>
       );
@@ -253,19 +227,7 @@ const FieldTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Field Team List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to="/add-field-team"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Field Team
-          </Link>
-        )}
-      </div> */}
+
       <div className="mt-1">
         <MUIDataTable
           title="Field Team List"
