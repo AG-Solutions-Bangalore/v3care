@@ -200,7 +200,9 @@ const App = () => {
               element={<OperationEditTeamMaster />}
             />
             <Route path="/backhand-team" element={<BackhandTeamMaster />} />
-            <Route path="/add-backhand-team" element={<AddBackhandTeam />} />
+            {/* <Route path="/add-backhand-team" element={<AddBackhandTeam />} /> */}
+
+            <Route path="/backhand-team-add" element={<AddBackhandTeam />} />
             <Route
               path="/backhand-team-view/:id"
               element={<BackhandViewTeamMaster />}
@@ -306,18 +308,27 @@ const App = () => {
           userType === "7") && (
           <>
             <Route path="/booking-download" element={<BookingDownload />} />
-            <Route path="/allBooking-download" element={<AllBookingDownload />} />
+            <Route
+              path="/allBooking-download"
+              element={<AllBookingDownload />}
+            />
             <Route path="/view-allBooking" element={<ViewAllBooking />} />
             <Route path="/vendor-download" element={<VendorDownload />} />
             <Route path="/received-download" element={<ReceivedDownload />} />
             <Route path="/pending-download" element={<PendingDownload />} />
-            <Route path="/view-pending-download" element={<ViewPendingDownload />} />
-            <Route path="/view-received-download" element={<ViewReceivedDownload />} />
+            <Route
+              path="/view-pending-download"
+              element={<ViewPendingDownload />}
+            />
+            <Route
+              path="/view-received-download"
+              element={<ViewReceivedDownload />}
+            />
           </>
         )}
         {/* {userType === "3" && ( */}
-          <Route path="/report-quatation" element={<QuatationReport />} />
-          <Route path="/report-tax-invoice" element={<TaxInvoice />} />
+        <Route path="/report-quatation" element={<QuatationReport />} />
+        <Route path="/report-tax-invoice" element={<TaxInvoice />} />
         {/* )} */}
 
         <Route path="/profile" element={<Profile />} />

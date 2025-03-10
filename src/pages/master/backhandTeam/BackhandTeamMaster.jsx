@@ -215,7 +215,7 @@ const BackhandTeamMaster = () => {
             <ButtonConfigColor
               type="create"
               label="Backhand"
-              onClick={() => navigate("/add-backhand-team")}
+              onClick={() => navigate("/backhand-team-add")}
             />
           )}
         </>

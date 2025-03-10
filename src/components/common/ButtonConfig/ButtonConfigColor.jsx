@@ -108,7 +108,7 @@ const ButtonConfigColor = ({
   return (
     <button
       type={buttontype}
-      className={`px-4 py-[6px] rounded-lg transition-all duration-300   ${getButtonStyles()} ${
+      className={`px-4 py-2 rounded-lg transition-all duration-300   ${getButtonStyles()} ${
         disabled || loading ? "opacity-50 cursor-not-allowed" : ""
       } ${className || ""}`} // Supports extra CSS
       onClick={onClick}

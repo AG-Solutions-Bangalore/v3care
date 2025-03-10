@@ -14,6 +14,7 @@ import { RiEditLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
@@ -149,28 +150,22 @@ const VendorList = () => {
                 <>
                   {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
                     <>
-                      {/* <SquarePen
+                      <SquarePen
                         onClick={(e) => handleEdit(e, id)}
-                        title="Edit Vendor"
-                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
-                      /> */}
-                        <SquarePen    onClick={(e) => handleEdit(e, id)} className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                                                                         <title>Edit Vendor</title>
-                                                                       </SquarePen>
+                        className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                      >
+                        <title>Edit Vendor</title>
+                      </SquarePen>
                       <FiUsers
                         onClick={(e) => handleViewVendor(e, id)}
-                        // onClick={() => navigate(`/vendor-user-list/${id}`)}
-
                         title="view Vendor"
                         className="h-5 w-5 cursor-pointer  hover:text-blue-700"
                       />
                     </>
                   ) : vendorStatus === "Pending" ? (
                     <>
-                      {/* for pending  */}
                       <RiEditLine
                         onClick={(e) => handleEditPendingVendor(e, id)}
-                        // onClick={() => navigate(`/vendor-pending-edit/${id}`)}
                         title="Edit Pending Vendor"
                         className="h-5 w-5 cursor-pointer  hover:text-blue-700"
                       />
@@ -183,28 +178,12 @@ const VendorList = () => {
                   ) : null}
                 </>
               )}
-              {/* common  */}
-              {/* <MdOutlineRemoveRedEye
-                onClick={(e) => handleViewVendorInfo(e, id)}
-                title="View Vendor Info"
-                className="h-5 w-5 cursor-pointer  hover:text-blue-500"
-              /> */}
             </div>
           );
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "branch_name",
       label: "Branch",
@@ -254,7 +233,6 @@ const VendorList = () => {
         sort: false,
       },
     },
-   
   ];
   const options = {
     selectableRows: "none",
@@ -268,7 +246,7 @@ const VendorList = () => {
     count: vendorListData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
-   
+
     onChangePage: (currentPage) => {
       setPage(currentPage);
       navigate(`/vendor-list?page=${currentPage + 1}`);
@@ -277,11 +255,11 @@ const VendorList = () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
-          cursor:'pointer',
+          cursor: "pointer",
         },
       };
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = vendorListData[rowMeta.dataIndex].id;
       handleViewVendorInfo(e, id)();
     },
@@ -289,12 +267,17 @@ const VendorList = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to={`/add-vendor`}
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Vendor
-            </Link>
+            // <Link
+            //   to={`/add-vendor`}
+            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            // >
+            //   + Vendor
+            // </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Vendor"
+              onClick={() => navigate("/add-vendor")}
+            />
           )}
         </>
       );
