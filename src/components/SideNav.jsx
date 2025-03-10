@@ -232,7 +232,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           <div className="flex flex-col items-center gap-2 text-white">
             {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
             <div className="text-sm font-medium opacity-80">
-              Version: 1.2.19
+              Updated On :10-03-2025
             </div>
           </div>
         </div>
