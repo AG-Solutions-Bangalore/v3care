@@ -43,18 +43,11 @@ const ConfirmedBooking = () => {
   // Modal state management
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderRef, setSelectedOrderRef] = useState(null);
+const [loadingAssignment, setLoadingAssignment] = useState(null);
 
-  const handleOpenModal = (orderRef) => {
-    setSelectedOrderRef(orderRef);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedOrderRef(null);
-  };
   const fetchAssignmentData = async (orderRef) => {
     try {
+      setLoadingAssignment(orderRef); 
       const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-booking-assign-by-view/${orderRef}`,
@@ -70,9 +63,20 @@ const ConfirmedBooking = () => {
       }));
     } catch (error) {
       console.error("Error fetching assignment data", error);
+    }finally {
+      setLoadingAssignment(null); 
     }
   };
+  const handleOpenModal = (orderRef) => {
+    setSelectedOrderRef(orderRef);
+    setIsModalOpen(true);
+    fetchAssignmentData(orderRef);
+  };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrderRef(null);
+  };
   useEffect(() => {
     const fetchConfirmData = async () => {
       try {
@@ -94,11 +98,11 @@ const ConfirmedBooking = () => {
         setConfirmBookData(response.data?.booking);
 
         //  here we are fecthing only those element those order no assign is greater than 0
-        response.data?.booking.forEach((item) => {
-          if (item.order_no_assign > 0) {
-            fetchAssignmentData(item.order_ref);
-          }
-        });
+        // response.data?.booking.forEach((item) => {
+        //   if (item.order_no_assign > 0) {
+        //     fetchAssignmentData(item.order_ref);
+        //   }
+        // });
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -325,8 +329,18 @@ const ConfirmedBooking = () => {
                   e.stopPropagation(); // Prevent row click event
                   handleOpenModal(order_ref);
                 }}
+                disabled={loadingAssignment === order_ref}
               >
-                {value}
+                 {loadingAssignment === order_ref ? (
+            <span className="flex justify-center items-center">
+              <svg className="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+          ) : (
+            value
+          )}
               </button>
             </div>
           ) : (
@@ -541,7 +555,7 @@ const ConfirmedBooking = () => {
           <Spinner className="h-10 w-10" color="red" />
         </div>
       ) : (
-        <div className="mt-5">
+        <div className="mt-1">
           <MUIDataTable
             title={"Confirmed Booking List"}
             data={confirmBookData ? confirmBookData : []}

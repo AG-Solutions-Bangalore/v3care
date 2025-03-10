@@ -358,7 +358,7 @@ const PendingBooking = () => {
           <Spinner className="h-10 w-10" color="red" />
         </div>
       ) : (
-        <div className="mt-5">
+        <div className="mt-1">
           <MUIDataTable
             title={"Pending Booking List"}
             data={pendingBookData ? pendingBookData : []}

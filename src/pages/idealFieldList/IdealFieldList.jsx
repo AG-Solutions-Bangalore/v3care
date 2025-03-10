@@ -78,7 +78,7 @@ const IdealFieldList = () => {
           Ideal Field List
         </div> */}
 
-        <Card className=" mt-2 p-2">
+        <Card className=" mt-1 p-2">
           <form id="addIndiv" autoComplete="off">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="form-group">
