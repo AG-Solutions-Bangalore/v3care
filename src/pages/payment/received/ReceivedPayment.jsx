@@ -363,7 +363,7 @@ const ReceivedPayment = () => {
           Payment Received List
         </h3>
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Payment Received List"
           data={receivedData ? receivedData : []}
