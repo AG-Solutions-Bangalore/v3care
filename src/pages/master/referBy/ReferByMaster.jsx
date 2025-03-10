@@ -145,17 +145,10 @@ const ReferByMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            // <Link
-            //   to="/add-referby"
-            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            // >
-            //   + Refer by
-            // </Link>
             <ButtonConfigColor
               type="create"
               label="Refer by"
               onClick={() => navigate("/add-referby")}
-              // className="w-32"
             />
           )}
         </>

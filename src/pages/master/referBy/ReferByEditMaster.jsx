@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -54,7 +55,6 @@ const ReferByEditMaster = () => {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-referby-by-id/${id}`,
@@ -68,18 +68,17 @@ const ReferByEditMaster = () => {
         setReferBy(response.data?.referby);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchReferByData();
-    setLoading(false);
   }, [id]);
   const handleBack = (e) => {
     e.preventDefault();
     navigate(`/refer-by?page=${pageNo}`);
   };
   const onSubmit = async (e) => {
+    setLoading(true);
+
     e.preventDefault();
     let data = {
       refer_by: referBy.refer_by,
@@ -105,8 +104,11 @@ const ReferByEditMaster = () => {
     } catch (error) {
       console.error("Error updating refer by", error);
       toast.error("Update failed. Please try again.");
+      setLoading(false);
+      setIsButtonDisabled(false);
     } finally {
       setIsButtonDisabled(false);
+      setLoading(false);
     }
   };
   return (
@@ -161,30 +163,21 @@ const ReferByEditMaster = () => {
               </FormControl>
             </div>
 
-            {/* Buttons */}
-            <div className="text-center mt-6">
-              <Button
-                type="submit"
-                className="mr-2 mb-2"
-                color="primary"
-                // disabled={isButtonDisabled}
-              >
-                <div className="flex gap-1">
-                  <MdSend className="w-4 h-4" />
-                  <span>Update</span>
-                </div>
-              </Button>
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
 
-              <Button
-                onClick={handleBack}
-                className="mr-2 mb-2"
-                color="primary"
-              >
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
             </div>
           </form>
         </Card>

@@ -1,7 +1,4 @@
-
-
-
-  import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   BuildingStorefrontIcon,
   HomeIcon,
@@ -32,26 +29,24 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     transparent: "bg-transparent",
   };
 
- 
   useEffect(() => {
     const initActiveMenus = {};
-    
+
     menuItems.forEach((item) => {
       if (item.subMenu) {
-        
-        const isActive = item.subMenu.some(subItem => 
-          pathname === subItem.to || pathname.startsWith(subItem.to)
+        const isActive = item.subMenu.some(
+          (subItem) =>
+            pathname === subItem.to || pathname.startsWith(subItem.to)
         );
-        
+
         if (isActive) {
           initActiveMenus[item.text] = true;
         }
       }
     });
-    
+
     setActiveMenus(initActiveMenus);
   }, []);
-
 
   useEffect(() => {
     function handClickOutside(e) {
@@ -68,7 +63,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     };
   }, [setOpenSideNav]);
 
- 
   useEffect(() => {
     if (window.innerWidth < 1280) {
       setOpenSideNav(false);
@@ -186,8 +180,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     7: "operationteam",
   };
 
-
-
   // const getFilteredMenuItems = () => {
   //   const role = roleMap[userType];
   //   return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
@@ -205,30 +197,26 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   };
 
   const handleItemClick = () => {
-   
     localStorage.removeItem("page-no");
   };
 
- 
   const isParentActive = (item) => {
     if (!item.subMenu) return false;
-    return item.subMenu.some(subItem => 
-      pathname === subItem.to || pathname.startsWith(subItem.to)
+    return item.subMenu.some(
+      (subItem) => pathname === subItem.to || pathname.startsWith(subItem.to)
     );
   };
 
- 
   const toggleMenu = (menuName, forceOpen = false) => {
-    setActiveMenus(prev => ({
+    setActiveMenus((prev) => ({
       ...prev,
-      [menuName]: forceOpen ? true : !prev[menuName]
+      [menuName]: forceOpen ? true : !prev[menuName],
     }));
   };
-  
 
   const handleSubmenuClick = (parentMenu) => {
     handleItemClick();
-   
+
     toggleMenu(parentMenu, true);
   };
 
@@ -277,41 +265,63 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
             const isActive = pathname === item.to;
             const isParentMenuActive = hasSubmenu && isParentActive(item);
             const isMenuOpen = activeMenus[item.text];
-            
+
             return (
               <li key={item.to || item.text}>
                 {hasSubmenu ? (
-                  <div className={isParentMenuActive ? "bg-blue-500/10 rounded-lg" : ""}>
+                  <div
+                    className={
+                      isParentMenuActive ? "bg-blue-500/10 rounded-lg" : ""
+                    }
+                  >
                     <Button
                       variant={isParentMenuActive ? "gradient" : "text"}
                       color="white"
                       title={item.title}
-                      className={`flex items-center justify-between px-4 capitalize ${isParentMenuActive ? "bg-blue-500/20" : ""}`}
+                      className={`flex items-center justify-between px-4 capitalize ${
+                        isParentMenuActive ? "bg-blue-500/20" : ""
+                      }`}
                       fullWidth
                       onClick={() => toggleMenu(item.text)}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`${isParentMenuActive ? "text-blue-400" : ""}`}>
+                        <div
+                          className={`${
+                            isParentMenuActive ? "text-blue-400" : ""
+                          }`}
+                        >
                           {item.icon}
                         </div>
                         {(!isCollapsed || window.innerWidth < 1280) && (
                           <Typography
                             color={isParentMenuActive ? "blue" : "white"}
-                            className={`font-medium capitalize ${isParentMenuActive ? "text-blue-400" : ""}`}
+                            className={`font-medium capitalize ${
+                              isParentMenuActive ? "text-blue-400" : ""
+                            }`}
                           >
                             {item.text}
                           </Typography>
                         )}
                       </div>
                       {(!isCollapsed || window.innerWidth < 1280) && (
-                        <div className={`transition-transform duration-300 ${isMenuOpen ? "rotate-180" : ""}`}>
-                          <ChevronDownIcon className={`h-4 w-4 ${isParentMenuActive ? "text-blue-400" : ""}`} />
+                        <div
+                          className={`transition-transform duration-300 ${
+                            isMenuOpen ? "rotate-180" : ""
+                          }`}
+                        >
+                          <ChevronDownIcon
+                            className={`h-4 w-4 ${
+                              isParentMenuActive ? "text-blue-400" : ""
+                            }`}
+                          />
                         </div>
                       )}
                     </Button>
                     <div
                       className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                        isMenuOpen
+                          ? "max-h-96 opacity-100"
+                          : "max-h-0 opacity-0"
                       }`}
                     >
                       <ul className="pl-8 py-2 space-y-1">
@@ -319,9 +329,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                           const isSubItemActive = pathname === subItem.to;
                           return (
                             <li key={subItem.to}>
-                              <NavLink 
-                                to={subItem.to} 
-                                className={({ isActive }) => 
+                              <NavLink
+                                to={subItem.to}
+                                className={({ isActive }) =>
                                   isActive ? "text-blue-500" : ""
                                 }
                                 onClick={() => handleSubmenuClick(item.text)}
@@ -332,7 +342,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                                     color="white"
                                     title={subItem.title}
                                     className={`flex items-center gap-4 px-3 py-2 capitalize rounded-lg ${
-                                      isActive ? "bg-blue-500/20" : "hover:bg-blue-gray-800"
+                                      isActive
+                                        ? "bg-blue-500/20"
+                                        : "hover:bg-blue-gray-800"
                                     }`}
                                     fullWidth
                                   >
@@ -341,7 +353,8 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                                         <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                                       )}
                                     </div>
-                                    {(!isCollapsed || window.innerWidth < 1280) && (
+                                    {(!isCollapsed ||
+                                      window.innerWidth < 1280) && (
                                       <Typography
                                         color="inherit"
                                         className={`font-medium capitalize text-sm ${
@@ -361,9 +374,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                     </div>
                   </div>
                 ) : (
-                  <NavLink 
-                    to={item.to} 
-                    className={({ isActive }) => 
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) =>
                       isActive ? "text-blue-500" : ""
                     }
                     onClick={handleItemClick}
@@ -373,7 +386,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                         variant={isActive ? "gradient" : "text"}
                         color="white"
                         title={item.title}
-                        className={`flex items-center gap-4 px-4 capitalize ${isActive ? "bg-blue-500/20" : ""}`}
+                        className={`flex items-center gap-4 px-4 capitalize ${
+                          isActive ? "bg-blue-500/20" : ""
+                        }`}
                         fullWidth
                       >
                         <div className={`${isActive ? "text-blue-400" : ""}`}>
@@ -399,10 +414,17 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         </ul>
       </div>
       {!isCollapsed && (
-        <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+        // <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+        //   <div className="flex flex-col items-center gap-2 text-white">
+        //     <div className="text-sm font-medium opacity-80">
+        //       Update on : 10-03-2025
+        //     </div>
+        //   </div>
+        // </div>
+        <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm animate-wave">
           <div className="flex flex-col items-center gap-2 text-white">
             <div className="text-sm font-medium opacity-80">
-              Version: 2.0.12
+              Update on : 10-03-2025
             </div>
           </div>
         </div>

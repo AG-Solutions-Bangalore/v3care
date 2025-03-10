@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -34,6 +36,8 @@ const ServiceEditMaster = () => {
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [selectedFile, setSelectedFile] = useState(null);
 
   const validateOnlyDigits = (inputtxt) => {
@@ -82,6 +86,8 @@ const ServiceEditMaster = () => {
     navigate(`/service?page=${pageNo}`);
   };
   const onSubmit = (e) => {
+    setLoading(true);
+
     e.preventDefault();
 
     const data = new FormData();
@@ -107,11 +113,14 @@ const ServiceEditMaster = () => {
             toast.success("update succesfull");
             navigate(`/service?page=${pageNo}`);
           } else {
+            setLoading(false);
+            setIsButtonDisabled(false);
             toast.error("duplicate entry");
           }
         })
         .finally(() => {
           setIsButtonDisabled(false);
+          setLoading(false);
         });
     }
   };
@@ -124,10 +133,9 @@ const ServiceEditMaster = () => {
     <Layout>
       <MasterFilter />
       <div className="textfields-wrapper">
-        <div className="my-4 text-2xl font-bold text-gray-800">
-          Edit Service
-        </div>
-        <Card className="p-6 mt-6">
+        <PageHeader title={"Edit Service"} onClick={handleBack} />
+
+        <Card className="p-6 mt-2">
           <form
             id="addIndiv"
             autoComplete="off"
@@ -136,11 +144,11 @@ const ServiceEditMaster = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Service Image */}
-              <div className="flex justify-center items-center  rounded-lg shadow-lg shadow-blue-400">
+              <div className="flex justify-center items-center">
                 <img src={imageUrl} alt="Service" className="w-52 h-52" />
               </div>
               {/* Service Fields */}
-              <div className=" rounded-lg shadow-lg shadow-orange-400 p-2 ">
+              <div className="p-2 ">
                 <div className="mb-6">
                   <Input
                     label="Service"
@@ -155,17 +163,7 @@ const ServiceEditMaster = () => {
                     }}
                   />
                 </div>
-                {/* <div className="mb-6">
-                  <Input
-                    label="Service Commission"
-                    type="text"
-                    name="service_comm"
-                    value={services.service_comm}
-                    onChange={onInputChange}
-                    className="w-full border border-gray-700 rounded-md"
-                    required
-                  />
-                </div> */}
+
                 <div className="mb-6">
                   <Input
                     label="Image"
@@ -202,30 +200,22 @@ const ServiceEditMaster = () => {
                 </div>
               </div>
             </div>
-            {/* Buttons */}
-            <div className="text-center mt-6">
-              <Button
-                type="submit"
-                className="mr-2 mb-2"
-                color="primary"
-                // disabled={isButtonDisabled}
-              >
-                <div className="flex gap-1">
-                  <MdSend className="w-4 h-4" />
-                  <span>Update</span>
-                </div>
-              </Button>
 
-              <Button
-                className="mr-2 mb-2"
-                color="primary"
-                onClick={handleBack}
-              >
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
             </div>
           </form>
         </Card>

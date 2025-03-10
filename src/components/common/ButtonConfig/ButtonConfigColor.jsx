@@ -78,7 +78,7 @@ const ButtonConfigColor = ({
       case "create":
         return "bg-green-600 hover:bg-green-700 text-white";
       case "edit":
-        return "bg-yellow-500 hover:bg-yellow-600 text-white";
+        return "bg-[#B22222] hover:bg-[#A14141] text-white";
       case "delete":
         return "bg-red-600 hover:bg-red-700 text-white";
       default:

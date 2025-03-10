@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
 
 const AddServicePrice = () => {
   const [services, setServices] = useState({
@@ -99,31 +101,6 @@ const AddServicePrice = () => {
     }
   };
 
-  // const onInputChange = (e) => {
-  //   let name, value;
-
-  //   if (e && e.target) {
-  //     ({ name, value } = e.target);
-  //   } else {
-  //     name = e.target ? e.target.name : e.name;
-  //     value = e;
-  //   }
-  //   if (["service_price_rate", "service_price_amount"].includes(name)) {
-  //     if (validateOnlyDigits(value)) {
-  //       setServices((prev) => ({ ...prev, [name]: value }));
-  //     }
-  //   } else {
-  //     setServices((prev) => ({ ...prev, [name]: value }));
-  //   }
-  // };
-
-  // const onInputChange = (e) => {
-  //   setServices({
-  //     ...services,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
-
   const onSubmit = (e) => {
     e.preventDefault();
     setIsButtonDisabled(true);
@@ -164,35 +141,12 @@ const AddServicePrice = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Service Price
-        </h3>
-      </div>
+
+      <PageHeader title={"Create Service Price"} />
+
       <div className="w-full mt-5 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Service Select Field */}
-            {/* <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service <span className="text-red-700">*</span>
-              </label>
-              <Select
-                name="service_id"
-                value={String(services.service_id)}
-                onChange={(value) =>
-                  onInputChange({ name: "service_id", value })
-                }
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-              >
-                {serdata.map((serdatas, key) => (
-                  <SelectOption key={key} value={String(serdatas.id)}>
-                    {serdatas.service}
-                  </SelectOption>
-                ))}
-              </Select>
-            </div> */}
             <FormControl fullWidth>
               <InputLabel id="service-select-label">
                 <span className="text-sm relative bottom-[6px]">
@@ -217,27 +171,6 @@ const AddServicePrice = () => {
               </Select>
             </FormControl>
 
-            {/* Service Sub Select Field */}
-            {/* <div className="form-group">
-              <label className="block text-lg font-semibold text-gray-700 mb-2">
-                Service Sub
-              </label>
-              <Select
-                label="service"
-                name="service_sub_id"
-                value={String(services.service_sub_id)}
-                onChange={(value) =>
-                  onInputChange({ name: "service_id", value })
-                }
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-              >
-                {serdatasub.map((serdatas, key) => (
-                  <SelectOption key={key} value={String(serdatas.id)}>
-                    {serdatas.service_sub}
-                  </SelectOption>
-                ))}
-              </Select>
-            </div> */}
             <FormControl fullWidth>
               <InputLabel id="service-sub-select-label">
                 <span className=" text-sm  bottom-[6px] relative  ">
@@ -301,32 +234,21 @@ const AddServicePrice = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            <Button
+            <ButtonConfigColor
               type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Submit</span>
-              </div>
-            </Button>
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
 
-            {/* Back Button */}
-
-            <Link to="/service-price">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-5 h-5" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

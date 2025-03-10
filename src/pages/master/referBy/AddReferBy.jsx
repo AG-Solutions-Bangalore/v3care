@@ -67,6 +67,7 @@ const AddReferBy = () => {
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error("Error:", error);
+      setLoading(false);
     }
 
     setIsButtonDisabled(false);
@@ -76,19 +77,11 @@ const AddReferBy = () => {
   return (
     <Layout>
       <MasterFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center  mt-5 p-2  space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Refer By
-        </h3>
-      </div> */}
+
       <PageHeader title={"Create Refer By"} />
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
-        {/* Page Title */}
-
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 gap-6 mb-6">
-            {/* Branch Name Field */}
-
             <div className="form-group">
               <Input
                 fullWidth
@@ -114,7 +107,7 @@ const AddReferBy = () => {
               type="back"
               buttontype="button"
               label="Cancel"
-              onClick={() => navigate("/refer-by")}
+              onClick={() => navigate(-1)}
             />
           </div>
         </form>

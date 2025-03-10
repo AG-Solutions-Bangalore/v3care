@@ -10,6 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
@@ -81,12 +82,12 @@ const ServicePriceMaster = () => {
             <>
               {userType !== "4" && (
                 <div
-                onClick={(e) => handleEdit(e, id)}
-                className="flex items-center space-x-2"
+                  onClick={(e) => handleEdit(e, id)}
+                  className="flex items-center space-x-2"
                 >
-                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                   <title>Booking Info</title>
-                 </SquarePen>
+                  <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                    <title>Booking Info</title>
+                  </SquarePen>
                 </div>
               )}
             </>
@@ -154,7 +155,6 @@ const ServicePriceMaster = () => {
         sort: false,
       },
     },
-    
   ];
   const options = {
     selectableRows: "none",
@@ -181,12 +181,17 @@ const ServicePriceMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-service-price"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Service Price
-            </Link>
+            // <Link
+            //   to="/add-service-price"
+            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            // >
+            //   + Service Price
+            // </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Service Price"
+              onClick={() => navigate("/add-service-price")}
+            />
           )}
         </>
       );
@@ -223,19 +228,6 @@ const ServicePriceMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Service Price List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to="/add-service-price"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Service Price
-          </Link>
-        )}
-      </div> */}
       <div className="mt-1">
         <MUIDataTable
           title="Service Price List"

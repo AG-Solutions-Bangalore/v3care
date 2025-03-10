@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import { Button, Input, Select } from "@material-tailwind/react";
 import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const AddServiceSubMaster = () => {
   const [services, setServices] = useState({
@@ -65,7 +67,7 @@ const AddServiceSubMaster = () => {
       service_id: value,
     }));
   };
-  
+
   const onSubmit = (e) => {
     e.preventDefault();
     setIsButtonDisabled(true);
@@ -100,36 +102,31 @@ const AddServiceSubMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Service Sub
-        </h3>
-      </div>
-      <div className="w-full mt-5 p-4 bg-white shadow-lg rounded-xl">
+
+      <PageHeader title={"Create Service Sub"} />
+
+      <div className="w-full mt-2 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Select Field */}
             <div className="form-group">
-          
-            <Select
-  label="Service"
-  name="service_id"
-  required
-  className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
-  onChange={onServiceChange} 
->
-  {serdata.map((ser) => (
-    <SelectOption 
-      key={ser.id} 
-      value={ser.id}
-      selected={services.service_id === ser.id} 
-    >
-      {ser.service}
-    </SelectOption>
-  ))}
-</Select>
-
-
+              <Select
+                label="Service"
+                name="service_id"
+                required
+                className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                onChange={onServiceChange}
+              >
+                {serdata.map((ser) => (
+                  <SelectOption
+                    key={ser.id}
+                    value={ser.id}
+                    selected={services.service_id === ser.id}
+                  >
+                    {ser.service}
+                  </SelectOption>
+                ))}
+              </Select>
             </div>
 
             {/* Service Sub Field */}
@@ -158,14 +155,12 @@ const AddServiceSubMaster = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
+          {/* <div className="flex justify-center space-x-4">
 
             <Button
               type="submit"
               className="mr-2 mb-2"
               color="primary"
-              // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
@@ -173,7 +168,6 @@ const AddServiceSubMaster = () => {
               </div>
             </Button>
 
-            {/* Back Button */}
 
             <Link to="/service-sub">
               <Button className="mr-2 mb-2" color="primary">
@@ -183,6 +177,22 @@ const AddServiceSubMaster = () => {
                 </div>
               </Button>
             </Link>
+          </div> */}
+          <div className="flex justify-center space-x-4">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

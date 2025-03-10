@@ -145,6 +145,12 @@ const AllBooking = () => {
     setSelectedDate(getDate);
     console.log("out");
   }, [getDate]);
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
+  };
   const columns = [
     {
       name: "id",
@@ -555,9 +561,10 @@ const AllBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = allBookingData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+    
+      handleView(e,id)()
     },
     count: allBookingData?.length || 0,
     rowsPerPage: rowsPerPage,

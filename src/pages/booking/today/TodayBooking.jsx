@@ -115,6 +115,12 @@ const TodayBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
+  };
   const columns = [
     {
       name: "id",
@@ -535,9 +541,9 @@ const TodayBooking = () => {
       setPage(currentPage);
       navigate(`/today?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = todayBookingData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+      handleView(e,id)()
     },
 
     setRowProps: (rowData) => {

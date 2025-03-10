@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const AddServiceMaster = () => {
   const [services, setServices] = useState({
@@ -20,6 +22,8 @@ const AddServiceMaster = () => {
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
 
@@ -34,45 +38,58 @@ const AddServiceMaster = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setIsButtonDisabled(true);
+
     const data = new FormData();
     data.append("service", services.service);
     data.append("service_image", selectedFile);
     data.append("service_comm", services.service_comm);
 
-    axios({
-      url: BASE_URL + "/api/panel-create-service",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == "200") {
-        toast.success("Branch Create succesfull");
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-create-service`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
+      if (response.data.code === "200") {
+        toast.success("Service Created Successfully");
+
+        // Reset Form
         setServices({
           service: "",
           service_comm: "",
           service_image: "",
         });
+
         navigate("/service");
       } else {
-        toast.error("duplicate entry");
+        toast.error("Duplicate entry");
       }
-    });
-    setIsButtonDisabled(false);
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+
+      setLoading(false);
+      setIsButtonDisabled(false);
+    } finally {
+      setLoading(false);
+      setIsButtonDisabled(false);
+    }
   };
+
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Service
-        </h3>
-      </div>
+
+      <PageHeader title={"Create Service"} />
+
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -89,20 +106,6 @@ const AddServiceMaster = () => {
               />
             </div>
 
-            {/* Service Commission Field */}
-            {/* <div className="form-group">
-              <Input
-                label="service commission"
-                type="tel"
-                name="service_comm"
-                value={services.service_comm}
-                onChange={onInputChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
-              />
-            </div> */}
-
-            {/* File Upload Field */}
             <div className="form-group">
               <Input
                 label="service image"
@@ -114,31 +117,21 @@ const AddServiceMaster = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            <Button
+            <ButtonConfigColor
               type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Submit</span>
-              </div>
-            </Button>
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
 
-            {/* Back Button */}
-            <Link to="/service">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

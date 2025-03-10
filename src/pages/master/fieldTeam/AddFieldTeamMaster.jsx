@@ -9,6 +9,8 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 import axios from "axios";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 const AddFieldTeamMaster = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -27,6 +29,7 @@ const AddFieldTeamMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [branch, setBranch] = useState([]);
   useEffect(() => {
@@ -53,6 +56,8 @@ const AddFieldTeamMaster = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
     setIsButtonDisabled(true);
     const data = new FormData();
     data.append("name", team.name);
@@ -91,18 +96,18 @@ const AddFieldTeamMaster = () => {
         navigate("/field-team");
       } else {
         toast.error("duplicate entry");
+        setLoading(false);
       }
     });
     setIsButtonDisabled(false);
+    setLoading(false);
   };
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Field Team
-        </h3>
-      </div>
+
+      <PageHeader title={"Create Field Team"} />
+
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
@@ -134,7 +139,6 @@ const AddFieldTeamMaster = () => {
               />
             </div>
 
-            {/* Email Id Field */}
             <div>
               <Input
                 label="Email Id"
@@ -147,7 +151,6 @@ const AddFieldTeamMaster = () => {
               />
             </div>
 
-            {/* Branch Select Field (conditional) */}
             {localStorage.getItem("user_type_id") === "6" && (
               <FormControl fullWidth>
                 <InputLabel id="service-select-label">
@@ -234,15 +237,12 @@ const AddFieldTeamMaster = () => {
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
+          {/* <div className="flex justify-center space-x-4">
 
             <Button
               type="submit"
               className="mr-2 mb-2"
               color="primary"
-              // disabled={isButtonDisabled}
             >
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
@@ -250,7 +250,6 @@ const AddFieldTeamMaster = () => {
               </div>
             </Button>
 
-            {/* Back Button */}
 
             <Link to="/field-team">
               <Button className="mr-2 mb-2" color="primary">
@@ -260,6 +259,22 @@ const AddFieldTeamMaster = () => {
                 </div>
               </Button>
             </Link>
+          </div> */}
+          <div className="flex justify-center space-x-4">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>
