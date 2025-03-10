@@ -383,7 +383,7 @@ const PendingPayment = () => {
           Payment Pending List
         </h3>
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Payment Pending List"
           data={pendingData ? pendingData : []}

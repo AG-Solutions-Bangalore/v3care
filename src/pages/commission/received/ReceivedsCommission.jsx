@@ -275,7 +275,7 @@ const ReceivedsCommission = () => {
           Commission Received List
         </h3>
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Commission Received List"
           data={receivedCommData ? receivedCommData : []}
