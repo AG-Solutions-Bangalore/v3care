@@ -10,7 +10,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { SquarePen } from "lucide-react";
-import ButtonConfigColor from "../../../components/ButtonConfig/ButtonConfigColor";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
@@ -155,7 +155,7 @@ const ReferByMaster = () => {
               type="create"
               label="Refer by"
               onClick={() => navigate("/add-referby")}
-              className="w-60"
+              // className="w-32"
             />
           )}
         </>

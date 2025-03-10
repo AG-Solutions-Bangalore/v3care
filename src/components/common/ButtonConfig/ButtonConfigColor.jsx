@@ -66,6 +66,7 @@ const ButtonConfigColor = ({
   disabled,
   loading,
   className,
+  buttontype,
 }) => {
   // Define button styles based on the type
   const getButtonStyles = () => {
@@ -106,16 +107,17 @@ const ButtonConfigColor = ({
 
   return (
     <button
-      className={`px-4 py-2 rounded-lg transition-all duration-300 ${getButtonStyles()} ${
+      type={buttontype}
+      className={`px-4 py-[6px] rounded-lg transition-all duration-300  ${getButtonStyles()} ${
         disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-      } ${type !== "create" ? "flex  gap-2" : ""} ${
-        className || ""
-      }`} // Supports extra CSS
+      } ${className || ""}`} // Supports extra CSS
       onClick={onClick}
       disabled={disabled || loading}
     >
-      {getIcon()}
-      <span>{label}</span>
+      <div className="flex items-center justify-center gap-2">
+        {getIcon()}
+        <span className="whitespace-nowrap">{label}</span>
+      </div>
     </button>
   );
 };

@@ -8,7 +8,8 @@ import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import ButtonConfigColor from "../../../components/ButtonConfig/ButtonConfigColor";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
 
 const AddReferBy = () => {
   const [referby, setReferBy] = useState({
@@ -47,7 +48,7 @@ const AddReferBy = () => {
 
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${BASE_URL}/api/panel-create-refe`,
+        `${BASE_URL}/api/panel-create-referby`,
         data,
         {
           headers: {
@@ -75,11 +76,12 @@ const AddReferBy = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
+      {/* <div className="flex flex-col md:flex-row justify-between items-center  mt-5 p-2  space-y-4 md:space-y-0">
         <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
           Create Refer By
         </h3>
-      </div>
+      </div> */}
+      <PageHeader title={"Create Refer By"} />
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         {/* Page Title */}
 
@@ -99,37 +101,21 @@ const AddReferBy = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            {/* <Button
-              type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Sumbit</span>
-              </div>
-            </Button> */}
             <ButtonConfigColor
               type="submit"
+              buttontype="submit"
               label="Submit"
               disabled={isButtonDisabled}
               loading={loading}
             />
 
-            {/* Back Button */}
-            <Link to="/refer-by">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span> Back</span>
-                </div>
-              </Button>
-            </Link>
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate("/refer-by")}
+            />
           </div>
         </form>
       </div>
