@@ -49,7 +49,7 @@ const AllBooking = () => {
     // Filter the data based on the selected date
     if (date) {
       const filteredData = allBookingData.filter((item) => {
-        const itemDate = new Date(item.order_date);
+        const itemDate = new Date(item.order_service_date);
         const selectedDateObj = new Date(date);
         return itemDate.toDateString() === selectedDateObj.toDateString();
       });

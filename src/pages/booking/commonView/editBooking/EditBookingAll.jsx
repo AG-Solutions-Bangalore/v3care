@@ -20,6 +20,7 @@ import {
   Input,
   Option,
   Spinner,
+  Textarea,
 } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import BASE_URL from "../../../../base/BaseUrl";
@@ -527,18 +528,6 @@ const EditBookingAll = () => {
                   <FaInfoCircle />
                   Other Details
                 </button>
-                {/* //folllowup */}
-                {/* <button
-                  onClick={() => setActiveTab("followUp")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "followUp"
-                      ? "border-purple-500 bg-red-100 text-purple-600"
-                      : "border-transparent hover:bg-purple-50"
-                  }`}
-                >
-                  <FaCommentDots />
-                  Follow Up
-                </button> */}
               </div>
 
               {/* Main Content Based on Active Tab */}
@@ -681,10 +670,11 @@ const EditBookingAll = () => {
                         />
                       </div>
                     </div>
-
-                    <div className="col-span-2">
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
+                    <div className="md:col-span-8">
                       <div className="form-group">
-                        <Input
+                        <Textarea
                           fullWidth
                           label="Comment"
                           multiline
@@ -694,58 +684,59 @@ const EditBookingAll = () => {
                         />
                       </div>
                     </div>
+                    <div className="md:col-span-4 space-y-3">
+                      <div>
+                        <div className="form-group">
+                          <Input
+                            fullWidth
+                            label="Paid Amount"
+                            name="order_payment_amount"
+                            value={booking.order_payment_amount}
+                            onChange={(e) => onInputChange(e)}
+                          />
+                        </div>
+                      </div>
 
-                    <div>
-                      <div className="form-group">
-                        <Input
-                          fullWidth
-                          label="Paid Amount"
-                          name="order_payment_amount"
-                          value={booking.order_payment_amount}
-                          onChange={(e) => onInputChange(e)}
-                        />
+                      <div className="col-span-3">
+                        <FormControl fullWidth>
+                          <InputLabel id="service-select-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Payment Mode{" "}
+                              <span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <Select
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="service-select-label"
+                            id="service-select"
+                            name="order_payment_type"
+                            value={booking.order_payment_type}
+                            onChange={(e) => onInputChange(e)}
+                            label="Payment Mode *"
+                            required
+                          >
+                            {paymentmode.map((data) => (
+                              <MenuItem
+                                key={data.payment_mode}
+                                value={data.payment_mode}
+                              >
+                                {data.payment_mode}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </div>
                     </div>
-
-                    <div>
-                      <FormControl fullWidth>
-                        <InputLabel id="service-select-label">
-                          <span className="text-sm relative bottom-[6px]">
-                            Payment Mode <span className="text-red-700">*</span>
-                          </span>
-                        </InputLabel>
-                        <Select
-                          sx={{ height: "40px", borderRadius: "5px" }}
-                          labelId="service-select-label"
-                          id="service-select"
-                          name="order_payment_type"
-                          value={booking.order_payment_type}
-                          onChange={(e) => onInputChange(e)}
-                          label="Payment Mode *"
-                          required
-                        >
-                          {paymentmode.map((data) => (
-                            <MenuItem
-                              key={data.payment_mode}
-                              value={data.payment_mode}
-                            >
-                              {data.payment_mode}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    <div className="col-span-2">
-                      <div className="form-group">
-                        <Input
-                          fullWidth
-                          label="Transaction Details"
-                          name="order_transaction_details"
-                          value={booking.order_transaction_details}
-                          onChange={(e) => onInputChange(e)}
-                        />
-                      </div>
+                  </div>
+                  <div>
+                    <div className="form-group">
+                      <Textarea
+                        fullWidth
+                        label="Transaction Details"
+                        name="order_transaction_details"
+                        value={booking.order_transaction_details}
+                        onChange={(e) => onInputChange(e)}
+                      />
                     </div>
                   </div>
 

@@ -15,13 +15,23 @@ import {
   Select,
   Option,
   Button,
+  Textarea,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
-
+const CommissionBy = [
+  {
+    value: "Vendor",
+    label: "Vendor",
+  },
+  {
+    value: "V3 Care",
+    label: "V3 Care",
+  },
+];
 const PendingCommissionView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,6 +39,7 @@ const PendingCommissionView = () => {
   const [booking, setBooking] = useState({});
   const [payment, setPayment] = useState({
     order_comm_remark: "",
+    order_comm_received_by: "",
   });
   const { userType } = useContext(ContextPanel);
   const storedPageNo = localStorage.getItem("page-no");
@@ -75,12 +86,18 @@ const PendingCommissionView = () => {
   };
   const updateData = async (e) => {
     e.preventDefault();
+
+    if (payment.order_comm_received_by === "") {
+      toast.error("Fill the required Details");
+      return;
+    }
     let data = {
+      order_comm_received_by: payment.order_comm_received_by,
       order_comm_remark: payment.order_comm_remark,
     };
     try {
       const res = await axios({
-        url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
+        // url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
         method: "PUT",
         data,
         headers: {
@@ -255,20 +272,6 @@ const PendingCommissionView = () => {
                   {booking?.order_service}
                 </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
                 <button
                   onClick={() => setActiveTab("additionalInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
@@ -292,16 +295,52 @@ const PendingCommissionView = () => {
             {userType !== "4" && (
               <Card className="mb-6">
                 <CardBody>
-                  <form onSubmit={updateData} className="space-y-4">
-                    <Input
-                      label="Commission Remarks"
-                      name="order_comm_remark"
-                      value={payment.order_comm_remark}
-                      onChange={onInputChange}
-                    />
-                    <Button type="submit" onClick={updateData} color="blue">
-                      Receive Commission
-                    </Button>
+                  <form onSubmit={updateData}>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      <div className="md:col-span-4">
+                        <Select
+                          label={
+                            <>
+                              Select Commission received By{" "}
+                              <span className="text-red-500 ml-1">*</span>
+                            </>
+                          }
+                          name="order_comm_received_by"
+                          value={payment.order_comm_received_by || ""}
+                          required
+                        >
+                          {CommissionBy.map((mode) => (
+                            <Option
+                              key={mode.value}
+                              value={mode.value}
+                              // onClick={() =>
+                              //   setPayment({
+                              //     ...payment,
+                              //     order_comm_received_by: mode.payment_mode,
+                              //   })
+                              // }
+                              onChange={onInputChange}
+                            >
+                              {mode.label}
+                            </Option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div className="md:col-span-8">
+                        {" "}
+                        <Textarea
+                          label="Commission Remarks"
+                          name="order_comm_remark"
+                          value={payment.order_comm_remark}
+                          onChange={onInputChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-center mt-2">
+                      <Button type="submit" onClick={updateData} color="blue">
+                        Receive Commission
+                      </Button>
+                    </div>
                   </form>
                 </CardBody>
               </Card>

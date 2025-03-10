@@ -14,6 +14,7 @@ import {
   Select,
   Option,
   Button,
+  Textarea,
 } from "@material-tailwind/react";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
@@ -299,37 +300,45 @@ const PendingPaymentView = () => {
                   </Typography>
                 </CardHeader>
                 <CardBody>
-                  <form onSubmit={updateData} className="space-y-4">
-                    <Select
-                      label="Select Payment Mode"
-                      name="order_check_payment_type"
-                      value={payment.order_check_payment_type || ""}
-                    >
-                      {paymentModes.map((mode) => (
-                        <Option
-                          key={mode.payment_mode}
-                          value={mode.payment_mode}
-                          onClick={() =>
-                            setPayment({
-                              ...payment,
-                              order_check_payment_type: mode.payment_mode,
-                            })
-                          }
+                  <form onSubmit={updateData}>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      <div className="md:col-span-4">
+                        <Select
+                          label="Select Payment Mode"
+                          name="order_check_payment_type"
+                          value={payment.order_check_payment_type || ""}
                         >
-                          {mode.payment_mode}
-                        </Option>
-                      ))}
-                    </Select>
-                    <Input
-                      label="Referral Number / Remarks"
-                      name="order_check_payment_details"
-                      value={payment.order_check_payment_details}
-                      onChange={onInputChange}
-                    />
-
-                    <Button type="submit" onClick={updateData} color="blue">
-                      Receive Payment
-                    </Button>
+                          {paymentModes.map((mode) => (
+                            <Option
+                              key={mode.payment_mode}
+                              value={mode.payment_mode}
+                              onClick={() =>
+                                setPayment({
+                                  ...payment,
+                                  order_check_payment_type: mode.payment_mode,
+                                })
+                              }
+                            >
+                              {mode.payment_mode}
+                            </Option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div className="md:col-span-8">
+                        {" "}
+                        <Textarea
+                          label="Referral Number / Remarks"
+                          name="order_check_payment_details"
+                          value={payment.order_check_payment_details}
+                          onChange={onInputChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-center my-4">
+                      <Button type="submit" onClick={updateData} color="blue">
+                        Receive Payment
+                      </Button>
+                    </div>
                   </form>
                 </CardBody>
               </Card>
