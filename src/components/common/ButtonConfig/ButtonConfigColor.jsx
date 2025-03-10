@@ -108,13 +108,13 @@ const ButtonConfigColor = ({
   return (
     <button
       type={buttontype}
-      className={`px-4 py-[6px] rounded-lg transition-all duration-300  ${getButtonStyles()} ${
+      className={`px-4 py-[6px] rounded-lg transition-all duration-300   ${getButtonStyles()} ${
         disabled || loading ? "opacity-50 cursor-not-allowed" : ""
       } ${className || ""}`} // Supports extra CSS
       onClick={onClick}
       disabled={disabled || loading}
     >
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2 text-sm">
         {getIcon()}
         <span className="whitespace-nowrap">{label}</span>
       </div>

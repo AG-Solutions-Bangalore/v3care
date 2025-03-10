@@ -9,6 +9,8 @@ import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 const AddBackhandTeam = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -52,31 +54,40 @@ const AddBackhandTeam = () => {
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setIsButtonDisabled(true);
-    const data = new FormData();
-    data.append("name", team.name);
-    data.append("mobile", team.mobile);
-    data.append("email", team.email);
-    data.append("remarks", team.remarks);
-    data.append("branch_id", team.branch_id);
-    data.append("user_type", team.user_type);
-    data.append("user_aadhar_no", team.user_aadhar_no);
-    data.append("user_aadhar", selectedFile1);
-    data.append("user_pancard_no", team.user_pancard_no);
-    data.append("user_pancard", selectedFile2);
-    axios({
-      url: BASE_URL + "/api/panel-create-admin-user",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == "200") {
-        toast.success("Create succesfull");
+    setLoading(true);
 
+    // Disable button to prevent multiple clicks
+    setIsButtonDisabled(true);
+
+    try {
+      const data = new FormData();
+      data.append("name", team.name);
+      data.append("mobile", team.mobile);
+      data.append("email", team.email);
+      data.append("remarks", team.remarks);
+      data.append("branch_id", team.branch_id);
+      data.append("user_type", team.user_type);
+      data.append("user_aadhar_no", team.user_aadhar_no);
+      data.append("user_aadhar", selectedFile1);
+      data.append("user_pancard_no", team.user_pancard_no);
+      data.append("user_pancard", selectedFile2);
+
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-create-admin-user`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.code === "200") {
+        toast.success("Create successful!");
+
+        // Reset form fields
         setTeam({
           name: "",
           mobile: "",
@@ -89,20 +100,27 @@ const AddBackhandTeam = () => {
           user_type: "5",
           remarks: "",
         });
+
+        // Navigate to the next page
         navigate("/backhand-team");
       } else {
-        alert("Duplicate Entry");
+        toast.error("Duplicate Entry");
       }
-    });
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Something went wrong. Please try again.");
+      setLoading(false);
+    } finally {
+      // Re-enable button after request completes
+      setLoading(false);
+      setIsButtonDisabled(false);
+    }
   };
+
   return (
     <Layout>
       <MasterFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Backhand Team
-        </h3>
-      </div>
+      <PageHeader title={"Create Backhand Team"} />
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
@@ -234,32 +252,21 @@ const AddBackhandTeam = () => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            <Button
+            <ButtonConfigColor
               type="submit"
-              className="mr-2 mb-2"
-              color="primary"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Submit</span>
-              </div>
-            </Button>
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
 
-            {/* Back Button */}
-
-            <Link to="/field-team">
-              <Button className="mr-2 mb-2" color="primary">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-5 h-5" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

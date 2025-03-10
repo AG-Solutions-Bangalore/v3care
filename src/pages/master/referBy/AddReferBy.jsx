@@ -69,7 +69,6 @@ const AddReferBy = () => {
       console.error("Error:", error);
       setLoading(false);
     }
-
     setIsButtonDisabled(false);
     setLoading(false);
   };
