@@ -67,9 +67,16 @@ const InspectionBooking = () => {
     // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
+    e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking-inspection/${id}`);
+  };
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
   };
   const columns = [
     {
@@ -321,9 +328,9 @@ const InspectionBooking = () => {
       setPage(currentPage);
       navigate(`/inspection?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = InspectionBookData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {

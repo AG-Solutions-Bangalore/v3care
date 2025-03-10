@@ -62,7 +62,18 @@ const RnrList = () => {
     fetchPendingData();
     // setLoading(false);
   }, []);
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/edit-booking/${id}`);
+  };
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
+  };
   const columns = [
     {
       name: "id",
@@ -75,10 +86,7 @@ const RnrList = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent row click event
-                    navigate(`/edit-booking/${id}`);
-                  }}
+                onClick={(e) => handleEdit(e, id)}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
@@ -312,9 +320,9 @@ const RnrList = () => {
       setPage(currentPage);
       navigate(`/rnr?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = pendingBookData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {

@@ -10,6 +10,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const PendingCommission = () => {
   const [PendingCommissionData, setPendingCommissionData] = useState(null);
@@ -64,10 +65,14 @@ const PendingCommission = () => {
     fetchPendingComData();
     setLoading(false);
   }, []);
-  const handleEdit = (e, id) => {
+
+
+
+  const handleView = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-commission-view/${id}`);
+    navigate(`/pending-commission-view/${id}`)
   };
   const columns = [
     {
@@ -248,28 +253,7 @@ const PendingCommission = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              // onClick={() => navigate(`/pending-commission-view/${id}`)}
-              onClick={(e) => handleEdit(e, id)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="View pending Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+    
   ];
   const options = {
     selectableRows: "none",
@@ -286,9 +270,10 @@ const PendingCommission = () => {
       setPage(currentPage);
       navigate(`/commission-pending?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = PendingCommissionData[rowMeta.dataIndex].id;
-      navigate(`/pending-commission-view/${id}`)
+     
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {
@@ -298,6 +283,34 @@ const PendingCommission = () => {
         },
       };
     },
+      customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+          return (
+            <div className="flex justify-end items-center p-4">
+              <span className="mx-4">
+                <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+                {Math.ceil(count / rowsPerPage)}
+              </span>
+              <IoIosArrowBack
+                onClick={page === 0 ? null : () => changePage(page - 1)}
+                className={`w-6 h-6 cursor-pointer ${
+                  page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+                }  hover:text-red-600`}
+              />
+              <IoIosArrowForward
+                onClick={
+                  page >= Math.ceil(count / rowsPerPage) - 1
+                    ? null
+                    : () => changePage(page + 1)
+                }
+                className={`w-6 h-6 cursor-pointer ${
+                  page >= Math.ceil(count / rowsPerPage) - 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-blue-600"
+                }  hover:text-red-600`}
+              />
+            </div>
+          );
+        },
   };
 
   return (

@@ -65,8 +65,10 @@ const ReceivedPayment = () => {
     fetchReceivedData();
     setLoading(false);
   }, []);
-  const handleEdit = (e, id) => {
+
+  const handleView = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/pending-received-view/${id}`);
   };
@@ -293,28 +295,7 @@ const ReceivedPayment = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              // onClick={() => navigate(`/pending-received-view/${id}`)}
-              onClick={(e) => handleEdit(e, id)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="View pending Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+    
   ];
   const options = {
     selectableRows: "none",
@@ -333,9 +314,9 @@ const ReceivedPayment = () => {
       setPage(currentPage);
       navigate(`/received-payment?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = receivedData[rowMeta.dataIndex].id;
-      navigate(`/pending-received-view/${id}`);
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {

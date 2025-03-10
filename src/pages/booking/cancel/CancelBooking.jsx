@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import MUIDataTable from "mui-datatables";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
@@ -11,12 +11,32 @@ import { CiSquarePlus } from "react-icons/ci";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const CancelBooking = () => {
   const [cancelBookData, setCancelBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+    const location = useLocation();
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 10;
+    const searchParams = new URLSearchParams(location.search);
+    const pageParam = searchParams.get("page");
+    useEffect(() => {
+      if (pageParam) {
+        setPage(parseInt(pageParam) - 1);
+      } else {
+        const storedPageNo = localStorage.getItem("page-no");
+        if (storedPageNo) {
+          setPage(parseInt(storedPageNo) - 1);
+          navigate(`/cancel?page=${storedPageNo}`);
+        } else {
+          localStorage.setItem("page-no", 1);
+          setPage(0);
+        }
+      }
+    }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchCancelData = async () => {
@@ -46,7 +66,12 @@ const CancelBooking = () => {
     fetchCancelData();
     // setLoading(false);
   }, []);
-
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
+  };
   const columns = [
     {
       name: "order_ref",
@@ -272,9 +297,17 @@ const CancelBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    onRowClick: (rowData, rowMeta) => {
+
+    count: cancelBookData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/cancel?page=${currentPage + 1}`);
+    },
+    onRowClick: (rowData, rowMeta,e) => {
       const id = cancelBookData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {
@@ -284,6 +317,34 @@ const CancelBooking = () => {
         },
       };
     },
+     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+          return (
+            <div className="flex justify-end items-center p-4">
+              <span className="mx-4">
+                <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+                {Math.ceil(count / rowsPerPage)}
+              </span>
+              <IoIosArrowBack
+                onClick={page === 0 ? null : () => changePage(page - 1)}
+                className={`w-6 h-6 cursor-pointer ${
+                  page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+                }  hover:text-red-600`}
+              />
+              <IoIosArrowForward
+                onClick={
+                  page >= Math.ceil(count / rowsPerPage) - 1
+                    ? null
+                    : () => changePage(page + 1)
+                }
+                className={`w-6 h-6 cursor-pointer ${
+                  page >= Math.ceil(count / rowsPerPage) - 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-blue-600"
+                }  hover:text-red-600`}
+              />
+            </div>
+          );
+        },
   };
   return (
     <Layout>
