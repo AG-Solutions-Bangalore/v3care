@@ -224,10 +224,10 @@ const ViewAllBooking = () => {
 
                 {/* V3 Values */}
                 <div className="p-2 text-center border-b border-r border-black font-medium bg-white">
-                  V3
+                  V3 -     {bookingData.booking_total_Confirmed_v3_count}
                 </div>
                 <div className="p-2 text-center border-b border-r border-black bg-white">
-                  {bookingData.booking_total_Confirmed_v3_count}
+                  {bookingData.booking_confirmed_count}
                 </div>
                 <div className="p-2 text-center border-b border-r border-black bg-white">
                   {bookingData.booking_postpone_count}
@@ -250,10 +250,10 @@ const ViewAllBooking = () => {
 
                 {/* Vendor Values */}
                 <div className="p-2 text-center border-b border-r border-black font-medium bg-white">
-                  Vendor
+                  Vendor - {bookingData.booking_total_Confirmed_vendor_count}
                 </div>
                 <div className="p-2 text-center border-b border-r border-black bg-white">
-                  {bookingData.booking_total_Confirmed_vendor_count}
+                  {bookingData.booking_confirmed_vendor_count}
                 </div>
                 <div className="p-2 text-center border-b border-r border-black bg-white">
                   {bookingData.booking_postpone_vendor_count || 0}
