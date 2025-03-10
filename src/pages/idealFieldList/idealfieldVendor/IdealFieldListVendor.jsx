@@ -68,7 +68,7 @@ const IdealFieldListVendor = () => {
   return (
     <Layout>
       <IdealFieldListFilter />
-      <div className="container mx-auto px-4">
+      <div className="bg-white">
         {/* Page Title */}
         {/* <div className="my-3 bg-white rounded-lg p-2 text-2xl font-bold text-gray-800">
           Vendor Ideal Field List

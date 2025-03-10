@@ -9,31 +9,13 @@ import MUIDataTable from "mui-datatables";
 import Moment from "moment";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { RefreshCw, SquarePen } from "lucide-react";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
-    const location = useLocation();
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 10;
-  const searchParams = new URLSearchParams(location.search);
-  const pageParam = searchParams.get("page");
-  useEffect(() => {
-    if (pageParam) {
-      setPage(parseInt(pageParam) - 1);
-    } else {
-      const storedPageNo = localStorage.getItem("page-no");
-      if (storedPageNo) {
-        setPage(parseInt(storedPageNo) - 1);
-        navigate(`/refer-by?page=${storedPageNo}`); 
-      } else {
-        localStorage.setItem("page-no", 1);
-        setPage(0);
-      }
-    }
-  }, [location]);
   UseEscapeKey();
   const fetchNotificationData = async () => {
     try {
@@ -88,16 +70,44 @@ const NotificationList = () => {
 
   const columns = [
     {
-      name: "slNo",
-      label: "SL No",
+      name: "id",
+      label: "Action",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
+        customBodyRender: (id, tableMeta) => {
+          const tableNot =
+            notificationData[tableMeta.rowIndex].notification_status;
+          console.log("table not ", tableNot);
+
+          return tableNot == "Active" ? (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <RefreshCw
+                  onClick={() => handleUpdate(id)}
+                  className="h-5 w-5 cursor-pointer hover:text-blue-700"
+                >
+                  <title>Inactive</title>
+                </RefreshCw>
+              )}
+            </div>
+          ) : (
+            ""
+          );
         },
       },
     },
+    // {
+    //   name: "slNo",
+    //   label: "SL No",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       return tableMeta.rowIndex + 1;
+    //     },
+    //   },
+    // },
     {
       name: "notification_image",
       label: "Image",
@@ -146,35 +156,7 @@ const NotificationList = () => {
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id, tableMeta) => {
-          const tableNot =
-            notificationData[tableMeta.rowIndex].notification_status;
-          console.log("table not ", tableNot);
-
-          return tableNot == "Active" ? (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
-                <FaEdit
-                  title="Inactive"
-                  onClick={() => handleUpdate(id)}
-                  className="h-5 w-5 cursor-pointer"
-                />
-              )}
-            </div>
-          ) : (
-            ""
-          );
-        },
-      },
-    },
   ];
-
 
   const options = {
     selectableRows: "none",
@@ -193,14 +175,14 @@ const NotificationList = () => {
     customToolbar: () => {
       return (
         <>
-       {userType !== "4" && (
-          <Link
-            to="/add-notification"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Notification
-          </Link>
-        )}
+          {userType !== "4" && (
+            <Link
+              to="/add-notification"
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Notification
+            </Link>
+          )}
         </>
       );
     },
@@ -209,7 +191,7 @@ const NotificationList = () => {
     <Layout>
       <div className="mt-5">
         <MUIDataTable
-        title="Notification List"
+          title="Notification List"
           data={notificationData ? notificationData : []}
           columns={columns}
           options={options}

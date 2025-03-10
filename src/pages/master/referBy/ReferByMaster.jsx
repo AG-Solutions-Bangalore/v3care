@@ -9,10 +9,12 @@ import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { SquarePen } from "lucide-react";
+
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   //
@@ -21,6 +23,7 @@ const ReferByMaster = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -35,7 +38,9 @@ const ReferByMaster = () => {
       }
     }
   }, [location]);
+  
   UseEscapeKey();
+  
   useEffect(() => {
     const fetchReferData = async () => {
       try {
@@ -62,42 +67,15 @@ const ReferByMaster = () => {
       }
     };
     fetchReferData();
-    setLoading(false);
   }, []);
+  
   const handleEdit = (e, id) => {
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
     navigate(`/refer-by-edit/${id}`);
   };
+  
   const columns = [
-    {
-      name: "slNo",
-      label: "SL No",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          return tableMeta.rowIndex + 1;
-        },
-      },
-    },
-    {
-      name: "refer_by",
-      label: "Refer By",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
-
-    {
-      name: "refer_by_status",
-      label: "Status",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
     {
       name: "id",
       label: "Action",
@@ -113,10 +91,9 @@ const ReferByMaster = () => {
                     onClick={(e) => handleEdit(e, id)}
                     className="flex items-center space-x-2"
                   >
-                    <FaEdit
-                      title="Booking Info"
-                      className="h-5 w-5 cursor-pointer"
-                    />
+                    <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                      <title>Booking Info</title>
+                    </SquarePen>
                   </div>
                 </>
               )}
@@ -125,16 +102,31 @@ const ReferByMaster = () => {
         },
       },
     },
+    {
+      name: "refer_by",
+      label: "Refer By",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "refer_by_status",
+      label: "Status",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
   ];
+  
   const options = {
     selectableRows: "none",
     elevation: 0,
-
     responsive: "standard",
     viewColumns: true,
     download: false,
     print: false,
-
     count: referData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
@@ -196,13 +188,15 @@ const ReferByMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="mt-5">
-        <MUIDataTable
-          title="Refer By List"
-          data={referData ? referData : []}
-          columns={columns}
-          options={options}
-        />
+      <div className="mt-1">
+     
+          <MUIDataTable
+            title="Refer By List"
+            data={referData ? referData : []}
+            columns={columns}
+            options={options}
+          />
+       
       </div>
     </Layout>
   );

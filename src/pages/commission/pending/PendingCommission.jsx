@@ -286,10 +286,15 @@ const PendingCommission = () => {
       setPage(currentPage);
       navigate(`/commission-pending?page=${currentPage + 1}`);
     },
+    onRowClick: (rowData, rowMeta) => {
+      const id = PendingCommissionData[rowMeta.dataIndex].id;
+      navigate(`/pending-commission-view/${id}`)
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor:'pointer',
         },
       };
     },

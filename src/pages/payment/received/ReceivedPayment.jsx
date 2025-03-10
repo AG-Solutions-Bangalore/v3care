@@ -333,10 +333,15 @@ const ReceivedPayment = () => {
       setPage(currentPage);
       navigate(`/received-payment?page=${currentPage + 1}`);
     },
+    onRowClick: (rowData, rowMeta) => {
+      const id = receivedData[rowMeta.dataIndex].id;
+      navigate(`/pending-received-view/${id}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
+          cursor: "pointer",
         },
       };
     },

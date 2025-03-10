@@ -236,16 +236,21 @@ const ReceivedsCommission = () => {
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
-      navigate(`/refer-by?page=${currentPage + 1}`);
+      navigate(`/received-commission?page=${currentPage + 1}`);
     },
     responsive: "standard",
     viewColumns: true,
     download: false,
     print: false,
+    onRowClick: (rowData, rowMeta) => {
+      const id = receivedCommData[rowMeta.dataIndex].id;
+      navigate(`/received-commission-view/${id}`);
+    },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
+          cursor: "pointer",
         },
       };
     },
