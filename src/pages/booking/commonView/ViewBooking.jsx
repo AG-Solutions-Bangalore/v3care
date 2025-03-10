@@ -350,8 +350,11 @@ const ViewBooking = () => {
       <BookingFilter />
       <div className="container mx-auto p-4">
         <div className="flex justify-between">
-          <Typography variant="h4" color="gray" className="mb-6 flex">
-            <ArrowLeft className="cursor-pointer  " onClick={handleBack} />{" "}
+          <Typography variant="h4" color="gray" className="mb-6 flex ">
+            <ArrowLeft
+              className="text-center cursor-pointer mt-1"
+              onClick={handleBack}
+            />{" "}
             Booking for{" "}
             <span className="text-[#F44336]">{booking?.order_service} </span>
           </Typography>

@@ -305,7 +305,7 @@ const PostponeBooking = () => {
                       <Input
                         fullWidth
                         required
-                        label="Commission"
+                        label="Commission (%)"
                         name="order_comm"
                         value={booking.order_comm}
                         onChange={(e) => onInputChange(e)}

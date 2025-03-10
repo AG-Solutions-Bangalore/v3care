@@ -90,7 +90,7 @@ const AddServiceMaster = () => {
             </div>
 
             {/* Service Commission Field */}
-            <div className="form-group">
+            {/* <div className="form-group">
               <Input
                 label="service commission"
                 type="tel"
@@ -100,7 +100,7 @@ const AddServiceMaster = () => {
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
               />
-            </div>
+            </div> */}
 
             {/* File Upload Field */}
             <div className="form-group">

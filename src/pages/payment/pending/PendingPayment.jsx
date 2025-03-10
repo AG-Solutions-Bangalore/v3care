@@ -313,28 +313,28 @@ const PendingPayment = () => {
       },
     },
 
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <div
-              // onClick={() => navigate(`/pending-payment-view/${id}`)}
-              onClick={(e) => handleEdit(e, id)}
-              className="flex items-center space-x-2"
-            >
-              <MdOutlineRemoveRedEye
-                title="View pending Info"
-                className="h-5 w-5 cursor-pointer"
-              />
-            </div>
-          );
-        },
-      },
-    },
+    // {
+    //   name: "id",
+    //   label: "Action",
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (id) => {
+    //       return (
+    //         <div
+    //           // onClick={() => navigate(`/pending-payment-view/${id}`)}
+    //           onClick={(e) => handleEdit(e, id)}
+    //           className="flex items-center space-x-2"
+    //         >
+    //           <MdOutlineRemoveRedEye
+    //             title="View pending Info"
+    //             className="h-5 w-5 cursor-pointer"
+    //           />
+    //         </div>
+    //       );
+    //     },
+    //   },
+    // },
   ];
   const options = {
     selectableRows: "none",
@@ -355,7 +355,7 @@ const PendingPayment = () => {
     },
     onRowClick: (rowData, rowMeta) => {
       const id = pendingData[rowMeta.dataIndex].id;
-      navigate(`/pending-payment-view/${id}`);
+      handleEdit(e, id)();
     },
     setRowProps: (rowData) => {
       return {
