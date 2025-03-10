@@ -1,8 +1,13 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+
+
+
+  import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   BuildingStorefrontIcon,
   HomeIcon,
   XMarkIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { useEffect, useRef, useState } from "react";
@@ -11,26 +16,47 @@ import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
 import { CiViewList } from "react-icons/ci";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoDownloadOutline } from "react-icons/io5";
+
 const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const sidenavRef = useRef(null);
   const { pathname } = useLocation();
-  const [openBookingMenu, setOpenBookingMenu] = useState(false);
+  const [activeMenus, setActiveMenus] = useState({});
 
   const userType = localStorage.getItem("user_type_id");
   const userName = localStorage.getItem("username");
   const sidenavType = "dark";
 
   const sidenavTypes = {
-    dark: "bg-[#001F3F] ",
+    dark: "bg-[#001F3F]",
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
+
+ 
+  useEffect(() => {
+    const initActiveMenus = {};
+    
+    menuItems.forEach((item) => {
+      if (item.subMenu) {
+        
+        const isActive = item.subMenu.some(subItem => 
+          pathname === subItem.to || pathname.startsWith(subItem.to)
+        );
+        
+        if (isActive) {
+          initActiveMenus[item.text] = true;
+        }
+      }
+    });
+    
+    setActiveMenus(initActiveMenus);
+  }, []);
+
 
   useEffect(() => {
     function handClickOutside(e) {
       if (sidenavRef.current && !sidenavRef.current.contains(e.target)) {
         if (window.innerWidth < 1280) {
-          // xl breakpoint
           setOpenSideNav(false);
         }
       }
@@ -42,9 +68,9 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     };
   }, [setOpenSideNav]);
 
+ 
   useEffect(() => {
     if (window.innerWidth < 1280) {
-      // xl breakpoint
       setOpenSideNav(false);
     }
   }, [pathname, setOpenSideNav]);
@@ -115,19 +141,39 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
-      to: "/booking-download",
+      to: "#",
       icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
       text: "Download",
       title: "Download",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
+      subMenu: [
+        {
+          to: "/booking-download",
+          text: "Booking",
+          title: "Booking Download",
+        },
+        {
+          to: "/allBooking-download",
+          text: "All Booking",
+          title: "All Booking Download",
+        },
+        {
+          to: "/vendor-download",
+          text: "Vendor",
+          title: "Vendor Download",
+        },
+        {
+          to: "/received-download",
+          text: "Received",
+          title: "Received Download",
+        },
+        {
+          to: "/pending-download",
+          text: "Pending",
+          title: "Pending Download",
+        },
+      ],
     },
-    // {
-    //   to: "/report-quatation",
-    //   icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
-    //   text: "Report",
-    //   title: "Report",
-    //   roles: ["superadmin"],
-    // },
   ];
 
   const roleMap = {
@@ -140,36 +186,62 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     7: "operationteam",
   };
 
+
+
   // const getFilteredMenuItems = () => {
   //   const role = roleMap[userType];
   //   return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
   // };
-
   const getFilteredMenuItems = () => {
     const role = roleMap[userType];
 
     return role
       ? menuItems.filter((item) =>
-          item.text == "Report"
-            ? userName == "superadmins"
+          item.text === "Report"
+            ? userName === "superadmins"
             : item.roles.includes(role)
         )
       : [];
   };
+
   const handleItemClick = () => {
-    // Clear page-no from localStorage
+   
     localStorage.removeItem("page-no");
   };
+
+ 
+  const isParentActive = (item) => {
+    if (!item.subMenu) return false;
+    return item.subMenu.some(subItem => 
+      pathname === subItem.to || pathname.startsWith(subItem.to)
+    );
+  };
+
+ 
+  const toggleMenu = (menuName, forceOpen = false) => {
+    setActiveMenus(prev => ({
+      ...prev,
+      [menuName]: forceOpen ? true : !prev[menuName]
+    }));
+  };
+  
+
+  const handleSubmenuClick = (parentMenu) => {
+    handleItemClick();
+   
+    toggleMenu(parentMenu, true);
+  };
+
   return (
     <aside
       ref={sidenavRef}
       className={`${sidenavTypes[sidenavType]} ${
         openSideNav ? "translate-x-0" : "-translate-x-80"
       } ${
-        isCollapsed ? "xl:w-[5.5rem] w-[272px]" : " w-[272px] xl:w-[272px]"
-      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)]  rounded-xl transition-all duration-300 ease-in-out xl:translate-x-0 border border-blue-gray-100`}
+        isCollapsed ? "xl:w-[5.5rem] w-[272px]" : "w-[272px] xl:w-[272px]"
+      } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] rounded-xl transition-all duration-300 ease-in-out xl:translate-x-0 border border-blue-gray-100`}
     >
-      <div className={`relative`}>
+      <div className="relative">
         <Link to="/home" className="flex items-center justify-center p-4">
           <div className="flex items-center">
             <img
@@ -195,44 +267,142 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       <div
         className={`m-4 overflow-y-auto ${
           isCollapsed
-            ? "lg:h-[calc(100vh-200px)]    md:h-[calc(100vh-200px)] h-[calc(100vh-200px)]"
-            : "lg:h-[calc(100vh-240px)]    md:h-[calc(100vh-2400px)] h-[calc(100vh-240px)]"
-        }    custom-scroll`}
+            ? "lg:h-[calc(100vh-200px)] md:h-[calc(100vh-200px)] h-[calc(100vh-200px)]"
+            : "lg:h-[calc(100vh-240px)] md:h-[calc(100vh-240px)] h-[calc(100vh-240px)]"
+        } custom-scroll`}
       >
         <ul className="mb-4 flex flex-col gap-1">
-          {getFilteredMenuItems().map((item) => (
-            <li key={item.to}>
-              <NavLink to={item.to} onClick={handleItemClick}>
-                {({ isActive }) => (
-                  <Button
-                    variant={isActive ? "gradient" : "text"}
-                    color="white"
-                    title={item.title}
-                    className="flex items-center gap-4 px-4 capitalize"
-                    fullWidth
+          {getFilteredMenuItems().map((item) => {
+            const hasSubmenu = !!item.subMenu;
+            const isActive = pathname === item.to;
+            const isParentMenuActive = hasSubmenu && isParentActive(item);
+            const isMenuOpen = activeMenus[item.text];
+            
+            return (
+              <li key={item.to || item.text}>
+                {hasSubmenu ? (
+                  <div className={isParentMenuActive ? "bg-blue-500/10 rounded-lg" : ""}>
+                    <Button
+                      variant={isParentMenuActive ? "gradient" : "text"}
+                      color="white"
+                      title={item.title}
+                      className={`flex items-center justify-between px-4 capitalize ${isParentMenuActive ? "bg-blue-500/20" : ""}`}
+                      fullWidth
+                      onClick={() => toggleMenu(item.text)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`${isParentMenuActive ? "text-blue-400" : ""}`}>
+                          {item.icon}
+                        </div>
+                        {(!isCollapsed || window.innerWidth < 1280) && (
+                          <Typography
+                            color={isParentMenuActive ? "blue" : "white"}
+                            className={`font-medium capitalize ${isParentMenuActive ? "text-blue-400" : ""}`}
+                          >
+                            {item.text}
+                          </Typography>
+                        )}
+                      </div>
+                      {(!isCollapsed || window.innerWidth < 1280) && (
+                        <div className={`transition-transform duration-300 ${isMenuOpen ? "rotate-180" : ""}`}>
+                          <ChevronDownIcon className={`h-4 w-4 ${isParentMenuActive ? "text-blue-400" : ""}`} />
+                        </div>
+                      )}
+                    </Button>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <ul className="pl-8 py-2 space-y-1">
+                        {item.subMenu.map((subItem) => {
+                          const isSubItemActive = pathname === subItem.to;
+                          return (
+                            <li key={subItem.to}>
+                              <NavLink 
+                                to={subItem.to} 
+                                className={({ isActive }) => 
+                                  isActive ? "text-blue-500" : ""
+                                }
+                                onClick={() => handleSubmenuClick(item.text)}
+                              >
+                                {({ isActive }) => (
+                                  <Button
+                                    variant={isActive ? "text" : "text"}
+                                    color="white"
+                                    title={subItem.title}
+                                    className={`flex items-center gap-4 px-3 py-2 capitalize rounded-lg ${
+                                      isActive ? "bg-blue-500/20" : "hover:bg-blue-gray-800"
+                                    }`}
+                                    fullWidth
+                                  >
+                                    <div className="w-2 h-2 rounded-full flex-shrink-0">
+                                      {isActive && (
+                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                      )}
+                                    </div>
+                                    {(!isCollapsed || window.innerWidth < 1280) && (
+                                      <Typography
+                                        color="inherit"
+                                        className={`font-medium capitalize text-sm ${
+                                          isActive ? "text-blue-400" : ""
+                                        }`}
+                                      >
+                                        {subItem.text}
+                                      </Typography>
+                                    )}
+                                  </Button>
+                                )}
+                              </NavLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <NavLink 
+                    to={item.to} 
+                    className={({ isActive }) => 
+                      isActive ? "text-blue-500" : ""
+                    }
+                    onClick={handleItemClick}
                   >
-                    {item.icon}
-                    {(!isCollapsed || window.innerWidth < 1280) && (
-                      <Typography
-                        color="inherit"
-                        className="font-medium capitalize"
+                    {({ isActive }) => (
+                      <Button
+                        variant={isActive ? "gradient" : "text"}
+                        color="white"
+                        title={item.title}
+                        className={`flex items-center gap-4 px-4 capitalize ${isActive ? "bg-blue-500/20" : ""}`}
+                        fullWidth
                       >
-                        {item.text}
-                      </Typography>
+                        <div className={`${isActive ? "text-blue-400" : ""}`}>
+                          {item.icon}
+                        </div>
+                        {(!isCollapsed || window.innerWidth < 1280) && (
+                          <Typography
+                            color="inherit"
+                            className={`font-medium capitalize ${
+                              isActive ? "text-blue-400" : ""
+                            }`}
+                          >
+                            {item.text}
+                          </Typography>
+                        )}
+                      </Button>
                     )}
-                  </Button>
+                  </NavLink>
                 )}
-              </NavLink>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </div>
       {!isCollapsed && (
         <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
           <div className="flex flex-col items-center gap-2 text-white">
-            {/* <div className="text-lg font-medium">{formatTime(currentTime)}</div> */}
             <div className="text-sm font-medium opacity-80">
-              Version: 1.2.19
+              Version: 2.0.12
             </div>
           </div>
         </div>
@@ -240,4 +410,5 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     </aside>
   );
 };
+
 export default SideNav;

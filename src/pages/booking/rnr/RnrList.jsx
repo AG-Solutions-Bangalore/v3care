@@ -361,7 +361,7 @@ const RnrList = () => {
           <Spinner className="h-10 w-10" color="red" />
         </div>
       ) : (
-        <div className="mt-5">
+        <div className="mt-1">
           <MUIDataTable
             title={"RNR Booking List"}
             data={pendingBookData ? pendingBookData : []}
