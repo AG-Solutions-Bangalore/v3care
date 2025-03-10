@@ -112,13 +112,13 @@ const TodayBooking = () => {
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
+    // localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
+    // localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
   const columns = [

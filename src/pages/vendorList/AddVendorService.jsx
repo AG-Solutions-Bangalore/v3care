@@ -8,6 +8,8 @@ import BASE_URL from "../../base/BaseUrl";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const AddVendorService = () => {
   const { id } = useParams();
@@ -16,10 +18,10 @@ const AddVendorService = () => {
   const [selectedServices, setSelectedServices] = useState([]);
   const [availableServices, setAvailableServices] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     setSelectedServices(event.target.value);
-    console.log("Selected Services:", event.target.value);
   };
 
   useEffect(() => {
@@ -36,6 +38,8 @@ const AddVendorService = () => {
   }, []);
 
   const onSubmit = (e) => {
+    setLoading(true);
+
     e.preventDefault();
     const data = new FormData();
     data.append("vendor_service", selectedServices);
@@ -55,7 +59,7 @@ const AddVendorService = () => {
           }
         )
         .then((res) => {
-          if (res.data.code == "200") {
+          if (res.data.code === "200") {
             toast.success("Data updated successfully");
             navigate("/vendor-list");
           } else {
@@ -66,16 +70,18 @@ const AddVendorService = () => {
         .catch((error) => {
           console.error("Error updating data:", error);
           setIsButtonDisabled(false);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
+
   return (
     <Layout>
+      <PageHeader title={"Add Vendor Service"} />
+
       <div className="p-6 w-full  mx-auto bg-white shadow-lg rounded-lg mt-5">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Add Vendor Service
-        </h1>
-        <div className="border-t border-gray-300 my-4"></div>
         <form
           id="addIndiv"
           autoComplete="off"
@@ -112,7 +118,7 @@ const AddVendorService = () => {
           </FormControl>
 
           <div className="flex justify-center">
-            <button
+            {/* <button
               type="submit"
               className={`flex items-center justify-center bg-blue-600 text-white py-2 px-4 rounded-md shadow-lg transition-transform transform hover:scale-105 disabled:opacity-50 ${
                 isButtonDisabled ? "bg-gray-400" : "hover:bg-blue-700"
@@ -120,7 +126,15 @@ const AddVendorService = () => {
               disabled={isButtonDisabled}
             >
               <FiEdit className="mr-2" /> Update
-            </button>
+            </button> */}
+
+            <ButtonConfigColor
+              type="edit"
+              buttontype="submit"
+              label="Update"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
           </div>
         </form>
       </div>

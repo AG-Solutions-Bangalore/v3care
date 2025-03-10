@@ -16,6 +16,8 @@ import {
 import { MdArrowBack, MdSend } from "react-icons/md";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -84,6 +86,7 @@ const EditVendor = () => {
   const [selectedFile4, setSelectedFile4] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [servicess, setServicess] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("id");
@@ -170,6 +173,7 @@ const EditVendor = () => {
     navigate(`/vendor-list?page=${pageNo}`);
   };
   const onSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const form = document.getElementById("addIndiv");
 
@@ -231,22 +235,30 @@ const EditVendor = () => {
       } catch (error) {
         console.error("Error updating vendor:", error);
         toast.error("Error updating vendor");
+        setLoading(false);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   return (
     <Layout>
+      <div className="flex items-center justify-between mb-4">
+        <PageHeader
+          title={"Edit Vendor"}
+          label2={
+            <ButtonConfigColor
+              type="create"
+              label="Add Vendor Service"
+              onClick={() => navigate(`/add-vendor-service/${id}`)}
+            />
+          }
+        />
+      </div>
+
       <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
         {/* Title */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Edit Vendor </h1>
-          <Link to={`/add-vendor-service/${id}`} className="btn btn-outline">
-            <button className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-              <FiPlus className="mr-2" /> Add Vendor Service
-            </button>
-          </Link>
-        </div>
 
         {/* Personal Details */}
         <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
@@ -667,27 +679,36 @@ const EditVendor = () => {
               </div>
             </div>
           ))}
-          <div className="mt-4 text-center">
-            <Button
-              type="submit"
-              className="mr-2 mb-2"
-              onClick={onSubmit}
-            >
+          {/* <div className="mt-4 text-center">
+            <Button type="submit" className="mr-2 mb-2" onClick={onSubmit}>
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
                 <span>Update</span>
               </div>
             </Button>
 
-              <Button
-                className="mr-2 mb-2"
-                onClick={handleBack}
-              >
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
+            <Button className="mr-2 mb-2" onClick={handleBack}>
+              <div className="flex gap-1">
+                <MdArrowBack className="w-4 h-4" />
+                <span>Back</span>
+              </div>
+            </Button>
+          </div> */}
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="edit"
+              buttontype="submit"
+              label="Update"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

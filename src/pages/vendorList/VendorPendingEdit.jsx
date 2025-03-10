@@ -7,6 +7,8 @@ import { Button, Input } from "@material-tailwind/react";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const VendorPendingEdit = () => {
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ const VendorPendingEdit = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
@@ -76,6 +79,8 @@ const VendorPendingEdit = () => {
     navigate(`/vendor-list?page=${pageNo}`);
   };
   const onSubmit = async (e) => {
+    setLoading(true);
+
     e.preventDefault();
     const form = document.getElementById("addIndiv");
 
@@ -123,20 +128,19 @@ const VendorPendingEdit = () => {
       } catch (error) {
         console.error("Error updating vendor:", error);
         toast.error("Error updating vendor");
+        setLoading(false);
       } finally {
         setIsButtonDisabled(false);
+        setLoading(false);
       }
     }
   };
 
   return (
     <Layout>
-      <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
-        {/* Title */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold">Pending Edit Vendor </h1>
-        </div>
+      <PageHeader title={"Pending Edit Vendor "} />
 
+      <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
         {/* Personal Details */}
         <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
         <hr className="mb-4" />
@@ -224,7 +228,7 @@ const VendorPendingEdit = () => {
               />
             </div>
           </div>
-          <div className="mt-4 text-center">
+          {/* <div className="mt-4 text-center">
             <Button
               type="submit"
               className="mr-2 mb-2"
@@ -242,6 +246,22 @@ const VendorPendingEdit = () => {
                 <span>Back</span>
               </div>
             </Button>
+          </div> */}
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="edit"
+              buttontype="submit"
+              label="Update"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>

@@ -17,6 +17,8 @@ import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 // const theme = createTheme();
 
@@ -28,6 +30,8 @@ const AddVendor = () => {
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const initialVendorState = {
     vendor_short: "",
@@ -254,7 +258,6 @@ const AddVendor = () => {
     var v = document.getElementById("addIndiv").checkValidity();
     var v = document.getElementById("addIndiv").reportValidity();
     e.preventDefault();
-    console.log("FORM DATA ", Array.from(data.entries()));
     if (v) {
       axios({
         url: BASE_URL + "/api/panel-create-vendors",
@@ -308,6 +311,8 @@ const AddVendor = () => {
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
+      <PageHeader title={"Vendor Create"} />
+
       <Box
         sx={{
           bgcolor: "white",
@@ -317,14 +322,7 @@ const AddVendor = () => {
         }}
       >
         <form id="addIndiv">
-          {/* <ThemeProvider theme={theme}> */}
-          <Typography
-            variant="h5"
-            // align="center"
-          >
-            Personal Details
-          </Typography>
-          {/* </ThemeProvider> */}
+          <Typography variant="h6">Personal Details</Typography>
 
           <Box className={styles["form-container"]}>
             <CustomInput
@@ -460,7 +458,7 @@ const AddVendor = () => {
             />
           </Box>
           <Typography
-            variant="h5"
+            variant="h6"
             // align="center"
             sx={{ padding: "10px" }}
           >
@@ -525,7 +523,7 @@ const AddVendor = () => {
 
           {/* // */}
           <Typography
-            variant="h5"
+            variant="h6"
             // align="center"
             sx={{ padding: "10px" }}
           >
@@ -601,15 +599,30 @@ const AddVendor = () => {
               </div>
             ))}
           </Box>
-          <Button
+          {/* <Button
             type="submit"
             variant="contained"
             color="primary"
             onClick={(e) => onSubmit(e)}
             sx={{ mt: 3 }}
           >
-            Submit
-          </Button>
+            Submit */}
+          <div className="flex justify-center space-x-4 my-6">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              loading={loading}
+              onClick={(e) => onSubmit(e)}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
+          </div>
         </form>
       </Box>
     </Layout>

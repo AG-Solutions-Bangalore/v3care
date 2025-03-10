@@ -14,12 +14,12 @@ import {
   FaComments,
   FaEdit,
   FaArrowLeft,
-  FaFileDownload
+  FaFileDownload,
 } from "react-icons/fa";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
-const BackhandViewTeamMaster = ({backhandId,onClose}) => {
-
+const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
   const [fieldTeamViewData, setFieldTeamViewData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
@@ -62,106 +62,120 @@ const BackhandViewTeamMaster = ({backhandId,onClose}) => {
 
   return (
     <>
-  
-  <div className="bg-white rounded-lg shadow-sm max-w-3xl mx-auto">
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
-      ) : (
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-xl font-bold text-black">Field Team Details</h1>
-            
-            <div className="flex gap-2">
-              <button
-                onClick={() => window.open(
-                  "https://agsdraft.online/app/storage/app/public/user_document/" +
-                  fieldTeamViewData?.user_aadhar,
-                  "_blank"
-                )}
-                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
-              >
-                <div className="flex items-center">
-                  <FaFileDownload className="mr-1" />
-                  Aadhar
-                </div>
-              </button>
-              
-              <button
-                onClick={() => window.open(
-                  "https://agsdraft.online/app/storage/app/public/user_document/" +
-                  fieldTeamViewData?.user_pancard,
-                  "_blank"
-                )}
-                className="px-3 py-1.5 text-sm bg-red-50 text-red-700 rounded hover:bg-red-100 font-medium"
-              >
-                <div className="flex items-center">
-                  <FaFileDownload className="mr-1" />
-                  PAN
-                </div>
-              </button>
-            </div>
+      <div className="bg-white rounded-lg shadow-sm max-w-3xl mx-auto">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
+        ) : (
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-xl font-bold text-black">
+                Field Team Details
+              </h1>
 
-          {fieldTeamViewData ? (
-            <div className="space-y-1">
-              <DetailRow 
-                label="Name"
-                value={fieldTeamViewData?.name}
-              />
-              <DetailRow 
-                label="Mobile"
-                value={fieldTeamViewData?.mobile}
-              />
-              <DetailRow 
-                label="Email"
-                value={fieldTeamViewData?.email}
-              />
-              <DetailRow 
-                label="Aadhar Number"
-                value={fieldTeamViewData?.user_aadhar_no}
-              />
-              <DetailRow 
-                label="PAN Number"
-                value={fieldTeamViewData?.user_pancard_no}
-              />
-              <DetailRow 
-                label="Remarks"
-                value={fieldTeamViewData?.remarks || "No remarks available"}
-              />
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500">No data available</p>
-            </div>
-          )}
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    window.open(
+                      "https://agsdraft.online/app/storage/app/public/user_document/" +
+                        fieldTeamViewData?.user_aadhar,
+                      "_blank"
+                    )
+                  }
+                  className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
+                >
+                  <div className="flex items-center">
+                    <FaFileDownload className="mr-1" />
+                    Aadhar
+                  </div>
+                </button>
 
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
-            {userType !== "4" && (
-              <button
-                onClick={() => navigate("/field-team-edit/" + backhandId)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
-              >
-                <div className="flex items-center">
-                  <FaEdit className="mr-1.5" />
-                  Edit
-                </div>
-              </button>
-            )}
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium"
-            >
-              <div className="flex items-center">
-                <FaArrowLeft className="mr-1.5" />
-                Back
+                <button
+                  onClick={() =>
+                    window.open(
+                      "https://agsdraft.online/app/storage/app/public/user_document/" +
+                        fieldTeamViewData?.user_pancard,
+                      "_blank"
+                    )
+                  }
+                  className="px-3 py-1.5 text-sm bg-red-50 text-red-700 rounded hover:bg-red-100 font-medium"
+                >
+                  <div className="flex items-center">
+                    <FaFileDownload className="mr-1" />
+                    PAN
+                  </div>
+                </button>
               </div>
-            </button>
+            </div>
+
+            {fieldTeamViewData ? (
+              <div className="space-y-1">
+                <DetailRow label="Name" value={fieldTeamViewData?.name} />
+                <DetailRow label="Mobile" value={fieldTeamViewData?.mobile} />
+                <DetailRow label="Email" value={fieldTeamViewData?.email} />
+                <DetailRow
+                  label="Aadhar Number"
+                  value={fieldTeamViewData?.user_aadhar_no}
+                />
+                <DetailRow
+                  label="PAN Number"
+                  value={fieldTeamViewData?.user_pancard_no}
+                />
+                <DetailRow
+                  label="Remarks"
+                  value={fieldTeamViewData?.remarks || "No remarks available"}
+                />
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">No data available</p>
+              </div>
+            )}
+
+            {/* <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+              {userType !== "4" && (
+                <button
+                  onClick={() => navigate("/field-team-edit/" + backhandId)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
+                >
+                  <div className="flex items-center">
+                    <FaEdit className="mr-1.5" />
+                    Edit
+                  </div>
+                </button>
+              )}
+              <button
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium"
+              >
+                <div className="flex items-center">
+                  <FaArrowLeft className="mr-1.5" />
+                  Back
+                </div>
+              </button>
+            </div> */}
+
+            <div className="flex justify-center space-x-4 my-2">
+              {userType !== "4" && (
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Edit"
+                  onClick={() => navigate("/field-team-edit/" + backhandId)}
+                />
+              )}
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={onClose}
+              />
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </>
   );
 };
