@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
-import { Link,useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -14,8 +14,8 @@ import {
   Typography,
   Input,
   Option,
-  
   Select,
+  Textarea,
 } from "@material-tailwind/react";
 import {
   Dialog,
@@ -48,14 +48,10 @@ const PostponeBooking = () => {
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
 
-
-
   const [loading, setLoading] = useState(false);
   const [followup, setFollowUp] = useState([]);
   const [orderref, setOrderRef] = useState([]);
   const [open, setOpen] = useState(false);
-
-
 
   const [followups, setFollowUps] = useState({
     order_followup_date: moment().format("YYYY-MM-DD"),
@@ -69,11 +65,6 @@ const PostponeBooking = () => {
       [name]: value,
     }));
   };
-
-
-
-
-
 
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
@@ -112,57 +103,57 @@ const PostponeBooking = () => {
     fetchBookingData();
   }, []);
 
-   const columns = [
-      {
-        name: "order_followup_date",
-        label: " Date ",
-        options: {
-          filter: false,
-          sort: false,
-  
-          customBodyRender: (value) => {
-            return moment(value).format("DD-MM-YYYY");
-          },
+  const columns = [
+    {
+      name: "order_followup_date",
+      label: " Date ",
+      options: {
+        filter: false,
+        sort: false,
+
+        customBodyRender: (value) => {
+          return moment(value).format("DD-MM-YYYY");
         },
       },
-      {
-        name: "order_followup_description",
-        label: " Comment ",
-        options: {
-          filter: false,
-          sort: false,
+    },
+    {
+      name: "order_followup_description",
+      label: " Comment ",
+      options: {
+        filter: false,
+        sort: false,
+      },
+    },
+  ];
+  const options = {
+    selectableRows: "none",
+    elevation: 0,
+    responsive: "standard",
+    viewColumns: false,
+    download: false,
+    print: false,
+    search: false,
+    filter: false,
+    setRowProps: (rowData) => {
+      return {
+        style: {
+          borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
         },
-      },
-    ];
-    const options = {
-      selectableRows: "none",
-      elevation: 0,
-      responsive: "standard",
-      viewColumns: false,
-      download: false,
-      print: false,
-      search: false,
-      filter: false,
-      setRowProps: (rowData) => {
-        return {
-          style: {
-            borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
-          },
-        };
-      },
-      customToolbar: () => {
-        return (
-          <>
-            <Link
-              onClick={handleClickOpen}
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Follow up
-            </Link>
-          </>
-        );
-      },
-    };
+      };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <Link
+            onClick={handleClickOpen}
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            + Follow up
+          </Link>
+        </>
+      );
+    },
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -365,20 +356,6 @@ const PostponeBooking = () => {
                   {booking?.order_service}
                 </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
                 <button
                   onClick={() => setActiveTab("additionalInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
@@ -403,9 +380,9 @@ const PostponeBooking = () => {
               {/* here booking assign table  */}
               <CardBody>
                 {/* <form id="addIdniv"> */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <div className="form-group">
+                    <div>
                       <Input
                         fullWidth
                         required
@@ -421,7 +398,7 @@ const PostponeBooking = () => {
                   </div>
 
                   <div>
-                    <div className="form-group">
+                    <div>
                       <Input
                         fullWidth
                         required
@@ -434,8 +411,8 @@ const PostponeBooking = () => {
                     </div>
                   </div>
 
-                  <div className="col-span-2">
-                    <div className="form-group">
+                  <div>
+                    <div>
                       <Input
                         fullWidth
                         required
@@ -446,30 +423,27 @@ const PostponeBooking = () => {
                       />
                     </div>
                   </div>
-
-                  <div className="col-span-4">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Comment"
-                        multiline
-                        name="order_comment"
-                        value={booking.order_comment}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4 my-4">
+                  <div>
+                    <Textarea
+                      fullWidth
+                      label="Comment"
+                      multiline
+                      name="order_comment"
+                      value={booking.order_comment}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
-                  <div className="col-span-4">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Postpone Reason"
-                        multiline
-                        name="order_postpone_reason"
-                        value={booking.order_postpone_reason}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                  <div>
+                    <Textarea
+                      fullWidth
+                      label="Postpone Reason"
+                      multiline
+                      name="order_postpone_reason"
+                      value={booking.order_postpone_reason}
+                      onChange={(e) => onInputChange(e)}
+                    />
                   </div>
                 </div>
 
@@ -487,84 +461,84 @@ const PostponeBooking = () => {
                 {/* </form> */}
               </CardBody>
             </Card>
-             <Card className="mb-6">
-                                    <CardHeader floated={false} className="h-12 p-4">
-                                      <Typography variant="h6" color="blue-gray">
-                                        Follow Up
-                                      </Typography>
-                                    </CardHeader>
-                                    {/* here booking assign table  */}
-                                    <CardBody>
-                                      {loading ? (
-                                        <div className="flex justify-center items-center h-screen">
-                                          <Spinner className="h-10 w-10" color="red" />
-                                        </div>
-                                      ) : (
-                                        <div className="mt-5">
-                                          <MUIDataTable
-                                            // title={"Followup"}
-                                            data={followup ? followup : []}
-                                            columns={columns}
-                                            options={options}
-                                          />
-                                        </div>
-                                      )}
-                                    </CardBody>
-                                  </Card>
+            <Card className="mb-6">
+              <CardHeader floated={false} className="h-12 p-4">
+                <Typography variant="h6" color="blue-gray">
+                  Follow Up
+                </Typography>
+              </CardHeader>
+              {/* here booking assign table  */}
+              <CardBody>
+                {loading ? (
+                  <div className="flex justify-center items-center h-screen">
+                    <Spinner className="h-10 w-10" color="red" />
+                  </div>
+                ) : (
+                  <div className="mt-5">
+                    <MUIDataTable
+                      // title={"Followup"}
+                      data={followup ? followup : []}
+                      columns={columns}
+                      options={options}
+                    />
+                  </div>
+                )}
+              </CardBody>
+            </Card>
           </div>
         </div>
       </div>
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-                    {/* <DialogTitle>Follow Up</DialogTitle> */}
-                    <DialogContent>
-                      <div className="mb-5">
-                        <h1 className="font-bold text-xl"> Create Follow Up</h1>
-                      </div>
-                      <div className="space-y-4">
-                        <div>
-                          <Input
-                            fullWidth
-                            label="Order Follow up Date"
-                            name="order_followup_date"
-                            value={followups.order_followup_date}
-                            onChange={(e) => onInputChange(e)}
-                            type="date"
-                            disabled
-                            labelProps={{
-                              className: "!text-gray-900",
-                            }}
-                            required
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            fullWidth
-                            label="Order Follow up"
-                            name="order_followup_description"
-                            value={followups.order_followup_description}
-                            onChange={onInputChange1}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </DialogContent>
-                    <DialogActions>
-                      <button
-                        onClick={handleClose}
-                        className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-                        type="sumbit"
-                        onClick={(e) => onSubmitFollowup(e)}
-                      >
-                        Submit
-                      </button>
-                    </DialogActions>
-                  </Dialog>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        {/* <DialogTitle>Follow Up</DialogTitle> */}
+        <DialogContent>
+          <div className="mb-5">
+            <h1 className="font-bold text-xl"> Create Follow Up</h1>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <Input
+                fullWidth
+                label="Order Follow up Date"
+                name="order_followup_date"
+                value={followups.order_followup_date}
+                onChange={(e) => onInputChange(e)}
+                type="date"
+                disabled
+                labelProps={{
+                  className: "!text-gray-900",
+                }}
+                required
+              />
+            </div>
+            <div>
+              <Input
+                type="text"
+                fullWidth
+                label="Order Follow up"
+                name="order_followup_description"
+                value={followups.order_followup_description}
+                onChange={onInputChange1}
+                required
+              />
+            </div>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <button
+            onClick={handleClose}
+            className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            type="sumbit"
+            onClick={(e) => onSubmitFollowup(e)}
+          >
+            Submit
+          </button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 };

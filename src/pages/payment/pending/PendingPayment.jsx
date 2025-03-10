@@ -67,6 +67,7 @@ const PendingPayment = () => {
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/pending-payment-view/${id}`);
   };
@@ -353,7 +354,7 @@ const PendingPayment = () => {
       setPage(currentPage);
       navigate(`/pending-payment?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = pendingData[rowMeta.dataIndex].id;
       handleEdit(e, id)();
     },
