@@ -88,9 +88,9 @@ const ReceivedDownload = () => {
   
   return (
     <Layout>
-      <DownloadFilter />
+      {/* <DownloadFilter />  */}
       <div className="">
-        <div className="bg-white shadow-md rounded-b-lg overflow-hidden">
+        <div className="bg-white shadow-md rounded-lg mt-5 overflow-hidden">
           <div className="bg-gradient-to-r from-blue-500 to-blue-800 px-6 py-2">
             <h2 className="text-lg font-semibold text-white">Received Payment Report</h2>
           </div>

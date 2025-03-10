@@ -301,7 +301,7 @@ const TomorrowBooking = () => {
           <Spinner className="h-10 w-10" color="red" />
         </div>
       ) : (
-        <div className="mt-5">
+        <div className="mt-1">
           <MUIDataTable
             title={"Tomorrow Booking List"}
             data={tomBookingData ? tomBookingData : []}
