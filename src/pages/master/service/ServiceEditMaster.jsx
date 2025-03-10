@@ -155,7 +155,7 @@ const ServiceEditMaster = () => {
                     }}
                   />
                 </div>
-                <div className="mb-6">
+                {/* <div className="mb-6">
                   <Input
                     label="Service Commission"
                     type="text"
@@ -165,7 +165,7 @@ const ServiceEditMaster = () => {
                     className="w-full border border-gray-700 rounded-md"
                     required
                   />
-                </div>
+                </div> */}
                 <div className="mb-6">
                   <Input
                     label="Image"

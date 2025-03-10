@@ -89,6 +89,7 @@ const EditBookingAll = () => {
   const [booking, setBooking] = useState({
     order_status: "",
     order_payment_type: "",
+    order_payment_amount: "",
   });
 
   const [paymentmode, setPaymentMode] = useState([]);
@@ -478,7 +479,7 @@ const EditBookingAll = () => {
       <div className="container mx-auto p-4 ">
         <Typography variant="h4" color="gray" className="mb-6 flex">
           <ArrowLeft
-            className="text-center cursor-pointer"
+            className="text-center cursor-pointer mt-1"
             onClick={handleBack}
           />{" "}
           Edit Booking
@@ -648,7 +649,7 @@ const EditBookingAll = () => {
                         <Input
                           fullWidth
                           required
-                          label="Commission"
+                          label="Commission (%)"
                           name="order_comm"
                           value={booking.order_comm}
                           onChange={(e) => onInputChange(e)}

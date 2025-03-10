@@ -85,9 +85,9 @@ const ServiceMaster = () => {
                   onClick={(e) => handleEdit(e, id)}
                   className="flex items-center space-x-2"
                 >
-                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                   <title>Booking Info</title>
-                 </SquarePen>
+                  <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                    <title>Booking Info</title>
+                  </SquarePen>
                 </div>
               )}
             </>
@@ -135,14 +135,14 @@ const ServiceMaster = () => {
         sort: false,
       },
     },
-    {
-      name: "service_comm",
-      label: "Commision",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: "service_comm",
+    //   label: "Commision",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: "service_status",
       label: "Status  ",
@@ -151,7 +151,6 @@ const ServiceMaster = () => {
         sort: false,
       },
     },
-    
   ];
   const options = {
     selectableRows: "none",
@@ -223,7 +222,6 @@ const ServiceMaster = () => {
     <Layout>
       <MasterFilter />
       <div className="mt-1">
-        
         <MUIDataTable
           title="Service List"
           data={serviceData ? serviceData : []}
