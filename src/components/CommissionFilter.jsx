@@ -6,6 +6,7 @@ const CommissionFilter = () => {
   const location = useLocation();
 
   const handleButtonClick = (path) => {
+    localStorage.removeItem("page-no");
     navigate(path);
     localStorage.removeItem("page-no");
   };

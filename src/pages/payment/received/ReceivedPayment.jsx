@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../../layout/Layout";
 import PaymentFilter from "../../../components/PaymentFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -10,12 +10,32 @@ import MUIDataTable from "mui-datatables";
 
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const ReceivedPayment = () => {
   const [receivedData, setReceivedData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/received-payment?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchReceivedData = async () => {
@@ -45,18 +65,21 @@ const ReceivedPayment = () => {
     fetchReceivedData();
     setLoading(false);
   }, []);
-
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/pending-received-view/${id}`);
+  };
   const columns = [
     {
       name: "order_ref",
       label: "ID",
       options: {
         filter: false,
-        display:"exclude",
-        serchable:true,
+        display: "exclude",
+        serchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     {
@@ -64,11 +87,10 @@ const ReceivedPayment = () => {
       label: "Branch",
       options: {
         filter: true,
-        display:"exclude",
-        serchable:true,
+        display: "exclude",
+        serchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     {
@@ -77,13 +99,13 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const brancName = tableMeta.rowData[1]
-          const orderRef = tableMeta.rowData[0]
+        customBodyRender: (value, tableMeta) => {
+          const brancName = tableMeta.rowData[1];
+          const orderRef = tableMeta.rowData[0];
           return (
             <div className=" flex flex-col w-32">
-             <span>{orderRef}</span>
-             <span>{brancName}</span>
+              <span>{orderRef}</span>
+              <span>{brancName}</span>
             </div>
           );
         },
@@ -102,11 +124,10 @@ const ReceivedPayment = () => {
       label: "Customer",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     {
@@ -114,11 +135,10 @@ const ReceivedPayment = () => {
       label: "Mobile",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         searchable: true,
         sort: true,
         viewColumns: false,
-
       },
     },
     {
@@ -127,13 +147,13 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const customeName = tableMeta.rowData[4]
-          const mobileNo = tableMeta.rowData[5]
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-40">
-             <span>{customeName}</span>
-             <span>{mobileNo}</span>
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
             </div>
           );
         },
@@ -145,8 +165,8 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
-        serchable:true,
+        display: "exclude",
+        serchable: true,
         viewColumns: false,
 
         customBodyRender: (value) => {
@@ -160,8 +180,8 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
-        serchable:true,
+        display: "exclude",
+        serchable: true,
         viewColumns: false,
 
         customBodyRender: (value) => {
@@ -175,15 +195,15 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value ,tableMeta) => {
-          const bookingDate = tableMeta.rowData[6]
-          const serviceDate = tableMeta.rowData[7]
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
               <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-          )
+            </div>
+          );
         },
       },
     },
@@ -193,10 +213,10 @@ const ReceivedPayment = () => {
       options: {
         filter: true,
         sort: true,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
 
-        searchable:true,
+        searchable: true,
       },
     },
 
@@ -205,10 +225,10 @@ const ReceivedPayment = () => {
       label: "Price",
       options: {
         filter: true,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
 
-        searchable:true,
+        searchable: true,
         sort: false,
       },
     },
@@ -218,13 +238,13 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const service = tableMeta.rowData[10]
-          const price = tableMeta.rowData[11]
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[10];
+          const price = tableMeta.rowData[11];
           return (
             <div className=" flex flex-col w-40">
-             <span>{service}</span>
-             <span>{price}</span>
+              <span>{service}</span>
+              <span>{price}</span>
             </div>
           );
         },
@@ -235,8 +255,8 @@ const ReceivedPayment = () => {
       label: "Paid Amount",
       options: {
         filter: false,
-        display:"exclude",
-        searchable:true,
+        display: "exclude",
+        searchable: true,
         viewColumns: false,
 
         sort: false,
@@ -247,10 +267,10 @@ const ReceivedPayment = () => {
       label: "Paid Type",
       options: {
         filter: false,
-        display:"exclude",
+        display: "exclude",
         viewColumns: false,
 
-        searchable:true,
+        searchable: true,
         sort: false,
       },
     },
@@ -260,40 +280,41 @@ const ReceivedPayment = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender:  (value,tableMeta) => {
-          const amountType = tableMeta.rowData[13]
-          const paidType = tableMeta.rowData[14]
+        customBodyRender: (value, tableMeta) => {
+          const amountType = tableMeta.rowData[13];
+          const paidType = tableMeta.rowData[14];
           return (
             <div className=" flex flex-col w-32 ">
-             <span>{amountType}</span>
-             <span>{paidType}</span>
+              <span>{amountType}</span>
+              <span>{paidType}</span>
             </div>
           );
         },
       },
     },
 
-    // {
-    //   name: "id",
-    //   label: "Action",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (id) => {
-    //       return (
-    //         <div
-    //           onClick={() => navigate(`/pending-received-view/${id}`)}
-    //           className="flex items-center space-x-2"
-    //         >
-    //           <MdOutlineRemoveRedEye
-    //             title="View pending Info"
-    //             className="h-5 w-5 cursor-pointer"
-    //           />
-    //         </div>
-    //       );
-    //     },
-    //   },
-    // },
+    {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div
+              // onClick={() => navigate(`/pending-received-view/${id}`)}
+              onClick={(e) => handleEdit(e, id)}
+              className="flex items-center space-x-2"
+            >
+              <MdOutlineRemoveRedEye
+                title="View pending Info"
+                className="h-5 w-5 cursor-pointer"
+              />
+            </div>
+          );
+        },
+      },
+    },
   ];
   const options = {
     selectableRows: "none",
@@ -304,17 +325,53 @@ const ReceivedPayment = () => {
     viewColumns: true,
     download: false,
     print: false,
+
+    count: receivedData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/received-payment?page=${currentPage + 1}`);
+    },
     onRowClick: (rowData, rowMeta) => {
       const id = receivedData[rowMeta.dataIndex].id;
-      navigate(`/pending-received-view/${id}`)
+      navigate(`/pending-received-view/${id}`);
     },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
-          cursor:'pointer',
+          cursor: "pointer",
         },
       };
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
     },
   };
   return (
@@ -327,7 +384,7 @@ const ReceivedPayment = () => {
       </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Payment Received List"
+          title="Payment Received List"
           data={receivedData ? receivedData : []}
           columns={columns}
           options={options}

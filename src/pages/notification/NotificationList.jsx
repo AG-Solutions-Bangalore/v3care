@@ -83,8 +83,7 @@ const NotificationList = () => {
           return tableNot == "Active" ? (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
-                <RefreshCw 
-                 
+                <RefreshCw
                   onClick={() => handleUpdate(id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 >
@@ -157,21 +156,11 @@ const NotificationList = () => {
         sort: false,
       },
     },
-    
   ];
 
-  //   <div className="flex items-center space-x-2">
-  //   <FaEdit
-  //     title="Inactive"
-  //     onClick={() => handleUpdate(id)}
-  //     className="h-5 w-5 cursor-pointer"
-  //   />
-  // </div>
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -186,36 +175,23 @@ const NotificationList = () => {
     customToolbar: () => {
       return (
         <>
-       {userType !== "4" && (
-          <Link
-            to="/add-notification"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Notification
-          </Link>
-        )}
+          {userType !== "4" && (
+            <Link
+              to="/add-notification"
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Notification
+            </Link>
+          )}
         </>
       );
     },
   };
   return (
     <Layout>
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Notification List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to="/add-notification"
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Notification
-          </Link>
-        )}
-      </div> */}
       <div className="mt-5">
         <MUIDataTable
-        title="Notification List"
+          title="Notification List"
           data={notificationData ? notificationData : []}
           columns={columns}
           options={options}
