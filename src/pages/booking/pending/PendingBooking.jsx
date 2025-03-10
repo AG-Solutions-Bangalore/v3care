@@ -64,8 +64,15 @@ const PendingBooking = () => {
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
+  };
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-booking/${id}`);
   };
   const columns = [
     {
@@ -309,9 +316,9 @@ const PendingBooking = () => {
       setPage(currentPage);
       navigate(`/pending?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta) => {
+    onRowClick: (rowData, rowMeta,e) => {
       const id = pendingBookData[rowMeta.dataIndex].id;
-      navigate(`/view-booking/${id}`);
+      handleView(e,id)()
     },
     setRowProps: (rowData) => {
       return {
