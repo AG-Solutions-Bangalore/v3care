@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link,useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -14,11 +14,20 @@ import {
   Typography,
   Input,
   Option,
-  Button,
+  
   Select,
 } from "@material-tailwind/react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Button,
+} from "@mui/material";
 import BASE_URL from "../../../../base/BaseUrl";
 import { toast } from "react-toastify";
+import MUIDataTable from "mui-datatables";
 
 const PostponeBooking = () => {
   const { id } = useParams();
@@ -38,6 +47,34 @@ const PostponeBooking = () => {
   }
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
+
+
+
+  const [loading, setLoading] = useState(false);
+  const [followup, setFollowUp] = useState([]);
+  const [orderref, setOrderRef] = useState([]);
+  const [open, setOpen] = useState(false);
+
+
+
+  const [followups, setFollowUps] = useState({
+    order_followup_date: moment().format("YYYY-MM-DD"),
+    order_followup_description: "",
+  });
+
+  const onInputChange1 = (e) => {
+    const { name, value } = e.target;
+    setFollowUps((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+
+
+
+
+
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -65,6 +102,8 @@ const PostponeBooking = () => {
         },
       });
       setBooking(response.data?.booking);
+      setOrderRef(response.data?.booking.order_ref);
+      setFollowUp(response.data?.bookingFollowup);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     }
@@ -73,6 +112,64 @@ const PostponeBooking = () => {
     fetchBookingData();
   }, []);
 
+   const columns = [
+      {
+        name: "order_followup_date",
+        label: " Date ",
+        options: {
+          filter: false,
+          sort: false,
+  
+          customBodyRender: (value) => {
+            return moment(value).format("DD-MM-YYYY");
+          },
+        },
+      },
+      {
+        name: "order_followup_description",
+        label: " Comment ",
+        options: {
+          filter: false,
+          sort: false,
+        },
+      },
+    ];
+    const options = {
+      selectableRows: "none",
+      elevation: 0,
+      responsive: "standard",
+      viewColumns: false,
+      download: false,
+      print: false,
+      search: false,
+      filter: false,
+      setRowProps: (rowData) => {
+        return {
+          style: {
+            borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
+          },
+        };
+      },
+      customToolbar: () => {
+        return (
+          <>
+            <Link
+              onClick={handleClickOpen}
+              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            >
+              + Follow up
+            </Link>
+          </>
+        );
+      },
+    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const onSubmit = (e) => {
     e.preventDefault();
     // const form = document.getElementById("addIdniv");
@@ -206,6 +303,43 @@ const PostponeBooking = () => {
         return null;
     }
   };
+  const onSubmitFollowup = (e) => {
+    e.preventDefault();
+    if (!followups.order_followup_description.trim()) {
+      toast.error("Order Follow-up Description is required");
+      return;
+    }
+    setIsButtonDisabled(true);
+    const data = {
+      order_ref: orderref,
+      order_followup_date: followups.order_followup_date,
+      order_followup_description: followups.order_followup_description,
+    };
+    axios
+      .post(`${BASE_URL}/api/panel-create-booking-followup`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.code == "200") {
+          toast.success("Followup Created Successfully");
+          handleClose();
+          fetchBookingData();
+
+          setFollowUps({
+            order_followup_description: "",
+            order_followup_date: moment().format("YYYY-MM-DD"),
+          });
+        } else {
+          toast.error("Network Error");
+        }
+      })
+      .catch((err) => {
+        console.error("Error updating Followup", err);
+        toast.error("Error updating Followup");
+      });
+  };
   return (
     <Layout>
       <BookingFilter />
@@ -232,7 +366,7 @@ const PostponeBooking = () => {
                 </button>
 
                 {/* Booking Overview Button */}
-                <button
+                {/* <button
                   onClick={() => setActiveTab("customerInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "customerInfo"
@@ -242,7 +376,7 @@ const PostponeBooking = () => {
                 >
                   <FaClipboardList />
                   Booking Overview
-                </button>
+                </button> */}
 
                 {/* Other Details Button */}
                 <button
@@ -353,9 +487,84 @@ const PostponeBooking = () => {
                 {/* </form> */}
               </CardBody>
             </Card>
+             <Card className="mb-6">
+                                    <CardHeader floated={false} className="h-12 p-4">
+                                      <Typography variant="h6" color="blue-gray">
+                                        Follow Up
+                                      </Typography>
+                                    </CardHeader>
+                                    {/* here booking assign table  */}
+                                    <CardBody>
+                                      {loading ? (
+                                        <div className="flex justify-center items-center h-screen">
+                                          <Spinner className="h-10 w-10" color="red" />
+                                        </div>
+                                      ) : (
+                                        <div className="mt-5">
+                                          <MUIDataTable
+                                            // title={"Followup"}
+                                            data={followup ? followup : []}
+                                            columns={columns}
+                                            options={options}
+                                          />
+                                        </div>
+                                      )}
+                                    </CardBody>
+                                  </Card>
           </div>
         </div>
       </div>
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+                    {/* <DialogTitle>Follow Up</DialogTitle> */}
+                    <DialogContent>
+                      <div className="mb-5">
+                        <h1 className="font-bold text-xl"> Create Follow Up</h1>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <Input
+                            fullWidth
+                            label="Order Follow up Date"
+                            name="order_followup_date"
+                            value={followups.order_followup_date}
+                            onChange={(e) => onInputChange(e)}
+                            type="date"
+                            disabled
+                            labelProps={{
+                              className: "!text-gray-900",
+                            }}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            fullWidth
+                            label="Order Follow up"
+                            name="order_followup_description"
+                            value={followups.order_followup_description}
+                            onChange={onInputChange1}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </DialogContent>
+                    <DialogActions>
+                      <button
+                        onClick={handleClose}
+                        className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+                        type="sumbit"
+                        onClick={(e) => onSubmitFollowup(e)}
+                      >
+                        Submit
+                      </button>
+                    </DialogActions>
+                  </Dialog>
     </Layout>
   );
 };
