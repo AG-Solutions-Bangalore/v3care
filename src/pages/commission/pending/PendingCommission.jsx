@@ -321,7 +321,7 @@ const PendingCommission = () => {
           Commission Pending List
         </h3>
       </div> */}
-      <div className="mt-5">
+      <div className="mt-1">
         <MUIDataTable
           title="Commission Pending List"
           data={PendingCommissionData ? PendingCommissionData : []}
