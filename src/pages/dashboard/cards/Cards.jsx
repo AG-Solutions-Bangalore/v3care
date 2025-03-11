@@ -94,7 +94,6 @@ const Cards = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">Dashboard Overview</h2>
-            <p className="text-sm text-gray-600">Overview of today's job status</p>
           </div>
         </div>
       </div>

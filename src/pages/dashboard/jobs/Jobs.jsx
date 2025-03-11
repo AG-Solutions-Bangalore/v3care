@@ -132,7 +132,6 @@ const Jobs = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">Today's Jobs</h2>
-            <p className="text-sm text-gray-600">Overview of today's job status</p>
           </div>
         </div>
       </div>
