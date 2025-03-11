@@ -109,10 +109,10 @@ const PendingPaymentView = () => {
       );
 
       if (res.data.code === "200") {
-        toast.success("Payment Updated Successfully");
+        toast.success(res.data?.msg || "Payment Updated Successfully");
         navigate(`/pending-payment?page=${pageNo}`);
       } else {
-        toast.error("Network Error");
+        toast.error(res.data?.msg || "Network Error");
       }
     } catch (error) {
       console.error("Error updating payment status:", error);

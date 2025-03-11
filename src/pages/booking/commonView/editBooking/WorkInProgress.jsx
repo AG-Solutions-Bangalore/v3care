@@ -179,10 +179,10 @@ const WorkInProgress = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Reschedule Creating Success");
+        toast.success(response.data?.msg || "Reschedule Creating Success");
         navigate("/today");
       } else {
-        toast.error("Network Error");
+        toast.error(response.data?.msg || "Network Error");
       }
     } catch (error) {
       toast.error("An error occurred while rescheduling");
@@ -312,7 +312,7 @@ const WorkInProgress = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Followup Created Successfully");
+          toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
           fetchBookingData();
 
@@ -321,7 +321,7 @@ const WorkInProgress = () => {
             order_followup_date: moment().format("YYYY-MM-DD"),
           });
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {

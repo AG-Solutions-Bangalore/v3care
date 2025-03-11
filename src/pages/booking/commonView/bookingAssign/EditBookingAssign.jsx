@@ -109,7 +109,7 @@ const EditBookingAssign = () => {
       }
     );
     if (response.data.code == "200") {
-      toast.success("Assign Booking Updated Successfully");
+      toast.success(response.data?.msg || "Assign Booking Updated Successfully");
       navigate(`/booking-assign/${assignBook}`);
     }
   };

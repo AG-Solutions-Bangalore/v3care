@@ -58,10 +58,10 @@ const NotificationList = () => {
         },
       }).then((res) => {
         if (res.data.code == "200") {
-          toast.success("Notification Updated Sucessfully");
+          toast.success(res.data?.msg || "Notification Updated Sucessfully");
           fetchNotificationData();
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       });
     } catch (error) {

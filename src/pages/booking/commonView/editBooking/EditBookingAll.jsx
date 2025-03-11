@@ -236,10 +236,10 @@ const EditBookingAll = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Booking Updated Successfully");
+        toast.success(response.data?.msg || "Booking Updated Successfully");
         navigate(`/today?page=${pageNo}`);
       } else {
-        toast.error("Network Error");
+        toast.error(response.data?.msg || "Network Error");
       }
     } catch (error) {
       console.error("Error updating booking", error);
@@ -449,7 +449,7 @@ const EditBookingAll = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Followup Created Successfully");
+          toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
           fetchBookingData();
 
@@ -458,7 +458,7 @@ const EditBookingAll = () => {
             order_followup_date: moment().format("YYYY-MM-DD"),
           });
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {

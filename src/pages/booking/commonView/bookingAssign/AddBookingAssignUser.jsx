@@ -88,10 +88,10 @@ const AddBookingAssignUser = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Booking User Created Successfully");
+        toast.success(response.data?.msg || "Booking User Created Successfully");
         navigate(`/booking-assign/${id}`);
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       console.error("Error creating booking:", error);
