@@ -11,6 +11,7 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import { TfiReload } from "react-icons/tfi";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
@@ -145,11 +146,13 @@ const ReferByMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            <ButtonConfigColor
-              type="create"
-              label="Refer by"
-              onClick={() => navigate("/add-referby")}
-            />
+            <>
+              <ButtonConfigColor
+                type="create"
+                label="Refer by"
+                onClick={() => navigate("/add-referby")}
+              />
+            </>
           )}
         </>
       );
@@ -195,12 +198,6 @@ const ReferByMaster = () => {
           options={options}
         />
       </div>
-      {/* <ButtonConfigColor type="submit" label="Submit" />
-      <ButtonConfigColor type="back" label="Back" />
-      <ButtonConfigColor type="create" label="Create" />
-      <ButtonConfigColor type="edit" label="Edit" />
-      <ButtonConfigColor type="delete" label="Delete" />
-      <ButtonConfigColor type="submit" label="Saving..." loading={true} /> */}
     </Layout>
   );
 };

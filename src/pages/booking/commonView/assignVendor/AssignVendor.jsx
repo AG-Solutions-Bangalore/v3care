@@ -10,6 +10,8 @@ import { ContextPanel } from "../../../../utils/ContextPanel";
 import { FaEdit } from "react-icons/fa";
 import BASE_URL from "../../../../base/BaseUrl";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 const AssignVendor = () => {
   const { id } = useParams();
   const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
@@ -151,20 +153,20 @@ const AssignVendor = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Booking Vendor List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to={`/add-booking-vendor/${id}`}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Booking Vendor
-          </Link>
-        )}
-      </div>
-      <div className="mt-5">
+      <PageHeader
+        title="Booking Vendor List"
+        label2={
+          userType !== "4" && (
+            <ButtonConfigColor
+              type="create"
+              label="Add Booking Vendor"
+              onClick={() => navigate(`/add-booking-vendor/${id}`)}
+            />
+          )
+        }
+      />
+
+      <div className="mt-2">
         <MUIDataTable
           data={bookingAssignVendorData ? bookingAssignVendorData : []}
           columns={columns}

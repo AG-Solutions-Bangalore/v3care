@@ -12,6 +12,8 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 const EditBookingAssign = () => {
   const { id } = useParams();
 
@@ -115,11 +117,9 @@ const EditBookingAssign = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="p-6">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          Edit Booking Assign User <span className="text-blue-600">{id}</span>
-        </h2>
-        <div className=" border border-gray-300 bg-white p-6 rounded-lg shadow-lg">
+      <PageHeader title={"Edit Booking Assign User"} />
+
+        <div className=" border border-gray-300 bg-white p-6 rounded-lg shadow-lg mt-2">
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {/* Assign User */}
@@ -197,20 +197,24 @@ const EditBookingAssign = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="mt-6 text-center bg-blue-400  w-48 rounded-lg  ">
-              <button
-                className=" p-1 text-center   mb-2 text-white"
-                type="submit"
-                onClick={onSubmit}
-                // disabled={isButtonDisabled}
-              >
-                Update
-              </button>
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
             </div>
           </form>
         </div>
-      </div>
     </Layout>
   );
 };

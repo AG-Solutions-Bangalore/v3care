@@ -10,6 +10,8 @@ import BASE_URL from "../../../../base/BaseUrl";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 const AddBookingAssignUser = () => {
   const { id } = useParams();
 
@@ -24,6 +26,7 @@ const AddBookingAssignUser = () => {
   UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   // Validation function
+  const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
     setBookingser({
@@ -52,19 +55,28 @@ const AddBookingAssignUser = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
       toast.error("Fill all required");
-    } else {
-      setIsButtonDisabled(true);
-      let data = {
-        order_user_id: bookingUser.order_user_id,
-        order_start_time: bookingUser.order_start_time,
-        order_end_time: bookingUser.order_end_time,
-        order_assign_remarks: bookingUser.order_assign_remarks,
-        order_id: id,
-      };
-      const token = localStorage.getItem("token");
+      setLoading(false); // Corrected this
+      return;
+    }
+
+    setIsButtonDisabled(true);
+
+    const data = {
+      order_user_id: bookingUser.order_user_id,
+      order_start_time: bookingUser.order_start_time,
+      order_end_time: bookingUser.order_end_time,
+      order_assign_remarks: bookingUser.order_assign_remarks,
+      order_id: id,
+    };
+
+    const token = localStorage.getItem("token");
+
+    try {
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-booking-assign`,
         data,
@@ -75,23 +87,26 @@ const AddBookingAssignUser = () => {
         }
       );
 
-      if (response.data.code == "200") {
-        toast.success("Booking User Create succesfull");
-
+      if (response.data.code === "200") {
+        toast.success("Booking User Created Successfully");
         navigate(`/booking-assign/${id}`);
       } else {
-        toast.error("duplicate entry");
+        toast.error("Duplicate entry");
       }
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+      setIsButtonDisabled(false);
     }
   };
+
   return (
     <Layout>
       <BookingFilter />
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Create Booking User
-        </h3>
-      </div>
+
+      <PageHeader title={"Create Booking User"} />
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
@@ -133,23 +148,15 @@ const AddBookingAssignUser = () => {
               />
             </div>
           </div>
-
-          {/* Buttons */}
+          {/* 
           <div className="flex justify-center space-x-4">
-            {/* Submit Button */}
-
-            <Button
-              type="submit"
-              className="mr-2 mb-2 bg-black"
-              // disabled={isButtonDisabled}
-            >
+            <Button type="submit" className="mr-2 mb-2 bg-black">
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
                 <span>Submit</span>
               </div>
             </Button>
 
-            {/* Back Button */}
             <Link to={`/booking-assign/${id}`}>
               <Button className="mr-2 mb-2 bg-black">
                 <div className="flex gap-1">
@@ -158,6 +165,23 @@ const AddBookingAssignUser = () => {
                 </div>
               </Button>
             </Link>
+          </div> */}
+
+          <div className="flex justify-center space-x-4">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              disabled={isButtonDisabled}
+              loading={loading}
+            />
+
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => navigate(-1)}
+            />
           </div>
         </form>
       </div>
