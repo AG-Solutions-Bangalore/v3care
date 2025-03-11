@@ -11,7 +11,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor"
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -164,19 +164,20 @@ const SignIn = () => {
                 />
               </div>
 
-              <Button
+              {/* <Button
                 type="submit"
                 disabled={loading}
                 className="mt-6 bg-blue-500 hover:bg-blue-600 text-white"
                 fullWidth
               >
                 {loading ? "Checking..." : "Sign In"}
-              </Button>
+              </Button> */}
               <ButtonConfigColor
                 type="default"
-                buttontype="default"
-                label="Sign In"
+                buttontype="submit"
+                label="Refer by"
                 loading={loading}
+                className="w-full"
               />
               <div className="flex items-center justify-between gap-2 mt-6">
                 <Typography
