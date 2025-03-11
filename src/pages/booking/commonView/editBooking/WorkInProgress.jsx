@@ -28,6 +28,8 @@ import {
   Button,
 } from "@mui/material";
 import MUIDataTable from "mui-datatables";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const WorkInProgress = () => {
   const { id } = useParams();
@@ -161,14 +163,10 @@ const WorkInProgress = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // const form = document.getElementById("addIdniv");
+    setLoading(true); // Start loading
 
-    // if (!form.checkValidity()) {
-    //   toast.error("Fill all the filled");
-    //   return;
-    // }
     let data = {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
@@ -179,22 +177,31 @@ const WorkInProgress = () => {
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: BASE_URL + `/api/panel-create-booking-reschedule/${id}`,
-      method: "PUT",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == "200") {
+
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-create-booking-reschedule/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.code === "200") {
         toast.success("Reschedule Creating Success");
         navigate("/today");
       } else {
         toast.error("Network Error");
       }
-    });
+    } catch (error) {
+      toast.error("An error occurred while rescheduling");
+    } finally {
+      setLoading(false);
+    }
   };
+
   const renderActiveTabContent = () => {
     switch (activeTab) {
       case "bookingDetails":
@@ -336,163 +343,160 @@ const WorkInProgress = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          Resechedule Booking
-        </Typography>
+      <PageHeader title={"Resechedule Booking"} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
 
-            {/* Payment Card */}
-            <Card className="mb-6">
-              {/* here booking assign table  */}
-              <CardBody>
-                {/* <form id="addIdniv"> */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        id="order_service_date"
-                        label="Service Date"
-                        type="date"
-                        min={today}
-                        name="order_service_date"
-                        value={booking.order_service_date}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Time Slot"
-                        type="time"
-                        name="order_time"
-                        value={booking.order_time}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Commission (%)"
-                        name="order_comm"
-                        value={booking.order_comm}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-4">
-                    <div className="form-group">
-                      <Textarea
-                        fullWidth
-                        label="Comment"
-                        multiline
-                        name="order_comment"
-                        value={booking.order_comment}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center mt-6">
-                  <Button
-                    type="sumbit"
-                    onClick={(e) => onSubmit(e)}
-                    className="mr-2 mb-2"
-                    color="primary"
-                    // disabled={isButtonDisabled}
-                  >
-                    Update
-                  </Button>
-                </div>
-                {/* </form> */}
-              </CardBody>
-            </Card>
-            <Card className="mb-6">
-              <CardHeader floated={false} className="h-12 p-4">
-                <Typography variant="h6" color="blue-gray">
-                  Follow Up
-                </Typography>
-              </CardHeader>
-              {/* here booking assign table  */}
-              <CardBody>
-                {loading ? (
-                  <div className="flex justify-center items-center h-screen">
-                    <Spinner className="h-10 w-10" color="red" />
-                  </div>
-                ) : (
-                  <div className="mt-5">
-                    <MUIDataTable
-                      // title={"Followup"}
-                      data={followup ? followup : []}
-                      columns={columns}
-                      options={options}
-                    />
-                  </div>
-                )}
-              </CardBody>
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
             </Card>
           </div>
+
+          {/* Payment Card */}
+          <Card className="mb-6">
+            {/* here booking assign table  */}
+            <CardBody>
+              {/* <form id="addIdniv"> */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <div className="form-group">
+                    <Input
+                      fullWidth
+                      required
+                      id="order_service_date"
+                      label="Service Date"
+                      type="date"
+                      min={today}
+                      name="order_service_date"
+                      value={booking.order_service_date}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="form-group">
+                    <Input
+                      fullWidth
+                      required
+                      label="Time Slot"
+                      type="time"
+                      name="order_time"
+                      value={booking.order_time}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-span-2">
+                  <div className="form-group">
+                    <Input
+                      fullWidth
+                      required
+                      label="Commission (%)"
+                      name="order_comm"
+                      value={booking.order_comm}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-span-4">
+                  <div className="form-group">
+                    <Textarea
+                      fullWidth
+                      label="Comment"
+                      multiline
+                      name="order_comment"
+                      value={booking.order_comment}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className="text-center mt-6">
+                <Button
+                  type="sumbit"
+                  onClick={(e) => onSubmit(e)}
+                  className="mr-2 mb-2"
+                  color="primary"
+                >
+                  Update
+                </Button>
+              </div> */}
+
+              <div className="flex justify-center space-x-4 my-2">
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Update"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                  onClick={(e) => onSubmit(e)}
+                />
+
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
+                />
+              </div>
+            </CardBody>
+          </Card>
+          <Card className="mb-6">
+            <CardHeader floated={false} className="h-12 p-4">
+              <Typography variant="h6" color="blue-gray">
+                Follow Up
+              </Typography>
+            </CardHeader>
+            {/* here booking assign table  */}
+            <CardBody>
+              {loading ? (
+                <div className="flex justify-center items-center h-screen">
+                  <Spinner className="h-10 w-10" color="red" />
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <MUIDataTable
+                    // title={"Followup"}
+                    data={followup ? followup : []}
+                    columns={columns}
+                    options={options}
+                  />
+                </div>
+              )}
+            </CardBody>
+          </Card>
         </div>
       </div>
 

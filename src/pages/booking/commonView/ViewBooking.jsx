@@ -37,6 +37,8 @@ import {
   TextField,
 } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -348,54 +350,46 @@ const ViewBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between">
-          <Typography variant="h4" color="gray" className="mb-6 flex ">
-            <ArrowLeft
-              className="text-center cursor-pointer mt-1"
-              onClick={handleBack}
-            />{" "}
+      <PageHeader
+        title={
+          <>
             Booking for{" "}
-            <span className="text-[#F44336]">{booking?.order_service} </span>
-          </Typography>
-          <div>
-            {/* + Assign V3 Button */}
+            <span className="text-[#F44336]">{booking?.order_service}</span>
+          </>
+        }
+        label2={
+          <span className="space-x-2">
             {!(
               booking.order_status === "Pending" ||
               booking.order_status === "Completed" ||
               booking.order_status === "Cancel" ||
               booking.order_status === "Vendor"
             ) && (
-              <Button
-                color="red"
-                className="mr-4"
+              <ButtonConfigColor
+                type="create"
+                label="Add Assign V3"
                 onClick={() => navigate(`/booking-assign/${id}`)}
-              >
-                + Assign V3
-              </Button>
+              />
             )}
-
-            {/* + Assign Vendor Button */}
             {(booking.order_status === "Confirmed" ||
               booking.order_status === "Vendor") && (
-              <Button
-                color="red"
-                className="mr-4"
+              <ButtonConfigColor
+                type="create"
+                label="Assign Vendor"
                 onClick={() => navigate(`/assign-vendor/${id}`)}
-              >
-                + Assign Vendor
-              </Button>
+              />
             )}
-
-            {/* + Notify All Button */}
             {booking.order_status === "Confirmed" && userType !== "4" && (
-              <Button onClick={() => notifyUpdate} color="red">
-                + Notify All
-              </Button>
+              <ButtonConfigColor
+                type="create"
+                label="Notify All"
+                onClick={notifyUpdate}
+              />
             )}
-          </div>
-        </div>
-
+          </span>
+        }
+      />
+      <div className="container mx-auto mt-2">
         <div className="flex gap-4">
           <div className="flex-grow">
             <div className="mb-2">

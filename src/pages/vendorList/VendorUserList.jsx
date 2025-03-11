@@ -12,6 +12,8 @@ import BASE_URL from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const VendorUserList = () => {
   const { id } = useParams();
   const [vendorUserList, setVendorUserList] = useState(null);
@@ -121,20 +123,19 @@ const VendorUserList = () => {
   };
   return (
     <Layout>
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold flex">
-          <IoMdArrowRoundBack onClick={handleBack} className="cursor-pointer mt-1"/>
-          Vendor User List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to={`/add-vendor-user/${id}`}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Vendor User
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title="Vendor User List"
+        label2={
+          userType !== "4" && (
+            <ButtonConfigColor
+              type="create"
+              label="Add Vendor User"
+              onClick={() => navigate(`/add-vendor-user/${id}`)}
+            />
+          )
+        }
+      />
+
       <div className="mt-5">
         <MUIDataTable
           data={vendorUserList ? vendorUserList : []}

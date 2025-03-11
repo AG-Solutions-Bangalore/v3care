@@ -9,6 +9,8 @@ import BASE_URL from "../../base/BaseUrl";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { Card, CardBody } from "@material-tailwind/react";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ViewVendor = () => {
   const componentRef = useRef();
@@ -62,27 +64,19 @@ const ViewVendor = () => {
   };
   return (
     <Layout>
-      <div className="container mx-auto p-6">
-        <div className="w-full bg-white shadow-md rounded-lg p-8">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold border-b  border-blue-700 flex ">
-              <IoMdArrowRoundBack
-                className="cursor-pointer"
-                onClick={handleBack}
-              />{" "}
-              Vendor Details
-            </h1>
-            <ReactToPrint
-              trigger={() => (
-                <button className="text-blue-500 border border-blue-400 p-2 rounded-lg hover:text-blue-700 flex items-center space-x-2">
-                  <FaPrint />
-                  <span>Print</span>
-                </button>
-              )}
-              content={() => componentRef.current}
-            />
-          </div>
+      <PageHeader
+        title="Vendor Details"
+        label2={
+          <ButtonConfigColor
+            type="print"
+            label="Print"
+            content={() => componentRef.current}
+          />
+        }
+      />
 
+      <div className="container mx-auto mt-2">
+        <div className="w-full bg-white shadow-md rounded-lg p-8">
           <div ref={componentRef} className="mt-6 px-2">
             <div className="mb-8 ">
               <h2 className="text-xl font-semibold">

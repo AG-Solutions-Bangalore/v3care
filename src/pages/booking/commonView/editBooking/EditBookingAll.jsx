@@ -37,6 +37,7 @@ import {
   Button,
 } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 
 const status = [
   {
@@ -477,14 +478,16 @@ const EditBookingAll = () => {
   return (
     <Layout>
       <BookingFilter />
+      <PageHeader title={"Edit Booking"} />
+
       <div className="container mx-auto p-4 ">
-        <Typography variant="h4" color="gray" className="mb-6 flex">
+        {/* <Typography variant="h4" color="gray" className="mb-6 flex">
           <ArrowLeft
             className="text-center cursor-pointer mt-1"
             onClick={handleBack}
           />{" "}
-          Edit Booking
-        </Typography>
+          Edit Booking ff
+        </Typography> */}
 
         <div className="flex gap-4">
           <div className="flex-grow">

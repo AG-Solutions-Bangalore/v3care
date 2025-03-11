@@ -9,10 +9,14 @@ import { toast } from "react-toastify";
 import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const AddVendorUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [vendor, setVendor] = useState({
     name: "",
     mobile: "",
@@ -31,16 +35,23 @@ const AddVendorUser = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
-      toast.error("Fill all required");
-    } else {
-      let data = {
-        name: vendor.name,
-        mobile: vendor.mobile,
-        email: vendor.email,
-        vendor_id: id,
-      };
+      toast.error("Fill all required fields");
+      setLoading(false);
+      return; // Stop execution if the form is invalid
+    }
+
+    const data = {
+      name: vendor.name,
+      mobile: vendor.mobile,
+      email: vendor.email,
+      vendor_id: id,
+    };
+
+    try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-vendor-user`,
@@ -51,28 +62,36 @@ const AddVendorUser = () => {
           },
         }
       );
-      if (response.data.code == "200") {
+
+      if (response.data.code === "200") {
         toast.success("Vendor User Created");
         navigate(`/vendor-user-list/${id}`);
       } else {
-        if (response.data.code == "401") {
-          toast.error("full name duplicate entry");
-        } else if (response.data.code == "402") {
-          toast.error("mobile no duplicate entry");
-        } else {
-          toast.error("email id duplicate entry");
+        switch (response.data.code) {
+          case "401":
+            toast.error("Full name duplicate entry");
+            break;
+          case "402":
+            toast.error("Mobile number duplicate entry");
+            break;
+          default:
+            toast.error("Email ID duplicate entry");
         }
       }
+    } catch (error) {
+      console.error("Error creating vendor user:", error);
+      toast.error("An error occurred while creating vendor user");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Layout>
-      <div className="p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-          Create Vendor User
-        </h2>
-        <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-lg">
+      <div>
+        <PageHeader title={"Create Vendor User"} />
+
+        <div className="border border-gray-300 bg-white p-6 rounded-lg shadow-lg mt-2">
           <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {/* Full Name */}
@@ -122,17 +141,17 @@ const AddVendorUser = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-6 text-center">
-              <Button
+      
+
+              <ButtonConfigColor
                 type="submit"
-                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-md shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ease-in-out disabled:opacity-50"
+                buttontype="submit"
+                label="Submit"
+                disabled={isButtonDisabled}
+                loading={loading}
                 onClick={onSubmit}
-                // disabled={isButtonDisabled}
-              >
-                <MdSend className="text-white" />
-                <span style={{ color: "white" }}>Submit</span>
-              </Button>
+              />
             </div>
           </form>
         </div>
