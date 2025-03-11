@@ -28,6 +28,8 @@ import {
 import BASE_URL from "../../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import MUIDataTable from "mui-datatables";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const PostponeBooking = () => {
   const { id } = useParams();
@@ -334,158 +336,159 @@ const PostponeBooking = () => {
   return (
     <Layout>
       <BookingFilter />
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6">
-          Postpone Booking
-        </Typography>
+      <PageHeader title={"Postpone Booking"} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
 
-            {/* Payment Card */}
-            <Card className="mb-6">
-              {/* here booking assign table  */}
-              <CardBody>
-                {/* <form id="addIdniv"> */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <div>
-                      <Input
-                        fullWidth
-                        required
-                        id="order_service_date"
-                        label="Service Date"
-                        type="date"
-                        min={today}
-                        name="order_service_date"
-                        value={booking.order_service_date}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div>
-                      <Input
-                        fullWidth
-                        required
-                        label="Time Slot"
-                        type="time"
-                        name="order_time"
-                        value={booking.order_time}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div>
-                      <Input
-                        fullWidth
-                        required
-                        label="Commission (%)"
-                        name="order_comm"
-                        value={booking.order_comm}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 gap-4 my-4">
-                  <div>
-                    <Textarea
-                      fullWidth
-                      label="Comment"
-                      multiline
-                      name="order_comment"
-                      value={booking.order_comment}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </div>
-                  <div>
-                    <Textarea
-                      fullWidth
-                      label="Postpone Reason"
-                      multiline
-                      name="order_postpone_reason"
-                      value={booking.order_postpone_reason}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </div>
-                </div>
-
-                <div className="text-center mt-6">
-                  <Button
-                    type="sumbit"
-                    onClick={(e) => onSubmit(e)}
-                    className="mr-2 mb-2"
-                    color="primary"
-                    // disabled={isButtonDisabled}
-                  >
-                    Update
-                  </Button>
-                </div>
-                {/* </form> */}
-              </CardBody>
-            </Card>
-            <Card className="mb-6">
-              <CardHeader floated={false} className="h-12 p-4">
-                <Typography variant="h6" color="blue-gray">
-                  Follow Up
-                </Typography>
-              </CardHeader>
-              {/* here booking assign table  */}
-              <CardBody>
-                {loading ? (
-                  <div className="flex justify-center items-center h-screen">
-                    <Spinner className="h-10 w-10" color="red" />
-                  </div>
-                ) : (
-                  <div className="mt-5">
-                    <MUIDataTable
-                      // title={"Followup"}
-                      data={followup ? followup : []}
-                      columns={columns}
-                      options={options}
-                    />
-                  </div>
-                )}
-              </CardBody>
+            {/* Main Content Based on Active Tab */}
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
             </Card>
           </div>
+
+          {/* Payment Card */}
+          <Card className="mb-6">
+            {/* here booking assign table  */}
+            <CardBody>
+              {/* <form id="addIdniv"> */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <div>
+                    <Input
+                      fullWidth
+                      required
+                      id="order_service_date"
+                      label="Service Date"
+                      type="date"
+                      min={today}
+                      name="order_service_date"
+                      value={booking.order_service_date}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div>
+                    <Input
+                      fullWidth
+                      required
+                      label="Time Slot"
+                      type="time"
+                      name="order_time"
+                      value={booking.order_time}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div>
+                    <Input
+                      fullWidth
+                      required
+                      label="Commission (%)"
+                      name="order_comm"
+                      value={booking.order_comm}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 my-4">
+                <div>
+                  <Textarea
+                    fullWidth
+                    label="Comment"
+                    multiline
+                    name="order_comment"
+                    value={booking.order_comment}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div>
+                  <Textarea
+                    fullWidth
+                    label="Postpone Reason"
+                    multiline
+                    name="order_postpone_reason"
+                    value={booking.order_postpone_reason}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-center space-x-4 my-2">
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Update"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                />
+
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
+                />
+              </div>
+              {/* </form> */}
+            </CardBody>
+          </Card>
+          <Card className="mb-6">
+            <CardHeader floated={false} className="h-12 p-4">
+              <Typography variant="h6" color="blue-gray">
+                Follow Up
+              </Typography>
+            </CardHeader>
+            {/* here booking assign table  */}
+            <CardBody>
+              {loading ? (
+                <div className="flex justify-center items-center h-screen">
+                  <Spinner className="h-10 w-10" color="red" />
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <MUIDataTable
+                    // title={"Followup"}
+                    data={followup ? followup : []}
+                    columns={columns}
+                    options={options}
+                  />
+                </div>
+              )}
+            </CardBody>
+          </Card>
         </div>
       </div>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">

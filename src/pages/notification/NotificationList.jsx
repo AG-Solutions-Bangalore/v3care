@@ -10,6 +10,7 @@ import Moment from "moment";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { RefreshCw, SquarePen } from "lucide-react";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
@@ -176,12 +177,11 @@ const NotificationList = () => {
       return (
         <>
           {userType !== "4" && (
-            <Link
-              to="/add-notification"
-              className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            >
-              + Notification
-            </Link>
+            <ButtonConfigColor
+              type="create"
+              label="Notification"
+              onClick={() => navigate("/add-notification")}
+            />
           )}
         </>
       );

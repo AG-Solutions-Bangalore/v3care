@@ -21,6 +21,8 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ReceivedCommissionView = () => {
   const { id } = useParams();
@@ -28,6 +30,7 @@ const ReceivedCommissionView = () => {
   const [booking, setBooking] = useState({});
   const navigate = useNavigate();
   const { userType } = useContext(ContextPanel);
+  const [loading, setLoading] = useState(false);
 
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -64,23 +67,30 @@ const ReceivedCommissionView = () => {
 
   const updateData = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
 
     try {
-      const res = await axios({
-        url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
-        method: "PUT",
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-comm-status/${id}`,
+        {}, // Empty object since no request body is required
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (res.data.code == "200") {
+      if (res.data.code === "200") {
         toast.success("Commission Updated Successfully");
         navigate("/commission-received");
+      } else {
+        toast.error("Network Error");
       }
     } catch (error) {
       console.error("Error updating Commission status:", error);
       toast.error("Error updating Commission status");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -224,75 +234,66 @@ const ReceivedCommissionView = () => {
   };
   return (
     <Layout>
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb- flex">
-          <ArrowLeft className="cursor-pointer " onClick={handleBack} /> View
-          Received Commission
-        </Typography>
+      <PageHeader title={"Received Commission"} onClick={handleBack} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
 
-            {/* Payment Card */}
-            {userType !== "4" && (
-              <Card className="mb-6">
-                <CardBody>
-                  <form onSubmit={updateData} className="space-y-4">
-                    <Button type="submit" color="blue">
-                      Did Not Received Commission
-                    </Button>
-                  </form>
-                </CardBody>
-              </Card>
-            )}
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
+            </Card>
           </div>
+
+          {userType !== "4" && (
+            <Card className="mb-6">
+              <CardBody>
+                <form onSubmit={updateData} className="space-y-4">
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Did Not Received Commission"
+                      loading={loading}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          )}
         </div>
       </div>
     </Layout>

@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ButtonConfigColor from "./common/ButtonConfig/ButtonConfigColor";
 
 const Logout = ({ open, handleOpen }) => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Logout = ({ open, handleOpen }) => {
       <DialogHeader>Confirm Logout</DialogHeader>
       <DialogBody>Are you sure you want to log out?</DialogBody>
       <DialogFooter>
-        <Button
+        {/* <Button
           variant="text"
           color="red"
           onClick={handleOpen}
@@ -30,7 +31,22 @@ const Logout = ({ open, handleOpen }) => {
         </Button>
         <Button variant="gradient" color="green" onClick={handleLogout}>
           <span>Confirm</span>
-        </Button>
+        </Button> */}
+
+        <div className="flex justify-center space-x-4 mt-2">
+          <ButtonConfigColor
+            onClick={handleLogout}
+            label="Confirm"
+            type="logout"
+          />
+
+          <ButtonConfigColor
+            type="back"
+            buttontype="button"
+            label="Cancel"
+            onClick={handleOpen}
+          />
+        </div>
       </DialogFooter>
     </Dialog>
   );

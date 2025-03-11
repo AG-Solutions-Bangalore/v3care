@@ -21,10 +21,14 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 const PendingReceivedView = () => {
   const { id } = useParams();
 
   const [booking, setBooking] = useState({});
+  const [loading, setLoading] = useState(false);
+
   UseEscapeKey();
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -64,15 +68,20 @@ const PendingReceivedView = () => {
 
   const updateData = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
+    setIsButtonDisabled(true);
     try {
-      const res = await axios({
-        url: `${BASE_URL}/api/panel-update-payment-status/${id}`,
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (res.data.code == "200") {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-payment-status/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.code === "200") {
         toast.success("Received Updated Successfully");
         navigate("/received-payment");
       } else {
@@ -81,6 +90,9 @@ const PendingReceivedView = () => {
     } catch (error) {
       console.error("Error updating received status:", error);
       toast.error("Error updating received status");
+    } finally {
+      setLoading(false); // Stop loading in all cases
+      setIsButtonDisabled(false);
     }
   };
 
@@ -222,75 +234,67 @@ const PendingReceivedView = () => {
   };
   return (
     <Layout>
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6 flex">
-          <ArrowLeft onClick={handleBack} className="cursor-pointer" /> View
-          Received Payment
-        </Typography>
+      <PageHeader title={"Received Payment"} onClick={handleBack} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
 
-            {/* Payment Card */}
-            {userType !== "4" && (
-              <Card className="mb-6">
-                <CardBody>
-                  <form onSubmit={updateData} className="space-y-4">
-                    <Button type="submit" color="blue">
-                      Did Not Received Payment
-                    </Button>
-                  </form>
-                </CardBody>
-              </Card>
-            )}
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
+            </Card>
           </div>
+
+          {userType !== "4" && (
+            <Card className="mb-6">
+              <CardBody>
+                <form onSubmit={updateData} className="space-y-4">
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Did Not Received Payment"
+                      disabled={isButtonDisabled}
+                      loading={loading}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          )}
         </div>
       </div>
     </Layout>

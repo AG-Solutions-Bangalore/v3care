@@ -9,16 +9,19 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-import {
-  UserCircleIcon,
-  Bars3Icon,
-} from "@heroicons/react/24/solid";
+import { UserCircleIcon, Bars3Icon } from "@heroicons/react/24/solid";
 import { HiArrowRightStartOnRectangle } from "react-icons/hi2";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs"; // Added fullscreen icons
 import { useState, useEffect } from "react";
 import Logout from "./Logout";
+import ButtonConfigColor from "./common/ButtonConfig/ButtonConfigColor";
 
-const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollapsed }) => {
+const DashboardNavbar = ({
+  openSideNav,
+  setOpenSideNav,
+  isCollapsed,
+  setIsCollapsed,
+}) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const useType = localStorage.getItem("user_type_id");
@@ -51,8 +54,9 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollap
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   const pathSegments = pathname.split("/").filter((el) => el !== "");
@@ -67,7 +71,7 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollap
     >
       <div className="flex justify-between gap-6 flex-row md:items-center">
         <div className="capitalize flex flex-row items-center">
-        <IconButton
+          <IconButton
             variant="text"
             color="white"
             onClick={toggleSidebarCollapse}
@@ -86,18 +90,25 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollap
               </Typography>
             </Link>
           </Breadcrumbs>
-        
-          
         </div>
         <div className="flex items-center gap-2">
           {/* Booking Button */}
-          {(useType === "1" || useType === "5" || useType === "6" || useType === "7") && (
-            <button
-              className=" p-1 bg-white rounded-xl text-black shadow-xl hover:text-blue-700 animate-pulse"
+          {(useType === "1" ||
+            useType === "5" ||
+            useType === "6" ||
+            useType === "7") && (
+            // <button
+            //   className=" p-1 bg-white rounded-xl text-black shadow-xl hover:text-blue-700 animate-pulse"
+            //   onClick={() => navigate("/add-booking")}
+            // >
+            //   + Booking
+            // </button>
+
+            <ButtonConfigColor
+              type="create"
+              label="Booking"
               onClick={() => navigate("/add-booking")}
-            >
-              + Booking
-            </button>
+            />
           )}
 
           {/* Fullscreen Toggle */}
@@ -113,8 +124,6 @@ const DashboardNavbar = ({ openSideNav, setOpenSideNav, isCollapsed, setIsCollap
               <BsFullscreen className="h-5 w-5" />
             )}
           </IconButton>
-
-         
 
           {/* Mobile Sidebar Toggle */}
           <IconButton

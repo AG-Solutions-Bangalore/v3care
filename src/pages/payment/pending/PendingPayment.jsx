@@ -73,27 +73,7 @@ const PendingPayment = () => {
     navigate(`/pending-payment-view/${id}`);
   };
   const columns = [
-    // {
-    //   name: "id",
-    //   label: "Action",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (id) => {
-    //       return (
-    //         <div
-    //           onClick={() => navigate(`/pending-payment-view/${id}`)}
-    //           className="flex items-center space-x-2"
-    //         >
-    //           <MdOutlineRemoveRedEye
-    //             title="View pending Info"
-    //             className="h-5 w-5 cursor-pointer"
-    //           />
-    //         </div>
-    //       );
-    //     },
-    //   },
-    // },
+
     {
       name: "order_ref",
       label: "ID",
