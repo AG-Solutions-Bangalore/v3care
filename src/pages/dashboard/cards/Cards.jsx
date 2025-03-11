@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { FaHourglassHalf, FaCheckCircle, FaCalendarDay, FaCalendarWeek, FaCalendarAlt } from "react-icons/fa";
 import axios from "axios";
-import toast from "react-hot-toast";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
 
 const DashboardCard = ({ title, value, icon: Icon, trend }) => (
   <div className="bg-white rounded-lg overflow-hidden">
