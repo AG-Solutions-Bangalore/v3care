@@ -143,18 +143,7 @@ const PostponeBooking = () => {
         },
       };
     },
-    customToolbar: () => {
-      return (
-        <>
-          <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
-        </>
-      );
-    },
+    
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -368,10 +357,8 @@ const PostponeBooking = () => {
               </button>
             </div>
 
-            {/* Main Content Based on Active Tab */}
-            <Card className="mt-2">
-              <CardBody>{renderActiveTabContent()}</CardBody>
-            </Card>
+          
+          
           </div>
 
           {/* Payment Card */}
@@ -466,29 +453,35 @@ const PostponeBooking = () => {
             </CardBody>
           </Card>
           <Card className="mb-6">
-            <CardHeader floated={false} className="h-12 p-4">
-              <Typography variant="h6" color="blue-gray">
-                Follow Up
-              </Typography>
-            </CardHeader>
-            {/* here booking assign table  */}
-            <CardBody>
-              {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                  <Spinner className="h-10 w-10" color="red" />
-                </div>
-              ) : (
-                <div className="mt-5">
-                  <MUIDataTable
-                    // title={"Followup"}
-                    data={followup ? followup : []}
-                    columns={columns}
-                    options={options}
-                  />
-                </div>
-              )}
-            </CardBody>
-          </Card>
+               <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
+                             <Typography variant="h6" color="blue-gray">
+                               Follow Up
+                             </Typography>
+                             <Link
+                               onClick={handleClickOpen}
+                               className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
+                             >
+                               + Follow up
+                             </Link>
+                           </CardHeader>
+              {/* here booking assign table  */}
+              <CardBody>
+                {loading ? (
+                  <div className="flex justify-center items-center h-screen">
+                    <Spinner className="h-10 w-10" color="red" />
+                  </div>
+                ) : (
+                  <div className="mt-5">
+                    <MUIDataTable
+                      // title={"Followup"}
+                      data={followup ? followup : []}
+                      columns={columns}
+                      options={options}
+                    />
+                  </div>
+                )}
+              </CardBody>
+            </Card>
         </div>
       </div>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">

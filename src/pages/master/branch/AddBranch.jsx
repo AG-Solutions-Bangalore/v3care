@@ -69,13 +69,13 @@ const AddBranch = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Branch Created Successfully");
+        toast.success(response.data?.msg || "Branch Created Successfully");
 
         setBranch({ branch_name: "" });
 
         navigate("/branch");
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");

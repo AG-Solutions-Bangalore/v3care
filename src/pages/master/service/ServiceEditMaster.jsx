@@ -110,12 +110,12 @@ const ServiceEditMaster = () => {
       })
         .then((res) => {
           if (res.data.code == "200") {
-            toast.success("update succesfull");
+            toast.success(res.data?.msg || "update succesfull");
             navigate(`/service?page=${pageNo}`);
           } else {
             setLoading(false);
             setIsButtonDisabled(false);
-            toast.error("duplicate entry");
+            toast.error(res.data?.msg  || "duplicate entry");
           }
         })
         .finally(() => {

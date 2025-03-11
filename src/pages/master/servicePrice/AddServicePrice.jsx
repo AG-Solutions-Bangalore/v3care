@@ -121,7 +121,7 @@ const AddServicePrice = () => {
       },
     }).then((res) => {
       if (res.data.code == "200") {
-        toast.success("Branch Create succesfull");
+        toast.success(res.data?.msg || "Service Price Create succesfull");
 
         setServices({
           service_id: "",
@@ -132,7 +132,7 @@ const AddServicePrice = () => {
         });
         navigate("/service-price");
       } else {
-        alert("Duplicate Entry");
+     toast.error(res.data?.msg || "Duplicate Entery ");
       }
     });
     setIsButtonDisabled(false);

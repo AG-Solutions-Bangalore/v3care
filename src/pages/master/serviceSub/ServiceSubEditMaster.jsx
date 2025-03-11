@@ -111,11 +111,11 @@ const ServiceSubEditMaster = () => {
           }
         );
         if (res.data.code == "200") {
-          toast.success("Branch Create succesfull");
+          toast.success(res.data?.msg || "Service Sub Create succesfull");
 
           navigate(`/service-sub?page=${pageNo}`);
         } else {
-          toast.error("duplicate entry");
+          toast.error(response.data?.msg ||"duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service:", error);
