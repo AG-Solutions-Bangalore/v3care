@@ -285,18 +285,7 @@ const EditBookingAll = () => {
         },
       };
     },
-    customToolbar: () => {
-      return (
-        <>
-          <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
-        </>
-      );
-    },
+
   };
 
   const renderActiveTabContent = () => {
@@ -496,11 +485,10 @@ const EditBookingAll = () => {
                 {/* Home Deep Cleaning Button */}
                 <button
                   onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "bookingDetails"
                       ? "border-blue-500 bg-blue-100 text-blue-600"
                       : "border-transparent hover:bg-blue-50"
-                  }`}
+                    }`}
                 >
                   <FaHome />
                   {booking?.order_service}
@@ -522,11 +510,10 @@ const EditBookingAll = () => {
                 {/* Other Details Button */}
                 <button
                   onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "additionalInfo"
                       ? "border-red-500 bg-red-100 text-red-600"
                       : "border-transparent hover:bg-red-50"
-                  }`}
+                    }`}
                 >
                   <FaInfoCircle />
                   Other Details
@@ -771,10 +758,16 @@ const EditBookingAll = () => {
               </Card>
             </div>
             <Card className="mb-6">
-              <CardHeader floated={false} className="h-12 p-4">
+              <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
                 <Typography variant="h6" color="blue-gray">
                   Follow Up
                 </Typography>
+                <Link
+                  onClick={handleClickOpen}
+                  className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
+                >
+                  + Follow up
+                </Link>
               </CardHeader>
               {/* here booking assign table  */}
               <CardBody>

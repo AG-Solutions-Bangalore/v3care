@@ -269,15 +269,15 @@ const AddVendor = () => {
       }).then((res) => {
         console.log("res post", res);
         if (res.data.code == "200") {
-          toast.success("Vendor Created Succesfully");
+          toast.success(res.data?.msg || "Vendor Created Succesfully");
           navigate("/vendor-list");
         } else {
           if (res.data.code == "402") {
-            toast.error("Mobile No Duplicate");
+            toast.error(res.data?.msg || "Mobile No Duplicate");
           } else if (res.data.code == "403") {
-            toast.error("Email Duplicate");
+            toast.error(res.data?.msg || "Email Duplicate");
           } else {
-            toast.error("Network Issue");
+            toast.error(res.data?.msg || "Network Issue");
           }
         }
       });

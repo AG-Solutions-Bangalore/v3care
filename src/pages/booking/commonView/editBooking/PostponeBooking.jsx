@@ -141,18 +141,7 @@ const PostponeBooking = () => {
         },
       };
     },
-    customToolbar: () => {
-      return (
-        <>
-          <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
-        </>
-      );
-    },
+    
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -462,11 +451,17 @@ const PostponeBooking = () => {
               </CardBody>
             </Card>
             <Card className="mb-6">
-              <CardHeader floated={false} className="h-12 p-4">
-                <Typography variant="h6" color="blue-gray">
-                  Follow Up
-                </Typography>
-              </CardHeader>
+               <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
+                             <Typography variant="h6" color="blue-gray">
+                               Follow Up
+                             </Typography>
+                             <Link
+                               onClick={handleClickOpen}
+                               className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
+                             >
+                               + Follow up
+                             </Link>
+                           </CardHeader>
               {/* here booking assign table  */}
               <CardBody>
                 {loading ? (

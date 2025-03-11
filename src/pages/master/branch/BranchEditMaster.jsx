@@ -100,10 +100,10 @@ const BranchEditMaster = () => {
       );
       console.log("Form submitted", branch);
       if (response.data.code == "200") {
-        toast.success("update succesfull");
+        toast.success(response.data?.msg || "update succesfull");
         navigate(`/branch?page=${pageNo}`);
       } else {
-        toast.error("duplicate entry");
+        toast.error(response.data?.msg || "duplicate entry");
       }
     } catch (error) {
       console.error("Error updating refer by", error);

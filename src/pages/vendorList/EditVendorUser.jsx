@@ -93,15 +93,15 @@ const EditVendorUser = () => {
       }
     );
     if (response.data.code == "200") {
-      toast.success("Vendor User Edit Successfull");
+      toast.success(response.data?.msg || "Vendor User Edit Successfull");
       navigate(`/vendor-user-list/${idVendor}`);
     } else {
       if (response.data.code == "401") {
-        toast.error("full name duplicate entry");
+        toast.error(response.data?.msg || "full name duplicate entry");
       } else if (response.data.code == "402") {
-        toast.error("mobile no duplicate entry");
+        toast.error(response.data?.msg || "mobile no duplicate entry");
       } else {
-        toast.error("email id duplicate entry");
+        toast.error(response.data?.msg || "email id duplicate entry");
       }
     }
   };

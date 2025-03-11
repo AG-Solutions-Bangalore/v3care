@@ -270,18 +270,7 @@ const EditBookingInspection = () => {
         },
       };
     },
-    customToolbar: () => {
-      return (
-        <>
-          <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
-        </>
-      );
-    },
+   
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -382,26 +371,7 @@ const EditBookingInspection = () => {
             </div>
           </div>
         );
-      case "followUp":
-      case "followUplocation":
-        return (
-          <div>
-            {loading ? (
-              <div className="flex justify-center items-center h-screen">
-                <Spinner className="h-10 w-10" color="red" />
-              </div>
-            ) : (
-              <div className="mt-5">
-                <MUIDataTable
-                  // title={"Followup"}
-                  data={followup ? followup : []}
-                  columns={columns}
-                  options={options}
-                />
-              </div>
-            )}
-          </div>
-        );
+     
       default:
         return null;
     }
@@ -464,18 +434,17 @@ const EditBookingInspection = () => {
               {/* Home Deep Cleaning Button */}
               <button
                 onClick={() => setActiveTab("bookingDetails")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "bookingDetails"
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "bookingDetails"
                     ? "border-blue-500 bg-blue-100 text-blue-600"
                     : "border-transparent hover:bg-blue-50"
-                }`}
+                  }`}
               >
                 <FaHome />
                 {booking?.order_service}
               </button>
 
               {/* Booking Overview Button */}
-              <button
+              {/* <button
                 onClick={() => setActiveTab("customerInfo")}
                 className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                   activeTab === "customerInfo"
@@ -485,32 +454,21 @@ const EditBookingInspection = () => {
               >
                 <FaClipboardList />
                 Booking Overview
-              </button>
+              </button> */}
 
               {/* Other Details Button */}
               <button
                 onClick={() => setActiveTab("additionalInfo")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "additionalInfo"
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "additionalInfo"
                     ? "border-red-500 bg-red-100 text-red-600"
                     : "border-transparent hover:bg-red-50"
-                }`}
+                  }`}
               >
                 <FaInfoCircle />
                 Other Details
               </button>
 
-              <button
-                onClick={() => setActiveTab("followUp")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "followUp"
-                    ? "border-purple-500 bg-red-100 text-purple-600"
-                    : "border-transparent hover:bg-purple-50"
-                }`}
-              >
-                <FaCommentDots />
-                Follow Up
-              </button>
+            
             </div>
 
             {/* Main Content Based on Active Tab */}
@@ -518,7 +476,7 @@ const EditBookingInspection = () => {
               <CardBody>{renderActiveTabContent()}</CardBody>
             </Card>
           </div>
-          <div className={`${activeTab === "followUp" ? "hidden" : ""}`}>
+          <div >
             {/* Payment Card */}
             <Card className="mb-6">
               {/* here booking assign table  */}
@@ -739,6 +697,36 @@ const EditBookingInspection = () => {
               </CardBody>
             </Card>
           </div>
+          <Card className="mb-6">
+            <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
+              <Typography variant="h6" color="blue-gray">
+                Follow Up
+              </Typography>
+              <Link
+                onClick={handleClickOpen}
+                className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
+              >
+                + Follow up
+              </Link>
+            </CardHeader>
+            {/* here booking assign table  */}
+            <CardBody>
+              {loading ? (
+                <div className="flex justify-center items-center h-screen">
+                  <Spinner className="h-10 w-10" color="red" />
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <MUIDataTable
+                    // title={"Followup"}
+                    data={followup ? followup : []}
+                    columns={columns}
+                    options={options}
+                  />
+                </div>
+              )}
+            </CardBody>
+          </Card>
         </div>
       </div>
 

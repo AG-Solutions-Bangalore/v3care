@@ -85,7 +85,7 @@ const AddBackhandTeam = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Create successful!");
+        toast.success(response.data?.msg || "Create successful!");
 
         // Reset form fields
         setTeam({
@@ -104,7 +104,7 @@ const AddBackhandTeam = () => {
         // Navigate to the next page
         navigate("/backhand-team");
       } else {
-        toast.error("Duplicate Entry");
+        toast.error(response.data?.msg || "Duplicate Entry");
       }
     } catch (error) {
       console.error("Error:", error);

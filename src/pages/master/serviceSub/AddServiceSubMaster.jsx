@@ -85,7 +85,7 @@ const AddServiceSubMaster = () => {
       },
     }).then((res) => {
       if (res.data.code == "200") {
-        toast.success("Branch Create succesfull");
+        toast.success(res.data?.msg  || "Service sub Create succesfull");
 
         setServices({
           service_id: "",
@@ -94,7 +94,7 @@ const AddServiceSubMaster = () => {
         });
         navigate("/service");
       } else {
-        toast.error("duplicate entry");
+        toast.error(res.data?.msg || "duplicate entry");
       }
     });
     setIsButtonDisabled(false);

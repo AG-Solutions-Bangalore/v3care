@@ -60,7 +60,7 @@ const AddServiceMaster = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Service Created Successfully");
+        toast.success(response.data?.msg || "Service Created Successfully");
 
         // Reset Form
         setServices({
@@ -71,7 +71,7 @@ const AddServiceMaster = () => {
 
         navigate("/service");
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");

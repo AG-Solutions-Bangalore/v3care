@@ -64,18 +64,18 @@ const AddVendorUser = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Vendor User Created");
+        toast.success(response.data?.msg || "Vendor User Created");
         navigate(`/vendor-user-list/${id}`);
       } else {
         switch (response.data.code) {
           case "401":
-            toast.error("Full name duplicate entry");
+            toast.error(response.data?.msg || "Full name duplicate entry");
             break;
           case "402":
-            toast.error("Mobile number duplicate entry");
+            toast.error(response.data?.msg || "Mobile number duplicate entry");
             break;
           default:
-            toast.error("Email ID duplicate entry");
+            toast.error(response.data?.msg || "Email ID duplicate entry");
         }
       }
     } catch (error) {
