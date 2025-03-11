@@ -11,6 +11,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const PendingPayment = () => {
   const [pendingData, setPendingData] = useState(null);
@@ -63,7 +64,6 @@ const PendingPayment = () => {
       }
     };
     fetchPendingData();
-    setLoading(false);
   }, []);
 
   const handleView = (e, id) => {
@@ -73,7 +73,6 @@ const PendingPayment = () => {
     navigate(`/pending-payment-view/${id}`);
   };
   const columns = [
-
     {
       name: "order_ref",
       label: "ID",
@@ -294,8 +293,6 @@ const PendingPayment = () => {
         },
       },
     },
-
-   
   ];
   const options = {
     selectableRows: "none",
@@ -314,9 +311,9 @@ const PendingPayment = () => {
       setPage(currentPage);
       navigate(`/pending-payment?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = pendingData[rowMeta.dataIndex].id;
-      handleView(e,id)()
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
@@ -358,19 +355,18 @@ const PendingPayment = () => {
   return (
     <Layout>
       <PaymentFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Payment Pending List
-        </h3>
-      </div> */}
-      <div className="mt-1">
-        <MUIDataTable
-          title="Payment Pending List"
-          data={pendingData ? pendingData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Payment Pending List"
+            data={pendingData ? pendingData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

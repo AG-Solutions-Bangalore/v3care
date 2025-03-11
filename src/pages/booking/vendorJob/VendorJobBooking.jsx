@@ -12,6 +12,7 @@ import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
@@ -325,9 +326,9 @@ const VendorJobBooking = () => {
       setPage(currentPage);
       navigate(`/vendor-job?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = vendorBookData[rowMeta.dataIndex].id;
-      handleView(e,id)()
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
@@ -371,9 +372,7 @@ const VendorJobBooking = () => {
     <Layout>
       <BookingFilter />
       {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
-        </div>
+        <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable

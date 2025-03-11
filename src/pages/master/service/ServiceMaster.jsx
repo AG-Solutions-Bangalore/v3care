@@ -11,6 +11,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ServiceMaster = () => {
   const [serviceData, setServiceData] = useState(null);
@@ -40,11 +41,12 @@ const ServiceMaster = () => {
   useEffect(() => {
     const fetchServiceData = async () => {
       try {
+        setLoading(true);
+
         if (!isPanelUp) {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-service-list`,
@@ -63,7 +65,6 @@ const ServiceMaster = () => {
       }
     };
     fetchServiceData();
-    setLoading(false);
   }, []);
 
   const handleEdit = (e, id) => {
@@ -221,14 +222,18 @@ const ServiceMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="mt-1">
-        <MUIDataTable
-          title="Service List"
-          data={serviceData ? serviceData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Service List"
+            data={serviceData ? serviceData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

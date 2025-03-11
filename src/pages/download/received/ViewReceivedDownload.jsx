@@ -7,6 +7,7 @@ import moment from "moment";
 import { Button } from "@material-tailwind/react";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ViewReceivedDownload = () => {
   const [receivedPayments, setReceivedPayments] = useState([]);
@@ -77,13 +78,20 @@ const ViewReceivedDownload = () => {
   if (loading) {
     return (
       <Layout>
-        <div>Loading...</div>
+        <LoaderComponent />
       </Layout>
     );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Layout>
+        <div className="bg-gray-100 p-4 mt-5 rounded-lg border border-gray-300 text-gray-700">
+          <p className="font-semibold">Error encountered:</p>
+          <p>{error}</p>
+        </div>
+      </Layout>
+    );
   }
 
   return (
@@ -108,10 +116,8 @@ const ViewReceivedDownload = () => {
           </span>
         }
       />
-   
+
       <div ref={containerRef}>
-
-
         {/* Table Section */}
         <div className="overflow-x-auto border-l border-r border-black bg-white mt-2">
           <div

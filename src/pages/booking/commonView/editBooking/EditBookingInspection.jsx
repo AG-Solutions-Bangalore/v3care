@@ -35,6 +35,7 @@ import {
 } from "@mui/material";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../../components/common/LoaderComponent";
 const status = [
   {
     value: "Pending",
@@ -121,6 +122,7 @@ const EditBookingInspection = () => {
     order_followup_description: "",
   });
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
 
   const [orderref, setOrderRef] = useState([]);
 
@@ -158,6 +160,7 @@ const EditBookingInspection = () => {
   };
 
   const fetchBookingData = async () => {
+    setFetchLoading(true);
     try {
       const response = await axios({
         url: `${BASE_URL}/api/panel-fetch-booking-by-id/${id}`,
@@ -171,6 +174,8 @@ const EditBookingInspection = () => {
       setFollowUp(response.data?.bookingFollowup);
     } catch (error) {
       console.error("Error fetching booking data:", error);
+    } finally {
+      setFetchLoading(false);
     }
   };
   const fetchpaymentData = async () => {
@@ -195,8 +200,9 @@ const EditBookingInspection = () => {
   // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     setIsButtonDisabled(true);
+
     const data = {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
@@ -212,6 +218,7 @@ const EditBookingInspection = () => {
       order_area: booking.order_area,
       order_inspection_status: booking.order_inspection_status,
     };
+
     axios
       .put(`${BASE_URL}/api/panel-update-booking-inspection/${id}`, data, {
         headers: {
@@ -229,6 +236,10 @@ const EditBookingInspection = () => {
       .catch((err) => {
         console.error("Error updating booking", err);
         toast.error("Error updating booking");
+      })
+      .finally(() => {
+        setLoading(false);
+        setIsButtonDisabled(false);
       });
   };
 
@@ -270,7 +281,17 @@ const EditBookingInspection = () => {
         },
       };
     },
-   
+    customToolbar: () => {
+      return (
+        <>
+          <ButtonConfigColor
+            type="create"
+            label="Follow Up"
+            onClick={handleClickOpen}
+          />
+        </>
+      );
+    },
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -371,7 +392,7 @@ const EditBookingInspection = () => {
             </div>
           </div>
         );
-     
+
       default:
         return null;
     }
@@ -426,312 +447,288 @@ const EditBookingInspection = () => {
     <Layout>
       <BookingFilter />
       <PageHeader title={"Edit Inspection"} />
-
-      <div className="flex gap-4 mt-2">
-        <div className="flex-grow">
-          <div className="mb-2">
-            <div className="flex justify-start space-x-4 ">
-              {/* Home Deep Cleaning Button */}
-              <button
-                onClick={() => setActiveTab("bookingDetails")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "bookingDetails"
-                    ? "border-blue-500 bg-blue-100 text-blue-600"
-                    : "border-transparent hover:bg-blue-50"
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="flex gap-4 mt-2">
+          <div className="flex-grow">
+            <div className="mb-2">
+              <div className="flex justify-start space-x-4 ">
+                {/* Home Deep Cleaning Button */}
+                <button
+                  onClick={() => setActiveTab("bookingDetails")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "bookingDetails"
+                      ? "border-blue-500 bg-blue-100 text-blue-600"
+                      : "border-transparent hover:bg-blue-50"
                   }`}
-              >
-                <FaHome />
-                {booking?.order_service}
-              </button>
+                >
+                  <FaHome />
+                  {booking?.order_service}
+                </button>
 
-              {/* Booking Overview Button */}
-              {/* <button
-                onClick={() => setActiveTab("customerInfo")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "customerInfo"
-                    ? "border-green-500 bg-green-100 text-green-600"
-                    : "border-transparent hover:bg-green-50"
-                }`}
-              >
-                <FaClipboardList />
-                Booking Overview
-              </button> */}
-
-              {/* Other Details Button */}
-              <button
-                onClick={() => setActiveTab("additionalInfo")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "additionalInfo"
-                    ? "border-red-500 bg-red-100 text-red-600"
-                    : "border-transparent hover:bg-red-50"
+                <button
+                  onClick={() => setActiveTab("additionalInfo")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "additionalInfo"
+                      ? "border-red-500 bg-red-100 text-red-600"
+                      : "border-transparent hover:bg-red-50"
                   }`}
-              >
-                <FaInfoCircle />
-                Other Details
-              </button>
+                >
+                  <FaInfoCircle />
+                  Other Details
+                </button>
+              </div>
 
-            
+              {/* Main Content Based on Active Tab */}
+              <Card className="mt-2">
+                <CardBody>{renderActiveTabContent()}</CardBody>
+              </Card>
             </div>
-
-            {/* Main Content Based on Active Tab */}
-            <Card className="mt-2">
-              <CardBody>{renderActiveTabContent()}</CardBody>
-            </Card>
-          </div>
-          <div >
-            {/* Payment Card */}
-            <Card className="mb-6">
-              {/* here booking assign table  */}
-              <CardBody>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <FormControl fullWidth>
-                    <InputLabel id="service-select-label">
-                      <span className="text-sm relative bottom-[6px]">
-                        Booking Status <span className="text-red-700">*</span>
-                      </span>
-                    </InputLabel>
-                    <Select
-                      sx={{ height: "40px", borderRadius: "5px" }}
-                      labelId="service-select-label"
-                      id="service-select"
-                      name="order_status"
-                      value={booking.order_status}
-                      // defaultValue={booking.order_status}
-                      onChange={(e) => onInputChange(e)}
-                      label="Booking Status *"
-                      required
-                    >
-                      {status.map((data) => (
-                        <MenuItem key={data.value} value={data.value}>
-                          {data.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <div>
+            <div>
+              {/* Payment Card */}
+              <Card className="mb-6">
+                {/* here booking assign table  */}
+                <CardBody>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <FormControl fullWidth>
                       <InputLabel id="service-select-label">
                         <span className="text-sm relative bottom-[6px]">
-                          Inspection Status{" "}
-                          <span className="text-red-700">*</span>
+                          Booking Status <span className="text-red-700">*</span>
                         </span>
                       </InputLabel>
                       <Select
                         sx={{ height: "40px", borderRadius: "5px" }}
                         labelId="service-select-label"
                         id="service-select"
-                        name="order_inspection_status"
-                        value={booking.order_inspection_status}
+                        name="order_status"
+                        value={booking.order_status}
+                        // defaultValue={booking.order_status}
                         onChange={(e) => onInputChange(e)}
-                        label="Inspection Status *"
+                        label="Booking Status *"
                         required
                       >
-                        {Istatus.map((data) => (
+                        {status.map((data) => (
                           <MenuItem key={data.value} value={data.value}>
                             {data.label}
                           </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
-                  </div>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="service-select-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Inspection Status{" "}
+                            <span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <Select
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="service-select-label"
+                          id="service-select"
+                          name="order_inspection_status"
+                          value={booking.order_inspection_status}
+                          onChange={(e) => onInputChange(e)}
+                          label="Inspection Status *"
+                          required
+                        >
+                          {Istatus.map((data) => (
+                            <MenuItem key={data.value} value={data.value}>
+                              {data.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
 
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        id="order_service_date"
-                        label="Service Date"
-                        type="date"
-                        disabled
-                        labelProps={{
-                          className: "!text-gray-600 ",
-                        }}
-                        min={today}
-                        name="order_service_date"
-                        value={booking.order_service_date}
-                        onChange={(e) => onInputChange(e)}
-                      />
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          required
+                          id="order_service_date"
+                          label="Service Date"
+                          type="date"
+                          disabled
+                          labelProps={{
+                            className: "!text-gray-600 ",
+                          }}
+                          min={today}
+                          name="order_service_date"
+                          value={booking.order_service_date}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          required
+                          label="Time Slot"
+                          type="time"
+                          name="order_time"
+                          value={booking.order_time}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          required
+                          label="Commission"
+                          name="order_comm"
+                          value={booking.order_comm}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          required
+                          label="Amount"
+                          name="order_amount"
+                          value={booking.order_amount}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          label="Advance"
+                          name="order_advance"
+                          value={booking.order_advance}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          label="Comment"
+                          multiline
+                          name="order_comment"
+                          value={booking.order_comment}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          label="Paid Amount"
+                          name="order_payment_amount"
+                          value={booking.order_payment_amount}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="service-select-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Payment Mode <span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <Select
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="service-select-label"
+                          id="service-select"
+                          name="order_payment_type"
+                          value={booking.order_payment_type}
+                          onChange={(e) => onInputChange(e)}
+                          label="Payment Mode *"
+                          required
+                        >
+                          {paymentmode.map((data) => (
+                            <MenuItem
+                              key={data.payment_mode}
+                              value={data.payment_mode}
+                            >
+                              {data.payment_mode}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    <div className="col-span-2">
+                      <div className="form-group">
+                        <Input
+                          fullWidth
+                          label="Transaction Details"
+                          name="order_transaction_details"
+                          value={booking.order_transaction_details}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Time Slot"
-                        type="time"
-                        name="order_time"
-                        value={booking.order_time}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Update"
+                      disabled={isButtonDisabled}
+                      loading={loading}
+                      onClick={onSubmit}
+                    />
+                    <ButtonConfigColor
+                      type="submit"
+                      label="Postpone"
+                      onClick={() => navigate(`/booking-reschedule/${id}`)}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
                   </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Commission"
-                        name="order_comm"
-                        value={booking.order_comm}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                </CardBody>
+              </Card>
+            </div>
+            <Card className="mb-6">
+              <CardBody>
+                {loading ? (
+                  <div className="flex justify-center items-center h-screen">
+                    <Spinner className="h-10 w-10" color="red" />
                   </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        required
-                        label="Amount"
-                        name="order_amount"
-                        value={booking.order_amount}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
+                ) : (
+                  <div className="mt-5">
+                    <MUIDataTable
+                      title={"Followup"}
+                      data={followup ? followup : []}
+                      columns={columns}
+                      options={options}
+                    />
                   </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Advance"
-                        name="order_advance"
-                        value={booking.order_advance}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Comment"
-                        multiline
-                        name="order_comment"
-                        value={booking.order_comment}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Paid Amount"
-                        name="order_payment_amount"
-                        value={booking.order_payment_amount}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <FormControl fullWidth>
-                      <InputLabel id="service-select-label">
-                        <span className="text-sm relative bottom-[6px]">
-                          Payment Mode <span className="text-red-700">*</span>
-                        </span>
-                      </InputLabel>
-                      <Select
-                        sx={{ height: "40px", borderRadius: "5px" }}
-                        labelId="service-select-label"
-                        id="service-select"
-                        name="order_payment_type"
-                        value={booking.order_payment_type}
-                        onChange={(e) => onInputChange(e)}
-                        label="Payment Mode *"
-                        required
-                      >
-                        {paymentmode.map((data) => (
-                          <MenuItem
-                            key={data.payment_mode}
-                            value={data.payment_mode}
-                          >
-                            {data.payment_mode}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-
-                  <div className="col-span-2">
-                    <div className="form-group">
-                      <Input
-                        fullWidth
-                        label="Transaction Details"
-                        name="order_transaction_details"
-                        value={booking.order_transaction_details}
-                        onChange={(e) => onInputChange(e)}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-center space-x-4 my-2">
-                  <ButtonConfigColor
-                    type="edit"
-                    buttontype="submit"
-                    label="Update"
-                    disabled={isButtonDisabled}
-                    loading={loading}
-                    onClick={onSubmit}
-                  />
-                  <ButtonConfigColor
-                    type="submit"
-                    label="Postpone"
-                    onClick={() => navigate(`/booking-reschedule/${id}`)}
-                  />
-
-                  <ButtonConfigColor
-                    type="back"
-                    buttontype="button"
-                    label="Cancel"
-                    onClick={() => navigate(-1)}
-                  />
-                </div>
+                )}
               </CardBody>
             </Card>
           </div>
-          <Card className="mb-6">
-            <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
-              <Typography variant="h6" color="blue-gray">
-                Follow Up
-              </Typography>
-              <Link
-                onClick={handleClickOpen}
-                className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
-              >
-                + Follow up
-              </Link>
-            </CardHeader>
-            {/* here booking assign table  */}
-            <CardBody>
-              {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                  <Spinner className="h-10 w-10" color="red" />
-                </div>
-              ) : (
-                <div className="mt-5">
-                  <MUIDataTable
-                    // title={"Followup"}
-                    data={followup ? followup : []}
-                    columns={columns}
-                    options={options}
-                  />
-                </div>
-              )}
-            </CardBody>
-          </Card>
         </div>
-      </div>
+      )}
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        {/* <DialogTitle>Follow Up</DialogTitle> */}
         <DialogContent>
           <div className="mb-5">
             <h1 className="font-bold text-xl"> Create Follow Up</h1>

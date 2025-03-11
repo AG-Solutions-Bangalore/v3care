@@ -11,6 +11,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ServiceSubMaster = () => {
   const [serviceSubData, setServiceSubData] = useState(null);
@@ -63,7 +64,6 @@ const ServiceSubMaster = () => {
       }
     };
     fetchServiceSubData();
-    setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -95,17 +95,7 @@ const ServiceSubMaster = () => {
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "service_sub_image",
       label: "Image",
@@ -169,12 +159,6 @@ const ServiceSubMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            // <Link
-            //   to="/add-service-sub"
-            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            // >
-            //   + Service Sub
-            // </Link>
             <ButtonConfigColor
               type="create"
               label="Service Sub"
@@ -216,15 +200,18 @@ const ServiceSubMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-
-      <div className="mt-1">
-        <MUIDataTable
-          title="Service Sub List"
-          data={serviceSubData ? serviceSubData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Service Sub List"
+            data={serviceSubData ? serviceSubData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

@@ -1,44 +1,28 @@
-import React, { useContext } from "react";
-import Layout from "../../../layout/Layout";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
-import {
-  FaHome,
-  FaClipboardList,
-  FaInfoCircle,
-  FaCommentDots,
-} from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
+  CardHeader,
   Input,
-  Select,
-  Option,
-  Button,
+  Typography,
 } from "@material-tailwind/react";
+import { FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import { toast } from "react-toastify";
 import BASE_URL from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
-import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
+import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { MdEdit } from "react-icons/md";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
-import { ArrowLeft } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -57,6 +41,8 @@ const ViewBooking = () => {
     order_followup_date: moment().format("YYYY-MM-DD"),
     order_followup_description: "",
   });
+  const [loading, setLoading] = useState(false);
+
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
@@ -69,6 +55,8 @@ const ViewBooking = () => {
   };
   const fetchBookingData = async () => {
     try {
+      setLoading(true);
+
       const response = await axios({
         url: `${BASE_URL}/api/panel-fetch-booking-view-by-id/${id}`,
         method: "GET",
@@ -82,6 +70,8 @@ const ViewBooking = () => {
       setFollowUp(response.data?.bookingFollowup);
     } catch (error) {
       console.error("Error fetching booking data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,7 +155,19 @@ const ViewBooking = () => {
         },
       };
     },
-   
+    customToolbar: () => {
+      return (
+        <>
+          <>
+            <ButtonConfigColor
+              type="create"
+              label="Follow Up"
+              onClick={handleClickOpen}
+            />
+          </>
+        </>
+      );
+    },
   };
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -295,10 +297,6 @@ const ViewBooking = () => {
     }
   };
 
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(-1);
-  };
   const onSubmitFollowup = (e) => {
     e.preventDefault();
     if (!followups.order_followup_description.trim()) {
@@ -378,26 +376,29 @@ const ViewBooking = () => {
           </span>
         }
       />
-      <div className="container mx-auto mt-2">
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="container mx-auto mt-2">
+          <div className="flex gap-4">
+            <div className="flex-grow">
+              <div className="mb-2">
+                <div className="flex justify-start space-x-4 ">
+                  {/* Home Deep Cleaning Button */}
+                  <button
+                    onClick={() => setActiveTab("bookingDetails")}
+                    className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                      activeTab === "bookingDetails"
+                        ? "border-green-500 bg-green-100 text-green-600"
+                        : "border-transparent hover:bg-green-50"
+                    }`}
+                  >
+                    <FaClipboardList />
+                    Booking Overview
+                  </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
+                  {/* Booking Overview Button */}
+                  {/* <button
                   onClick={() => setActiveTab("customerInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
                     activeTab === "customerInfo"
@@ -409,148 +410,138 @@ const ViewBooking = () => {
                   Booking Overview
                 </button> */}
 
-                {/* Other Details Button */}
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
+                  {/* Other Details Button */}
+                  <button
+                    onClick={() => setActiveTab("additionalInfo")}
+                    className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                      activeTab === "additionalInfo"
+                        ? "border-red-500 bg-red-100 text-red-600"
+                        : "border-transparent hover:bg-red-50"
+                    }`}
+                  >
+                    <FaInfoCircle />
+                    Other Details
+                  </button>
+                </div>
 
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
-            </div>
-            <div>
-              {/* Payment Card */}
-              <Card className="mb-6">
-                <CardHeader floated={false} className="h-12 p-4">
-                  <Typography variant="h6" color="blue-gray">
-                    Booking Assign
-                  </Typography>
-                </CardHeader>
-                {/* here booking assign table  */}
-                <CardBody>
-                  {bookingAssign.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full table-auto border-collapse ">
-                        <thead>
-                          <tr className="bg-gray-200 text-left ">
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">Full Name</span>
-                            </th>
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">Start Time</span>
-                            </th>
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">
-                                On the Way Time
-                              </span>
-                            </th>
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">End Time</span>
-                            </th>
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">Remarks</span>
-                            </th>
-                            <th className="p-3 border border-gray-700">
-                              <span className="text-gray-700">Status</span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {bookingAssign.map((dataSumm, key) => (
-                            <tr
-                              key={key}
-                              className="bg-white border-b hover:bg-gray-50"
-                            >
-                              <td className="p-3 border border-gray-700">
-                                <span className="text-gray-900">
-                                  {dataSumm.name}
-                                </span>
-                              </td>
-                              <td className="p-3 border border-gray-700">
-                                <span className="text-gray-900">
-                                  {dataSumm.order_start_time}
-                                </span>
-                              </td>
-                              <td className="p-3 border border-gray-700">
-                                <span className="text-gray-900">
-                                  {dataSumm.order_way_time}
-                                </span>
-                              </td>
-                              <td className="p-3 border border-gray-700">
-                                <span className="text-gray-900">
-                                  {dataSumm.order_end_time}
-                                </span>
-                              </td>
-                              <td className="p-3 border border-gray-700">
-                                <span className="text-gray-900">
-                                  {dataSumm.order_assign_remarks}
-                                </span>
-                              </td>
-                              <td className="p-3 border border-gray-700">
-                                <span
-                                  className={`${
-                                    dataSumm.order_assign_status === "Completed"
-                                      ? "text-green-500"
-                                      : "text-red-500"
-                                  }`}
-                                >
-                                  {dataSumm.order_assign_status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-4">
-                      <h1 className="text-gray-700 text-lg">
-                        No Data Available
-                      </h1>
-                    </div>
-                  )}
-                </CardBody>
-              </Card>
-              <div className="mt-5">
+                {/* Main Content Based on Active Tab */}
+                <Card className="mt-2">
+                  <CardBody>{renderActiveTabContent()}</CardBody>
+                </Card>
+              </div>
+              <div>
+                {/* Payment Card */}
                 <Card className="mb-6">
-                  <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
+                  <CardHeader floated={false} className="h-12 p-4">
                     <Typography variant="h6" color="blue-gray">
-                      Follow Up
+                      Booking Assign
                     </Typography>
-                    <Link
-            onClick={handleClickOpen}
-            className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
-          >
-            + Follow up
-          </Link>
                   </CardHeader>
                   {/* here booking assign table  */}
                   <CardBody>
-                    <MUIDataTable
-                      // title={"Followup"}
-                      data={followup ? followup : []}
-                      columns={columns}
-                      options={options}
-                    />
+                    {bookingAssign.length > 0 ? (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full table-auto border-collapse ">
+                          <thead>
+                            <tr className="bg-gray-200 text-left ">
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">Full Name</span>
+                              </th>
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">
+                                  Start Time
+                                </span>
+                              </th>
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">
+                                  On the Way Time
+                                </span>
+                              </th>
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">End Time</span>
+                              </th>
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">Remarks</span>
+                              </th>
+                              <th className="p-3 border border-gray-700">
+                                <span className="text-gray-700">Status</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {bookingAssign.map((dataSumm, key) => (
+                              <tr
+                                key={key}
+                                className="bg-white border-b hover:bg-gray-50"
+                              >
+                                <td className="p-3 border border-gray-700">
+                                  <span className="text-gray-900">
+                                    {dataSumm.name}
+                                  </span>
+                                </td>
+                                <td className="p-3 border border-gray-700">
+                                  <span className="text-gray-900">
+                                    {dataSumm.order_start_time}
+                                  </span>
+                                </td>
+                                <td className="p-3 border border-gray-700">
+                                  <span className="text-gray-900">
+                                    {dataSumm.order_way_time}
+                                  </span>
+                                </td>
+                                <td className="p-3 border border-gray-700">
+                                  <span className="text-gray-900">
+                                    {dataSumm.order_end_time}
+                                  </span>
+                                </td>
+                                <td className="p-3 border border-gray-700">
+                                  <span className="text-gray-900">
+                                    {dataSumm.order_assign_remarks}
+                                  </span>
+                                </td>
+                                <td className="p-3 border border-gray-700">
+                                  <span
+                                    className={`${
+                                      dataSumm.order_assign_status ===
+                                      "Completed"
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                    }`}
+                                  >
+                                    {dataSumm.order_assign_status}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4">
+                        <h1 className="text-gray-700 text-lg">
+                          No Data Available
+                        </h1>
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
+                  <Card className="mb-6">
+                    {/* here booking assign table  */}
+                    <CardBody>
+                      <MUIDataTable
+                        title={"Followup"}
+                        data={followup ? followup : []}
+                        columns={columns}
+                        options={options}
+                      />
+                    </CardBody>
+                  </Card>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        {/* <DialogTitle>Follow Up</DialogTitle> */}
         <DialogContent>
           <div className="mb-5">
             <h1 className="font-bold text-xl"> Create Follow Up</h1>

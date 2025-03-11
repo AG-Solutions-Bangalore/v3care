@@ -24,6 +24,7 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const CommissionBy = [
   {
     value: "Vendor",
@@ -55,8 +56,11 @@ const PendingCommissionView = () => {
   const [vendor, setVendor] = useState({});
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
+  const [fetchloading, setFetchLoading] = useState(false);
 
   const fetchBookingData = async () => {
+    setFetchLoading(true);
+
     try {
       const response = await axios({
         url: `${BASE_URL}/api/panel-fetch-booking-view-by-id/${id}`,
@@ -66,13 +70,12 @@ const PendingCommissionView = () => {
         },
       });
       setBooking(response.data?.booking);
-      console.log("set booking", response.data?.booking);
       setBookingAssign(response.data.bookingAssign);
-      console.log("setbooking assign", response.data?.bookingAssign);
       setVendor(response.data.vendor);
-      console.log("vendor data", response.data?.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
+    } finally {
+      setFetchLoading(false);
     }
   };
 
@@ -112,7 +115,7 @@ const PendingCommissionView = () => {
       console.error("Error updating received status:", error);
       toast.error("Error updating received status");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -185,7 +188,7 @@ const PendingCommissionView = () => {
                 <strong>Vendor:</strong> {vendor.vendor_company}
               </Typography>
               <Typography className="text-black">
-                <strong>Commission:</strong> {booking.order_comm}
+                <strong>Commission(%):</strong> {booking.order_comm}
               </Typography>
             </div>
           </div>
@@ -250,105 +253,108 @@ const PendingCommissionView = () => {
   return (
     <Layout>
       <PageHeader title={"View Pending Commission"} onClick={handleBack} />
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="flex gap-4 mt-2">
+          <div className="flex-grow">
+            <div className="mb-2">
+              <div className="flex justify-start space-x-4 ">
+                {/* Home Deep Cleaning Button */}
+                <button
+                  onClick={() => setActiveTab("bookingDetails")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "bookingDetails"
+                      ? "border-blue-500 bg-blue-100 text-blue-600"
+                      : "border-transparent hover:bg-blue-50"
+                  }`}
+                >
+                  <FaHome />
+                  {booking?.order_service}
+                </button>
 
-      <div className="flex gap-4 mt-2">
-        <div className="flex-grow">
-          <div className="mb-2">
-            <div className="flex justify-start space-x-4 ">
-              {/* Home Deep Cleaning Button */}
-              <button
-                onClick={() => setActiveTab("bookingDetails")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "bookingDetails"
-                    ? "border-blue-500 bg-blue-100 text-blue-600"
-                    : "border-transparent hover:bg-blue-50"
-                }`}
-              >
-                <FaHome />
-                {booking?.order_service}
-              </button>
+                <button
+                  onClick={() => setActiveTab("additionalInfo")}
+                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                    activeTab === "additionalInfo"
+                      ? "border-red-500 bg-red-100 text-red-600"
+                      : "border-transparent hover:bg-red-50"
+                  }`}
+                >
+                  <FaInfoCircle />
+                  Other Details
+                </button>
+              </div>
 
-              <button
-                onClick={() => setActiveTab("additionalInfo")}
-                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                  activeTab === "additionalInfo"
-                    ? "border-red-500 bg-red-100 text-red-600"
-                    : "border-transparent hover:bg-red-50"
-                }`}
-              >
-                <FaInfoCircle />
-                Other Details
-              </button>
+              {/* Main Content Based on Active Tab */}
+              <Card className="mt-2">
+                <CardBody>{renderActiveTabContent()}</CardBody>
+              </Card>
             </div>
 
-            {/* Main Content Based on Active Tab */}
-            <Card className="mt-2">
-              <CardBody>{renderActiveTabContent()}</CardBody>
-            </Card>
-          </div>
-
-          {/* Payment Card */}
-          {userType !== "4" && (
-            <Card className="mb-6">
-              <CardBody>
-                <form onSubmit={updateData}>
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div className="md:col-span-4">
-                      <Select
-                        label={
-                          <>
-                            Select Commission received By{" "}
-                            <span className="text-red-500 ml-1">*</span>
-                          </>
-                        }
-                        name="order_comm_received_by"
-                        value={payment.order_comm_received_by || ""}
-                        required
-                      >
-                        {CommissionBy.map((mode) => (
-                          <Option
-                            key={mode.value}
-                            value={mode.value}
-                            onChange={onInputChange}
-                          >
-                            {mode.label}
-                          </Option>
-                        ))}
-                      </Select>
+            {/* Payment Card */}
+            {userType !== "4" && (
+              <Card className="mb-6">
+                <CardBody>
+                  <form onSubmit={updateData}>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                      <div className="md:col-span-4">
+                        <Select
+                          label={
+                            <>
+                              Select Commission received By{" "}
+                              <span className="text-red-500 ml-1">*</span>
+                            </>
+                          }
+                          name="order_comm_received_by"
+                          value={payment.order_comm_received_by || ""}
+                          required
+                        >
+                          {CommissionBy.map((mode) => (
+                            <Option
+                              key={mode.value}
+                              value={mode.value}
+                              onChange={onInputChange}
+                            >
+                              {mode.label}
+                            </Option>
+                          ))}
+                        </Select>
+                      </div>
+                      <div className="md:col-span-8">
+                        {" "}
+                        <Textarea
+                          label="Commission Remarks"
+                          name="order_comm_remark"
+                          value={payment.order_comm_remark}
+                          onChange={onInputChange}
+                        />
+                      </div>
                     </div>
-                    <div className="md:col-span-8">
-                      {" "}
-                      <Textarea
-                        label="Commission Remarks"
-                        name="order_comm_remark"
-                        value={payment.order_comm_remark}
-                        onChange={onInputChange}
+
+                    <div className="flex justify-center space-x-4 my-2">
+                      <ButtonConfigColor
+                        type="edit"
+                        buttontype="submit"
+                        label="Receive Commission"
+                        disabled={isButtonDisabled}
+                        loading={loading}
+                      />
+
+                      <ButtonConfigColor
+                        type="back"
+                        buttontype="button"
+                        label="Cancel"
+                        onClick={() => navigate(-1)}
                       />
                     </div>
-                  </div>
-
-                  <div className="flex justify-center space-x-4 my-2">
-                    <ButtonConfigColor
-                      type="edit"
-                      buttontype="submit"
-                      label="Receive Commission"
-                      disabled={isButtonDisabled}
-                      loading={loading}
-                    />
-
-                    <ButtonConfigColor
-                      type="back"
-                      buttontype="button"
-                      label="Cancel"
-                      onClick={() => navigate(-1)}
-                    />
-                  </div>
-                </form>
-              </CardBody>
-            </Card>
-          )}
+                  </form>
+                </CardBody>
+              </Card>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </Layout>
   );
 };

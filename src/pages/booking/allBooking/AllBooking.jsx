@@ -14,6 +14,7 @@ import OrderRefModal from "../../../components/OrderRefModal";
 import { Spinner } from "@material-tailwind/react";
 import { TextField } from "@mui/material";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const AllBooking = () => {
   const [allBookingData, setAllBookingData] = useState(null);
@@ -28,6 +29,8 @@ const AllBooking = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  const getDate = localStorage.getItem("AllBookingDate");
+
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -42,14 +45,12 @@ const AllBooking = () => {
       }
     }
   }, [location]);
+
   const handleDateChange = (event) => {
     const date = event.target.value;
-    console.log(date);
-    localStorage.setItem("AllBookingDate", date);
-
     setSelectedDate(date);
+    localStorage.setItem("filteredDate", date);
 
-    // Filter the data based on the selected date
     if (date) {
       const filteredData = allBookingData.filter((item) => {
         const itemDate = new Date(item.order_service_date);
@@ -61,17 +62,32 @@ const AllBooking = () => {
       setFilteredBookingData(allBookingData);
     }
   };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredDate");
+
+    if (storedDate && allBookingData) {
+      const filteredData = allBookingData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(allBookingData);
+    }
+  }, [allBookingData]);
   UseEscapeKey();
 
   // Modal state management
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderRef, setSelectedOrderRef] = useState(null);
- const [loadingAssignment, setLoadingAssignment] = useState(null);
-
+  const [loadingAssignment, setLoadingAssignment] = useState(null);
 
   const fetchAssignmentData = async (orderRef) => {
     try {
-      setLoadingAssignment(orderRef); 
+      setLoadingAssignment(orderRef);
       const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-booking-assign-by-view/${orderRef}`,
@@ -87,8 +103,8 @@ const AllBooking = () => {
       }));
     } catch (error) {
       console.error("Error fetching assignment data", error);
-    }finally {
-      setLoadingAssignment(null); 
+    } finally {
+      setLoadingAssignment(null);
     }
   };
 
@@ -118,11 +134,6 @@ const AllBooking = () => {
 
         setAllBookingData(response.data?.booking);
         setFilteredBookingData(response.data?.booking);
-        // response.data?.booking.forEach((item) => {
-        //   if (item.order_no_assign > 0) {
-        //     fetchAssignmentData(item.order_ref);
-        //   }
-        // });
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -130,7 +141,6 @@ const AllBooking = () => {
       }
     };
     fetchTodayData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -138,19 +148,19 @@ const AllBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
-  const getDate = localStorage.getItem("AllBookingDate");
-  useEffect(() => {
-    console.log("in");
 
-    setSelectedDate(getDate);
-    console.log("out");
-  }, [getDate]);
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(allBookingData);
+    localStorage.removeItem("filteredDate");
+  };
+
   const columns = [
     {
       name: "id",
@@ -400,16 +410,32 @@ const AllBooking = () => {
                 }}
                 disabled={loadingAssignment === order_ref}
               >
-             {loadingAssignment === order_ref ? (
-            <span className="flex justify-center items-center">
-              <svg className="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            </span>
-          ) : (
-            value
-          )}
+                {loadingAssignment === order_ref ? (
+                  <span className="flex justify-center items-center">
+                    <svg
+                      className="animate-spin h-4 w-4 text-black"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  </span>
+                ) : (
+                  value
+                )}
               </button>
             </div>
           ) : (
@@ -561,10 +587,10 @@ const AllBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = allBookingData[rowMeta.dataIndex].id;
-    
-      handleView(e,id)()
+
+      handleView(e, id)();
     },
     count: allBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
@@ -612,7 +638,7 @@ const AllBooking = () => {
           <TextField
             label="Filter by Date"
             type="date"
-            value={selectedDate || null}
+            value={selectedDate || ""}
             onChange={handleDateChange}
             size="small"
             InputLabelProps={{
@@ -620,6 +646,13 @@ const AllBooking = () => {
             }}
             className="mr-4"
           />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
         </>
       );
     },
@@ -652,13 +685,13 @@ const AllBooking = () => {
       );
     },
   };
+
   return (
     <Layout>
       <BookingFilter />
+
       {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
-        </div>
+        <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable

@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { RefreshCw, SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
@@ -45,7 +46,6 @@ const NotificationList = () => {
 
   useEffect(() => {
     fetchNotificationData();
-    setLoading(false);
   }, []);
 
   const handleUpdate = async (id) => {
@@ -189,14 +189,18 @@ const NotificationList = () => {
   };
   return (
     <Layout>
-      <div className="mt-5">
-        <MUIDataTable
-          title="Notification List"
-          data={notificationData ? notificationData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title="Notification List"
+            data={notificationData ? notificationData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

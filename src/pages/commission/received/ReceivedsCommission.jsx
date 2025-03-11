@@ -11,6 +11,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const ReceivedsCommission = () => {
   const [receivedCommData, setReceivedCommData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -65,11 +66,8 @@ const ReceivedsCommission = () => {
       }
     };
     fetchReceivedComData();
-    setLoading(false);
   }, []);
 
-
- 
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -200,14 +198,12 @@ const ReceivedsCommission = () => {
 
     {
       name: "order_comm",
-      label: "Commission",
+      label: "Commission(%)",
       options: {
         filter: false,
         sort: false,
       },
     },
-
-   
   ];
   const options = {
     selectableRows: "none",
@@ -225,10 +221,10 @@ const ReceivedsCommission = () => {
     viewColumns: true,
     download: false,
     print: false,
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = receivedCommData[rowMeta.dataIndex].id;
-      
-      handleView(e,id)()
+
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
@@ -270,19 +266,18 @@ const ReceivedsCommission = () => {
   return (
     <Layout>
       <CommissionFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Commission Received List
-        </h3>
-      </div> */}
-      <div className="mt-1">
-        <MUIDataTable
-          title="Commission Received List"
-          data={receivedCommData ? receivedCommData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Commission Received List"
+            data={receivedCommData ? receivedCommData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

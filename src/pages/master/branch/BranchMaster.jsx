@@ -11,6 +11,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const BranchMaster = () => {
   const [branchMasterData, setBranchMasterData] = useState(null);
@@ -29,7 +30,7 @@ const BranchMaster = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/branch?page=${storedPageNo}`); // Update the URL with stored page-no
+        navigate(`/branch?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
@@ -45,6 +46,7 @@ const BranchMaster = () => {
           return;
         }
         setLoading(true);
+
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-branch-list`,
@@ -63,7 +65,6 @@ const BranchMaster = () => {
       }
     };
     fetchTodayData();
-    setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -95,17 +96,6 @@ const BranchMaster = () => {
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
     {
       name: "branch_name",
       label: "Branch",
@@ -198,15 +188,18 @@ const BranchMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-
-      <div className="mt-1">
-        <MUIDataTable
-          title="Branch List"
-          data={branchMasterData ? branchMasterData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Branch List"
+            data={branchMasterData ? branchMasterData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

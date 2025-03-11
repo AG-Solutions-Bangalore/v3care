@@ -28,6 +28,7 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -53,6 +54,7 @@ const ServicePriceEditMaster = () => {
   const [serdatasub, setSerDataSub] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
 
   // Validation function
   const validateOnlyDigits = (inputtxt) =>
@@ -74,6 +76,8 @@ const ServicePriceEditMaster = () => {
 
   useEffect(() => {
     const fetchServiceData = async () => {
+      setFetchLoading(true);
+
       try {
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-service-price-by-id/${id}`,
@@ -86,6 +90,8 @@ const ServicePriceEditMaster = () => {
         setService(response.data.serviceprice);
       } catch (error) {
         console.error("Error fetching service price:", error);
+      } finally {
+        setFetchLoading(false);
       }
     };
 
@@ -171,7 +177,7 @@ const ServicePriceEditMaster = () => {
           toast.success(response.data?.msg || "update succesfull");
           navigate(`/service-price?page=${pageNo}`);
         } else {
-          toast.error(response.data?.msg ||"duplicate entry");
+          toast.error(response.data?.msg || "duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service price:", error);
@@ -188,143 +194,146 @@ const ServicePriceEditMaster = () => {
     <Layout>
       <MasterFilter />
       <PageHeader title={"Edit Service Price"} onClick={handleBack} />
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <Card className="p-4 sm:p-6 lg:p-8 mt-2">
+          <form id="editServiceForm" onSubmit={onSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <div>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Service <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="service_id"
+                      value={services.service_id}
+                      onChange={onInputChange}
+                      label="Service *"
+                      required
+                    >
+                      {serdata.map((service) => (
+                        <MenuItem key={service.id} value={service.id}>
+                          {service.service}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
 
-      <Card className="p-4 sm:p-6 lg:p-8 mt-2">
-        <form id="editServiceForm" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div>
               <div>
                 <FormControl fullWidth>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">
-                      Service <span className="text-red-700">*</span>
+                      Service Sub
                     </span>
                   </InputLabel>
                   <Select
                     sx={{ height: "40px", borderRadius: "5px" }}
                     labelId="service-select-label"
                     id="service-select"
-                    name="service_id"
-                    value={services.service_id}
+                    name="service_sub_id"
+                    value={services.service_sub_id}
                     onChange={onInputChange}
-                    label="Service *"
-                    required
+                    label="Service Sub *"
                   >
-                    {serdata.map((service) => (
-                      <MenuItem key={service.id} value={service.id}>
-                        {service.service}
+                    {serdatasub.map((subService) => (
+                      <MenuItem key={subService.id} value={subService.id}>
+                        {subService.service_sub}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </div>
-            </div>
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="service_price_status"
+                    value={services.service_price_status}
+                    onChange={onInputChange}
+                    label="Status *"
+                    required
+                  >
+                    {statusOptions.map((data) => (
+                      <MenuItem key={data.value} value={data.value}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Service Sub
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="service_sub_id"
-                  value={services.service_sub_id}
+              <div>
+                <Input
+                  label=" Service Price For"
+                  type="text"
+                  name="service_price_for"
+                  value={services.service_price_for}
                   onChange={onInputChange}
-                  label="Service Sub *"
-                >
-                  {serdatasub.map((subService) => (
-                    <MenuItem key={subService.id} value={subService.id}>
-                      {subService.service_sub}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Status <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="service_price_status"
-                  value={services.service_price_status}
-                  onChange={onInputChange}
-                  label="Status *"
+                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
                   required
-                >
-                  {statusOptions.map((data) => (
-                    <MenuItem key={data.value} value={data.value}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                />
+              </div>
+
+              <div>
+                <Input
+                  label="Service Rate"
+                  type="text"
+                  name="service_price_rate"
+                  value={services.service_price_rate}
+                  onChange={onInputChange}
+                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
+                  required
+                />
+              </div>
+
+              <div>
+                <Input
+                  label="Service Amount"
+                  type="text"
+                  name="service_price_amount"
+                  value={services.service_price_amount}
+                  onChange={onInputChange}
+                  className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
+                  required
+                />
+              </div>
             </div>
 
-            <div>
-              <Input
-                label=" Service Price For"
-                type="text"
-                name="service_price_for"
-                value={services.service_price_for}
-                onChange={onInputChange}
-                className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
-                required
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={handleBack}
               />
             </div>
-
-            <div>
-              <Input
-                label="Service Rate"
-                type="text"
-                name="service_price_rate"
-                value={services.service_price_rate}
-                onChange={onInputChange}
-                className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
-                required
-              />
-            </div>
-
-            <div>
-              <Input
-                label="Service Amount"
-                type="text"
-                name="service_price_amount"
-                value={services.service_price_amount}
-                onChange={onInputChange}
-                className="w-full pl-2 pr-4 py-2 border border-gray-300 rounded-md "
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-center space-x-4 my-2">
-            <ButtonConfigColor
-              type="edit"
-              buttontype="submit"
-              label="Update"
-              disabled={isButtonDisabled}
-              loading={loading}
-            />
-
-            <ButtonConfigColor
-              type="back"
-              buttontype="button"
-              label="Cancel"
-              onClick={handleBack}
-            />
-          </div>
-        </form>
-      </Card>
+          </form>
+        </Card>
+      )}
     </Layout>
   );
 };
