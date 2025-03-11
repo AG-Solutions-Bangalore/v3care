@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import Layout from '../../../layout/Layout';
-import axios from 'axios';
-import BASE_URL from '../../../base/BaseUrl';
-import { Download, FileText, Calendar } from 'lucide-react';
-import moment from 'moment';
-import { Button } from '@material-tailwind/react';
+import React, { useEffect, useState, useRef } from "react";
+import Layout from "../../../layout/Layout";
+import axios from "axios";
+import BASE_URL from "../../../base/BaseUrl";
+import { Download, FileText, Calendar } from "lucide-react";
+import moment from "moment";
+import { Button } from "@material-tailwind/react";
 import { useReactToPrint } from "react-to-print";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ViewAllBooking = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -106,53 +108,67 @@ const ViewAllBooking = () => {
   }
 
   // Calculate the pending amount
-  const pendingAmount = bookingData.booking_total_amount - (bookingData.booking_total_v3_receied_amount + bookingData.booking_total_v3_pending_amount + bookingData.booking_total_v3_process_amount + bookingData.booking_total_v3_others_amount);
+  const pendingAmount =
+    bookingData.booking_total_amount -
+    (bookingData.booking_total_v3_receied_amount +
+      bookingData.booking_total_v3_pending_amount +
+      bookingData.booking_total_v3_process_amount +
+      bookingData.booking_total_v3_others_amount);
 
   return (
     <Layout>
       <div>
-        {/* Header Section */}
-        <div className="flex justify-between items-center p-3 rounded-lg mb-3 mt-2 bg-white shadow-sm border border-gray-300">
-          <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-gray-700" />
-            <h1 className="text-xl font-semibold text-gray-800">Booking Summary Report</h1>
-          </div>
-          <div className="flex flex-row items-center gap-3 font-medium text-gray-700">
-            <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {moment(bookingDateFrom).format("DD-MMM-YYYY")}
+        <PageHeader
+          title={"Booking Summary Report"}
+          label2={
+            <span className="flex justify-between space-x-4">
+              <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
+                <Calendar className="h-3 w-3 mr-1" />
+                {moment(bookingDateFrom).format("DD-MMM-YYYY")}
+              </span>
+              <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
+                <Calendar className="h-3 w-3 mr-1" />
+                {moment(bookingDateTo).format("DD-MMM-YYYY")}
+              </span>
+              <ButtonConfigColor
+                type="print"
+                label="Print"
+                onClick={handlePrintPdf}
+              />
             </span>
-            <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {moment(bookingDateTo).format("DD-MMM-YYYY")}
-            </span>
-            <Button
-              className="ml-1 print-hide flex flex-row items-center gap-1  bg-blue-400 hover:bg-blue-900 text-black hover:text-white px-3 py-2 rounded-md transition-all duration-300 ease-in-out shadow-sm"
-              onClick={handlePrintPdf}
-            >
-              <Download className="h-4 w-4" /> <span>Print</span>
-            </Button>
-          </div>
-        </div>
+          }
+        />
 
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-300" ref={containerRef}>
-          {/* Report Header */}
+        <div
+          className="bg-white p-4 rounded-lg shadow-sm border border-gray-300 mt-2"
+          ref={containerRef}
+        >
           <div className="text-center mb-4 pb-3 border-b border-gray-300">
-            <h1 className="text-xl font-bold text-gray-900 mb-1">BOOKING ANALYTICS REPORT</h1>
+            <h1 className="text-xl font-bold text-gray-900 mb-1">
+              BOOKING ANALYTICS REPORT
+            </h1>
             <p className="text-sm text-gray-700">
-              {branchName} |  {moment(bookingDateFrom).format("DD MMM YYYY")} - {moment(bookingDateTo).format("DD MMM YYYY")}
+              {branchName} | {moment(bookingDateFrom).format("DD MMM YYYY")} -{" "}
+              {moment(bookingDateTo).format("DD MMM YYYY")}
             </p>
-            <p className="text-xs text-gray-600 mt-1">Report Generated: {moment().format("DD MMM YYYY, h:mm A")}</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Report Generated: {moment().format("DD MMM YYYY, h:mm A")}
+            </p>
           </div>
 
           {/* Booking Status Section */}
           <div className="mb-4">
-            <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1"> OVERVIEW</h2>
+            <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+              {" "}
+              OVERVIEW
+            </h2>
             <div className="overflow-x-auto border border-black bg-white">
-              <div className="grid bg-white text-[14px]"
+              <div
+                className="grid bg-white text-[14px]"
                 style={{
-                  gridTemplateColumns: "repeat(4, minmax(100px, 1fr))"
-                }}>
+                  gridTemplateColumns: "repeat(4, minmax(100px, 1fr))",
+                }}
+              >
                 {/* Headers */}
                 <div className="p-2 text-center font-bold border-b border-r border-black text-gray-900 bg-gray-100">
                   Total Bookings
@@ -186,16 +202,18 @@ const ViewAllBooking = () => {
             </div>
           </div>
 
-         
-
           {/* Booking Distribution Section */}
           <div className="mb-4">
-            <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">BOOKING DISTRIBUTION</h2>
+            <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+              BOOKING DISTRIBUTION
+            </h2>
             <div className="overflow-x-auto border border-black bg-white">
-              <div className="grid bg-white text-[14px]"
+              <div
+                className="grid bg-white text-[14px]"
                 style={{
-                  gridTemplateColumns: "repeat(8, minmax(100px, 1fr))"
-                }}>
+                  gridTemplateColumns: "repeat(8, minmax(100px, 1fr))",
+                }}
+              >
                 {/* Headers */}
                 <div className="p-2 text-center font-bold border-b border-r border-black text-gray-900 bg-gray-100">
                   Source
@@ -224,7 +242,7 @@ const ViewAllBooking = () => {
 
                 {/* V3 Values */}
                 <div className="p-2 text-center border-b border-r border-black font-medium bg-white">
-                  V3 -     {bookingData.booking_total_Confirmed_v3_count}
+                  V3 - {bookingData.booking_total_Confirmed_v3_count}
                 </div>
                 <div className="p-2 text-center border-b border-r border-black bg-white">
                   {bookingData.booking_confirmed_count}
@@ -279,36 +297,53 @@ const ViewAllBooking = () => {
 
           {/* Financial Summary and Payment Methods in Grid */}
           <div className="grid grid-cols-1 print:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
-
             <div>
-              <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">FINANCIAL SUMMARY</h2>
+              <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+                FINANCIAL SUMMARY
+              </h2>
               <div className="overflow-x-auto border border-black bg-white">
                 <div className="p-3 text-sm">
                   <div className="border border-gray-300 p-3 bg-white rounded">
-                    <div className="text-center font-semibold mb-2 border-b pb-1 text-gray-800">Amount Calculation</div>
-                    <div className="flex justify-between mb-2">
-                      <span>Total Amount:</span>
-                      <span className="font-medium">₹ {bookingData.booking_total_amount.toLocaleString()}</span>
+                    <div className="text-center font-semibold mb-2 border-b pb-1 text-gray-800">
+                      Amount Calculation
                     </div>
                     <div className="flex justify-between mb-2">
-                      <span className=' font-semibold'>Deduction:</span>
+                      <span>Total Amount:</span>
+                      <span className="font-medium">
+                        ₹ {bookingData.booking_total_amount.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between mb-2">
+                      <span className=" font-semibold">Deduction:</span>
                     </div>
 
                     <div className="flex justify-between mb-2">
                       <span>V3 Received Amount:</span>
-                      <span className="font-medium">₹ {bookingData.booking_total_v3_receied_amount.toLocaleString()}</span>
+                      <span className="font-medium">
+                        ₹{" "}
+                        {bookingData.booking_total_v3_receied_amount.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between mb-2">
                       <span>V3 Pending Amount:</span>
-                      <span className="font-medium">₹ {bookingData.booking_total_v3_pending_amount.toLocaleString()}</span>
+                      <span className="font-medium">
+                        ₹{" "}
+                        {bookingData.booking_total_v3_pending_amount.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between mb-2">
                       <span>V3 Process Amount:</span>
-                      <span className="font-medium">₹ {bookingData.booking_total_v3_process_amount.toLocaleString()}</span>
+                      <span className="font-medium">
+                        ₹{" "}
+                        {bookingData.booking_total_v3_process_amount.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between mb-2">
                       <span>V3 Other Amount:</span>
-                      <span className="font-medium">₹ {bookingData.booking_total_v3_others_amount.toLocaleString()}</span>
+                      <span className="font-medium">
+                        ₹{" "}
+                        {bookingData.booking_total_v3_others_amount.toLocaleString()}
+                      </span>
                     </div>
                     <div className="border-t border-gray-300 my-1"></div>
                     <div className="flex justify-between font-bold">
@@ -320,49 +355,71 @@ const ViewAllBooking = () => {
               </div>
             </div>
 
-
-
             <div>
-              <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">PAYMENT METHODS</h2>
+              <h2 className="text-md font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">
+                PAYMENT METHODS
+              </h2>
               <div className="overflow-x-auto border border-black bg-white">
                 <div className="p-3 text-sm">
                   <div className="border border-gray-300 p-3 bg-white rounded">
-                    <div className="text-center font-semibold mb-2 border-b pb-1 text-gray-800">Payment Breakdown</div>
+                    <div className="text-center font-semibold mb-2 border-b pb-1 text-gray-800">
+                      Payment Breakdown
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
-
                       <div className="flex justify-between">
                         <span>GPay:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_gpay.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_gpay.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>PhonePe:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_ppay.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_ppay.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>Paytm:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_paytm.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_paytm.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>Cash:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_cash.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_cash.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>Bank:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_bank.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_bank.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>Other:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_other.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_other.toLocaleString()}
+                        </span>
                       </div>
 
                       <div className="flex justify-between">
                         <span>Pending:</span>
-                        <span className="font-medium">₹ {bookingData.booking_receied_amount_pending.toLocaleString()}</span>
+                        <span className="font-medium">
+                          ₹{" "}
+                          {bookingData.booking_receied_amount_pending.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -370,30 +427,6 @@ const ViewAllBooking = () => {
               </div>
             </div>
           </div>
-
-          {/* Signature Section */}
-          {/* <div className="mt-6 pt-4 border-t border-gray-300">
-            <div className="flex justify-between text-xs text-gray-600">
-              <div className="text-center">
-                <div>_______________________</div>
-                <div className="mt-1">Authorized Signature</div>
-              </div>
-              <div className="text-center">
-                <div>_______________________</div>
-                <div className="mt-1">Manager Approval</div>
-              </div>
-              <div className="text-center">
-                <div>_______________________</div>
-                <div className="mt-1">Date & Stamp</div>
-              </div>
-            </div>
-          </div> */}
-
-          {/* Footer */}
-          {/* <div className="text-center text-xs text-gray-600 mt-4 pt-2 border-t border-gray-300">
-            <p>This is an official document. Please retain for your records.</p>
-            <p>© {new Date().getFullYear()} V3Care. All rights reserved.</p>
-          </div> */}
         </div>
       </div>
     </Layout>

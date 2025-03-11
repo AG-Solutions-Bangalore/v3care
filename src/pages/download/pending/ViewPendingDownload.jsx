@@ -2,9 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import Layout from "../../../layout/Layout";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
-import { Download } from "lucide-react";
+import { Calendar, Download } from "lucide-react";
 import moment from "moment";
 import { Button } from "@material-tailwind/react";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ViewPendingDownload = () => {
   const [pendingPayments, setPendingPayments] = useState([]);
@@ -86,28 +88,30 @@ const ViewPendingDownload = () => {
 
   return (
     <Layout>
-      <div ref={containerRef}>
-        {/* Updated Header */}
-        <div className="flex justify-between items-center p-2 rounded-lg mb-5 mt-2 bg-gradient-to-r from-white to-gray-100 shadow-sm border border-gray-200">
-          <h1 className="text-2xl font-semibold text-gray-800">Pending Payment Report</h1>
-          <div className="flex flex-row items-center gap-4 font-medium text-gray-700">
-            <span className="text-sm bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200">
-              From - {moment(bookingDateFrom).format("DD-MMM-YYYY")}
+      <PageHeader
+        title={"Pending Payment Report"}
+        label2={
+          <span className="flex justify-between space-x-4">
+            <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
+              <Calendar className="h-3 w-3 mr-1" />
+              {moment(bookingDateFrom).format("DD-MMM-YYYY")}
             </span>
-            <span className="text-sm bg-white px-3 py-1 rounded-full shadow-sm border border-gray-200">
-              To - {moment(bookingDateTo).format("DD-MMM-YYYY")}
+            <span className="text-sm bg-white px-3 py-1 rounded-md shadow-sm border border-gray-300 flex items-center">
+              <Calendar className="h-3 w-3 mr-1" />
+              {moment(bookingDateTo).format("DD-MMM-YYYY")}
             </span>
-            <Button
-              className="ml-2 print-hide flex flex-row items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md"
+            <ButtonConfigColor
+              type="download"
+              label="Download"
               onClick={handleDownload}
-            >
-              <Download className="h-4 w-4" /> <span>Download</span>
-            </Button>
-          </div>
-        </div>
+            />
+          </span>
+        }
+      />
 
+      <div ref={containerRef}>
         {/* Table Section */}
-        <div className="overflow-x-auto border-l border-r border-black bg-white">
+        <div className="overflow-x-auto border-l border-r border-black bg-white mt-2">
           <div
             className="grid bg-white text-[11px] min-w-[1200px]"
             style={{

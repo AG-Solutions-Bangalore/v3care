@@ -11,7 +11,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
-
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor"
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -143,7 +143,9 @@ const SignIn = () => {
                     variant="small"
                     className=" -mb-3 font-medium hover:text-orange-600  text-gray-500 border-b border-black   "
                   >
-                    <Link tabIndex={-1} to="/forget-password">Forgot Password</Link>
+                    <Link tabIndex={-1} to="/forget-password">
+                      Forgot Password
+                    </Link>
                   </Typography>
                 </div>
 
@@ -170,7 +172,12 @@ const SignIn = () => {
               >
                 {loading ? "Checking..." : "Sign In"}
               </Button>
-
+              <ButtonConfigColor
+                type="default"
+                buttontype="default"
+                label="Sign In"
+                loading={loading}
+              />
               <div className="flex items-center justify-between gap-2 mt-6">
                 <Typography
                   variant="small"

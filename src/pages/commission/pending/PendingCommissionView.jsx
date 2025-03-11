@@ -22,6 +22,8 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 const CommissionBy = [
   {
     value: "Vendor",
@@ -46,6 +48,7 @@ const PendingCommissionView = () => {
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
@@ -86,33 +89,30 @@ const PendingCommissionView = () => {
   };
   const updateData = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (payment.order_comm_received_by === "") {
-      toast.error("Fill the required Details");
-      return;
-    }
-    let data = {
-      order_comm_received_by: payment.order_comm_received_by,
-      order_comm_remark: payment.order_comm_remark,
-    };
     try {
-      const res = await axios({
-        // url: `${BASE_URL}/api/panel-update-comm-status/${id}`,
-        method: "PUT",
-        data,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (res.data.code == "200") {
-        toast.success("Commission Updated Successfully");
-        navigate(`/commission-pending?page=${pageNo}`);
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-payment-status/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.code === "200") {
+        toast.success("Received Updated Successfully");
+        navigate("/received-payment");
       } else {
         toast.error("Network Error");
       }
     } catch (error) {
-      console.error("Error updating Commission status:", error);
-      toast.error("Error updating Commission status");
+      console.error("Error updating received status:", error);
+      toast.error("Error updating received status");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -249,103 +249,104 @@ const PendingCommissionView = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6 flex">
-          <ArrowLeft className="cursor-pointer" onClick={handleBack} /> View
-          Pending Commission
-        </Typography>
+      <PageHeader title={"View Pending Commission"} onClick={handleBack} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
 
-            {/* Payment Card */}
-            {userType !== "4" && (
-              <Card className="mb-6">
-                <CardBody>
-                  <form onSubmit={updateData}>
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                      <div className="md:col-span-4">
-                        <Select
-                          label={
-                            <>
-                              Select Commission received By{" "}
-                              <span className="text-red-500 ml-1">*</span>
-                            </>
-                          }
-                          name="order_comm_received_by"
-                          value={payment.order_comm_received_by || ""}
-                          required
-                        >
-                          {CommissionBy.map((mode) => (
-                            <Option
-                              key={mode.value}
-                              value={mode.value}
-                              // onClick={() =>
-                              //   setPayment({
-                              //     ...payment,
-                              //     order_comm_received_by: mode.payment_mode,
-                              //   })
-                              // }
-                              onChange={onInputChange}
-                            >
-                              {mode.label}
-                            </Option>
-                          ))}
-                        </Select>
-                      </div>
-                      <div className="md:col-span-8">
-                        {" "}
-                        <Textarea
-                          label="Commission Remarks"
-                          name="order_comm_remark"
-                          value={payment.order_comm_remark}
-                          onChange={onInputChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-center mt-2">
-                      <Button type="submit" onClick={updateData} color="blue">
-                        Receive Commission
-                      </Button>
-                    </div>
-                  </form>
-                </CardBody>
-              </Card>
-            )}
+            {/* Main Content Based on Active Tab */}
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
+            </Card>
           </div>
+
+          {/* Payment Card */}
+          {userType !== "4" && (
+            <Card className="mb-6">
+              <CardBody>
+                <form onSubmit={updateData}>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="md:col-span-4">
+                      <Select
+                        label={
+                          <>
+                            Select Commission received By{" "}
+                            <span className="text-red-500 ml-1">*</span>
+                          </>
+                        }
+                        name="order_comm_received_by"
+                        value={payment.order_comm_received_by || ""}
+                        required
+                      >
+                        {CommissionBy.map((mode) => (
+                          <Option
+                            key={mode.value}
+                            value={mode.value}
+                            onChange={onInputChange}
+                          >
+                            {mode.label}
+                          </Option>
+                        ))}
+                      </Select>
+                    </div>
+                    <div className="md:col-span-8">
+                      {" "}
+                      <Textarea
+                        label="Commission Remarks"
+                        name="order_comm_remark"
+                        value={payment.order_comm_remark}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Receive Commission"
+                      disabled={isButtonDisabled}
+                      loading={loading}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          )}
         </div>
       </div>
     </Layout>
