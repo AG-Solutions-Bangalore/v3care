@@ -42,7 +42,7 @@ const ButtonConfigColor = ({
       case "logout":
         return "bg-blue-600 hover:bg-red-700 text-white";
       default:
-        return "bg-vlue-400 hover:bg-blue-500 text-white";
+        return "bg-blue-400 hover:bg-blue-500 text-white";
     }
   };
 

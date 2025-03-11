@@ -20,6 +20,8 @@ import BASE_URL from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const BecomePartner = () => {
   const navigate = useNavigate();
@@ -66,6 +68,7 @@ const BecomePartner = () => {
 
   const [servicess, setServicess] = useState([]);
   const [branch, setBranch] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const useTemplate = { vendor_service: "" };
 
@@ -148,10 +151,14 @@ const BecomePartner = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const form = document.getElementById("addIdniv");
 
     if (!form.checkValidity()) {
       toast.error("Fill all the filled");
+      setLoading(false);
+
       return;
     }
     const data = new FormData();
@@ -243,11 +250,15 @@ const BecomePartner = () => {
           toast.error("Mobile No Duplicate Entry");
         } else {
           toast.error("Network Issue , Pls Try again later");
+          setLoading(false);
         }
       }
     } catch (error) {
       console.error("Error creating vendor:", error);
       toast.error("Error creating vendor");
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -278,13 +289,15 @@ const BecomePartner = () => {
     <div className="bg-gray-200 ">
       <div className={styles["main-container-out"]}>
         <div className={styles["sub-container-out"]}>
+          <PageHeader title={"Become Partner"} />
+
           <div className="flex justify-center mb-4">
             <img src={logo} alt="logo" className="w-24" />
           </div>
           <div className="flex justify-center mb-4 border-b-2">
             <h1 className="text-2xl font-bold pb-2">Personal Details</h1>
           </div>
-          <form id="addIdniv">
+          <form id="addIdniv" onSubmit={onSubmit}>
             <div className={styles["form-container-div"]}>
               <div className="grid  grid-cols-1 md:grid-cols-3 gap-3 w-full">
                 <div className="form-group">
@@ -593,10 +606,21 @@ const BecomePartner = () => {
                   </div>
                 ))}
               </div>
-              <div className={styles["submit-button"]}>
-                <Button onClick={(e) => onSubmit(e)}> Submit </Button>
 
-                <Button onClick={handleBackButton}> Back </Button>
+              <div className="flex justify-center space-x-4 mt-6">
+                <ButtonConfigColor
+                  type="submit"
+                  buttontype="submit"
+                  label="Submit"
+                  loading={loading}
+                />
+
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
+                />
               </div>
             </div>
           </form>

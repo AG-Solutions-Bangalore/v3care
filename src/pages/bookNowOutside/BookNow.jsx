@@ -29,6 +29,8 @@ import BASE_URL from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
 
 // const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
@@ -102,6 +104,7 @@ const BookNow = () => {
   const [branch, setBranch] = useState([]);
   const [referby, setReferby] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchYearData = async () => {
@@ -321,11 +324,12 @@ const BookNow = () => {
     const form = document.getElementById("addIdniv");
 
     if (!form.checkValidity()) {
-      toast.error("Fill all the filled");
+      toast.error("Fill all the fields");
       return;
     }
 
     setIsButtonDisabled(true);
+    setLoading(true); // Start loading
 
     const formData = new FormData();
 
@@ -362,21 +366,20 @@ const BookNow = () => {
       toast.error("Error inserting data");
     } finally {
       setIsButtonDisabled(false);
+      setLoading(false);
     }
-  };
-
-  const handleBackButton = () => {
-    navigate("/");
   };
 
   return (
     <div className="bg-gray-200 ">
       <div className={styles["main-container-out"]}>
         <div className={styles["sub-container-out"]}>
+          <PageHeader title={"Book Now"} />
+
           <div className="flex justify-center mb-4">
             <img src={logo} alt="logo" className="w-24" />
           </div>
-          <form id="addIdniv">
+          <form id="addIdniv" onSubmit={onSubmit}>
             <div className={styles["form-container"]}>
               <div>
                 <div className="form-group">
@@ -647,10 +650,22 @@ const BookNow = () => {
                   />
                 </div>
               </div>
-              <div className={styles["submit-button"]}>
-                <Button onClick={onSubmit}>Sumbit</Button>
 
-                <Button onClick={handleBackButton}> Back </Button>
+              <div className="flex justify-center space-x-4 mt-6">
+                <ButtonConfigColor
+                  type="submit"
+                  buttontype="submit"
+                  label="Submit"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                />
+
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
+                />
               </div>
             </div>
           </form>

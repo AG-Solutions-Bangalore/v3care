@@ -3,15 +3,20 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
 import { toast } from "react-toastify";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const onResetPassword = (e) => {
     e.preventDefault();
 
     if (email !== "" && username !== "") {
+      setLoading(true); // Start loading
+
       fetch(
         `${BASE_URL}/api/panel-send-password?username=${username}&email=${email}`,
         {
@@ -24,11 +29,15 @@ const ForgetPassword = () => {
         })
         .catch((error) => {
           toast.error("Email Not sent.");
+        })
+        .finally(() => {
+          setLoading(false);
         });
     } else {
       toast.warning("Please enter a Username & Email");
     }
   };
+
   return (
     <section className="flex flex-col lg:flex-row min-h-screen">
       <div className="flex-1 flex items-center bg-[url('/img/fp.jpg')]  bg-cover bg-center bg-no-repeat justify-center px-4 lg:px-8 py-12 lg:w-1/2">
@@ -89,14 +98,13 @@ const ForgetPassword = () => {
               />
             </div>
 
-            <Button
-              type="submit"
-              className="mt-6 bg-blue-500 hover:bg-blue-600 text-white"
-              fullWidth
-            >
-              Forget Password
-            </Button>
-
+            <ButtonConfigColor
+              type="default"
+              buttontype="submit"
+              label="Forget Password"
+              loading={loading}
+              className="w-full"
+            />
             <div className="flex items-center justify-between gap-2 mt-6">
               <Typography
                 variant="paragraph"
