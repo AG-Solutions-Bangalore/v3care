@@ -1,144 +1,6 @@
-// import React from "react";
-// import { FaPlus, FaEdit, FaTrash, FaArrowLeft, FaCheck } from "react-icons/fa";
-// import { FiLoader } from "react-icons/fi";
-
-// const ButtonConfigColor = ({ type, label, onClick, disabled, loading }) => {
-//   // Define button styles based on the type
-//   const getButtonStyles = () => {
-//     switch (type) {
-//       case "submit":
-//         return "bg-blue-600 hover:bg-blue-700 text-white";
-//       case "back":
-//         return "bg-gray-500 hover:bg-gray-600 text-white";
-//       case "create":
-//         return "bg-green-600 hover:bg-green-700 text-white";
-//       case "edit":
-//         return "bg-yellow-500 hover:bg-yellow-600 text-white";
-//       case "delete":
-//         return "bg-red-600 hover:bg-red-700 text-white";
-//       default:
-//         return "bg-gray-400 hover:bg-gray-500 text-white";
-//     }
-//   };
-
-//   // Define icons based on the type
-//   const getIcon = () => {
-//     if (loading) return <FiLoader className="animate-spin text-lg" />; // Loader icon
-//     switch (type) {
-//       case "submit":
-//         return <FaCheck />;
-//       case "back":
-//         return <FaArrowLeft />;
-//       case "create":
-//         return <FaPlus />;
-//       case "edit":
-//         return <FaEdit />;
-//       case "delete":
-//         return <FaTrash />;
-//       default:
-//         return null;
-//     }
-//   };
-
-//   return (
-//     <button
-//       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${getButtonStyles()} ${
-//         disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-//       }`}
-//       onClick={onClick}
-//       disabled={disabled || loading}
-//     >
-//       {getIcon()}
-//       <span>{label}</span>
-//     </button>
-//   );
-// };
-
-// export default ButtonConfigColor;
-//---------------------------before print
-// import React from "react";
-// import {
-//   FaPlus,
-//   FaEdit,
-//   FaTrash,
-//   FaArrowLeft,
-//   FaCheck,
-//   FaPrint,
-// } from "react-icons/fa";
-// import { FiLoader } from "react-icons/fi";
-
-// const ButtonConfigColor = ({
-//   type,
-//   label,
-//   onClick,
-//   disabled,
-//   loading,
-//   className,
-//   buttontype,
-// }) => {
-//   // Define button styles based on the type
-//   const getButtonStyles = () => {
-//     switch (type) {
-//       case "submit":
-//         return "bg-blue-600 hover:bg-blue-700 text-white";
-//       case "back":
-//         return "bg-gray-500 hover:bg-gray-600 text-white";
-//       case "create":
-//         return "bg-green-600 hover:bg-green-700 text-white";
-//       case "edit":
-//         return "bg-[#B22222] hover:bg-[#A14141] text-white";
-//       case "delete":
-//         return "bg-red-600 hover:bg-red-700 text-white";
-//       case "print":
-//         return "bg-blue-600 hover:bg-red-700 text-white";
-//       default:
-//         return "bg-gray-400 hover:bg-gray-500 text-white";
-//     }
-//   };
-
-//   // Define icons based on the type
-//   const getIcon = () => {
-//     if (loading) return <FiLoader className="animate-spin text-lg" />; // Loader icon
-//     switch (type) {
-//       case "submit":
-//         return <FaCheck />;
-//       case "back":
-//         return <FaArrowLeft />;
-//       case "create":
-//         return <FaPlus />;
-//       case "edit":
-//         return <FaEdit />;
-//       case "delete":
-//         return <FaTrash />;
-//       case "print":
-//         return <FaPrint />;
-//       default:
-//         return null;
-//     }
-//   };
-
-//   return (
-//     <button
-//       type={buttontype}
-//       className={`px-4 py-2 rounded-lg transition-all duration-300   ${getButtonStyles()} ${
-//         disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-//       } ${className || ""}`} // Supports extra CSS
-//       onClick={onClick}
-//       disabled={disabled || loading}
-//     >
-//       <div className="flex items-center justify-center gap-2 text-sm">
-//         {getIcon()}
-//         <span className="whitespace-nowrap">{label}</span>
-//       </div>
-//     </button>
-//   );
-// };
-
-// export default ButtonConfigColor;
-
 //-----------------------------AFter print
 import React from "react";
-import ReactToPrint from "react-to-print";
+import { BiLogOut } from "react-icons/bi";
 import {
   FaPlus,
   FaEdit,
@@ -146,8 +8,9 @@ import {
   FaArrowLeft,
   FaCheck,
   FaPrint,
+  FaRegEye,
 } from "react-icons/fa";
-import { FiLoader } from "react-icons/fi";
+import { FiDownload, FiLoader } from "react-icons/fi";
 
 const ButtonConfigColor = ({
   type,
@@ -157,9 +20,7 @@ const ButtonConfigColor = ({
   loading,
   className,
   buttontype,
-  content, // For ReactToPrint
 }) => {
-  // Define button styles based on the type
   const getButtonStyles = () => {
     switch (type) {
       case "submit":
@@ -174,8 +35,14 @@ const ButtonConfigColor = ({
         return "bg-red-600 hover:bg-red-700 text-white";
       case "print":
         return "bg-blue-600 hover:bg-red-700 text-white";
+      case "download":
+        return "bg-blue-600 hover:bg-red-700 text-white";
+      case "view":
+        return "bg-blue-600 hover:bg-red-700 text-white";
+      case "logout":
+        return "bg-blue-600 hover:bg-red-700 text-white";
       default:
-        return "bg-gray-400 hover:bg-gray-500 text-white";
+        return "bg-vlue-400 hover:bg-blue-500 text-white";
     }
   };
 
@@ -195,34 +62,17 @@ const ButtonConfigColor = ({
         return <FaTrash />;
       case "print":
         return <FaPrint />;
+      case "download":
+        return <FiDownload />;
+      case "view":
+        return <FaRegEye />;
+      case "logout":
+        return <BiLogOut />;
       default:
         return null;
     }
   };
 
-  // Handle print button
-  if (type === "print") {
-    return (
-      <ReactToPrint
-        trigger={() => (
-          <button
-            className={`px-4 py-2 rounded-lg transition-all duration-300 ${getButtonStyles()} ${
-              disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-            } ${className || ""}`}
-            disabled={disabled || loading}
-          >
-            <div className="flex items-center justify-center gap-2 text-sm">
-              {getIcon()}
-              <span className="whitespace-nowrap">{label}</span>
-            </div>
-          </button>
-        )}
-        content={content}
-      />
-    );
-  }
-
-  // Default Button
   return (
     <button
       type={buttontype}

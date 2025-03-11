@@ -432,16 +432,7 @@ const WorkInProgress = () => {
                 </div>
               </div>
 
-              {/* <div className="text-center mt-6">
-                <Button
-                  type="sumbit"
-                  onClick={(e) => onSubmit(e)}
-                  className="mr-2 mb-2"
-                  color="primary"
-                >
-                  Update
-                </Button>
-              </div> */}
+           
 
               <div className="flex justify-center space-x-4 my-2">
                 <ButtonConfigColor

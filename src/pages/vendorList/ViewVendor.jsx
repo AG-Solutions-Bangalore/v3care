@@ -2,7 +2,7 @@ import Layout from "../../layout/Layout";
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { FaPrint } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
@@ -58,10 +58,31 @@ const ViewVendor = () => {
     fetchVendorViewData();
     setLoading(false);
   }, []);
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(`/vendor-list?page=${pageNo}`);
-  };
+  const handlePrintPdf = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "Booking_Report",
+    pageStyle: `
+            @page {
+              size: A4 landscape;
+              margin: 5mm;
+            }
+            @media print {
+              body {
+                border: 0px solid #000;
+                font-size: 12px; 
+                margin: 0mm;
+                padding: 0mm;
+                min-height: 100vh;
+              }
+              table {
+                font-size: 11px;
+              }
+              .print-hide {
+                display: none;
+              }
+            }
+          `,
+  });
   return (
     <Layout>
       <PageHeader
@@ -70,7 +91,7 @@ const ViewVendor = () => {
           <ButtonConfigColor
             type="print"
             label="Print"
-            content={() => componentRef.current}
+            onClick={handlePrintPdf}
           />
         }
       />

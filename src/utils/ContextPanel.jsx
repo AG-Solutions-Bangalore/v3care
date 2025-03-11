@@ -37,7 +37,12 @@ const AppProvider = ({ children }) => {
       navigate("/maintenance");
     } else if (
       !token &&
-      !["/", "/forget-password"].includes(location.pathname)
+      ![
+        "/",
+        "/forget-password",
+        "/add-booking-outside",
+        "/become-partner-outside",
+      ].includes(location.pathname)
     ) {
       navigate("/");
     }

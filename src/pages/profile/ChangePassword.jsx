@@ -14,6 +14,8 @@ import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -73,13 +75,10 @@ const ChangePassword = () => {
   };
   return (
     <Layout>
-      <div className="mt-12 mb-8 flex flex-col gap-12">
+      <PageHeader title="Chnage Password" />
+
+      <div className="mt-2 mb-8 flex flex-col gap-12">
         <Card>
-          <CardHeader variant="gradient" className="bg-gray-100 mb-8 p-6">
-            <Typography variant="h6" color="black">
-              Change Password
-            </Typography>
-          </CardHeader>
           <CardBody className="flex flex-row gap-4">
             <Input
               type="password"
@@ -110,9 +109,20 @@ const ChangePassword = () => {
             />
           </CardBody>
           <CardFooter className="pt-0 flex justify-center">
-            <Button variant="gradient" onClick={handleSumbit} color="blue">
-              Submit
-            </Button>
+            <div className="flex justify-center space-x-4">
+              <ButtonConfigColor
+                type="submit"
+                onClick={handleSumbit}
+                label="Submit"
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
+            </div>
           </CardFooter>
         </Card>
       </div>

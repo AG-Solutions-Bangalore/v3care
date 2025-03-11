@@ -21,6 +21,8 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { ArrowLeft } from "lucide-react";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
@@ -31,6 +33,8 @@ const PendingPaymentView = () => {
     order_check_payment_type: "",
     order_check_payment_details: "",
   });
+  const [loading, setLoading] = useState(false);
+
   const { userType } = useContext(ContextPanel);
   // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
@@ -91,16 +95,20 @@ const PendingPaymentView = () => {
   };
   const updateData = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
+
     try {
-      const res = await axios({
-        url: `${BASE_URL}/api/panel-update-payment-status/${id}`,
-        method: "PUT",
-        data: payment,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (res.data.code == "200") {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-payment-status/${id}`,
+        payment,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.code === "200") {
         toast.success("Payment Updated Successfully");
         navigate(`/pending-payment?page=${pageNo}`);
       } else {
@@ -109,6 +117,8 @@ const PendingPaymentView = () => {
     } catch (error) {
       console.error("Error updating payment status:", error);
       toast.error("Error updating payment status");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -237,113 +247,105 @@ const PendingPaymentView = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto p-4">
-        <Typography variant="h4" color="gray" className="mb-6 flex">
-          <ArrowLeft className="cursor-pointer" onClick={handleBack} /> View
-          Pending Payment
-        </Typography>
+      <PageHeader title={"View Pending Payment"} onClick={handleBack} />
 
-        <div className="flex gap-4">
-          <div className="flex-grow">
-            <div className="mb-2">
-              <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
-                <button
-                  onClick={() => setActiveTab("bookingDetails")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "bookingDetails"
-                      ? "border-blue-500 bg-blue-100 text-blue-600"
-                      : "border-transparent hover:bg-blue-50"
-                  }`}
-                >
-                  <FaHome />
-                  {booking?.order_service}
-                </button>
+      <div className="flex gap-4 mt-2">
+        <div className="flex-grow">
+          <div className="mb-2">
+            <div className="flex justify-start space-x-4 ">
+              {/* Home Deep Cleaning Button */}
+              <button
+                onClick={() => setActiveTab("bookingDetails")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "bookingDetails"
+                    ? "border-blue-500 bg-blue-100 text-blue-600"
+                    : "border-transparent hover:bg-blue-50"
+                }`}
+              >
+                <FaHome />
+                {booking?.order_service}
+              </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
-                <button
-                  onClick={() => setActiveTab("additionalInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "additionalInfo"
-                      ? "border-red-500 bg-red-100 text-red-600"
-                      : "border-transparent hover:bg-red-50"
-                  }`}
-                >
-                  <FaInfoCircle />
-                  Other Details
-                </button>
-              </div>
-
-              {/* Main Content Based on Active Tab */}
-              <Card className="mt-2">
-                <CardBody>{renderActiveTabContent()}</CardBody>
-              </Card>
+              <button
+                onClick={() => setActiveTab("additionalInfo")}
+                className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                  activeTab === "additionalInfo"
+                    ? "border-red-500 bg-red-100 text-red-600"
+                    : "border-transparent hover:bg-red-50"
+                }`}
+              >
+                <FaInfoCircle />
+                Other Details
+              </button>
             </div>
-            {userType !== "4" && (
-              <Card className="mb-6">
-                <CardHeader floated={false} className="h-16 p-4">
-                  <Typography variant="h5" color="blue-gray">
-                    Receive Payment
-                  </Typography>
-                </CardHeader>
-                <CardBody>
-                  <form onSubmit={updateData}>
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                      <div className="md:col-span-4">
-                        <Select
-                          label="Select Payment Mode"
-                          name="order_check_payment_type"
-                          value={payment.order_check_payment_type || ""}
-                        >
-                          {paymentModes.map((mode) => (
-                            <Option
-                              key={mode.payment_mode}
-                              value={mode.payment_mode}
-                              onClick={() =>
-                                setPayment({
-                                  ...payment,
-                                  order_check_payment_type: mode.payment_mode,
-                                })
-                              }
-                            >
-                              {mode.payment_mode}
-                            </Option>
-                          ))}
-                        </Select>
-                      </div>
-                      <div className="md:col-span-8">
-                        {" "}
-                        <Textarea
-                          label="Referral Number / Remarks"
-                          name="order_check_payment_details"
-                          value={payment.order_check_payment_details}
-                          onChange={onInputChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-center my-4">
-                      <Button type="submit" onClick={updateData} color="blue">
-                        Receive Payment
-                      </Button>
-                    </div>
-                  </form>
-                </CardBody>
-              </Card>
-            )}
+
+            {/* Main Content Based on Active Tab */}
+            <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
+            </Card>
           </div>
+          {userType !== "4" && (
+            <Card className="mb-6">
+              <CardHeader floated={false} className="h-16 p-4">
+                <Typography variant="h5" color="blue-gray">
+                  Receive Payment
+                </Typography>
+              </CardHeader>
+              <CardBody>
+                <form onSubmit={updateData}>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                    <div className="md:col-span-4">
+                      <Select
+                        label="Select Payment Mode"
+                        name="order_check_payment_type"
+                        value={payment.order_check_payment_type || ""}
+                      >
+                        {paymentModes.map((mode) => (
+                          <Option
+                            key={mode.payment_mode}
+                            value={mode.payment_mode}
+                            onClick={() =>
+                              setPayment({
+                                ...payment,
+                                order_check_payment_type: mode.payment_mode,
+                              })
+                            }
+                          >
+                            {mode.payment_mode}
+                          </Option>
+                        ))}
+                      </Select>
+                    </div>
+                    <div className="md:col-span-8">
+                      {" "}
+                      <Textarea
+                        label="Referral Number / Remarks"
+                        name="order_check_payment_details"
+                        value={payment.order_check_payment_details}
+                        onChange={onInputChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Receive Payment"
+                      loading={loading}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          )}
         </div>
       </div>
     </Layout>

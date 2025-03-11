@@ -38,6 +38,7 @@ import {
 } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const status = [
   {
@@ -203,16 +204,11 @@ const EditBookingAll = () => {
     e.preventDefault();
     navigate(-1);
   };
-  // Handle form submission
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    // const form = document.getElementById("addIdniv");
-
-    // if (!form.checkValidity()) {
-    //   toast.error("Fill all the filled");
-    //   return;
-    // }
+    setLoading(true);
     setIsButtonDisabled(true);
+
     const data = {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
@@ -227,24 +223,30 @@ const EditBookingAll = () => {
       branch_id: booking.branch_id,
       order_area: booking.order_area,
     };
-    axios
-      .put(`${BASE_URL}/api/panel-update-booking/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((res) => {
-        if (res.data.code == "200") {
-          toast.success("Booking Updated Successfully");
-          navigate(`/today?page=${pageNo}`);
-        } else {
-          toast.error("Network Error");
+
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-booking/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      })
-      .catch((err) => {
-        console.error("Error updating booking", err);
-        toast.error("Error updating booking");
-      });
+      );
+
+      if (response.data.code === "200") {
+        toast.success("Booking Updated Successfully");
+        navigate(`/today?page=${pageNo}`);
+      } else {
+        toast.error("Network Error");
+      }
+    } catch (error) {
+      console.error("Error updating booking", error);
+      toast.error("Error updating booking");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const columns = [
@@ -470,14 +472,6 @@ const EditBookingAll = () => {
       <PageHeader title={"Edit Booking"} />
 
       <div className="container mx-auto p-4 ">
-        {/* <Typography variant="h4" color="gray" className="mb-6 flex">
-          <ArrowLeft
-            className="text-center cursor-pointer mt-1"
-            onClick={handleBack}
-          />{" "}
-          Edit Booking ff
-        </Typography> */}
-
         <div className="flex gap-4">
           <div className="flex-grow">
             <div className="mb-2">
@@ -494,20 +488,6 @@ const EditBookingAll = () => {
                   {booking?.order_service}
                 </button>
 
-                {/* Booking Overview Button */}
-                {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                {/* Other Details Button */}
                 <button
                   onClick={() => setActiveTab("additionalInfo")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${activeTab === "additionalInfo"
@@ -520,7 +500,6 @@ const EditBookingAll = () => {
                 </button>
               </div>
 
-              {/* Main Content Based on Active Tab */}
               <Card className="mt-2">
                 <CardBody>{renderActiveTabContent()}</CardBody>
               </Card>
@@ -730,7 +709,7 @@ const EditBookingAll = () => {
                     </div>
                   </div>
 
-                  <div className="text-center mt-6">
+                  {/* <div className="text-center mt-6">
                     <Button
                       type="sumbit"
                       onClick={(e) => onSubmit(e)}
@@ -753,6 +732,35 @@ const EditBookingAll = () => {
                     >
                       Postpone
                     </Button>
+                  </div> */}
+
+                  <div className="flex justify-center space-x-4 my-2">
+                    <ButtonConfigColor
+                      type="edit"
+                      buttontype="submit"
+                      label="Update"
+                      disabled={isButtonDisabled}
+                      loading={loading}
+                      onClick={onSubmit}
+                    />
+                    <ButtonConfigColor
+                      type="submit"
+                      buttontype="button"
+                      label="Postpone"
+                      onClick={() => navigate(`/postpone-booking/${id}`)}
+                    />
+                    <ButtonConfigColor
+                      type="submit"
+                      label="Work in Progress"
+                      onClick={() => navigate(`/booking-reschedule/${id}`)}
+                    />
+
+                    <ButtonConfigColor
+                      type="back"
+                      buttontype="button"
+                      label="Cancel"
+                      onClick={() => navigate(-1)}
+                    />
                   </div>
                 </CardBody>
               </Card>

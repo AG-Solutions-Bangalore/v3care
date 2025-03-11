@@ -4,7 +4,6 @@ import {
   CardBody,
   Typography,
   CardHeader,
-  Button,
   Input,
   CardFooter,
 } from "@material-tailwind/react";
@@ -12,20 +11,33 @@ import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("id");
+    if (!isLoggedIn) {
+      window.location = "/";
+    } else {
+      getData();
+    }
+  }, []);
+
   const getData = () => {
-    axios({
-      url: `${BASE_URL}/api/panel-fetch-profile`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    axios
+      .get(`${BASE_URL}/api/panel-fetch-profile`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setFirstName(res.data?.user.name);
         setPhone(res.data.user?.mobile);
@@ -37,126 +49,56 @@ const Profile = () => {
       });
   };
 
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem("id");
-    if (!isLoggedIn) {
-      window.location = "/";
-    } else {
-      getData();
-    }
-  }, []);
   const onUpdateProfile = (e) => {
     e.preventDefault();
+    if (!firstName.trim()) return toast.error("Enter Full Name");
+    if (!phone.trim() || phone.length !== 10)
+      return toast.error("Enter a valid Mobile Number");
+    if (!email.trim()) return toast.error("Enter Email Id");
 
-    if (firstName === "") {
-      NotificationManager.error("Enter Full Name");
-      return false;
-    }
-    if (phone === "" || phone === "NaN") {
-      NotificationManager.error("Enter Mobile Number");
-      return false;
-    }
-    if (phone.length !== 10) {
-      NotificationManager.error("Mobile Number allows only 10 Digits");
-      return false;
-    }
-    if (email === "") {
-      NotificationManager.error("Enter Email Id");
-      return false;
-    }
+    const data = { first_name: firstName, phone, email };
 
-    const data = {
-      first_name: firstName,
-      phone: phone,
-      email: email,
-    };
-
-    axios({
-      url: `${BASE_URL}/api/panel-update-profile`,
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    axios
+      .post(`${BASE_URL}/api/panel-update-profile`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
-        if (res.data.code == "401") {
-          toast.error("Duplicate Entry of Name");
-        } else if (res.data.code == "402") {
-          toast.error("Duplicate Entry of Mobile");
-        } else if (res.data.code == "403") {
-          toast.error("Duplicate Entry of Email");
-        } else {
-          toast.success("Profile Updated Successfully!");
-        }
+        if (res.data.code === "401") toast.error("Duplicate Name Entry");
+        else if (res.data.code === "402") toast.error("Duplicate Mobile Entry");
+        else if (res.data.code === "403") toast.error("Duplicate Email Entry");
+        else toast.success("Profile Updated Successfully!");
       })
       .catch(() => {
         toast.error("Profile not Updated");
       });
   };
 
-  // Helper functions for input validation
-  const validateOnlyText = (inputtxt) => {
-    const re = /^[A-Za-z ]+$/;
-    return inputtxt === "" || re.test(inputtxt);
-  };
-
-  const validateOnlyDigits = (inputtxt) => {
-    const phoneno = /^\d+$/;
-    return inputtxt.match(phoneno) || inputtxt.length === 0;
-  };
-
-  // Handlers for input change with validation
-  const handleFirstNameChange = (e) => {
-    if (validateOnlyText(e.target.value)) {
-      setFirstName(e.target.value);
-    }
-  };
-
-  const handlePhoneChange = (e) => {
-    if (validateOnlyDigits(e.target.value)) {
-      setPhone(e.target.value);
-    }
-  };
   return (
     <Layout>
-      <div className="mt-12 mb-8 flex flex-col gap-12">
+      <PageHeader title="Profile" />
+      <div className="mt-2 mb-8 flex flex-col gap-12">
         <Card>
-          <CardHeader variant="gradient" className=" bg-gray-100 mb-4 p-6">
-            <Typography variant="h6" color="black">
-              Profile
-            </Typography>
-          </CardHeader>
-          <CardBody className=" flex flex-row gap-4 ">
-            {/* Name field */}
-
+          <CardBody className="flex flex-row gap-4">
             <Input
               label="Name"
-              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
               id="name"
               type="text"
               value={firstName}
-              onChange={handleFirstNameChange}
+              onChange={(e) => setFirstName(e.target.value)}
               placeholder="Enter your name"
             />
-
-            {/* Mobile field */}
-
             <Input
               label="Mobile"
-              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
               id="mobile"
               type="tel"
               value={phone}
-              onChange={handlePhoneChange}
+              onChange={(e) => setPhone(e.target.value)}
               placeholder="Enter your mobile number"
             />
-
-            {/* Email field */}
-
             <Input
               label="Email"
-              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight "
               id="email"
               type="email"
               value={email}
@@ -165,14 +107,20 @@ const Profile = () => {
             />
           </CardBody>
           <CardFooter className="pt-0 flex justify-center">
-            <Button
-              onClick={onUpdateProfile}
-              variant="gradient"
-              color="blue"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Update Profile
-            </Button>
+            <div className="flex justify-center space-x-4 mt-2">
+              <ButtonConfigColor
+                type="logout"
+                onClick={onUpdateProfile}
+                label="Update Profile"
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
+            </div>
           </CardFooter>
         </Card>
       </div>
