@@ -220,10 +220,10 @@ const EditBookingInspection = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Booking Updated Successfully");
+          toast.success(res.data?.msg || "Booking Updated Successfully");
           navigate("/inspection");
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {
@@ -405,7 +405,7 @@ const EditBookingInspection = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Followup Created Successfully");
+          toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
           fetchBookingData();
 
@@ -414,7 +414,7 @@ const EditBookingInspection = () => {
             order_followup_date: moment().format("YYYY-MM-DD"),
           });
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {

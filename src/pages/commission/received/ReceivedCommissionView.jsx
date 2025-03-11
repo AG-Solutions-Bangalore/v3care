@@ -81,10 +81,10 @@ const ReceivedCommissionView = () => {
       );
 
       if (res.data.code === "200") {
-        toast.success("Commission Updated Successfully");
+        toast.success(res.data?.msg || "Commission Updated Successfully");
         navigate("/commission-received");
       } else {
-        toast.error("Network Error");
+        toast.error(res.data?.msg || "Network Error");
       }
     } catch (error) {
       console.error("Error updating Commission status:", error);

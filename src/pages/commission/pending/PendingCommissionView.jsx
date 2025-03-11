@@ -103,10 +103,10 @@ const PendingCommissionView = () => {
       );
 
       if (res.data.code === "200") {
-        toast.success("Received Updated Successfully");
+        toast.success(res.data?.msg || "Received Updated Successfully");
         navigate("/received-payment");
       } else {
-        toast.error("Network Error");
+        toast.error(res.data?.msg || "Network Error");
       }
     } catch (error) {
       console.error("Error updating received status:", error);
