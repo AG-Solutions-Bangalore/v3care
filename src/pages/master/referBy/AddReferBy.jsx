@@ -58,11 +58,11 @@ const AddReferBy = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("ReferBy Created Successfully");
+        toast.success(response.data?.msg || "ReferBy Created Successfully");
         setReferBy({ refer_by: "" });
         navigate("/refer-by");
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");

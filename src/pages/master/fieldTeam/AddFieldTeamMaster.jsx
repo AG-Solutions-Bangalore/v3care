@@ -79,7 +79,7 @@ const AddFieldTeamMaster = () => {
       },
     }).then((res) => {
       if (res.data.code == "200") {
-        toast.success("Create succesfull");
+        toast.success(res.data?.msg || "Create succesfull");
 
         setTeam({
           name: "",
@@ -95,7 +95,7 @@ const AddFieldTeamMaster = () => {
         });
         navigate("/field-team");
       } else {
-        toast.error("duplicate entry");
+        toast.error(res.data?.msg ||"duplicate entry");
         setLoading(false);
       }
     });

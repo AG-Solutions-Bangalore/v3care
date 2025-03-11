@@ -98,9 +98,15 @@ const ReferByEditMaster = () => {
           },
         }
       );
-
-      toast.success("Update successful");
-      navigate(`/refer-by?page=${pageNo}`);
+      if (response.data?.code === 200) {
+        toast.success(response.data?.msg || "Update successful");
+        navigate(`/refer-by?page=${pageNo}`);
+      } else {
+        toast.error(response.data?.msg || "Update failed");
+      }
+  
+     
+      
     } catch (error) {
       console.error("Error updating refer by", error);
       toast.error("Update failed. Please try again.");

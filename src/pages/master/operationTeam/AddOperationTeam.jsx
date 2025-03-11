@@ -85,7 +85,7 @@ const AddOperationTeam = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Create successful");
+        toast.success(response.data?.msg ||"Create successful");
 
         setTeam({
           name: "",
@@ -102,7 +102,7 @@ const AddOperationTeam = () => {
 
         navigate("/operation-team");
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg ||"Duplicate entry");
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");

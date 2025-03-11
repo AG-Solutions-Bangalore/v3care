@@ -221,15 +221,15 @@ const EditVendor = () => {
         );
 
         if (response.data.code == "200") {
-          toast.success("Data Updated Successfully");
+          toast.success(response.data?.msg || "Data Updated Successfully");
           navigate(`/vendor-list?page=${pageNo}`);
         } else {
           if (response.data.code == "401") {
-            toast.error("Company Short Duplicate Entry");
+            toast.error(response.data?.msg || "Company Short Duplicate Entry");
           } else if (response.data.code == "402") {
-            toast.error("Mobile No Duplicate Entry");
+            toast.error(response.data?.msg || "Mobile No Duplicate Entry");
           } else {
-            toast.error("Email Id Duplicate Entry");
+            toast.error(response.data?.msg || "Email Id Duplicate Entry");
           }
         }
       } catch (error) {

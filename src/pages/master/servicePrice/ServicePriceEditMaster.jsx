@@ -168,10 +168,10 @@ const ServicePriceEditMaster = () => {
         );
 
         if (response.data.code == "200") {
-          toast.success("update succesfull");
+          toast.success(response.data?.msg || "update succesfull");
           navigate(`/service-price?page=${pageNo}`);
         } else {
-          toast.error("duplicate entry");
+          toast.error(response.data?.msg ||"duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service price:", error);

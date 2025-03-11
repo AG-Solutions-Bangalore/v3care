@@ -121,10 +121,10 @@ const OperationEditTeamMaster = () => {
       );
 
       if (response.data.code === "200") {
-        toast.success("Update successful");
+        toast.success(response.data?.msg || "Update successful");
         navigate(`/operation-team?page=${pageNo}`);
       } else {
-        toast.error("Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -142,7 +142,7 @@ const OperationEditTeamMaster = () => {
 
       <div className="container mx-auto ">
         <Card className="p-6 mt-2">
-          <form id="addIndiv" autoComplete="off">
+          <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
               <div>
                 <Input

@@ -60,10 +60,10 @@ const AddVendorService = () => {
         )
         .then((res) => {
           if (res.data.code === "200") {
-            toast.success("Data updated successfully");
+            toast.success(res.data?.msg || "Data updated successfully");
             navigate("/vendor-list");
           } else {
-            toast.error("Duplicate Entry");
+            toast.error( res.data?.msg || "Duplicate Entry");
             setIsButtonDisabled(false);
           }
         })
