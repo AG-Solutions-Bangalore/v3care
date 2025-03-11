@@ -164,18 +164,10 @@ const SignIn = () => {
                 />
               </div>
 
-              {/* <Button
-                type="submit"
-                disabled={loading}
-                className="mt-6 bg-blue-500 hover:bg-blue-600 text-white"
-                fullWidth
-              >
-                {loading ? "Checking..." : "Sign In"}
-              </Button> */}
               <ButtonConfigColor
                 type="default"
                 buttontype="submit"
-                label="Refer by"
+                label="Sigin In"
                 loading={loading}
                 className="w-full"
               />
