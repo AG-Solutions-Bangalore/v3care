@@ -113,9 +113,9 @@ const ViewBooking = () => {
       }
     );
     if (res.data.code == "200") {
-      toast.success("Notification Sent Successfully");
+      toast.success(res.data?.msg || "Notification Sent Successfully");
     } else {
-      toast.error("Network Error");
+      toast.error(res.data?.msg || "Network Error");
     }
   };
 
@@ -319,7 +319,7 @@ const ViewBooking = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Followup Created Successfully");
+          toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
           fetchBookingData();
 
@@ -328,7 +328,7 @@ const ViewBooking = () => {
             order_followup_date: moment().format("YYYY-MM-DD"),
           });
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {

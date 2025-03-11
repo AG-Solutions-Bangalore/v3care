@@ -448,11 +448,11 @@ const AddBooking = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           console.log("Data Inserted Sucessfully");
-          toast.success("Booking Create Successfully");
+          toast.success(res.data?.msg || "Booking Create Successfully");
           navigate("/today");
         } else {
           console.log("Duplicate Entry");
-          toast.error("Duplicate Entry");
+          toast.error(res.data?.msg || "Duplicate Entry");
         }
       });
     }

@@ -179,10 +179,10 @@ const PostponeBooking = () => {
       },
     }).then((res) => {
       if (res.data.code == "200") {
-        toast.success("PostPone Created Successfully");
+        toast.success(res.data?.msg || "PostPone Created Successfully");
         navigate("/today");
       } else {
-        toast.error("Network error");
+        toast.error(res.data?.msg || "Network error");
       }
     });
   };
@@ -305,7 +305,7 @@ const PostponeBooking = () => {
       })
       .then((res) => {
         if (res.data.code == "200") {
-          toast.success("Followup Created Successfully");
+          toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
           fetchBookingData();
 
@@ -314,7 +314,7 @@ const PostponeBooking = () => {
             order_followup_date: moment().format("YYYY-MM-DD"),
           });
         } else {
-          toast.error("Network Error");
+          toast.error(res.data?.msg || "Network Error");
         }
       })
       .catch((err) => {
@@ -356,7 +356,9 @@ const PostponeBooking = () => {
                 Other Details
               </button>
             </div>
-
+  <Card className="mt-2">
+              <CardBody>{renderActiveTabContent()}</CardBody>
+            </Card>
           
           
           </div>
@@ -365,7 +367,7 @@ const PostponeBooking = () => {
           <Card className="mb-6">
             {/* here booking assign table  */}
             <CardBody>
-              {/* <form id="addIdniv"> */}
+              <form id="addIdniv" onSubmit={onSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <div>
@@ -449,7 +451,7 @@ const PostponeBooking = () => {
                   onClick={() => navigate(-1)}
                 />
               </div>
-              {/* </form> */}
+              </form>
             </CardBody>
           </Card>
           <Card className="mb-6">

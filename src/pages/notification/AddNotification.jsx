@@ -62,10 +62,10 @@ const AddNotification = () => {
       );
 
       if (res.data.code === "200") {
-        toast.success("Notification Created");
+        toast.success(res.data?.msg || "Notification Created");
         navigate("/notification");
       } else {
-        toast.error("Duplicate Entry");
+        toast.error(res.data?.msg || "Duplicate Entry");
       }
     } catch (error) {
       console.error("Error creating notification:", error);

@@ -109,10 +109,10 @@ const EditAssignVendor = () => {
       );
 
       if (response.data.code == "200") {
-        toast.success("Assign Vendor Updated Successfully");
+        toast.success(response.data?.msg || "Assign Vendor Updated Successfully");
         navigate(`/booking-assign/${vendorBook}`);
       } else {
-        toast.error("Failed to update Assign Vendor");
+        toast.error(response.data?.msg || "Failed to update Assign Vendor");
       }
     } catch (error) {
       toast.error("An error occurred while updating");
