@@ -87,32 +87,6 @@ npm start
 Go to `http://localhost:3000`
 
 ---
-
-## 🎯 API Endpoints
-
-| Method | Endpoint             | Description       |
-| ------ | -------------------- | ----------------- |
-| POST   | `/api/auth/register` | User Registration |
-| POST   | `/api/auth/login`    | User Login        |
-| GET    | `/api/user/profile`  | Get User Profile  |
-| PUT    | `/api/user/update`   | Update Profile    |
-| GET    | `/api/services`      | Get Services List |
-| POST   | `/api/services/add`  | Add a New Service |
-
----
-
----
-
-## 🤝 Contributing
-
-1. **Fork the repo**
-2. **Create a new branch** (`git checkout -b feature-branch`)
-3. **Commit your changes** (`git commit -m "Added new feature"`)
-4. **Push to the branch** (`git push origin feature-branch`)
-5. **Open a Pull Request**
-
----
-
 ## 📜 License
 
 This project is licensed under the **MIT License**.
