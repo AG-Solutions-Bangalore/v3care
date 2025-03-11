@@ -11,6 +11,7 @@ import { Card, CardBody } from "@material-tailwind/react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const ViewVendor = () => {
   const componentRef = useRef();
@@ -56,7 +57,6 @@ const ViewVendor = () => {
       }
     };
     fetchVendorViewData();
-    setLoading(false);
   }, []);
   const handlePrintPdf = useReactToPrint({
     content: () => componentRef.current,
@@ -95,117 +95,120 @@ const ViewVendor = () => {
           />
         }
       />
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="container mx-auto mt-2">
+          <div className="w-full bg-white shadow-md rounded-lg p-8">
+            <div ref={componentRef} className="mt-6 px-2">
+              <div className="mb-8 ">
+                <h2 className="text-xl font-semibold">
+                  {vendor.vendor_company} ({vendor.vendor_short}) -{" "}
+                  {vendor.vendor_status}
+                </h2>
+              </div>
 
-      <div className="container mx-auto mt-2">
-        <div className="w-full bg-white shadow-md rounded-lg p-8">
-          <div ref={componentRef} className="mt-6 px-2">
-            <div className="mb-8 ">
-              <h2 className="text-xl font-semibold">
-                {vendor.vendor_company} ({vendor.vendor_short}) -{" "}
-                {vendor.vendor_status}
-              </h2>
-            </div>
+              {/* Add a black border around the entire section */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4">
+                <div>
+                  <h3 className="font-semibold text-lg">Contact Information</h3>
+                  <table className="w-full mt-2 border-collapse border border-black">
+                    <tbody>
+                      <tr className="border-b border-black">
+                        <th className="text-left p-2 border-r border-black">
+                          Mobile
+                        </th>
+                        <td className="p-2">:</td>
+                        <td className="p-2">{vendor.vendor_mobile}</td>
+                      </tr>
+                      <tr className="border-b border-black">
+                        <th className="text-left p-2 border-r border-black">
+                          Email
+                        </th>
+                        <td className="p-2">:</td>
+                        <td className="p-2">{vendor.vendor_email}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-            {/* Add a black border around the entire section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4">
-              <div>
-                <h3 className="font-semibold text-lg">Contact Information</h3>
+                <div>
+                  <h3 className="font-semibold text-lg">Identification</h3>
+                  <table className="w-full mt-2 border-collapse border border-black">
+                    <tbody>
+                      <tr className="border-b border-black">
+                        <th className="text-left p-2 border-r border-black">
+                          Aadhar No
+                        </th>
+                        <td className="p-2">:</td>
+                        <td className="p-2">{vendor.vendor_aadhar_no}</td>
+                      </tr>
+                      <tr className="border-b border-black">
+                        <th className="text-left p-2 border-r border-black">
+                          GST No
+                        </th>
+                        <td className="p-2">:</td>
+                        <td className="p-2">{vendor.vendor_gst_no}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className=" p-4">
+                <h3 className="font-semibold text-lg">Area</h3>
                 <table className="w-full mt-2 border-collapse border border-black">
                   <tbody>
-                    <tr className="border-b border-black">
-                      <th className="text-left p-2 border-r border-black">
-                        Mobile
-                      </th>
-                      <td className="p-2">:</td>
-                      <td className="p-2">{vendor.vendor_mobile}</td>
-                    </tr>
-                    <tr className="border-b border-black">
-                      <th className="text-left p-2 border-r border-black">
-                        Email
-                      </th>
-                      <td className="p-2">:</td>
-                      <td className="p-2">{vendor.vendor_email}</td>
-                    </tr>
+                    {vendorArea.map((area, index) => (
+                      <tr key={index} className="border-b border-black">
+                        <td className="p-2">{area.vendor_area}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
 
-              <div>
-                <h3 className="font-semibold text-lg">Identification</h3>
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-4">Services</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4">
+                  {vendorService.map((service, index) => (
+                    <div
+                      key={index}
+                      className=" p-4 border border-black rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                    >
+                      <p className="text-black font-medium">
+                        {service.vendor_service}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="  p-4">
+                <h3 className="font-semibold text-lg">Branch Address</h3>
                 <table className="w-full mt-2 border-collapse border border-black">
                   <tbody>
-                    <tr className="border-b border-black">
-                      <th className="text-left p-2 border-r border-black">
-                        Aadhar No
-                      </th>
-                      <td className="p-2">:</td>
-                      <td className="p-2">{vendor.vendor_aadhar_no}</td>
-                    </tr>
-                    <tr className="border-b border-black">
-                      <th className="text-left p-2 border-r border-black">
-                        GST No
-                      </th>
-                      <td className="p-2">:</td>
-                      <td className="p-2">{vendor.vendor_gst_no}</td>
-                    </tr>
+                    {vendorBranch.map((branch, index) => (
+                      <tr key={index} className="border-b border-black">
+                        <td className="p-2">
+                          {branch.vendor_branch_flat},{" "}
+                          {branch.vendor_branch_building},{" "}
+                          {branch.vendor_branch_landmark},{" "}
+                          {branch.vendor_branch_location},{" "}
+                          {branch.vendor_branch_city} -{" "}
+                          {branch.vendor_branch_district},{" "}
+                          {branch.vendor_branch_state} -{" "}
+                          {branch.vendor_branch_pincode}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <div className=" p-4">
-              <h3 className="font-semibold text-lg">Area</h3>
-              <table className="w-full mt-2 border-collapse border border-black">
-                <tbody>
-                  {vendorArea.map((area, index) => (
-                    <tr key={index} className="border-b border-black">
-                      <td className="p-2">{area.vendor_area}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="p-4">
-              <h3 className="font-semibold text-lg mb-4">Services</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4">
-                {vendorService.map((service, index) => (
-                  <div
-                    key={index}
-                    className=" p-4 border border-black rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                  >
-                    <p className="text-black font-medium">
-                      {service.vendor_service}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="  p-4">
-              <h3 className="font-semibold text-lg">Branch Address</h3>
-              <table className="w-full mt-2 border-collapse border border-black">
-                <tbody>
-                  {vendorBranch.map((branch, index) => (
-                    <tr key={index} className="border-b border-black">
-                      <td className="p-2">
-                        {branch.vendor_branch_flat},{" "}
-                        {branch.vendor_branch_building},{" "}
-                        {branch.vendor_branch_landmark},{" "}
-                        {branch.vendor_branch_location},{" "}
-                        {branch.vendor_branch_city} -{" "}
-                        {branch.vendor_branch_district},{" "}
-                        {branch.vendor_branch_state} -{" "}
-                        {branch.vendor_branch_pincode}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </Layout>
   );
 };

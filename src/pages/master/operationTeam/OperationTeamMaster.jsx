@@ -14,6 +14,7 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const OperationTeamMaster = () => {
   const [operationData, setOperationData] = useState(null);
@@ -68,7 +69,6 @@ const OperationTeamMaster = () => {
       }
     };
     fetchOperationData();
-    setLoading(false);
   }, []);
 
   const toogleViewOperation =
@@ -227,16 +227,18 @@ const OperationTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-
-      <div className="mt-1">
-        <MUIDataTable
-          title="Operation Team List"
-          data={operationData ? operationData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
-
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Operation Team List"
+            data={operationData ? operationData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
       <SwipeableDrawer
         anchor="right"
         open={operationDrawer}

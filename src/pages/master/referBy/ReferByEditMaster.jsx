@@ -20,6 +20,7 @@ import {
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -34,6 +35,8 @@ const ReferByEditMaster = () => {
   UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
+
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   const storedPageNo = localStorage.getItem("page-no");
@@ -50,6 +53,8 @@ const ReferByEditMaster = () => {
 
   useEffect(() => {
     const fetchReferByData = async () => {
+      setFetchLoading(true);
+
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -68,6 +73,8 @@ const ReferByEditMaster = () => {
         setReferBy(response.data?.referby);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
+      } finally {
+        setFetchLoading(false);
       }
     };
     fetchReferByData();
@@ -104,9 +111,6 @@ const ReferByEditMaster = () => {
       } else {
         toast.error(response.data?.msg || "Update failed");
       }
-  
-     
-      
     } catch (error) {
       console.error("Error updating refer by", error);
       toast.error("Update failed. Please try again.");
@@ -121,73 +125,76 @@ const ReferByEditMaster = () => {
     <Layout>
       <MasterFilter />
       <PageHeader title={"Edit Refer By"} onClick={handleBack} />
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="container mx-auto ">
+          <Card className="p-6 mt-2">
+            <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Branch Name */}
+                <div className="form-group">
+                  <Input
+                    label="Refer By"
+                    type="text"
+                    name="refer_by"
+                    value={referBy.refer_by}
+                    onChange={onInputChange}
+                    required
+                    disabled
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
 
-      <div className="container mx-auto ">
-        <Card className="p-6 mt-2">
-          <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Branch Name */}
-              <div className="form-group">
-                <Input
-                  label="Refer By"
-                  type="text"
-                  name="refer_by"
-                  value={referBy.refer_by}
-                  onChange={onInputChange}
-                  required
-                  disabled
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
+                {/* Branch Status */}
+
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="refer_by_status"
+                    value={referBy.refer_by_status}
+                    onChange={onInputChange}
+                    label="Status *"
+                    required
+                  >
+                    {status.map((data) => (
+                      <MenuItem key={data.value} value={String(data.value)}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
 
-              {/* Branch Status */}
+              <div className="flex justify-center space-x-4 my-2">
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Update"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                />
 
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Status <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="refer_by_status"
-                  value={referBy.refer_by_status}
-                  onChange={onInputChange}
-                  label="Status *"
-                  required
-                >
-                  {status.map((data) => (
-                    <MenuItem key={data.value} value={String(data.value)}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-            <div className="flex justify-center space-x-4 my-2">
-              <ButtonConfigColor
-                type="edit"
-                buttontype="submit"
-                label="Update"
-                disabled={isButtonDisabled}
-                loading={loading}
-              />
-
-              <ButtonConfigColor
-                type="back"
-                buttontype="button"
-                label="Cancel"
-                onClick={() => navigate(-1)}
-              />
-            </div>
-          </form>
-        </Card>
-      </div>
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
+                />
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
     </Layout>
   );
 };

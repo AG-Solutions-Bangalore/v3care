@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Input } from "@material-tailwind/react";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import { Button, Input } from "@material-tailwind/react";
-import { MdArrowBack, MdSend } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import BASE_URL from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const VendorPendingEdit = () => {
   const navigate = useNavigate();
@@ -28,6 +28,8 @@ const VendorPendingEdit = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
+
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
@@ -40,6 +42,8 @@ const VendorPendingEdit = () => {
     }
 
     const fetchVendorData = async () => {
+      setFetchLoading(true);
+
       try {
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-vendor-by-id/${id}`,
@@ -52,6 +56,8 @@ const VendorPendingEdit = () => {
         setVendor(response.data.vendor);
       } catch (error) {
         console.error("Error fetching vendor data:", error);
+      } finally {
+        setFetchLoading(false);
       }
     };
 
@@ -139,132 +145,117 @@ const VendorPendingEdit = () => {
   return (
     <Layout>
       <PageHeader title={"Pending Edit Vendor "} />
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
+          {/* Personal Details */}
+          <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
+          <hr className="mb-4" />
 
-      <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
-        {/* Personal Details */}
-        <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
-        <hr className="mb-4" />
-
-        <form onSubmit={onSubmit} id="addIndiv" autoComplete="off">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {/* Nickname */}
-            <div>
-              <Input
-                label="Nick Name"
-                type="text"
-                name="vendor_short"
-                value={vendor.vendor_short}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-            </div>
-
-            {/* Company */}
-            <div>
-              <Input
-                label="Company"
-                type="text"
-                name="vendor_company"
-                value={vendor.vendor_company}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* Mobile No */}
-            <div>
-              <Input
-                label="Mobile No"
-                type="text"
-                name="vendor_mobile"
-                maxLength={10}
-                minLength={10}
-                value={vendor.vendor_mobile}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <Input
-                label="Email"
-                type="email"
-                name="vendor_email"
-                value={vendor.vendor_email}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* Aadhar No */}
-            <div>
-              <Input
-                label="Aadhar No"
-                type="text"
-                name="vendor_aadhar_no"
-                maxLength={12}
-                minLength={12}
-                value={vendor.vendor_aadhar_no}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* GST No */}
-            <div>
-              <Input
-                label="GST No"
-                type="text"
-                name="vendor_gst_no"
-                maxLength={15}
-                value={vendor.vendor_gst_no}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-            </div>
-          </div>
-          {/* <div className="mt-4 text-center">
-            <Button
-              type="submit"
-              className="mr-2 mb-2"
-              // disabled={isButtonDisabled}
-            >
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Update</span>
+          <form onSubmit={onSubmit} id="addIndiv" autoComplete="off">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Nickname */}
+              <div>
+                <Input
+                  label="Nick Name"
+                  type="text"
+                  name="vendor_short"
+                  value={vendor.vendor_short}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
               </div>
-            </Button>
 
-            <Button className="mr-2 mb-2" onClick={handleBack}>
-              <div className="flex gap-1">
-                <MdArrowBack className="w-4 h-4" />
-                <span>Back</span>
+              {/* Company */}
+              <div>
+                <Input
+                  label="Company"
+                  type="text"
+                  name="vendor_company"
+                  value={vendor.vendor_company}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
               </div>
-            </Button>
-          </div> */}
-          <div className="flex justify-center space-x-4 my-2">
-            <ButtonConfigColor
-              type="edit"
-              buttontype="submit"
-              label="Update"
-              disabled={isButtonDisabled}
-              loading={loading}
-            />
 
-            <ButtonConfigColor
-              type="back"
-              buttontype="button"
-              label="Cancel"
-              onClick={() => navigate(-1)}
-            />
-          </div>
-        </form>
-      </div>
+              {/* Mobile No */}
+              <div>
+                <Input
+                  label="Mobile No"
+                  type="text"
+                  name="vendor_mobile"
+                  maxLength={10}
+                  minLength={10}
+                  value={vendor.vendor_mobile}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <Input
+                  label="Email"
+                  type="email"
+                  name="vendor_email"
+                  value={vendor.vendor_email}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* Aadhar No */}
+              <div>
+                <Input
+                  label="Aadhar No"
+                  type="text"
+                  name="vendor_aadhar_no"
+                  maxLength={12}
+                  minLength={12}
+                  value={vendor.vendor_aadhar_no}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* GST No */}
+              <div>
+                <Input
+                  label="GST No"
+                  type="text"
+                  name="vendor_gst_no"
+                  maxLength={15}
+                  value={vendor.vendor_gst_no}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
+            </div>
+          </form>
+        </div>
+      )}
     </Layout>
   );
 };

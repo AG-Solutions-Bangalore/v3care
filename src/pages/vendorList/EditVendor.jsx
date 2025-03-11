@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../components/common/LoaderComponent";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -87,6 +88,7 @@ const EditVendor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [servicess, setServicess] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("id");
@@ -96,6 +98,7 @@ const EditVendor = () => {
     }
 
     const fetchVendorData = async () => {
+      setFetchLoading(true);
       try {
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-vendor-by-id/${id}`,
@@ -111,6 +114,8 @@ const EditVendor = () => {
         setUsers2(response.data.vendorArea);
       } catch (error) {
         console.error("Error fetching vendor data:", error);
+      } finally {
+        setFetchLoading(false);
       }
     };
 
@@ -168,10 +173,7 @@ const EditVendor = () => {
     );
     setUsers1(updatedUsers);
   };
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(`/vendor-list?page=${pageNo}`);
-  };
+
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -256,430 +258,428 @@ const EditVendor = () => {
           }
         />
       </div>
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
+          <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
+          <hr className="mb-4" />
 
-      <div className="p-6 mt-5 bg-white shadow-md rounded-lg">
-        {/* Title */}
+          <form onSubmit={onSubmit} id="addIndiv" autoComplete="off">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div>
+                <Input
+                  label="Nick Name"
+                  type="text"
+                  name="vendor_short"
+                  value={vendor.vendor_short}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+              </div>
 
-        {/* Personal Details */}
-        <h2 className="text-lg font-semibold mb-2">Personal Details</h2>
-        <hr className="mb-4" />
+              {/* Company */}
+              <div>
+                <Input
+                  label="Company"
+                  type="text"
+                  name="vendor_company"
+                  value={vendor.vendor_company}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
 
-        <form onSubmit={onSubmit} id="addIndiv" autoComplete="off">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {/* Nickname */}
-            <div>
-              <Input
-                label="Nick Name"
-                type="text"
-                name="vendor_short"
-                value={vendor.vendor_short}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
+              {/* Mobile No */}
+              <div>
+                <Input
+                  label="Mobile No"
+                  type="text"
+                  name="vendor_mobile"
+                  maxLength={10}
+                  minLength={10}
+                  value={vendor.vendor_mobile}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <Input
+                  label="Email"
+                  type="email"
+                  name="vendor_email"
+                  value={vendor.vendor_email}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* Aadhar No */}
+              <div>
+                <Input
+                  label="Aadhar No"
+                  type="text"
+                  name="vendor_aadhar_no"
+                  maxLength={12}
+                  minLength={12}
+                  value={vendor.vendor_aadhar_no}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+              </div>
+
+              {/* GST No */}
+              <div>
+                <Input
+                  label="Gst No"
+                  type="text"
+                  name="vendor_gst_no"
+                  maxLength={15}
+                  value={vendor.vendor_gst_no}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+              </div>
             </div>
 
-            {/* Company */}
-            <div>
-              <Input
-                label="Company"
-                type="text"
-                name="vendor_company"
-                value={vendor.vendor_company}
+            {/* File Uploads */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              <div>
+                <Input
+                  label="Photo"
+                  type="file"
+                  name="vendor_images"
+                  onChange={(e) => setSelectedFile1(e.target.files[0])}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+                <small>{vendor.vendor_images}</small>
+              </div>
+
+              <div>
+                <Input
+                  label="  Aadhar Card Front Side"
+                  type="file"
+                  name="vendor_documents"
+                  onChange={(e) => setSelectedFile2(e.target.files[0])}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+                <small>{vendor.vendor_aadhar_front}</small>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-1"></label>
+                <Input
+                  label=" Aadhar Card Back Side"
+                  type="file"
+                  name="vendor_certificates"
+                  onChange={(e) => setSelectedFile3(e.target.files[0])}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+                <small>{vendor.vendor_aadhar_back}</small>
+              </div>
+
+              <div>
+                <Input
+                  label="GST Certificate"
+                  type="file"
+                  name="vendor_license"
+                  onChange={(e) => setSelectedFile4(e.target.files[0])}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                />
+                <small>{vendor.vendor_aadhar_gst}</small>
+              </div>
+            </div>
+
+            {/* Reference Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <Input
+                  label="Reference Name 1"
+                  type="text"
+                  name="vendor_ref_name_1"
+                  value={vendor.vendor_ref_name_1}
+                  onChange={(e) => onInputChange(e)}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                />
+              </div>
+
+              <div>
+                <Input
+                  label="  Reference Mobile 1"
+                  type="text"
+                  name="vendor_ref_mobile_1"
+                  value={vendor.vendor_ref_mobile_1}
+                  onChange={(e) => onInputChange(e)}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+
+              <div>
+                <Input
+                  label="Reference Name 2"
+                  type="text"
+                  name="vendor_ref_name_2"
+                  value={vendor.vendor_ref_name_2}
+                  onChange={(e) => onInputChange(e)}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+
+              <div>
+                <Input
+                  label="   Reference Mobile 2"
+                  type="text"
+                  name="vendor_ref_mobile_2"
+                  value={vendor.vendor_ref_mobile_2}
+                  onChange={(e) => onInputChange(e)}
+                  className="w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+            </div>
+
+            {/* Status */}
+
+            <FormControl fullWidth>
+              <InputLabel id="service-select-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Status <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="service-select-label"
+                id="service-select"
+                name="vendor_status"
+                value={vendor.vendor_status}
                 onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
+                label="Status *"
                 required
-              />
-            </div>
-
-            {/* Mobile No */}
-            <div>
-              <Input
-                label="Mobile No"
-                type="text"
-                name="vendor_mobile"
-                maxLength={10}
-                minLength={10}
-                value={vendor.vendor_mobile}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <Input
-                label="Email"
-                type="email"
-                name="vendor_email"
-                value={vendor.vendor_email}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* Aadhar No */}
-            <div>
-              <Input
-                label="Aadhar No"
-                type="text"
-                name="vendor_aadhar_no"
-                maxLength={12}
-                minLength={12}
-                value={vendor.vendor_aadhar_no}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-                required
-              />
-            </div>
-
-            {/* GST No */}
-            <div>
-              <Input
-                label="Gst No"
-                type="text"
-                name="vendor_gst_no"
-                maxLength={15}
-                value={vendor.vendor_gst_no}
-                onChange={onInputChange}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-            </div>
-          </div>
-
-          {/* File Uploads */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div>
-              <Input
-                label="Photo"
-                type="file"
-                name="vendor_images"
-                onChange={(e) => setSelectedFile1(e.target.files[0])}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-              <small>{vendor.vendor_images}</small>
-            </div>
-
-            <div>
-              <Input
-                label="  Aadhar Card Front Side"
-                type="file"
-                name="vendor_documents"
-                onChange={(e) => setSelectedFile2(e.target.files[0])}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-              <small>{vendor.vendor_aadhar_front}</small>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 mb-1"></label>
-              <Input
-                label=" Aadhar Card Back Side"
-                type="file"
-                name="vendor_certificates"
-                onChange={(e) => setSelectedFile3(e.target.files[0])}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-              <small>{vendor.vendor_aadhar_back}</small>
-            </div>
-
-            <div>
-              <Input
-                label="GST Certificate"
-                type="file"
-                name="vendor_license"
-                onChange={(e) => setSelectedFile4(e.target.files[0])}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-              <small>{vendor.vendor_aadhar_gst}</small>
-            </div>
-          </div>
-
-          {/* Reference Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Input
-                label="Reference Name 1"
-                type="text"
-                name="vendor_ref_name_1"
-                value={vendor.vendor_ref_name_1}
-                onChange={(e) => onInputChange(e)}
-                className="w-full border border-gray-700 rounded-md p-2"
-              />
-            </div>
-
-            <div>
-              <Input
-                label="  Reference Mobile 1"
-                type="text"
-                name="vendor_ref_mobile_1"
-                value={vendor.vendor_ref_mobile_1}
-                onChange={(e) => onInputChange(e)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-
-            <div>
-              <Input
-                label="Reference Name 2"
-                type="text"
-                name="vendor_ref_name_2"
-                value={vendor.vendor_ref_name_2}
-                onChange={(e) => onInputChange(e)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-
-            <div>
-              <Input
-                label="   Reference Mobile 2"
-                type="text"
-                name="vendor_ref_mobile_2"
-                value={vendor.vendor_ref_mobile_2}
-                onChange={(e) => onInputChange(e)}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-          </div>
-
-          {/* Status */}
-
-          <FormControl fullWidth>
-            <InputLabel id="service-select-label">
-              <span className="text-sm relative bottom-[6px]">
-                Status <span className="text-red-700">*</span>
-              </span>
-            </InputLabel>
-            <Select
-              sx={{ height: "40px", borderRadius: "5px" }}
-              labelId="service-select-label"
-              id="service-select"
-              name="vendor_status"
-              value={vendor.vendor_status}
-              onChange={onInputChange}
-              label="Status *"
-              required
-            >
-              {statusOptions.map((data) => (
-                <MenuItem key={data.value} value={data.value}>
-                  {data.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* service details and adress details  */}
-          <h1 className="text-xl font-semibold mb-4 mt-3">Service Details</h1>
-          <hr className="border-gray-300 mb-4" />
-          {users.map((user, index) => (
-            <div
-              className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4"
-              key={index}
-            >
-              <div className="col-span-3">
-                <FormControl fullWidth>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Service <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="vendor_service"
-                    value={user.vendor_service}
+              >
+                {statusOptions.map((data) => (
+                  <MenuItem key={data.value} value={data.value}>
+                    {data.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {/* service details and adress details  */}
+            <h1 className="text-xl font-semibold mb-4 mt-3">Service Details</h1>
+            <hr className="border-gray-300 mb-4" />
+            {users.map((user, index) => (
+              <div
+                className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4"
+                key={index}
+              >
+                <div className="col-span-3">
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Service <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="vendor_service"
+                      value={user.vendor_service}
+                      onChange={(e) => onChange(e, index)}
+                      label="Service *"
+                      required
+                    >
+                      {servicess.map((servicessdata, key) => (
+                        <MenuItem key={key} value={servicessdata.service}>
+                          {servicessdata.service}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <input
+                    type="hidden"
+                    name="id"
+                    value={user.id}
                     onChange={(e) => onChange(e, index)}
-                    label="Service *"
-                    required
-                  >
-                    {servicess.map((servicessdata, key) => (
-                      <MenuItem key={key} value={servicessdata.service}>
-                        {servicessdata.service}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <input
-                  type="hidden"
-                  name="id"
-                  value={user.id}
-                  onChange={(e) => onChange(e, index)}
-                />
+                  />
+                </div>
+                <div>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="vendor_service_status"
+                      required
+                      value={user.vendor_service_status}
+                      onChange={(e) => onChange(e, index)}
+                      label="Status *"
+                    >
+                      {statusOptions.map((data) => (
+                        <MenuItem key={data.value} value={data.value}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
               </div>
-              <div>
-                <FormControl fullWidth>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Status <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="vendor_service_status"
-                    required
-                    value={user.vendor_service_status}
-                    onChange={(e) => onChange(e, index)}
-                    label="Status *"
-                  >
-                    {statusOptions.map((data) => (
-                      <MenuItem key={data.value} value={data.value}>
-                        {data.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            </div>
-          ))}
-          <h1 className="text-xl font-semibold mb-4">Address Details</h1>
-          <hr className="border-gray-300 mb-4" />
-          {users1.map((user, index) => (
-            <div
-              className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4"
-              key={index}
-            >
-              <div>
-                <Input
-                  label="House/Flat/Plot"
-                  type="text"
-                  name="vendor_branch_flat"
-                  value={user.vendor_branch_flat}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-700 rounded-md p-2"
-                />
-                <input
-                  type="hidden"
-                  name="id"
-                  value={user.id}
-                  onChange={(e) => onChange1(e, index)}
-                />
-              </div>
-              <div>
-                <Input
-                  label="Apartment Building"
-                  type="text"
-                  name="vendor_branch_building"
-                  value={user.vendor_branch_building}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-700 rounded-md p-2"
-                />
-              </div>
-              <div>
-                <Input
-                  label="Landmark"
-                  type="text"
-                  name="vendor_branch_landmark"
-                  value={user.vendor_branch_landmark}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-700 rounded-md p-2"
-                />
-              </div>
-              <div>
-                <Input
-                  label="Street/Location/Village"
-                  type="text"
-                  name="vendor_branch_location"
-                  value={user.vendor_branch_location}
-                  required
-                  disabled
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-700 rounded-md p-2"
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
-              </div>
-              <div>
-                <Input
-                  label="City"
-                  type="text"
-                  name="vendor_branch_city"
-                  required
-                  disabled
-                  value={user.vendor_branch_city}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-700 rounded-md p-2"
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
-              </div>
-              <div>
-                <Input
-                  label="District"
-                  type="text"
-                  name="vendor_branch_district"
-                  required
-                  disabled
-                  value={user.vendor_branch_district}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
-              </div>
-              <div>
-                <Input
-                  label="State"
-                  type="text"
-                  name="vendor_branch_state"
-                  required
-                  disabled
-                  value={user.vendor_branch_state}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
-              </div>
-              <div>
-                <Input
-                  label="Pincode"
-                  type="text"
-                  name="vendor_branch_pincode"
-                  required
-                  disabled
-                  value={user.vendor_branch_pincode}
-                  onChange={(e) => onChange1(e, index)}
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
-              </div>
-              <div>
-                <FormControl fullWidth>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Status <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="vendor_branch_status"
-                    value={user.vendor_branch_status}
+            ))}
+            <h1 className="text-xl font-semibold mb-4">Address Details</h1>
+            <hr className="border-gray-300 mb-4" />
+            {users1.map((user, index) => (
+              <div
+                className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4"
+                key={index}
+              >
+                <div>
+                  <Input
+                    label="House/Flat/Plot"
+                    type="text"
+                    name="vendor_branch_flat"
+                    value={user.vendor_branch_flat}
                     onChange={(e) => onChange1(e, index)}
-                    label="Status *"
+                    className="w-full border border-gray-700 rounded-md p-2"
+                  />
+                  <input
+                    type="hidden"
+                    name="id"
+                    value={user.id}
+                    onChange={(e) => onChange1(e, index)}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Apartment Building"
+                    type="text"
+                    name="vendor_branch_building"
+                    value={user.vendor_branch_building}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-700 rounded-md p-2"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Landmark"
+                    type="text"
+                    name="vendor_branch_landmark"
+                    value={user.vendor_branch_landmark}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-700 rounded-md p-2"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Street/Location/Village"
+                    type="text"
+                    name="vendor_branch_location"
+                    value={user.vendor_branch_location}
                     required
-                  >
-                    {statusOptions.map((data) => (
-                      <MenuItem key={data.value} value={String(data.value)}>
-                        {data.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    disabled
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-700 rounded-md p-2"
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="City"
+                    type="text"
+                    name="vendor_branch_city"
+                    required
+                    disabled
+                    value={user.vendor_branch_city}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-700 rounded-md p-2"
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="District"
+                    type="text"
+                    name="vendor_branch_district"
+                    required
+                    disabled
+                    value={user.vendor_branch_district}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="State"
+                    type="text"
+                    name="vendor_branch_state"
+                    required
+                    disabled
+                    value={user.vendor_branch_state}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Pincode"
+                    type="text"
+                    name="vendor_branch_pincode"
+                    required
+                    disabled
+                    value={user.vendor_branch_pincode}
+                    onChange={(e) => onChange1(e, index)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
+                <div>
+                  <FormControl fullWidth>
+                    <InputLabel id="service-select-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Status <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="service-select-label"
+                      id="service-select"
+                      name="vendor_branch_status"
+                      value={user.vendor_branch_status}
+                      onChange={(e) => onChange1(e, index)}
+                      label="Status *"
+                      required
+                    >
+                      {statusOptions.map((data) => (
+                        <MenuItem key={data.value} value={String(data.value)}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
               </div>
-            </div>
-          ))}
-          {/* <div className="mt-4 text-center">
+            ))}
+            {/* <div className="mt-4 text-center">
             <Button type="submit" className="mr-2 mb-2" onClick={onSubmit}>
               <div className="flex gap-1">
                 <MdSend className="w-4 h-4" />
@@ -694,24 +694,25 @@ const EditVendor = () => {
               </div>
             </Button>
           </div> */}
-          <div className="flex justify-center space-x-4 my-2">
-            <ButtonConfigColor
-              type="edit"
-              buttontype="submit"
-              label="Update"
-              disabled={isButtonDisabled}
-              loading={loading}
-            />
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                disabled={isButtonDisabled}
+                loading={loading}
+              />
 
-            <ButtonConfigColor
-              type="back"
-              buttontype="button"
-              label="Cancel"
-              onClick={() => navigate(-1)}
-            />
-          </div>
-        </form>
-      </div>
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
+            </div>
+          </form>
+        </div>
+      )}
     </Layout>
   );
 };

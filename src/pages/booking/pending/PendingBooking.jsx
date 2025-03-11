@@ -12,6 +12,7 @@ import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
@@ -316,9 +317,9 @@ const PendingBooking = () => {
       setPage(currentPage);
       navigate(`/pending?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = pendingBookData[rowMeta.dataIndex].id;
-      handleView(e,id)()
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
@@ -360,10 +361,9 @@ const PendingBooking = () => {
   return (
     <Layout>
       <BookingFilter />
+
       {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
-        </div>
+        <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable

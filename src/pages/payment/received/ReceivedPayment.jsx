@@ -11,6 +11,7 @@ import MUIDataTable from "mui-datatables";
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ReceivedPayment = () => {
   const [receivedData, setReceivedData] = useState(null);
@@ -63,7 +64,6 @@ const ReceivedPayment = () => {
       }
     };
     fetchReceivedData();
-    setLoading(false);
   }, []);
 
   const handleView = (e, id) => {
@@ -294,8 +294,6 @@ const ReceivedPayment = () => {
         },
       },
     },
-
-    
   ];
   const options = {
     selectableRows: "none",
@@ -314,9 +312,9 @@ const ReceivedPayment = () => {
       setPage(currentPage);
       navigate(`/received-payment?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = receivedData[rowMeta.dataIndex].id;
-      handleView(e,id)()
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
@@ -358,19 +356,18 @@ const ReceivedPayment = () => {
   return (
     <Layout>
       <PaymentFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Payment Received List
-        </h3>
-      </div> */}
-      <div className="mt-1">
-        <MUIDataTable
-          title="Payment Received List"
-          data={receivedData ? receivedData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Payment Received List"
+            data={receivedData ? receivedData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

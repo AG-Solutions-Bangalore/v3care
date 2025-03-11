@@ -1,21 +1,20 @@
 import axios from "axios";
+import { SquarePen } from "lucide-react";
 import MUIDataTable from "mui-datatables";
 import React, { useContext, useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { SquarePen } from "lucide-react";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import { TfiReload } from "react-icons/tfi";
 
 const ReferByMaster = () => {
   const [referData, setReferData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   //
@@ -44,12 +43,13 @@ const ReferByMaster = () => {
 
   useEffect(() => {
     const fetchReferData = async () => {
+      setLoading(true);
+
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-referby-list`,
@@ -190,14 +190,19 @@ const ReferByMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="mt-1">
-        <MUIDataTable
-          title="Refer By List"
-          data={referData ? referData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Refer By List"
+            data={referData ?? []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

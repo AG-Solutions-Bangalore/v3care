@@ -91,13 +91,14 @@ import ViewPendingDownload from "./pages/download/pending/ViewPendingDownload";
 import ViewReceivedDownload from "./pages/download/received/ViewReceivedDownload";
 import AllBookingDownload from "./pages/download/allBooking/AllBookingDownload";
 import ViewAllBooking from "./pages/download/allBooking/ViewAllBooking";
+import DisableRightClick from "./components/common/DisabledRightClick";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
   return (
     <>
       <ToastContainer />
-
+      <DisableRightClick />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />

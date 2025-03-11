@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
@@ -67,7 +68,6 @@ const VendorList = () => {
       }
     };
     fetchVendorListData();
-    setLoading(false);
   }, []);
 
   const handleActivate = async (e, id) => {
@@ -313,14 +313,18 @@ const VendorList = () => {
   };
   return (
     <Layout>
-      <div className="mt-5">
-        <MUIDataTable
-          title="Vendor List"
-          data={vendorListData ? vendorListData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            title="Vendor List"
+            data={vendorListData ? vendorListData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

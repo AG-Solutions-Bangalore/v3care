@@ -14,6 +14,7 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const BackhandTeamMaster = () => {
   const [BackhandData, setBackhandData] = useState(null);
@@ -68,7 +69,6 @@ const BackhandTeamMaster = () => {
       }
     };
     fetchBackhadnData();
-    setLoading(false);
   }, []);
 
   const toogleViewBackhand =
@@ -112,34 +112,12 @@ const BackhandTeamMaster = () => {
                   <title>Booking Info</title>
                 </SquarePen>
               )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/backhand-team-view/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
-              {/* <div
-                onClick={toogleViewBackhand(true, id)}
-                className="flex items-center space-x-2"
-                title="View"
-              >
-                <MdOutlineRemoveRedEye className="h-5 w-5 cursor-pointer" />
-              </div> */}
             </div>
           );
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "branch_name",
       label: "Branch",
@@ -253,15 +231,19 @@ const BackhandTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Backhand Team List"
+            data={BackhandData ? BackhandData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
 
-      <div className="mt-1">
-        <MUIDataTable
-          title="Backhand Team List"
-          data={BackhandData ? BackhandData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
       <SwipeableDrawer
         anchor="right"
         open={backhandDrawer}

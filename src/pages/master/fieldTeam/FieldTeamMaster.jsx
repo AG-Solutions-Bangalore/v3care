@@ -14,6 +14,7 @@ import FieldTeamViewMaster from "./FieldTeamViewMaster";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
@@ -68,7 +69,6 @@ const FieldTeamMaster = () => {
       }
     };
     fetchFieldData();
-    setLoading(false);
   }, []);
 
   const toogleViewServiceSub =
@@ -227,15 +227,18 @@ const FieldTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-
-      <div className="mt-1">
-        <MUIDataTable
-          title="Field Team List"
-          data={fieldTeamData ? fieldTeamData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Field Team List"
+            data={fieldTeamData ? fieldTeamData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
 
       <SwipeableDrawer
         anchor="right"

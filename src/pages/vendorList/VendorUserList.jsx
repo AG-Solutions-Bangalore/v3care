@@ -1,19 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { useParams } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSquarePlus } from "react-icons/ci";
-import Moment from "moment";
-import { ContextPanel } from "../../utils/ContextPanel";
-import BASE_URL from "../../base/BaseUrl";
+import React, { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import BASE_URL from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import { ContextPanel } from "../../utils/ContextPanel";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 const VendorUserList = () => {
   const { id } = useParams();
   const [vendorUserList, setVendorUserList] = useState(null);
@@ -51,12 +47,8 @@ const VendorUserList = () => {
       }
     };
     fetchUserVendorListData();
-    setLoading(false);
   }, []);
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(`/vendor-list?page=${pageNo}`);
-  };
+
   const columns = [
     {
       name: "name",
@@ -135,14 +127,17 @@ const VendorUserList = () => {
           )
         }
       />
-
-      <div className="mt-5">
-        <MUIDataTable
-          data={vendorUserList ? vendorUserList : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-5">
+          <MUIDataTable
+            data={vendorUserList ? vendorUserList : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

@@ -12,6 +12,7 @@ import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const TomorrowBooking = () => {
   const [tomBookingData, setTomBookingData] = useState(null);
@@ -91,13 +92,11 @@ const TomorrowBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-              
                   onClick={(e) => handleEdit(e, id)}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-         
             </div>
           );
         },
@@ -228,10 +227,10 @@ const TomorrowBooking = () => {
       setPage(currentPage);
       navigate(`/tomorrow?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = tomBookingData[rowMeta.dataIndex].id;
-     
-      handleView(e,id)()
+
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       const orderStatus = rowData[12];
@@ -298,9 +297,7 @@ const TomorrowBooking = () => {
     <Layout>
       <BookingFilter />
       {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
-        </div>
+        <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable

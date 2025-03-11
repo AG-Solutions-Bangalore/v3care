@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "axios": "^1.7.5",
+    "framer-motion": "^12.4.12",
     "html2pdf.js": "^0.10.2",
     "lucide-react": "^0.456.0",
     "moment": "^2.30.1",

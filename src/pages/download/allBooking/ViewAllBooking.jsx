@@ -8,6 +8,7 @@ import { Button } from "@material-tailwind/react";
 import { useReactToPrint } from "react-to-print";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ViewAllBooking = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -79,9 +80,7 @@ const ViewAllBooking = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex justify-center items-center mt-5 h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500"></div>
-        </div>
+        <LoaderComponent />
       </Layout>
     );
   }

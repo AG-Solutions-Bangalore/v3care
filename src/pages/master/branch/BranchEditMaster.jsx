@@ -20,6 +20,7 @@ import { MdArrowBack, MdSend } from "react-icons/md";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
@@ -40,6 +41,7 @@ const BranchEditMaster = () => {
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
 
   const onInputChange = (e) => {
     setBranch({
@@ -50,6 +52,8 @@ const BranchEditMaster = () => {
 
   useEffect(() => {
     const fetchBranchData = async () => {
+      setFetchLoading(true);
+
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -68,6 +72,8 @@ const BranchEditMaster = () => {
         setBranch(response.data?.branch);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
+      } finally {
+        setFetchLoading(false);
       }
     };
     fetchBranchData();
@@ -120,72 +126,74 @@ const BranchEditMaster = () => {
       <MasterFilter />
       <div className="container mx-auto">
         <PageHeader title={" Edit Branch"} onClick={handleBack} />
+        {fetchloading ? (
+          <LoaderComponent />
+        ) : (
+          <Card className="p-6 mt-6">
+            <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Branch Name */}
+                <div className="form-group">
+                  <Input
+                    label="Branch"
+                    type="text"
+                    name="branch_name"
+                    value={branch.branch_name}
+                    onChange={onInputChange}
+                    required
+                    disabled
+                    labelProps={{
+                      className: "!text-gray-600 ",
+                    }}
+                  />
+                </div>
 
-        <Card className="p-6 mt-6">
-          <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Branch Name */}
-              <div className="form-group">
-                <Input
-                  label="Branch"
-                  type="text"
-                  name="branch_name"
-                  value={branch.branch_name}
-                  onChange={onInputChange}
-                  required
-                  disabled
-                  labelProps={{
-                    className: "!text-gray-600 ",
-                  }}
-                />
+                {/* Branch Status */}
+
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="branch_status"
+                    value={branch.branch_status}
+                    onChange={onInputChange}
+                    label="Status *"
+                    required
+                  >
+                    {status.map((data) => (
+                      <MenuItem key={data.value} value={String(data.value)}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
 
-              {/* Branch Status */}
+              <div className="flex justify-center space-x-4 my-2">
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Update"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                />
 
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Status <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="branch_status"
-                  value={branch.branch_status}
-                  onChange={onInputChange}
-                  label="Status *"
-                  required
-                >
-                  {status.map((data) => (
-                    <MenuItem key={data.value} value={String(data.value)}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-           
-            <div className="flex justify-center space-x-4 my-2">
-              <ButtonConfigColor
-                type="edit"
-                buttontype="submit"
-                label="Update"
-                disabled={isButtonDisabled}
-                loading={loading}
-              />
-
-              <ButtonConfigColor
-                type="back"
-                buttontype="button"
-                label="Cancel"
-                onClick={handleBack}
-              />
-            </div>
-          </form>
-        </Card>
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={handleBack}
+                />
+              </div>
+            </form>
+          </Card>
+        )}
       </div>
     </Layout>
   );

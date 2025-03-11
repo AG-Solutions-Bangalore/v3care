@@ -11,6 +11,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const PendingCommission = () => {
   const [PendingCommissionData, setPendingCommissionData] = useState(null);
@@ -63,16 +64,13 @@ const PendingCommission = () => {
       }
     };
     fetchPendingComData();
-    setLoading(false);
   }, []);
-
-
 
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-commission-view/${id}`)
+    navigate(`/pending-commission-view/${id}`);
   };
   const columns = [
     {
@@ -236,7 +234,7 @@ const PendingCommission = () => {
     },
     {
       name: "service_commision",
-      label: "Service/Commission",
+      label: "Service/Commission(%)",
       options: {
         filter: false,
         sort: false,
@@ -252,8 +250,6 @@ const PendingCommission = () => {
         },
       },
     },
-
-    
   ];
   const options = {
     selectableRows: "none",
@@ -270,65 +266,64 @@ const PendingCommission = () => {
       setPage(currentPage);
       navigate(`/commission-pending?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = PendingCommissionData[rowMeta.dataIndex].id;
-     
-      handleView(e,id)()
+
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
-          cursor:'pointer',
+          cursor: "pointer",
         },
       };
     },
-      customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
-          return (
-            <div className="flex justify-end items-center p-4">
-              <span className="mx-4">
-                <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
-                {Math.ceil(count / rowsPerPage)}
-              </span>
-              <IoIosArrowBack
-                onClick={page === 0 ? null : () => changePage(page - 1)}
-                className={`w-6 h-6 cursor-pointer ${
-                  page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
-                }  hover:text-red-600`}
-              />
-              <IoIosArrowForward
-                onClick={
-                  page >= Math.ceil(count / rowsPerPage) - 1
-                    ? null
-                    : () => changePage(page + 1)
-                }
-                className={`w-6 h-6 cursor-pointer ${
-                  page >= Math.ceil(count / rowsPerPage) - 1
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-blue-600"
-                }  hover:text-red-600`}
-              />
-            </div>
-          );
-        },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
+    },
   };
 
   return (
     <Layout>
       <CommissionFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Commission Pending List
-        </h3>
-      </div> */}
-      <div className="mt-1">
-        <MUIDataTable
-          title="Commission Pending List"
-          data={PendingCommissionData ? PendingCommissionData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Commission Pending List"
+            data={PendingCommissionData ? PendingCommissionData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

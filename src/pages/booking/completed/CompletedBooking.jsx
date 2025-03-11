@@ -11,31 +11,32 @@ import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const CompletedBooking = () => {
   const [CompletedBookData, setCompletedBookData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-   const location = useLocation();
-    const [page, setPage] = useState(0);
-    const rowsPerPage = 10;
-    const searchParams = new URLSearchParams(location.search);
-    const pageParam = searchParams.get("page");
-    useEffect(() => {
-      if (pageParam) {
-        setPage(parseInt(pageParam) - 1);
+  const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+  useEffect(() => {
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/completed?page=${storedPageNo}`);
       } else {
-        const storedPageNo = localStorage.getItem("page-no");
-        if (storedPageNo) {
-          setPage(parseInt(storedPageNo) - 1);
-          navigate(`/completed?page=${storedPageNo}`);
-        } else {
-          localStorage.setItem("page-no", 1);
-          setPage(0);
-        }
+        localStorage.setItem("page-no", 1);
+        setPage(0);
       }
-    }, [location]);
+    }
+  }, [location]);
   UseEscapeKey();
   useEffect(() => {
     const fetchCompletedData = async () => {
@@ -391,55 +392,53 @@ const CompletedBooking = () => {
       setPage(currentPage);
       navigate(`/completed?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta,e) => {
+    onRowClick: (rowData, rowMeta, e) => {
       const id = CompletedBookData[rowMeta.dataIndex].id;
-      handleView(e,id)()
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
-          cursor: "pointer", 
+          cursor: "pointer",
         },
       };
     },
-      customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
-          return (
-            <div className="flex justify-end items-center p-4">
-              <span className="mx-4">
-                <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
-                {Math.ceil(count / rowsPerPage)}
-              </span>
-              <IoIosArrowBack
-                onClick={page === 0 ? null : () => changePage(page - 1)}
-                className={`w-6 h-6 cursor-pointer ${
-                  page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
-                }  hover:text-red-600`}
-              />
-              <IoIosArrowForward
-                onClick={
-                  page >= Math.ceil(count / rowsPerPage) - 1
-                    ? null
-                    : () => changePage(page + 1)
-                }
-                className={`w-6 h-6 cursor-pointer ${
-                  page >= Math.ceil(count / rowsPerPage) - 1
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-blue-600"
-                }  hover:text-red-600`}
-              />
-            </div>
-          );
-        },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
+    },
   };
 
   return (
     <Layout>
       <BookingFilter />
       {loading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-10 w-10" color="red" />
-        </div>
+        <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable

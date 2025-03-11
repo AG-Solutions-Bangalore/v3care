@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import React, { useContext, useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import BASE_URL from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
@@ -63,7 +63,6 @@ const ServicePriceMaster = () => {
       }
     };
     fetchServicePriceData();
-    setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -95,17 +94,7 @@ const ServicePriceMaster = () => {
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "service",
       label: "Service",
@@ -181,12 +170,6 @@ const ServicePriceMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            // <Link
-            //   to="/add-service-price"
-            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            // >
-            //   + Service Price
-            // </Link>
             <ButtonConfigColor
               type="create"
               label="Service Price"
@@ -228,14 +211,18 @@ const ServicePriceMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <div className="mt-1">
-        <MUIDataTable
-          title="Service Price List"
-          data={servicePriceData ? servicePriceData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Service Price List"
+            data={servicePriceData ? servicePriceData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
     </Layout>
   );
 };

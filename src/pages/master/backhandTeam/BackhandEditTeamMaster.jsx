@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -32,6 +33,7 @@ const status = [
 const BackhandEditTeamMaster = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
 
   const [team, setTeam] = useState({
     name: "",
@@ -68,15 +70,24 @@ const BackhandEditTeamMaster = () => {
   };
 
   useEffect(() => {
+    setFetchLoading(true); // Start loading
+
     axios({
       url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    }).then((res) => {
-      setTeam(res.data.adminUser);
-    });
+    })
+      .then((res) => {
+        setTeam(res.data.adminUser);
+      })
+      .catch((error) => {
+        console.error("Error fetching admin user data:", error);
+      })
+      .finally(() => {
+        setFetchLoading(false);
+      });
   }, [id]);
   const handleBack = (e) => {
     e.preventDefault();
@@ -139,161 +150,164 @@ const BackhandEditTeamMaster = () => {
     <Layout>
       <MasterFilter />
       <PageHeader title={"Edit Backhand Team"} onClick={handleBack} />
+      {fetchloading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="container mx-auto ">
+          <Card className="p-6 mt-2">
+            <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
+                {/* Full Name Field */}
+                <div>
+                  <Input
+                    label="Full Name"
+                    type="text"
+                    name="name"
+                    value={team.name}
+                    onChange={onInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
+                  />
+                </div>
 
-      <div className="container mx-auto ">
-        <Card className="p-6 mt-2">
-          <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
-              {/* Full Name Field */}
-              <div>
-                <Input
-                  label="Full Name"
-                  type="text"
-                  name="name"
-                  value={team.name}
-                  onChange={onInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
+                {/* Mobile No Field */}
+                <div>
+                  <Input
+                    label="Mobile No"
+                    type="text"
+                    name="mobile"
+                    value={team.mobile}
+                    onChange={onInputChange}
+                    maxLength={10}
+                    minLength={10}
+                    required
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+
+                {/* Email Field */}
+                <div>
+                  <Input
+                    label="Email Id"
+                    type="email"
+                    required
+                    name="email"
+                    value={team.email}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+
+                {/* Aadhar No Field */}
+                <div>
+                  <Input
+                    label="Aadhar No"
+                    type="text"
+                    name="user_aadhar_no"
+                    value={team.user_aadhar_no}
+                    onChange={onInputChange}
+                    maxLength={12}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+
+                {/* Aadhar File Upload */}
+
+                <div>
+                  <Input
+                    label="Aadhar File"
+                    type="file"
+                    name="user_aadhar"
+                    onChange={(e) => setSelectedFile1(e.target.files[0])}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                  />
+                  <small className="text-gray-500">{team.user_aadhar}</small>
+                </div>
+
+                {/* Pancard No Field */}
+                <div>
+                  <Input
+                    label="Pancard No"
+                    type="text"
+                    name="user_pancard_no"
+                    value={team.user_pancard_no}
+                    onChange={onInputChange}
+                    maxLength={10}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+
+                {/* Pancard File Upload */}
+
+                <div>
+                  <Input
+                    label="Pancard File"
+                    type="file"
+                    name="user_pancard"
+                    onChange={(e) => setSelectedFile2(e.target.files[0])}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                  <small className="text-gray-500">{team.user_pancard}</small>
+                </div>
+
+                {/* Status Dropdown */}
+
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Status <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="status"
+                    value={team.status}
+                    onChange={onInputChange}
+                    label="Status *"
+                    required
+                  >
+                    {status.map((data) => (
+                      <MenuItem key={data.value} value={data.value}>
+                        {data.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Remarks Field */}
+
+                <div className="col-span-3">
+                  <Textarea
+                    label="Remarks"
+                    name="remarks"
+                    value={team.remarks}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  ></Textarea>
+                </div>
+              </div>
+              <div className="flex justify-center space-x-4 my-2">
+                <ButtonConfigColor
+                  type="edit"
+                  buttontype="submit"
+                  label="Update"
+                  disabled={isButtonDisabled}
+                  loading={loading}
+                />
+
+                <ButtonConfigColor
+                  type="back"
+                  buttontype="button"
+                  label="Cancel"
+                  onClick={() => navigate(-1)}
                 />
               </div>
-
-              {/* Mobile No Field */}
-              <div>
-                <Input
-                  label="Mobile No"
-                  type="text"
-                  name="mobile"
-                  value={team.mobile}
-                  onChange={onInputChange}
-                  maxLength={10}
-                  minLength={10}
-                  required
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                />
-              </div>
-
-              {/* Email Field */}
-              <div>
-                <Input
-                  label="Email Id"
-                  type="email"
-                  required
-                  name="email"
-                  value={team.email}
-                  onChange={onInputChange}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                />
-              </div>
-
-              {/* Aadhar No Field */}
-              <div>
-                <Input
-                  label="Aadhar No"
-                  type="text"
-                  name="user_aadhar_no"
-                  value={team.user_aadhar_no}
-                  onChange={onInputChange}
-                  maxLength={12}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                />
-              </div>
-
-              {/* Aadhar File Upload */}
-
-              <div>
-                <Input
-                  label="Aadhar File"
-                  type="file"
-                  name="user_aadhar"
-                  onChange={(e) => setSelectedFile1(e.target.files[0])}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
-                />
-                <small className="text-gray-500">{team.user_aadhar}</small>
-              </div>
-
-              {/* Pancard No Field */}
-              <div>
-                <Input
-                  label="Pancard No"
-                  type="text"
-                  name="user_pancard_no"
-                  value={team.user_pancard_no}
-                  onChange={onInputChange}
-                  maxLength={10}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                />
-              </div>
-
-              {/* Pancard File Upload */}
-
-              <div>
-                <Input
-                  label="Pancard File"
-                  type="file"
-                  name="user_pancard"
-                  onChange={(e) => setSelectedFile2(e.target.files[0])}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                />
-                <small className="text-gray-500">{team.user_pancard}</small>
-              </div>
-
-              {/* Status Dropdown */}
-
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Status <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="status"
-                  value={team.status}
-                  onChange={onInputChange}
-                  label="Status *"
-                  required
-                >
-                  {status.map((data) => (
-                    <MenuItem key={data.value} value={data.value}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Remarks Field */}
-
-              <div className="col-span-3">
-                <Textarea
-                  label="Remarks"
-                  name="remarks"
-                  value={team.remarks}
-                  onChange={onInputChange}
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                ></Textarea>
-              </div>
-            </div>
-            <div className="flex justify-center space-x-4 my-2">
-              <ButtonConfigColor
-                type="edit"
-                buttontype="submit"
-                label="Update"
-                disabled={isButtonDisabled}
-                loading={loading}
-              />
-
-              <ButtonConfigColor
-                type="back"
-                buttontype="button"
-                label="Cancel"
-                onClick={() => navigate(-1)}
-              />
-            </div>
-          </form>
-        </Card>
-      </div>
+            </form>
+          </Card>
+        </div>
+      )}
     </Layout>
   );
 };
