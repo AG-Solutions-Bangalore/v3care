@@ -9,8 +9,8 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import axios from "axios";
-import toast from "react-hot-toast";
 import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "react-toastify";
 
 const JobCard = ({ title, value, icon: Icon, status }) => {
   // Helper function to determine status colors
