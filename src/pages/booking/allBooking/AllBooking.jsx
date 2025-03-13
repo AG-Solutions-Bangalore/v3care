@@ -112,7 +112,7 @@ const AllBooking = () => {
   const handleOpenModal = (orderRef) => {
     setSelectedOrderRef(orderRef);
     setIsModalOpen(true);
-    fetchAssignmentData(orderRef);
+    // fetchAssignmentData(orderRef);
   };
 
   const handleCloseModal = () => {
@@ -157,7 +157,11 @@ const AllBooking = () => {
 
         setAllBookingData(response.data?.booking);
         setFilteredBookingData(response.data?.booking);
-
+        response.data?.booking.forEach((item) => {
+          if (item.order_no_assign > 0) {
+            fetchAssignmentData(item.order_ref);
+          }
+        });
         // Extract unique dates, convert to YYYY-MM-DD for sorting
         const dates = [
           ...new Set(
