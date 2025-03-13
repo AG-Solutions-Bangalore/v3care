@@ -1,25 +1,34 @@
 import React from "react";
 import { motion } from "framer-motion";
 import logo from "../../../public/img/v3logo.png";
+
 const LoaderComponent = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[550px] bg-gray-100">
       <motion.div
-        initial={{ x: -20 }}
-        animate={{ x: 20 }}
+        initial={{ scale: 0.8, opacity: 0.6 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{
           repeat: Infinity,
-          repeatType: "reverse",
-          duration: 0.6,
+          repeatType: "mirror",
+          duration: 1.2,
           ease: "easeInOut",
         }}
       >
-        {/* <span className="text-6xl">🧹</span> */}
-        <img src={logo} className="w-42 h-40"/>
+        <img src={logo} className="w-42 h-40 drop-shadow-lg" alt="Loading" />
       </motion.div>
-      <p className="mt-4 text-gray-600 font-medium text-lg">
-        Loading in progress...
-      </p>
+      <motion.p
+        className="mt-4 text-gray-700 font-semibold text-lg"
+        initial={{ opacity: 0.4 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          repeat: Infinity,
+          duration: 1.5,
+          ease: "easeInOut",
+        }}
+      >
+        Please wait, loading...
+      </motion.p>
     </div>
   );
 };

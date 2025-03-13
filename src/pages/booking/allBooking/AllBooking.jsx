@@ -29,7 +29,8 @@ const AllBooking = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-  const getDate = localStorage.getItem("AllBookingDate");
+  const [uniqueDates, setUniqueDates] = useState([]);
+  const [uniqueDate, setUniqueDate] = useState([]);
 
   useEffect(() => {
     if (pageParam) {
@@ -118,6 +119,30 @@ const AllBooking = () => {
     setIsModalOpen(false);
     setSelectedOrderRef(null);
   };
+  // useEffect(() => {
+  //   const fetchTodayData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const token = localStorage.getItem("token");
+  //       const response = await axios.get(
+  //         `${BASE_URL}/api/panel-fetch-booking-list-all`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       setAllBookingData(response.data?.booking);
+  //       setFilteredBookingData(response.data?.booking);
+  //     } catch (error) {
+  //       console.error("Error fetching dashboard data", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchTodayData();
+  // }, []);
   useEffect(() => {
     const fetchTodayData = async () => {
       try {
@@ -126,22 +151,58 @@ const AllBooking = () => {
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-booking-list-all`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
         setAllBookingData(response.data?.booking);
         setFilteredBookingData(response.data?.booking);
+
+        // Extract unique dates, convert to YYYY-MM-DD for sorting
+        const dates = [
+          ...new Set(
+            response.data?.booking.map((item) =>
+              Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+            )
+          ),
+        ].sort(
+          (a, b) =>
+            Moment(b, "YYYY-MM-DD").valueOf() -
+            Moment(a, "YYYY-MM-DD").valueOf()
+        );
+        const date = [
+          ...new Set(
+            response.data?.booking.map((item) =>
+              Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+            )
+          ),
+        ].sort(
+          (a, b) =>
+            Moment(b, "YYYY-MM-DD").valueOf() -
+            Moment(a, "YYYY-MM-DD").valueOf()
+        );
+
+        // Convert back to DD-MM-YYYY format after sorting
+        const formattedDates = dates.map((date) =>
+          Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+        );
+        // Convert back to DD-MM-YYYY format after sorting
+        const formattedDate = date.map((date) =>
+          Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+        );
+
+        setUniqueDates(formattedDates);
+        setUniqueDate(formattedDate);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchTodayData();
   }, []);
+
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -257,6 +318,21 @@ const AllBooking = () => {
       },
     },
     //6
+    // {
+    //   name: "order_date",
+    //   label: "Booking Date",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     display: "exclude",
+    //     viewColumns: false,
+
+    //     searchable: true,
+    //     customBodyRender: (value) => {
+    //       return Moment(value).format("DD-MM-YYYY");
+    //     },
+    //   },
+    // },
     {
       name: "order_date",
       label: "Booking Date",
@@ -265,13 +341,22 @@ const AllBooking = () => {
         sort: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
+
+        filterOptions: {
+          names: [...uniqueDates]
+            .map((date) => Moment(date, "DD-MM-YYYY"))
+            .sort((a, b) => b.valueOf() - a.valueOf())
+            .map((date) => date.format("YYYY-MM-DD"))
+            .reverse(),
+
+          fullWidth: true,
+          renderValue: (value) =>
+            Moment(value, "YYYY-MM-DD").format("DD-MMM-YYYY"),
         },
       },
     },
+
     //7
     {
       name: "order_service_date",
@@ -283,8 +368,15 @@ const AllBooking = () => {
         searchable: true,
         viewColumns: false,
 
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
+        filterOptions: {
+          names: [...uniqueDate]
+            .map((date) => Moment(date, "DD-MM-YYYY"))
+            .sort((a, b) => b.valueOf() - a.valueOf())
+            .map((date) => date.format("YYYY-MM-DD"))
+            .reverse(),
+          fullWidth: true,
+          renderValue: (value) =>
+            Moment(value, "YYYY-MM-DD").format("DD-MMM-YYYY"),
         },
       },
     },
@@ -587,6 +679,7 @@ const AllBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
+
     onRowClick: (rowData, rowMeta, e) => {
       const id = allBookingData[rowMeta.dataIndex].id;
 
