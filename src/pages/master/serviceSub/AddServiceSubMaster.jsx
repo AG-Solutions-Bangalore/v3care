@@ -85,7 +85,7 @@ const AddServiceSubMaster = () => {
       },
     }).then((res) => {
       if (res.data.code == "200") {
-        toast.success(res.data?.msg  || "Service sub Create succesfull");
+        toast.success(res.data?.msg || "Service sub Create succesfull");
 
         setServices({
           service_id: "",
@@ -120,7 +120,7 @@ const AddServiceSubMaster = () => {
                 {serdata.map((ser) => (
                   <SelectOption
                     key={ser.id}
-                    value={ser.id}
+                    value={ser.id.toString()}
                     selected={services.service_id === ser.id}
                   >
                     {ser.service}

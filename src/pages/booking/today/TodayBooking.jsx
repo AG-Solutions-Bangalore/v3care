@@ -72,7 +72,7 @@ const TodayBooking = () => {
   const handleOpenModal = (orderRef) => {
     setSelectedOrderRef(orderRef);
     setIsModalOpen(true);
-    fetchAssignmentData(orderRef);
+    // fetchAssignmentData(orderRef);
   };
 
   const handleCloseModal = () => {
@@ -95,11 +95,11 @@ const TodayBooking = () => {
 
         setTodayBookingData(response.data?.booking);
 
-        // response.data?.booking.forEach((item) => {
-        //   if (item.order_no_assign > 0) {
-        //     fetchAssignmentData(item.order_ref);
-        //   }
-        // });
+        response.data?.booking.forEach((item) => {
+          if (item.order_no_assign > 0) {
+            fetchAssignmentData(item.order_ref);
+          }
+        });
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {

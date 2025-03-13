@@ -157,8 +157,13 @@ const AddBooking = () => {
   }, []);
 
   const [serdatasub, setSerDataSub] = useState([]);
+
   useEffect(() => {
-    var theLoginToken = localStorage.getItem("token");
+    if (!booking.order_service) return; // Exit if undefined or null
+
+    console.log("Fetching data for:", booking.order_service);
+
+    const theLoginToken = localStorage.getItem("token");
 
     const requestOptions = {
       method: "GET",
@@ -166,12 +171,14 @@ const AddBooking = () => {
         Authorization: "Bearer " + theLoginToken,
       },
     };
+
     fetch(
-      baseURL + "/panel-fetch-service-sub/" + booking.order_service,
+      `${baseURL}/panel-fetch-service-sub/${booking.order_service}`,
       requestOptions
     )
       .then((response) => response.json())
-      .then((data) => setSerDataSub(data.servicesub));
+      .then((data) => setSerDataSub(data.servicesub))
+      .catch((error) => console.error("Fetch error:", error));
   }, [booking.order_service]);
 
   const [pricedata, setPriceData] = useState([]);

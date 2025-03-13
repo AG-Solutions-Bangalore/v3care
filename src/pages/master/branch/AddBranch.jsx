@@ -102,7 +102,6 @@ const AddBranch = () => {
                 fullWidth
                 label="Branch Name"
                 required
-                multiline
                 name="branch_name"
                 value={branch.branch_name}
                 onChange={onInputChange}

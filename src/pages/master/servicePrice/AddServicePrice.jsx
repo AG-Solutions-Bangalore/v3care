@@ -59,6 +59,8 @@ const AddServicePrice = () => {
   }, []);
 
   useEffect(() => {
+    if (!services.service_id) return; // Exit if undefined or null
+
     const fetchServicepricedData = async () => {
       try {
         if (!isPanelUp) {
@@ -132,7 +134,7 @@ const AddServicePrice = () => {
         });
         navigate("/service-price");
       } else {
-     toast.error(res.data?.msg || "Duplicate Entery ");
+        toast.error(res.data?.msg || "Duplicate Entery ");
       }
     });
     setIsButtonDisabled(false);

@@ -83,7 +83,6 @@ const AddReferBy = () => {
           <div className="grid grid-cols-1 gap-6 mb-6">
             <div className="form-group">
               <Input
-                fullWidth
                 label="Refer By"
                 required
                 name="refer_by"

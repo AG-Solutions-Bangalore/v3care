@@ -119,6 +119,7 @@ const ServicePriceEditMaster = () => {
   }, []);
 
   useEffect(() => {
+
     if (services.service_id) {
       const fetchServiceSubOptions = async () => {
         try {

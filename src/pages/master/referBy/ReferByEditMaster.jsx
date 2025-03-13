@@ -150,7 +150,7 @@ const ReferByEditMaster = () => {
 
                 {/* Branch Status */}
 
-                <FormControl fullWidth>
+                <FormControl >
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">
                       Status <span className="text-red-700">*</span>

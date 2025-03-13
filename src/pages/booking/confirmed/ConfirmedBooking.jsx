@@ -71,7 +71,7 @@ const ConfirmedBooking = () => {
   const handleOpenModal = (orderRef) => {
     setSelectedOrderRef(orderRef);
     setIsModalOpen(true);
-    fetchAssignmentData(orderRef);
+    // fetchAssignmentData(orderRef);
   };
 
   const handleCloseModal = () => {
@@ -99,11 +99,11 @@ const ConfirmedBooking = () => {
         setConfirmBookData(response.data?.booking);
 
         //  here we are fecthing only those element those order no assign is greater than 0
-        // response.data?.booking.forEach((item) => {
-        //   if (item.order_no_assign > 0) {
-        //     fetchAssignmentData(item.order_ref);
-        //   }
-        // });
+        response.data?.booking.forEach((item) => {
+          if (item.order_no_assign > 0) {
+            fetchAssignmentData(item.order_ref);
+          }
+        });
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
