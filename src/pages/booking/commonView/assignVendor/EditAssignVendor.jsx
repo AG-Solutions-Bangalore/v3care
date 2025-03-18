@@ -87,7 +87,7 @@ const EditAssignVendor = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading when submitting
+    setLoading(true); 
 
     let data = {
       order_user_id: bookingUser.order_user_id,
@@ -98,6 +98,7 @@ const EditAssignVendor = () => {
     };
 
     try {
+      const token = localStorage.getItem('token')
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-booking-assign-vendor/${id}`,
         data,
@@ -110,12 +111,13 @@ const EditAssignVendor = () => {
 
       if (response.data.code == "200") {
         toast.success(response.data?.msg || "Assign Vendor Updated Successfully");
-        navigate(`/booking-assign/${vendorBook}`);
+        navigate(-1);
       } else {
         toast.error(response.data?.msg || "Failed to update Assign Vendor");
       }
     } catch (error) {
       toast.error("An error occurred while updating");
+      console.error("An error occurred while updating",error);
     } finally {
       setLoading(false);
     }
@@ -208,7 +210,7 @@ const EditAssignVendor = () => {
             <button
               className=" p-1 text-center   mb-2 text-white"
               type="submit"
-              onClick={onSubmit}
+            
             >
               Update
             </button>
