@@ -92,6 +92,7 @@ import ViewReceivedDownload from "./pages/download/received/ViewReceivedDownload
 import AllBookingDownload from "./pages/download/allBooking/AllBookingDownload";
 import ViewAllBooking from "./pages/download/allBooking/ViewAllBooking";
 import DisableRightClick from "./components/common/DisabledRightClick";
+import YesterdayBooking from "./pages/booking/yesterday/YesterdayBooking";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -154,6 +155,7 @@ const App = () => {
             <Route path="/pending" element={<PendingBooking />} />
             <Route path="/rnr" element={<RnrList />} />
             <Route path="/today" element={<TodayBooking />} />
+            <Route path="/yesterday" element={<YesterdayBooking />} />
             <Route path="/tomorrow" element={<TomorrowBooking />} />
             <Route path="/vendor-job" element={<VendorJobBooking />} />
             <Route path="/all-booking" element={<AllBooking />} />

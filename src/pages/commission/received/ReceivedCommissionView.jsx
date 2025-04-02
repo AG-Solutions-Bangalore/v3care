@@ -122,6 +122,9 @@ const ReceivedCommissionView = () => {
               <Typography className="text-black">
                 <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
+              <Typography className="text-black">
+                <strong>Total Amount:</strong> {booking.order_amount}
+              </Typography>
             </div>
             <div className="space-y-2">
               <Typography className="text-black">
@@ -145,7 +148,7 @@ const ReceivedCommissionView = () => {
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
               </Typography>
               <Typography className="text-black">
-                <strong>Commission(%):</strong> {booking.order_comm}
+                <strong>Comm. (%)/Amount:</strong> {booking.order_comm_percentage}% / {booking.order_comm}
               </Typography>
             </div>
             <div className="space-y-2">

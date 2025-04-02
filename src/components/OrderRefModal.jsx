@@ -84,26 +84,28 @@ const OrderRefModal = ({ isOpen, onClose, orderRef }) => {
               </tr>
             </thead>
             <tbody>
-              {orderRefData?.map((dataSumm, key) => (
-                <tr key={key} className="hover:bg-gray-100">
-                  <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
-                    {dataSumm.name}
-                  </td>
-                  <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
-                    {dataSumm.order_start_time}
-                  </td>
-                  <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
-                    {dataSumm.order_way_time}
-                  </td>
-                  <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
-                    {dataSumm.order_end_time}
-                  </td>
-                  <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
-                    {dataSumm.order_assign_status}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {orderRefData
+    ?.filter(dataSumm => dataSumm.order_assign_status === "Pending")
+    .map((dataSumm, key) => (
+      <tr key={key} className="hover:bg-gray-100">
+        <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
+          {dataSumm.name}
+        </td>
+        <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
+          {dataSumm.order_start_time}
+        </td>
+        <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
+          {dataSumm.order_way_time}
+        </td>
+        <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
+          {dataSumm.order_end_time}
+        </td>
+        <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
+          {dataSumm.order_assign_status}
+        </td>
+      </tr>
+    ))}
+</tbody>
           </table>
         </div>
       </DialogBody>

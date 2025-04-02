@@ -192,16 +192,81 @@ const ReceivedsCommission = () => {
       label: "Service",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: true,
+        viewColumns: false,
+      },
+    },
+
+    {
+      name: "order_amount",
+      label: "Amount",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    {
+      name: "service_commision",
+      label: "Service/Total Amount",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const commision = tableMeta.rowData[10];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
+              <span>{commision}</span>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: "order_comm_percentage",
+      label: "Commision (%)",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: true,
+        viewColumns: false,
       },
     },
 
     {
       name: "order_comm",
-      label: "Commission(%)",
+      label: "Commission Amount",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    {
+      name: "com_percentage_amount",
+      label: "Comm (%)/ Amount",
       options: {
         filter: false,
         sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[12];
+          const commision = tableMeta.rowData[13];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
+              <span>{commision}</span>
+            </div>
+          );
+        },
       },
     },
   ];
