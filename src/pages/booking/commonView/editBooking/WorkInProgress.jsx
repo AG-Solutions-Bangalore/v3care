@@ -77,7 +77,7 @@ const WorkInProgress = () => {
   // Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    if (["order_amount", "order_payment_amount", "order_comm"].includes(name)) {
+    if (["order_amount", "order_payment_amount", "order_comm","order_comm_percentage"].includes(name)) {
       if (validateOnlyDigits(value)) {
         setBooking((prev) => ({ ...prev, [name]: value }));
       }
@@ -162,6 +162,7 @@ const WorkInProgress = () => {
       order_time: booking.order_time,
       order_year: "2024-25",
       order_comm: booking.order_comm,
+      order_comm_percentage: booking.order_comm_percentage,
       order_comment: booking.order_comment,
     };
 
@@ -180,7 +181,7 @@ const WorkInProgress = () => {
 
       if (response.data.code === "200") {
         toast.success(response.data?.msg || "Reschedule Creating Success");
-        navigate("/today");
+        navigate(`/edit-booking/${id}`);
       } else {
         toast.error(response.data?.msg || "Network Error");
       }
@@ -329,6 +330,8 @@ const WorkInProgress = () => {
         toast.error("Error updating Followup");
       });
   };
+  const autoCommissionCalc =  Math.round((booking.order_amount * booking.order_comm_percentage) / 100) || 0;
+
   return (
     <Layout>
       <BookingFilter />
@@ -404,13 +407,33 @@ const WorkInProgress = () => {
                     />
                   </div>
                 </div>
-
-                <div className="col-span-2">
+                <div className="form-group relative">
+                        <Input
+                          fullWidth
+                          required
+                          label="Commission (%)"
+                          name="order_comm_percentage"
+                          value={booking.order_comm_percentage}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                        <span
+                          className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                          onClick={() => {
+                            setBooking((prev) => ({
+                              ...prev,
+                              order_comm: autoCommissionCalc,
+                            }));
+                          }}
+                        >
+                          (₹{autoCommissionCalc})
+                        </span>
+                      </div>
+                <div className="">
                   <div className="form-group">
                     <Input
                       fullWidth
                       required
-                      label="Commission (%)"
+                      label="Commission Amount"
                       name="order_comm"
                       value={booking.order_comm}
                       onChange={(e) => onInputChange(e)}

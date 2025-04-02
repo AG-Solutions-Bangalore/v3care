@@ -15,7 +15,7 @@ const MasterFilter = () => {
   const buttons = [
     {
       label: "Refer By",
-      path: "/refer-by",
+      path: "/refer-by?page=1",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
@@ -24,7 +24,7 @@ const MasterFilter = () => {
       ? [
           {
             label: "Branch",
-            path: "/branch",
+            path: "/branch?page=1",
             color: "from-pink-500 to-orange-400",
             hoverColor: "hover:bg-pink-50",
             textColor: "text-pink-900",
@@ -33,35 +33,35 @@ const MasterFilter = () => {
       : []),
     {
       label: "Service",
-      path: "/service",
+      path: "/service?page=1",
       color: "from-purple-500 to-indigo-400",
       hoverColor: "hover:bg-purple-50",
       textColor: "text-purple-900",
     },
     {
       label: "Service Sub",
-      path: "/service-sub",
+      path: "/service-sub?page=1",
       color: "from-yellow-500 to-orange-300",
       hoverColor: "hover:bg-yellow-50",
       textColor: "text-yellow-900",
     },
     {
       label: "Service Price",
-      path: "/service-price",
+      path: "/service-price?page=1",
       color: "from-red-500 to-pink-400",
       hoverColor: "hover:bg-red-50",
       textColor: "text-red-900",
     },
     {
       label: "Field Team",
-      path: "/field-team",
+      path: "/field-team?page=1",
       color: "from-gray-500 to-gray-400",
       hoverColor: "hover:bg-gray-50",
       textColor: "text-gray-900",
     },
     {
       label: "Operation",
-      path: "/operation-team",
+      path: "/operation-team?page=1",
       color: "from-lime-500 to-green-400",
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
@@ -70,7 +70,7 @@ const MasterFilter = () => {
       ? [
           {
             label: "Backhand",
-            path: "/backhand-team",
+            path: "/backhand-team?page=1",
             color: "from-lime-500 to-green-400",
             hoverColor: "hover:bg-green-50",
             textColor: "text-green-900",

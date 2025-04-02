@@ -493,15 +493,20 @@ const AllBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const order_no_assign = tableMeta.rowData[14];
           const order_ref = tableMeta.rowData[1];
-
-          return order_no_assign > 0 ? (
+          const assignments = assignmentData[order_ref];
+          
+          // Count only pending assignments
+          const pendingCount = assignments 
+            ? assignments.filter(a => a.order_assign_status === "Pending").length
+            : 0;
+    
+          return pendingCount > 0 ? (
             <div className="flex flex-col w-32">
               <button
                 className=" w-16  hover:bg-red-200 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent row click event
+                  e.stopPropagation();
                   handleOpenModal(order_ref);
                 }}
                 disabled={loadingAssignment === order_ref}
@@ -530,13 +535,13 @@ const AllBooking = () => {
                     </svg>
                   </span>
                 ) : (
-                  value
+                  pendingCount
                 )}
               </button>
             </div>
           ) : (
             <div className="flex flex-col w-32">
-              <span>{value}</span>
+              <span>{pendingCount}</span>
             </div>
           );
         },
@@ -557,6 +562,14 @@ const AllBooking = () => {
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
             return "-";
           }
+                // Filter assignments with Pending status
+      const pendingAssignments = assignments.filter(
+        (assignment) => assignment.order_assign_status === "Pending"
+      );
+
+      if (pendingAssignments.length === 0) {
+        return "-";
+      }
 
           return (
             <div className="w-48 overflow-x-auto">
@@ -564,7 +577,7 @@ const AllBooking = () => {
                 <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {assignments
+                      {pendingAssignments
                         .map((assignment) => assignment.name.split(" ")[0])
                         .join(", ")}
                     </td>

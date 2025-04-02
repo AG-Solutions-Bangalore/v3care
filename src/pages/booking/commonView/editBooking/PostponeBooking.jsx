@@ -77,7 +77,14 @@ const PostponeBooking = () => {
   //   Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    if (["order_amount", "order_payment_amount", "order_comm"].includes(name)) {
+    if (
+      [
+        "order_amount",
+        "order_payment_amount",
+        "order_comm",
+        "order_comm_percentage",
+      ].includes(name)
+    ) {
       if (validateOnlyDigits(value)) {
         setBooking((prev) => ({ ...prev, [name]: value }));
       }
@@ -143,7 +150,6 @@ const PostponeBooking = () => {
         },
       };
     },
-    
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -163,7 +169,7 @@ const PostponeBooking = () => {
     let data = {
       order_service_date: booking.order_service_date,
       order_time: booking.order_time,
-
+      order_comm_percentage: booking.order_comm_percentage,
       order_comm: booking.order_comm,
       order_comment: booking.order_comment,
       order_postpone_reason: booking.order_postpone_reason,
@@ -180,7 +186,7 @@ const PostponeBooking = () => {
     }).then((res) => {
       if (res.data.code == "200") {
         toast.success(res.data?.msg || "PostPone Created Successfully");
-        navigate("/today");
+        navigate(`/edit-booking/${id}`);
       } else {
         toast.error(res.data?.msg || "Network error");
       }
@@ -322,6 +328,9 @@ const PostponeBooking = () => {
         toast.error("Error updating Followup");
       });
   };
+  const autoCommissionCalc =
+    Math.round((booking.order_amount * booking.order_comm_percentage) / 100) ||
+    0;
   return (
     <Layout>
       <BookingFilter />
@@ -356,11 +365,9 @@ const PostponeBooking = () => {
                 Other Details
               </button>
             </div>
-  <Card className="mt-2">
+            <Card className="mt-2">
               <CardBody>{renderActiveTabContent()}</CardBody>
             </Card>
-          
-          
           </div>
 
           {/* Payment Card */}
@@ -368,122 +375,145 @@ const PostponeBooking = () => {
             {/* here booking assign table  */}
             <CardBody>
               <form id="addIdniv" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
-                    <Input
+                    <div>
+                      <Input
+                        fullWidth
+                        required
+                        id="order_service_date"
+                        label="Service Date"
+                        type="date"
+                        min={today}
+                        name="order_service_date"
+                        value={booking.order_service_date}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div>
+                      <Input
+                        fullWidth
+                        required
+                        label="Time Slot"
+                        type="time"
+                        name="order_time"
+                        value={booking.order_time}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group relative">
+                        <Input
+                          fullWidth
+                          required
+                          label="Commission (%)"
+                          name="order_comm_percentage"
+                          value={booking.order_comm_percentage}
+                          onChange={(e) => onInputChange(e)}
+                        />
+                        <span
+                          className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                          onClick={() => {
+                            setBooking((prev) => ({
+                              ...prev,
+                              order_comm: autoCommissionCalc,
+                            }));
+                          }}
+                        >
+                          (₹{autoCommissionCalc})
+                        </span>
+                      </div>
+                  <div>
+                    <div>
+                      <Input
+                        fullWidth
+                        required
+                        label="Commission Amount"
+                        name="order_comm"
+                        value={booking.order_comm}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4 my-4">
+                  <div>
+                    <Textarea
                       fullWidth
-                      required
-                      id="order_service_date"
-                      label="Service Date"
-                      type="date"
-                      min={today}
-                      name="order_service_date"
-                      value={booking.order_service_date}
+                      label="Comment"
+                      multiline
+                      name="order_comment"
+                      value={booking.order_comment}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                  </div>
+                  <div>
+                    <Textarea
+                      fullWidth
+                      label="Postpone Reason"
+                      multiline
+                      name="order_postpone_reason"
+                      value={booking.order_postpone_reason}
                       onChange={(e) => onInputChange(e)}
                     />
                   </div>
                 </div>
 
-                <div>
-                  <div>
-                    <Input
-                      fullWidth
-                      required
-                      label="Time Slot"
-                      type="time"
-                      name="order_time"
-                      value={booking.order_time}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </div>
-                </div>
+                <div className="flex justify-center space-x-4 my-2">
+                  <ButtonConfigColor
+                    type="edit"
+                    buttontype="submit"
+                    label="Update"
+                    disabled={isButtonDisabled}
+                    loading={loading}
+                  />
 
-                <div>
-                  <div>
-                    <Input
-                      fullWidth
-                      required
-                      label="Commission (%)"
-                      name="order_comm"
-                      value={booking.order_comm}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-4 my-4">
-                <div>
-                  <Textarea
-                    fullWidth
-                    label="Comment"
-                    multiline
-                    name="order_comment"
-                    value={booking.order_comment}
-                    onChange={(e) => onInputChange(e)}
+                  <ButtonConfigColor
+                    type="back"
+                    buttontype="button"
+                    label="Cancel"
+                    onClick={() => navigate(-1)}
                   />
                 </div>
-                <div>
-                  <Textarea
-                    fullWidth
-                    label="Postpone Reason"
-                    multiline
-                    name="order_postpone_reason"
-                    value={booking.order_postpone_reason}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-center space-x-4 my-2">
-                <ButtonConfigColor
-                  type="edit"
-                  buttontype="submit"
-                  label="Update"
-                  disabled={isButtonDisabled}
-                  loading={loading}
-                />
-
-                <ButtonConfigColor
-                  type="back"
-                  buttontype="button"
-                  label="Cancel"
-                  onClick={() => navigate(-1)}
-                />
-              </div>
               </form>
             </CardBody>
           </Card>
           <Card className="mb-6">
-               <CardHeader floated={false} className=" flex h-12 items-center flex-row justify-between p-4">
-                             <Typography variant="h6" color="blue-gray">
-                               Follow Up
-                             </Typography>
-                             <Link
-                               onClick={handleClickOpen}
-                               className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
-                             >
-                               + Follow up
-                             </Link>
-                           </CardHeader>
-              {/* here booking assign table  */}
-              <CardBody>
-                {loading ? (
-                  <div className="flex justify-center items-center h-screen">
-                    <Spinner className="h-10 w-10" color="red" />
-                  </div>
-                ) : (
-                  <div className="mt-5">
-                    <MUIDataTable
-                      // title={"Followup"}
-                      data={followup ? followup : []}
-                      columns={columns}
-                      options={options}
-                    />
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+            <CardHeader
+              floated={false}
+              className=" flex h-12 items-center flex-row justify-between p-4"
+            >
+              <Typography variant="h6" color="blue-gray">
+                Follow Up
+              </Typography>
+              <Link
+                onClick={handleClickOpen}
+                className="btn btn-primary text-center text-sm md:text-right text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg shadow-md"
+              >
+                + Follow up
+              </Link>
+            </CardHeader>
+            {/* here booking assign table  */}
+            <CardBody>
+              {loading ? (
+                <div className="flex justify-center items-center h-screen">
+                  <Spinner className="h-10 w-10" color="red" />
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <MUIDataTable
+                    // title={"Followup"}
+                    data={followup ? followup : []}
+                    columns={columns}
+                    options={options}
+                  />
+                </div>
+              )}
+            </CardBody>
+          </Card>
         </div>
       </div>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
