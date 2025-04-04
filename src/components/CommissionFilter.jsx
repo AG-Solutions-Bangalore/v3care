@@ -14,14 +14,14 @@ const CommissionFilter = () => {
   const buttons = [
     {
       label: "Commission Pending",
-      path: "/commission-pending?page=1",
+      path: "/commission-pending",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
       label: "Commission Received",
-      path: "/commission-received?page=1",
+      path: "/commission-received",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
@@ -39,7 +39,7 @@ const CommissionFilter = () => {
                 ? `bg-gradient-to-r ${button.color} text-white`
                 : `${button.hoverColor} ${button.textColor} bg-gray-100`
             }`}
-            onClick={() => handleButtonClick(button.path)}
+            onClick={() => handleButtonClick(`${button.path}?page=1`)}
           >
             {button.label}
             {location.pathname !== button.path && (

@@ -13,14 +13,14 @@ const PaymentFilter = () => {
   const buttons = [
     {
       label: "Pending Payment",
-      path: "/pending-payment?page=1",
+      path: "/pending-payment",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
       label: "Received Payment",
-      path: "/received-payment?page=1",
+      path: "/received-payment",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
@@ -38,7 +38,7 @@ const PaymentFilter = () => {
                 ? `bg-gradient-to-r ${button.color} text-white`
                 : `${button.hoverColor} ${button.textColor} bg-gray-100`
             }`}
-            onClick={() => handleButtonClick(button.path)}
+            onClick={() => handleButtonClick(`${button.path}?page=1`)}
           >
             {button.label}
             {location.pathname !== button.path && (

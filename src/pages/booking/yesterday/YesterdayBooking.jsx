@@ -351,110 +351,113 @@ const YesterdayBooking = () => {
             },
           },
         },
-        //14
-        {
-          name: "order_no_assign",
-          label: "No of Assign",
-          options: {
-            filter: false,
-            sort: false,
-            customBodyRender: (value, tableMeta) => {
-              const order_ref = tableMeta.rowData[1];
-              const assignments = assignmentData[order_ref];
-              
-              // Count only pending assignments
-              const pendingCount = assignments 
-                ? assignments.filter(a => a.order_assign_status === "Pending").length
-                : 0;
-        
-              return pendingCount > 0 ? (
-                <div className="flex flex-col w-32">
-                  <button
-                    className=" w-16  hover:bg-red-200 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenModal(order_ref);
-                    }}
-                    disabled={loadingAssignment === order_ref}
-                  >
-                    {loadingAssignment === order_ref ? (
-                      <span className="flex justify-center items-center">
-                        <svg
-                          className="animate-spin h-4 w-4 text-black"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                      </span>
-                    ) : (
-                      pendingCount
-                    )}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col w-32">
-                  <span>{pendingCount}</span>
-                </div>
-              );
-            },
-          },
-        },
-        //15
-        {
-          name: "assignment_details",
-          label: "Assign Details",
-          options: {
-            filter: false,
-            sort: false,
-            customBodyRender: (value, tableMeta) => {
-              const orderRef = tableMeta.rowData[1];
-              const orderNoAssign = tableMeta.rowData[14];
-              const assignments = assignmentData[orderRef];
-    
-              if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
-                return "-";
-              }
-                    // Filter assignments with Pending status
-          const pendingAssignments = assignments.filter(
-            (assignment) => assignment.order_assign_status === "Pending"
-          );
-    
-          if (pendingAssignments.length === 0) {
-            return "-";
-          }
-    
-              return (
-                <div className="w-48 overflow-x-auto">
-                  <table className="min-w-full table-auto border-collapse text-sm">
-                    <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
-                      <tr>
-                        <td className="text-xs px-[2px] leading-[12px]">
-                          {pendingAssignments
-                            .map((assignment) => assignment.name.split(" ")[0])
-                            .join(", ")}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              );
-            },
-          },
-        },
+       //14
+{
+  name: "order_no_assign",
+  label: "No of Assign",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, tableMeta) => {
+      const order_ref = tableMeta.rowData[1];
+      const assignments = assignmentData[order_ref];
+      
+      
+      const validAssignments = assignments 
+        ? assignments.filter(a => a.order_assign_status !== "Cancel")
+        : [];
+      
+      const pendingCount = validAssignments.length;
+
+      return pendingCount > 0 ? (
+        <div className="flex flex-col w-32">
+          <button
+            className=" w-16  hover:bg-red-200 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenModal(order_ref);
+            }}
+            disabled={loadingAssignment === order_ref}
+          >
+            {loadingAssignment === order_ref ? (
+              <span className="flex justify-center items-center">
+                <svg
+                  className="animate-spin h-4 w-4 text-black"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </span>
+            ) : (
+              pendingCount
+            )}
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col w-32">
+          <span>{pendingCount}</span>
+        </div>
+      );
+    },
+  },
+},
+//15
+{
+  name: "assignment_details",
+  label: "Assign Details",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (value, tableMeta) => {
+      const orderRef = tableMeta.rowData[1];
+      const orderNoAssign = tableMeta.rowData[14];
+      const assignments = assignmentData[orderRef];
+
+      if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
+        return "-";
+      }
+            
+      
+      const validAssignments = assignments.filter(
+        (assignment) => assignment.order_assign_status !== "Cancel"
+      );
+
+      if (validAssignments.length === 0) {
+        return "-";
+      }
+
+      return (
+        <div className="w-48 overflow-x-auto">
+          <table className="min-w-full table-auto border-collapse text-sm">
+            <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
+              <tr>
+                <td className="text-xs px-[2px] leading-[12px]">
+                  {validAssignments
+                    .map((assignment) => assignment.name.split(" ")[0])
+                    .join(", ")}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      );
+    },
+  },
+},
         //16
         {
           name: "order_payment_amount",

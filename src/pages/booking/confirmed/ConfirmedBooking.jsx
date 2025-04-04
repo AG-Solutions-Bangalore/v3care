@@ -329,10 +329,12 @@ const ConfirmedBooking = () => {
           const order_ref = tableMeta.rowData[1];
           const assignments = assignmentData[order_ref];
           
-          // Count only pending assignments
-          const pendingCount = assignments 
-            ? assignments.filter(a => a.order_assign_status === "Pending").length
-            : 0;
+          
+          const validAssignments = assignments 
+            ? assignments.filter(a => a.order_assign_status !== "Cancel")
+            : [];
+          
+          const pendingCount = validAssignments.length;
     
           return pendingCount > 0 ? (
             <div className="flex flex-col w-32">
@@ -380,6 +382,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -390,26 +393,27 @@ const ConfirmedBooking = () => {
           const orderRef = tableMeta.rowData[1];
           const orderNoAssign = tableMeta.rowData[14];
           const assignments = assignmentData[orderRef];
-
+    
           if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
             return "-";
           }
-                // Filter assignments with Pending status
-      const pendingAssignments = assignments.filter(
-        (assignment) => assignment.order_assign_status === "Pending"
-      );
-
-      if (pendingAssignments.length === 0) {
-        return "-";
-      }
-
+                
+          
+          const validAssignments = assignments.filter(
+            (assignment) => assignment.order_assign_status !== "Cancel"
+          );
+    
+          if (validAssignments.length === 0) {
+            return "-";
+          }
+    
           return (
             <div className="w-48 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
                 <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {pendingAssignments
+                      {validAssignments
                         .map((assignment) => assignment.name.split(" ")[0])
                         .join(", ")}
                     </td>
