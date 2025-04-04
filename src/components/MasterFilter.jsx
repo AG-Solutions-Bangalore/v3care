@@ -15,7 +15,7 @@ const MasterFilter = () => {
   const buttons = [
     {
       label: "Refer By",
-      path: "/refer-by?page=1",
+      path: "/refer-by",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
@@ -24,7 +24,7 @@ const MasterFilter = () => {
       ? [
           {
             label: "Branch",
-            path: "/branch?page=1",
+            path: "/branch",
             color: "from-pink-500 to-orange-400",
             hoverColor: "hover:bg-pink-50",
             textColor: "text-pink-900",
@@ -33,35 +33,35 @@ const MasterFilter = () => {
       : []),
     {
       label: "Service",
-      path: "/service?page=1",
+      path: "/service",
       color: "from-purple-500 to-indigo-400",
       hoverColor: "hover:bg-purple-50",
       textColor: "text-purple-900",
     },
     {
       label: "Service Sub",
-      path: "/service-sub?page=1",
+      path: "/service-sub",
       color: "from-yellow-500 to-orange-300",
       hoverColor: "hover:bg-yellow-50",
       textColor: "text-yellow-900",
     },
     {
       label: "Service Price",
-      path: "/service-price?page=1",
+      path: "/service-price",
       color: "from-red-500 to-pink-400",
       hoverColor: "hover:bg-red-50",
       textColor: "text-red-900",
     },
     {
       label: "Field Team",
-      path: "/field-team?page=1",
+      path: "/field-team",
       color: "from-gray-500 to-gray-400",
       hoverColor: "hover:bg-gray-50",
       textColor: "text-gray-900",
     },
     {
       label: "Operation",
-      path: "/operation-team?page=1",
+      path: "/operation-team",
       color: "from-lime-500 to-green-400",
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
@@ -70,7 +70,7 @@ const MasterFilter = () => {
       ? [
           {
             label: "Backhand",
-            path: "/backhand-team?page=1",
+            path: "/backhand-team",
             color: "from-lime-500 to-green-400",
             hoverColor: "hover:bg-green-50",
             textColor: "text-green-900",
@@ -90,7 +90,7 @@ const MasterFilter = () => {
                 ? `bg-gradient-to-r ${button.color}  text-white`
                 : ` ${button.hoverColor} ${button.textColor} bg-gray-100`
             }`}
-            onClick={() => handleButtonClick(button.path)}
+            onClick={() => handleButtonClick(`${button.path}?page=1`)}
           >
             {button.label}
             {location.pathname !== button.path && (

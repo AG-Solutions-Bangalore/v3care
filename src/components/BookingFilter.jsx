@@ -13,77 +13,77 @@ const BookingFilter = () => {
   const buttons = [
     {
       label: "Yesterday",
-      path: "/yesterday?page=1",
+      path: "/yesterday",
       color: "from-pink-500 to-yellow-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
       label: "Today",
-      path: "/today?page=1",
+      path: "/today",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
       label: "Tomorrow",
-      path: "/tomorrow?page=1",
+      path: "/tomorrow",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
     },
     {
       label: "All",
-      path: "/all-booking?page=1",
+      path: "/all-booking",
       color: "from-teal-500 to-green-400",
       hoverColor: "hover:bg-teal-50",
       textColor: "text-teal-900",
     },
     {
       label: "RNR",
-      path: "/rnr?page=1",
+      path: "/rnr",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
       textColor: "text-blue-900",
     },
     {
       label: "Pending",
-      path: "/pending?page=1",
+      path: "/pending",
       color: "from-green-500 to-teal-400",
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
     },
     {
       label: "Inspection",
-      path: "/inspection?page=1",
+      path: "/inspection",
       color: "from-purple-500 to-indigo-400",
       hoverColor: "hover:bg-purple-50",
       textColor: "text-purple-900",
     },
     {
       label: "Confirmed",
-      path: "/confirmed?page=1",
+      path: "/confirmed",
       color: "from-yellow-500 to-orange-300",
       hoverColor: "hover:bg-yellow-50",
       textColor: "text-yellow-900",
     },
     {
       label: "Vendor",
-      path: "/vendor-job?page=1",
+      path: "/vendor-job",
       color: "from-red-500 to-pink-400",
       hoverColor: "hover:bg-red-50",
       textColor: "text-red-900",
     },
     {
       label: "Cancel",
-      path: "/cancel?page=1",
+      path: "/cancel",
       color: "from-gray-500 to-gray-400",
       hoverColor: "hover:bg-gray-50",
       textColor: "text-gray-900",
     },
     {
       label: "Completed",
-      path: "/completed?page=1",
+      path: "/completed",
       color: "from-lime-500 to-green-400",
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
@@ -101,7 +101,7 @@ const BookingFilter = () => {
                 ? `bg-gradient-to-r ${button.color} text-white`
                 : `${button.hoverColor} ${button.textColor} bg-gray-100`
             }`}
-            onClick={() => handleButtonClick(button.path)}
+            onClick={() => handleButtonClick(`${button.path}?page=1`)}
           >
             {button.label}
             {location.pathname !== button.path && (

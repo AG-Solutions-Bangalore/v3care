@@ -85,7 +85,7 @@ const OrderRefModal = ({ isOpen, onClose, orderRef }) => {
             </thead>
             <tbody>
   {orderRefData
-    ?.filter(dataSumm => dataSumm.order_assign_status === "Pending")
+    ?.filter(dataSumm => dataSumm.order_assign_status !== "Cancel")
     .map((dataSumm, key) => (
       <tr key={key} className="hover:bg-gray-100">
         <td className="border border-black px-2 py-2 sm:px-4 sm:py-2 text-black text-xs sm:text-sm">
