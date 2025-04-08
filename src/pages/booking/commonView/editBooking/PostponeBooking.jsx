@@ -101,7 +101,12 @@ const PostponeBooking = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setBooking(response.data?.booking);
+      const bookingData = {
+        ...response.data?.booking,
+        order_comm: response.data?.booking?.order_comm ?? 0,
+       
+      };
+      setBooking(bookingData);
       setOrderRef(response.data?.booking.order_ref);
       setFollowUp(response.data?.bookingFollowup);
     } catch (error) {
