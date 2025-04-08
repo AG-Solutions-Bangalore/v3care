@@ -168,8 +168,12 @@ const EditBookingAll = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }),
       ]);
-
-      setBooking(bookingRes.data?.booking);
+      const bookingData = {
+        ...bookingRes.data?.booking,
+        order_comm: bookingRes.data?.booking?.order_comm ?? 0,
+ 
+      };
+      setBooking(bookingData);
       setOrderRef(bookingRes.data?.booking?.order_ref);
       setFollowUp(bookingRes.data?.bookingFollowup);
       setPaymentMode(paymentRes.data?.paymentMode);
