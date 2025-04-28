@@ -32,7 +32,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
-const baseURL = "https://agsdraft.online/app/public/api";
+const baseURL = "https://agsdemo.in/v3careapi/public/api";
 
 // const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
