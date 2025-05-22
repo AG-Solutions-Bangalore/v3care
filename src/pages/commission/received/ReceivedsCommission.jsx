@@ -5,7 +5,7 @@ import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 import Moment from "moment";

@@ -4,7 +4,7 @@ import { Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
 import { Input, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { FiEdit } from "react-icons/fi";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
@@ -59,7 +59,7 @@ const AddVendorService = () => {
           }
         )
         .then((res) => {
-          if (res.data.code === "200") {
+          if (res.data.code == "200") {
             toast.success(res.data?.msg || "Data updated successfully");
             navigate("/vendor-list");
           } else {

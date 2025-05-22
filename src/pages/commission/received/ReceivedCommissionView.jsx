@@ -16,7 +16,7 @@ import {
   Option,
   Button,
 } from "@material-tailwind/react";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { ContextPanel } from "../../../utils/ContextPanel";
@@ -83,7 +83,7 @@ const ReceivedCommissionView = () => {
         }
       );
 
-      if (res.data.code === "200") {
+      if (res.data.code == "200") {
         toast.success(res.data?.msg || "Commission Updated Successfully");
         navigate("/commission-received");
       } else {

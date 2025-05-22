@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";

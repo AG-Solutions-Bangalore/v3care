@@ -25,7 +25,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import MUIDataTable from "mui-datatables";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";

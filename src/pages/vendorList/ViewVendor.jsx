@@ -1,11 +1,11 @@
 import Layout from "../../layout/Layout";
 import React, { useRef, useState, useEffect, useContext } from "react";
-import { FaPrint } from "react-icons/fa";
+import { FaFileDownload, FaPrint } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import { BASE_URL, VENDOR_ADAHAR_BACK_URL, VENDOR_ADAHAR_FRONT_URL, VENDOR_GST_URL, VENDOR_IMAGE_URL } from "../../base/BaseUrl";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import { Card, CardBody } from "@material-tailwind/react";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -100,6 +100,70 @@ const ViewVendor = () => {
       ) : (
         <div className="container mx-auto mt-2">
           <div className="w-full bg-white shadow-md rounded-lg p-8">
+            <div className="flex flex-row items-center gap-2  justify-end">
+              <button
+                onClick={() =>
+                  window.open(
+                    `${VENDOR_ADAHAR_FRONT_URL}/` +
+                    vendor?.vendor_aadhar_front,
+                    "_blank"
+                  )
+                }
+                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
+              >
+                <div className="flex items-center">
+                  <FaFileDownload className="mr-1" />
+                  Aadhar Front
+                </div>
+              </button>
+              <button
+                onClick={() =>
+                  window.open(
+                    `${VENDOR_ADAHAR_BACK_URL}/` +
+                    vendor?.vendor_aadhar_back,
+                    "_blank"
+                  )
+                }
+                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
+              >
+                <div className="flex items-center">
+                  <FaFileDownload className="mr-1" />
+                  Aadhar Back
+                </div>
+              </button>
+
+              <button
+                onClick={() =>
+                  window.open(
+                    `${VENDOR_GST_URL}/` +
+                    vendor?.vendor_aadhar_gst,
+                    "_blank"
+                  )
+                }
+                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
+              >
+                <div className="flex items-center">
+                  <FaFileDownload className="mr-1" />
+                 GST
+                </div>
+              </button>
+
+              <button
+                onClick={() =>
+                  window.open(
+                    `${VENDOR_IMAGE_URL}/` +
+                    vendor?.vendor_images,
+                    "_blank"
+                  )
+                }
+                className="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 font-medium"
+              >
+                <div className="flex items-center">
+                  <FaFileDownload className="mr-1" />
+                Vendor
+                </div>
+              </button>
+            </div>
             <div ref={componentRef} className="mt-6 px-2">
               <div className="mb-8 ">
                 <h2 className="text-xl font-semibold">

@@ -13,7 +13,7 @@ import {
 } from "@material-tailwind/react";
 import { FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import { toast } from "react-toastify";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";

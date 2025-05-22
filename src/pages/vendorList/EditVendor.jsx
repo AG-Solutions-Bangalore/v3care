@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
 import {

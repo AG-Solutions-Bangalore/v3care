@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL, NO_IMAGE_URL, SERVICE_SUB_IMAGE_URL} from "../../../base/BaseUrl";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -135,8 +135,8 @@ const ServiceSubEditMaster = () => {
   };
 
   const imageUrl = services.service_sub_image
-    ? `https://agsdraft.online/app/storage/app/public/service_sub/${services.service_sub_image}`
-    : "https://agsdraft.online/app/storage/app/public/no_image.jpg";
+    ? `${SERVICE_SUB_IMAGE_URL}/${services.service_sub_image}`
+    : `${NO_IMAGE_URL}`;
 
   return (
     <Layout>

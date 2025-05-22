@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Input } from "@material-tailwind/react";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import axios from "axios";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
@@ -87,7 +87,7 @@ const AddBookingAssignUser = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "Booking User Created Successfully");
         navigate(`/booking-assign/${id}`);
       } else {

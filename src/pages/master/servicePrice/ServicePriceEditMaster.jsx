@@ -23,7 +23,7 @@ import {
   TextField,
 } from "@mui/material";
 // import { BiStatus } from "react-icons/bi";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";

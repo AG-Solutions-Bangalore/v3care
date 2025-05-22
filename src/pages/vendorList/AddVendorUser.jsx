@@ -6,7 +6,7 @@ import Layout from "../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import axios from "axios";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
@@ -63,7 +63,7 @@ const AddVendorUser = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "Vendor User Created");
         navigate(`/vendor-user-list/${id}`);
       } else {

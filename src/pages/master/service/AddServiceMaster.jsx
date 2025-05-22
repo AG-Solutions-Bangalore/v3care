@@ -4,7 +4,7 @@ import { MdSend, MdArrowBack } from "react-icons/md"; // React Icons for styling
 
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
@@ -59,10 +59,10 @@ const AddServiceMaster = () => {
         }
       );
 
-      if (response.data.code === "200") {
-        toast.success(response.data?.msg || "Service Created Successfully");
+      if (response.data.code === 200) {
+        toast.success(response.data?.msg );
 
-        // Reset Form
+        
         setServices({
           service: "",
           service_comm: "",
@@ -88,7 +88,7 @@ const AddServiceMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Service"} />
+      <PageHeader title={"Create ServiceD"} />
 
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>

@@ -102,8 +102,8 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     {
       to: "/idealfield-list",
       icon: <CiViewList className="w-5 h-5 text-inherit" />,
-      text: "Ideal Field List",
-      title: "Ideal Field List",
+      text: "Idle Field List",
+      title: "Idle Field List",
       roles: ["admin", "superadmin", "operationteam", "viewer"],
     },
     {
@@ -417,7 +417,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm animate-wave">
           <div className="flex flex-col items-center gap-2 text-white">
             <div className="text-sm font-medium opacity-80">
-              Update on : 28-04-2025
+              Update on : 22-05-2025
             </div>
           </div>
         </div>

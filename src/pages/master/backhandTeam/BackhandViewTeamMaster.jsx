@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL, USER_DOCUMENT} from "../../../base/BaseUrl";
 import {
   FaUser,
   FaMobile,
@@ -78,7 +78,8 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
                 <button
                   onClick={() =>
                     window.open(
-                      "https://agsdraft.online/app/storage/app/public/user_document/" +
+                      `${USER_DOCUMENT}/`
+                      +
                         fieldTeamViewData?.user_aadhar,
                       "_blank"
                     )
@@ -94,7 +95,7 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
                 <button
                   onClick={() =>
                     window.open(
-                      "https://agsdraft.online/app/storage/app/public/user_document/" +
+                      `${USER_DOCUMENT}/`+
                         fieldTeamViewData?.user_pancard,
                       "_blank"
                     )

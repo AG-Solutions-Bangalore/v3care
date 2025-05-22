@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL, NO_IMAGE_URL, SERVICE_IMAGE_URL} from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -116,8 +116,8 @@ const ServiceMaster = () => {
         sort: true,
         customBodyRender: (image) => {
           const imageUrl = image
-            ? `https://agsdraft.online/app/storage/app/public/service/${image}`
-            : "https://agsdraft.online/app/storage/app/public/no_image.jpg";
+            ? `${SERVICE_IMAGE_URL}/${image}`
+            : `${NO_IMAGE_URL}`;
           return (
             <img
               src={imageUrl}

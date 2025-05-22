@@ -13,7 +13,7 @@ import { MdCancel } from "react-icons/md";
 import { FaCalendarAlt, FaPhoneAlt, FaStore, FaUser } from "react-icons/fa";
 import moment from "moment";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 
 const BookingOrder = () => {

@@ -6,7 +6,7 @@ import { FiDownload, FiEye } from "react-icons/fi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
 import Moment from "moment";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
