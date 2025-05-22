@@ -6,7 +6,7 @@ import { Card } from "@material-tailwind/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 const IdealFieldListVendor = () => {

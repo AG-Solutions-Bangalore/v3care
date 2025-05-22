@@ -26,13 +26,13 @@ import axios from "axios";
 import Fields from "../../../components/addBooking/TextField";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
-const baseURL = "https://agsdemo.in/v3careapi/public/api";
+
 
 // const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
@@ -144,14 +144,14 @@ const AddBooking = () => {
         Authorization: "Bearer " + theLoginToken,
       },
     };
-    fetch(baseURL + "/panel-fetch-service", requestOptions)
+    fetch(BASE_URL + "/api/panel-fetch-service", requestOptions)
       .then((response) => response.json())
       .then((data) => setSerData(data.service));
   }, []);
 
   const [timeslot, setTimeSlot] = useState([]);
   useEffect(() => {
-    fetch(baseURL + "/panel-fetch-timeslot-out")
+    fetch(BASE_URL + "/api/panel-fetch-timeslot-out")
       .then((response) => response.json())
       .then((data) => setTimeSlot(data.timeslot));
   }, []);
@@ -173,7 +173,7 @@ const AddBooking = () => {
     };
 
     fetch(
-      `${baseURL}/panel-fetch-service-sub/${booking.order_service}`,
+      `${BASE_URL}/api/panel-fetch-service-sub/${booking.order_service}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -190,7 +190,7 @@ const AddBooking = () => {
     };
 
     axios({
-      url: baseURL + "/panel-fetch-service-price",
+      url: BASE_URL + "/api/panel-fetch-service-price",
       method: "POST",
       data,
 
@@ -208,7 +208,7 @@ const AddBooking = () => {
       order_service_sub: selectedValue.target.value,
     };
     axios({
-      url: baseURL + "/panel-fetch-service-price",
+      url: BASE_URL + "/api/panel-fetch-service-price",
       method: "POST",
       data,
       headers: {
@@ -224,7 +224,7 @@ const AddBooking = () => {
       order_service_price_for: selectedValue.target.value,
     };
     axios({
-      url: baseURL + "/panel-fetch-services-prices",
+      url: BASE_URL + "/api/panel-fetch-services-prices",
       method: "POST",
       data,
       headers: {
@@ -253,7 +253,7 @@ const AddBooking = () => {
       },
     };
 
-    fetch(baseURL + "/panel-fetch-branch", requestOptions)
+    fetch(BASE_URL + "/api/panel-fetch-branch", requestOptions)
       .then((response) => response.json())
       .then((data) => setBranch(data.branch));
   }, []);
@@ -269,7 +269,7 @@ const AddBooking = () => {
       },
     };
 
-    fetch(baseURL + "/panel-fetch-referby", requestOptions)
+    fetch(BASE_URL + "/api/panel-fetch-referby", requestOptions)
       .then((response) => response.json())
       .then((data) => setReferby(data.referby));
   }, []);

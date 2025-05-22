@@ -9,7 +9,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 
 const JobCard = ({ title, value, icon: Icon, status }) => {

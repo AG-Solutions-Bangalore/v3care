@@ -3,7 +3,7 @@ import Layout from "../../layout/Layout";
 import { FaCalendarAlt } from "react-icons/fa";
 import { Card } from "@material-tailwind/react";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import IdealFieldListFilter from "../../components/IdealFieldListFilter";

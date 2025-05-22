@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";

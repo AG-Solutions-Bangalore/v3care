@@ -17,7 +17,7 @@ import {
   Select,
   Textarea,
 } from "@material-tailwind/react";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import {
   Dialog,
@@ -184,7 +184,7 @@ const WorkInProgress = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "Reschedule Creating Success");
         navigate(`/edit-booking/${id}`);
       } else {

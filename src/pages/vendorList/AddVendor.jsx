@@ -12,7 +12,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

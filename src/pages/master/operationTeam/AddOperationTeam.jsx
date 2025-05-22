@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
@@ -84,7 +84,7 @@ const AddOperationTeam = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg ||"Create successful");
 
         setTeam({

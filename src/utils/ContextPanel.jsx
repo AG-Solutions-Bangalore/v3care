@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../base/BaseUrl";
+import {BASE_URL} from "../base/BaseUrl";
 
 export const ContextPanel = createContext();
 

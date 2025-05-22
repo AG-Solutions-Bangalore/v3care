@@ -8,7 +8,7 @@ import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import { FaEdit } from "react-icons/fa";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";

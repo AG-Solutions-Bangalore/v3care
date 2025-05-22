@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Layout from "../../../layout/Layout";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { Download, FileText, Calendar } from "lucide-react";
 import moment from "moment";
 import { Button } from "@material-tailwind/react";

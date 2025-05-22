@@ -5,7 +5,7 @@ import { MdTitle, MdDescription, MdImage } from "react-icons/md";
 import { Button } from "@mui/material";
 import Layout from "../../layout/Layout";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
@@ -61,7 +61,7 @@ const AddNotification = () => {
         }
       );
 
-      if (res.data.code === "200") {
+      if (res.data.code == "200") {
         toast.success(res.data?.msg || "Notification Created");
         navigate("/notification");
       } else {

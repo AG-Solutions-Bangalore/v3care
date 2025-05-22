@@ -5,7 +5,7 @@ import { MenuItem, TextField } from "@mui/material";
 import { FiDownload } from "react-icons/fi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 

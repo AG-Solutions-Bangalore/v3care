@@ -12,14 +12,14 @@ const IdealFieldListFilter = () => {
 
   const buttons = [
     {
-      label: "V3 Care Ideal Field List",
+      label: "V3 Care Idle Field List",
       path: "/idealfield-list",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
-      label: "Vendor Ideal Field List",
+      label: "Vendor Idle Field List",
       path: "/idealfield-vendor-list",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",

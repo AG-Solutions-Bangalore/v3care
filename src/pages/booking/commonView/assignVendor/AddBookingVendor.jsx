@@ -5,7 +5,7 @@ import { Button, Input } from "@material-tailwind/react";
 import { MdArrowBack, MdSend } from "react-icons/md";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import axios from "axios";
 import BookingFilter from "../../../../components/BookingFilter";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";

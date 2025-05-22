@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHourglassHalf, FaCheckCircle, FaCalendarDay, FaCalendarWeek, FaCalendarAlt } from "react-icons/fa";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 
 const DashboardCard = ({ title, value, icon: Icon, trend }) => (

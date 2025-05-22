@@ -4,7 +4,7 @@ import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Input, Select } from "@material-tailwind/react";

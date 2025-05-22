@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import MUIDataTable from "mui-datatables";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import axios from "axios";
 import Moment from "moment";
 import { MdOutlineRemoveRedEye } from "react-icons/md";

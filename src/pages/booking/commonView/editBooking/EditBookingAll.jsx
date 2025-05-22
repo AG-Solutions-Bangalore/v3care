@@ -23,7 +23,7 @@ import {
   Textarea,
 } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 // import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
 import { toast } from "react-toastify";
 import MUIDataTable from "mui-datatables";

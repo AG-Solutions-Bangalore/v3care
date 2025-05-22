@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import axios from "axios";
 import moment from "moment";
 // import SelectOption from "@material-tailwind/react/components/Select/SelectOption";

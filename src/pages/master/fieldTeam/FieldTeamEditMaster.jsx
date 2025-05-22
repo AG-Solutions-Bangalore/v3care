@@ -12,7 +12,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { Button, Card, Input, Textarea } from "@material-tailwind/react";
 import {
   FormControl,
@@ -140,7 +140,7 @@ const FieldTeamEditMaster = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "Update successful");
         navigate(`/field-team?page=${pageNo}`);
       } else {

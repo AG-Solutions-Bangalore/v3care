@@ -16,7 +16,7 @@ import styles from "../booking/addBooking/AddBooking.module.css";
 import axios from "axios";
 import { Input } from "@material-tailwind/react";
 import Fields from "../../components/addBooking/TextField";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";

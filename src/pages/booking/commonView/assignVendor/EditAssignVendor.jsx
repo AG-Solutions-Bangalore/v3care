@@ -7,7 +7,7 @@ import { MdUpdate } from "react-icons/md";
 import { Button, TextField } from "@mui/material";
 
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import BASE_URL from "../../../../base/BaseUrl";
+import {BASE_URL} from "../../../../base/BaseUrl";
 import axios from "axios";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import { Input } from "@material-tailwind/react";

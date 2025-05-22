@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 

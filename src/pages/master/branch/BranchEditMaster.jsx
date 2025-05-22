@@ -6,7 +6,7 @@ import { FaBuilding } from "react-icons/fa";
 import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import {

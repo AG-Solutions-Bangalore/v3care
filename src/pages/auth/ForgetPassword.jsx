@@ -1,7 +1,7 @@
 import { Input, Button, Typography } from "@material-tailwind/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { toast } from "react-toastify";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 

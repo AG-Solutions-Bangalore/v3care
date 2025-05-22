@@ -4,7 +4,7 @@ import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -57,7 +57,7 @@ const AddReferBy = () => {
         }
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "ReferBy Created Successfully");
         setReferBy({ refer_by: "" });
         navigate("/refer-by");

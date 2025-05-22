@@ -5,7 +5,7 @@ import Layout from "../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { Input } from "@material-tailwind/react";
 import {
   FormControl,

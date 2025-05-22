@@ -6,7 +6,7 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import MUIDataTable from "mui-datatables";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";

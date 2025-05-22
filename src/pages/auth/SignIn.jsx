@@ -8,7 +8,7 @@ import {
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import {BASE_URL} from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";

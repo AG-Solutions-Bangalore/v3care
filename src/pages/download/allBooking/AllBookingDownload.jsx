@@ -4,7 +4,7 @@ import DownloadFilter from "../../../components/DownloadFilter";
 import { MenuItem, TextField } from "@mui/material";
 import { FiDownload } from "react-icons/fi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import BASE_URL from "../../../base/BaseUrl";
+import {BASE_URL} from "../../../base/BaseUrl";
 import Moment from "moment";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
