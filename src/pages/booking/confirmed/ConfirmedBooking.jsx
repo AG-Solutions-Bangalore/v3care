@@ -9,11 +9,12 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
 import Moment from "moment";
 import BookingFilter from "../../../components/BookingFilter";
-import OrderRefModal from "../../../components/OrderRefModal";
+
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import AssignDetailsModal from "../../../components/AssignDetailsModal";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
@@ -26,6 +27,8 @@ const ConfirmedBooking = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+   const [openModal, setOpenModal] = useState(false);
+      const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -41,43 +44,7 @@ const ConfirmedBooking = () => {
     }
   }, [location]);
   UseEscapeKey();
-  // Modal state management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState(null);
-  const [loadingAssignment, setLoadingAssignment] = useState(null);
-
-  const fetchAssignmentData = async (orderRef) => {
-    try {
-      setLoadingAssignment(orderRef);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-booking-assign-by-view/${orderRef}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setAssignmentData((prev) => ({
-        ...prev,
-        [orderRef]: response.data?.bookingAssign,
-      }));
-    } catch (error) {
-      console.error("Error fetching assignment data", error);
-    } finally {
-      setLoadingAssignment(null);
-    }
-  };
-  const handleOpenModal = (orderRef) => {
-    setSelectedOrderRef(orderRef);
-    setIsModalOpen(true);
-    // fetchAssignmentData(orderRef);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedOrderRef(null);
-  };
+ 
   useEffect(() => {
     const fetchConfirmData = async () => {
       try {
@@ -98,12 +65,7 @@ const ConfirmedBooking = () => {
 
         setConfirmBookData(response.data?.booking);
 
-        //  here we are fecthing only those element those order no assign is greater than 0
-        response.data?.booking.forEach((item) => {
-          if (item.order_no_assign > 0) {
-            fetchAssignmentData(item.order_ref);
-          }
-        });
+       
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -126,6 +88,7 @@ const ConfirmedBooking = () => {
     navigate(`/view-booking/${id}`);
   };
   const columns = [
+    //0
     {
       name: "id",
       label: "Action",
@@ -156,6 +119,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+    //1
     {
       name: "order_ref",
       label: "Order/Branch",
@@ -174,6 +138,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+    //2
     {
       name: "branch_name",
       label: "Branch",
@@ -185,7 +150,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
-
+//3
     {
       name: "order_customer",
       label: "Customer",
@@ -197,6 +162,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //4
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -208,7 +174,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-
+//5
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -227,7 +193,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-
+//6
     {
       name: "order_service_date",
       label: "Service Date",
@@ -239,6 +205,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+    //7
     {
       name: "order_service",
       label: "Service",
@@ -250,6 +217,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //8
     {
       name: "order_amount",
       label: "Price",
@@ -261,6 +229,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //9
     {
       name: "order_custom",
       label: "Custom",
@@ -272,6 +241,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //10
     {
       name: "service_price_advanced",
       label: "Service/Price/Advanced",
@@ -308,6 +278,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+    //11
     {
       name: "order_advance",
       label: "Advance",
@@ -319,70 +290,51 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //12
+    {
+      name: "order_assign",
+      label: "Order Assign",
+      options: {
+        filter: false,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+      },
+    },
+    //13
     {
       name: "order_no_assign",
       label: "No of Assign",
       options: {
         filter: false,
-        sort: true,
+        sort: false,
         customBodyRender: (value, tableMeta) => {
-          const order_ref = tableMeta.rowData[1];
-          const assignments = assignmentData[order_ref];
+          const orderAssign = tableMeta.rowData[12];
+         
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
+          );
+          const count = activeAssignments.length;
           
-          
-          const validAssignments = assignments 
-            ? assignments.filter(a => a.order_assign_status !== "Cancel")
-            : [];
-          
-          const pendingCount = validAssignments.length;
-    
-          return pendingCount > 0 ? (
-            <div className="flex flex-col w-32">
+          if (count > 0) {
+            return (
               <button
-                className=" w-16  hover:bg-red-200 border border-gray-200  rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                className="w-16 hover:bg-red-200 border border-gray-200 rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleOpenModal(order_ref);
+                  setSelectedAssignDetails(activeAssignments);
+                  setOpenModal(true);
                 }}
-                disabled={loadingAssignment === order_ref}
               >
-                {loadingAssignment === order_ref ? (
-                  <span className="flex justify-center items-center">
-                    <svg
-                      className="animate-spin h-4 w-4 text-black"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  </span>
-                ) : (
-                  pendingCount
-                )}
+                {count}
               </button>
-            </div>
-          ) : (
-            <div className="flex flex-col w-32">
-              <span>{pendingCount}</span>
-            </div>
-          );
+            );
+          }
+          return <span>{count}</span>;
         },
       },
     },
-
+    // 14
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -390,32 +342,23 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderRef = tableMeta.rowData[1];
-          const orderNoAssign = tableMeta.rowData[14];
-          const assignments = assignmentData[orderRef];
-    
-          if (!orderNoAssign || orderNoAssign <= 0 || !assignments) {
-            return "-";
-          }
-                
-          
-          const validAssignments = assignments.filter(
-            (assignment) => assignment.order_assign_status !== "Cancel"
+          const orderAssign = tableMeta.rowData[12];
+         
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
           );
-    
-          if (validAssignments.length === 0) {
-            return "-";
+          
+          if (activeAssignments.length === 0) {
+            return <span>-</span>;
           }
-    
+          
           return (
             <div className="w-48 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
-                <tbody className="flex flex-wrap h-[40px] boredr-2 border-black w-48">
+                <tbody className="flex flex-wrap h-[40px] border-1 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {validAssignments
-                        .map((assignment) => assignment.name.split(" ")[0])
-                        .join(", ")}
+                      {activeAssignments.map(assign => assign.user.name).join(", ")}
                     </td>
                   </tr>
                 </tbody>
@@ -425,7 +368,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-
+//15
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -437,6 +380,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
+    //16
     {
       name: "order_payment_type",
       label: "Type",
@@ -448,6 +392,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
+    //17
     {
       name: "amount_type",
       label: "Paid Amount/Type",
@@ -455,8 +400,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[14];
-          const price = tableMeta.rowData[15];
+          const service = tableMeta.rowData[15];
+          const price = tableMeta.rowData[16];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -466,6 +411,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
+    // 18
     {
       name: "updated_by",
       label: "Confirm By",
@@ -477,6 +423,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    // 19
     {
       name: "order_status",
       label: "Status",
@@ -488,6 +435,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //20
     {
       name: "confirm/status",
       label: "Confirm By/Status",
@@ -495,8 +443,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[17];
-          const status = tableMeta.rowData[18];
+          const confirmBy = tableMeta.rowData[18];
+          const status = tableMeta.rowData[19];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -529,7 +477,7 @@ const ConfirmedBooking = () => {
       navigate(`/confirmed?page=${currentPage + 1}`);
     },
     setRowProps: (rowData) => {
-      const orderStatus = rowData[18];
+      const orderStatus = rowData[19];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
@@ -603,11 +551,11 @@ const ConfirmedBooking = () => {
           />
         </div>
       )}
-      <OrderRefModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        orderRef={selectedOrderRef}
-      />
+     <AssignDetailsModal
+           open={openModal}
+           handleOpen={setOpenModal}
+           assignDetails={selectedAssignDetails}
+         />
     </Layout>
   );
 };
