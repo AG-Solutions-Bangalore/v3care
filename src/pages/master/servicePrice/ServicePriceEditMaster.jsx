@@ -47,6 +47,9 @@ const ServicePriceEditMaster = () => {
     service_price_rate: "",
     service_price_amount: "",
     service_price_status: "",
+    branch_name: "",
+    service_weekend_amount: "",
+    service_holiday_amount: "",
   });
 
   const navigate = useNavigate();
@@ -87,7 +90,7 @@ const ServicePriceEditMaster = () => {
             },
           }
         );
-        setService(response.data.serviceprice);
+        setService(response.data.serviceprice[0]);
       } catch (error) {
         console.error("Error fetching service price:", error);
       } finally {
@@ -162,7 +165,9 @@ const ServicePriceEditMaster = () => {
       data.append("service_price_rate", services.service_price_rate);
       data.append("service_price_amount", services.service_price_amount);
       data.append("service_price_status", services.service_price_status);
-
+      data.append("service_weekend_amount", services.service_weekend_amount);
+      data.append("service_holiday_amount", services.service_holiday_amount);
+      // data.append("branch_id", services.branch_id);
       try {
         const response = await axios.post(
           `${BASE_URL}/api/panel-update-service-price/${id}?_method=PUT`,
@@ -201,6 +206,18 @@ const ServicePriceEditMaster = () => {
         <Card className="p-4 sm:p-6 lg:p-8 mt-2">
           <form id="editServiceForm" onSubmit={onSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="form-group">
+                            <Input
+                              label="Branch "
+                              type="text"
+                              readOnly
+                              name="branch_name"
+                              value={services.branch_name}
+                              onChange={onInputChange}
+                             
+                              className=" cursor-not-allowed w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            />
+                          </div>
               <div>
                 <div>
                   <FormControl fullWidth>
@@ -314,6 +331,28 @@ const ServicePriceEditMaster = () => {
                   required
                 />
               </div>
+              <div className="form-group">
+                            <Input
+                              label="Service Holiday Amount"
+                              type="text"
+                              name="service_holiday_amount"
+                              value={services.service_holiday_amount}
+                              onChange={onInputChange}
+                              required
+                              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <Input
+                              label="Service Weekend Amount"
+                              type="text"
+                              name="service_weekend_amount"
+                              value={services.service_weekend_amount}
+                              onChange={onInputChange}
+                              required
+                              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            />
+                          </div>
             </div>
 
             <div className="flex justify-center space-x-4 my-2">

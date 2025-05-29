@@ -21,21 +21,47 @@ const AddServicePrice = () => {
     service_price_for: "",
     service_price_rate: "",
     service_price_amount: "",
+    branch_id: "",
+    service_weekend_amount: "",
+    service_holiday_amount: "",
   });
   UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [serdatasub, setSerDataSub] = useState([]);
   const [serdata, setSerData] = useState([]);
+  const [branch, setBranch] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-branch`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setBranch(response.data?.branch);
+      } catch (error) {
+        console.error("Error fetching branch data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServicepriceData();
+   
+  }, []);
+  useEffect(() => {
+    const fetchServicepriceData = async () => {
+      try {
+        
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -55,7 +81,7 @@ const AddServicePrice = () => {
       }
     };
     fetchServicepriceData();
-    setLoading(false);
+   
   }, []);
 
   useEffect(() => {
@@ -63,10 +89,7 @@ const AddServicePrice = () => {
 
     const fetchServicepricedData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+       
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -86,7 +109,7 @@ const AddServicePrice = () => {
       }
     };
     fetchServicepricedData();
-    setLoading(false);
+   
   }, [services.service_id]);
 
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
@@ -112,6 +135,9 @@ const AddServicePrice = () => {
     data.append("service_price_for", services.service_price_for);
     data.append("service_price_rate", services.service_price_rate);
     data.append("service_price_amount", services.service_price_amount);
+    data.append("service_weekend_amount", services.service_weekend_amount);
+    data.append("service_holiday_amount", services.service_holiday_amount);
+    data.append("branch_id", services.branch_id);
     // panel-create-service
     // Submit logic goes here
     axios({
@@ -149,6 +175,29 @@ const AddServicePrice = () => {
       <div className="w-full mt-5 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <FormControl fullWidth>
+              <InputLabel id="branch-select-label">
+                <span className=" text-sm  bottom-[6px] relative  ">
+                 Branch<span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="branch-select-label"
+                id="branch-select"
+                name="branch_id"
+                value={services.branch_id}
+                label="Branch"
+                required
+                onChange={onInputChange}
+              >
+                {branch.map((item) => (
+                  <MenuItem key={item.id} value={String(item.id)}>
+                    {item.branch_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <FormControl fullWidth>
               <InputLabel id="service-select-label">
                 <span className="text-sm relative bottom-[6px]">
@@ -229,6 +278,28 @@ const AddServicePrice = () => {
                 type="text"
                 name="service_price_amount"
                 value={services.service_price_amount}
+                onChange={onInputChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </div>
+            <div className="form-group">
+              <Input
+                label="Service Holiday Amount"
+                type="text"
+                name="service_holiday_amount"
+                value={services.service_holiday_amount}
+                onChange={onInputChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </div>
+            <div className="form-group">
+              <Input
+                label="Service Weekend Amount"
+                type="text"
+                name="service_weekend_amount"
+                value={services.service_weekend_amount}
                 onChange={onInputChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"

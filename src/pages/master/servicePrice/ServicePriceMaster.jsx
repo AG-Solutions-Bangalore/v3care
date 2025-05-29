@@ -96,6 +96,14 @@ const ServicePriceMaster = () => {
     },
 
     {
+      name: "branch_name",
+      label: "Branch",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
       name: "service",
       label: "Service",
       options: {
@@ -131,6 +139,22 @@ const ServicePriceMaster = () => {
     {
       name: "service_price_amount",
       label: "Amount",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "service_holiday_amount",
+      label: "Holiday Amount",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "service_weekend_amount",
+      label: "Weekend Amount",
       options: {
         filter: true,
         sort: false,
