@@ -25,6 +25,17 @@ const MasterFilter = () => {
           {
             label: "Branch",
             path: "/branch",
+            color: "from-gray-500 to-gray-400",
+            hoverColor: "hover:bg-gray-50",
+            textColor: "text-gray-900",
+          },
+        ]
+      : []),
+    ...(userType == "6" 
+      ? [
+          {
+            label: "Super Service",
+            path: "/super-service",
             color: "from-pink-500 to-orange-400",
             hoverColor: "hover:bg-pink-50",
             textColor: "text-pink-900",
@@ -52,6 +63,18 @@ const MasterFilter = () => {
       hoverColor: "hover:bg-red-50",
       textColor: "text-red-900",
     },
+    
+    ...(userType == "6" 
+      ? [
+        {
+          label: "Service Control",
+          path: "/service-control",
+          color: "from-purple-500 to-purple-400",
+          hoverColor: "hover:bg-purple-50",
+          textColor: "text-purple-900",
+        },
+        ]
+      : []),
     {
       label: "Field Team",
       path: "/field-team",

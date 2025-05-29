@@ -5,6 +5,7 @@
 
 // testing 
 const BASE_URL = "https://agscare.site/crmapi/public";
+const SUPER_SERVICE_IMAGE_URL = "https://agscare.site/crmapi/storage/app/public/service_super";
 const SERVICE_IMAGE_URL = "https://agscare.site/crmapi/storage/app/public/service";
 const SERVICE_SUB_IMAGE_URL = "https://agscare.site/crmapi/storage/app/public/service_sub";
 
@@ -37,7 +38,8 @@ export {
     VENDOR_ADAHAR_BACK_URL,
     VENDOR_ADAHAR_FRONT_URL,
     USER_DOCUMENT,
-    NOTIFICATION_IMAGE
+    NOTIFICATION_IMAGE,
+    SUPER_SERVICE_IMAGE_URL
     
 
   };

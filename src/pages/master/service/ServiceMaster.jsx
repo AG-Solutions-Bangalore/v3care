@@ -137,6 +137,14 @@ const ServiceMaster = () => {
         sort: false,
       },
     },
+    {
+      name: "service_show_website",
+      label: "Service Show Website",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
     // {
     //   name: "service_comm",
     //   label: "Commision",

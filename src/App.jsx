@@ -93,13 +93,16 @@ import AllBookingDownload from "./pages/download/allBooking/AllBookingDownload";
 import ViewAllBooking from "./pages/download/allBooking/ViewAllBooking";
 import DisableRightClick from "./components/common/DisabledRightClick";
 import YesterdayBooking from "./pages/booking/yesterday/YesterdayBooking";
+import ServiceControl from "./pages/master/serviceControl/ServiceControl";
+import SuperServiceMaster from "./pages/master/superService/SuperServiceMaster";
+import SuperServiceEditMaster from "./pages/master/superService/SuperServiceEditMaster";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
   return (
     <>
       <ToastContainer />
-      {/* <DisableRightClick /> */}
+      <DisableRightClick />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -188,6 +191,9 @@ const App = () => {
               path="/service-price-edit/:id"
               element={<ServicePriceEditMaster />}
             />
+            <Route path="/service-control" element={<ServiceControl />} />
+            <Route path="/super-service" element={<SuperServiceMaster />} />
+            <Route path="/super-service-edit/:id" element={<SuperServiceEditMaster />} />
             <Route path="/field-team" element={<FieldTeamMaster />} />
             <Route path="/add-field-team" element={<AddFieldTeamMaster />} />
             <Route

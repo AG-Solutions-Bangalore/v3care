@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Select from 'react-select';
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +11,7 @@ import { toast } from "react-toastify";
 import {
   FormControl,
   InputLabel,
-  Select,
+  Select as MuiSelect,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -19,10 +20,61 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
 ];
+
+const serviceShowWebsite = [
+  {
+    id: 1,
+    name: "Popular"
+  },
+  {
+    id: 2,
+    name: "Most Popular"
+  },
+  {
+    id: 3,
+    name: "Super Popular"
+  },
+];
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    minHeight: "40px",
+    height: "40px",
+    borderRadius: "0.375rem",
+    borderColor: "#e5e7eb",
+    "&:hover": {
+      borderColor: "#9ca3af",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: "40px",
+    padding: "0 8px",
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: "0px",
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: "40px",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#3b82f6" : "white",
+    color: state.isSelected ? "white" : "#1f2937",
+    "&:hover": {
+      backgroundColor: "#e5e7eb",
+    },
+  }),
+};
+
 const ServiceEditMaster = () => {
   const { id } = useParams();
   const [services, setService] = useState({
@@ -30,6 +82,7 @@ const ServiceEditMaster = () => {
     service_status: "",
     service_image: "",
     service_comm: "",
+    service_show_website: [],
   });
   UseEscapeKey();
   const navigate = useNavigate();
@@ -39,7 +92,6 @@ const ServiceEditMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
-
   const [selectedFile, setSelectedFile] = useState(null);
 
   const validateOnlyDigits = (inputtxt) => {
@@ -57,6 +109,13 @@ const ServiceEditMaster = () => {
     });
   };
 
+  const handleMultiSelectChange = (selectedOptions) => {
+    setService(prev => ({
+      ...prev,
+      service_show_website: selectedOptions ? selectedOptions.map(option => option.id) : []
+    }));
+  };
+
   useEffect(() => {
     const fetchServiceData = async () => {
       setFetchLoading(true);
@@ -70,14 +129,24 @@ const ServiceEditMaster = () => {
             },
           }
         );
-        setService(
-          response.data.service || {
-            service: "",
-            service_status: "",
-            service_image: "",
-            service_comm: "",
-          }
-        );
+        
+        const serviceData = response.data.service || {
+          service: "",
+          service_status: "",
+          service_image: "",
+          service_comm: "",
+          service_show_website: [],
+        };
+
+      
+        if (serviceData.service_show_website) {
+          serviceData.service_show_website = 
+            serviceData.service_show_website.split(',').map(Number);
+        } else {
+          serviceData.service_show_website = [];
+        }
+
+        setService(serviceData);
       } catch (error) {
         console.error("Error fetching service:", error);
       } finally {
@@ -87,13 +156,14 @@ const ServiceEditMaster = () => {
 
     fetchServiceData();
   }, [id]);
+
   const handleBack = (e) => {
     e.preventDefault();
     navigate(`/service?page=${pageNo}`);
   };
+
   const onSubmit = (e) => {
     setLoading(true);
-
     e.preventDefault();
 
     const data = new FormData();
@@ -101,6 +171,8 @@ const ServiceEditMaster = () => {
     data.append("service_image", selectedFile);
     data.append("service_status", services.service_status);
     data.append("service_comm", services.service_comm);
+
+    data.append("service_show_website", services.service_show_website.join(','));
 
     const form = document.getElementById("addIndiv");
     if (form.checkValidity()) {
@@ -130,6 +202,18 @@ const ServiceEditMaster = () => {
         });
     }
   };
+
+
+  const websiteOptions = serviceShowWebsite.map(item => ({
+    value: item.id,
+    label: item.name,
+    id: item.id
+  }));
+
+
+  const selectedWebsiteValues = websiteOptions.filter(option => 
+    services.service_show_website.includes(option.id)
+  );
 
   const imageUrl = services.service_image
     ? `${SERVICE_IMAGE_URL}/${services.service_image}`
@@ -181,6 +265,10 @@ const ServiceEditMaster = () => {
                       className="w-full border border-gray-700 rounded-md"
                     />
                   </div>
+
+             
+                 
+
                   <div className="mb-4">
                     <FormControl fullWidth>
                       <InputLabel id="service-select-label">
@@ -188,7 +276,7 @@ const ServiceEditMaster = () => {
                           Status <span className="text-red-700">*</span>
                         </span>
                       </InputLabel>
-                      <Select
+                      <MuiSelect
                         sx={{ height: "40px", borderRadius: "5px" }}
                         labelId="service-select-label"
                         id="service-select"
@@ -203,8 +291,23 @@ const ServiceEditMaster = () => {
                             {data.label}
                           </MenuItem>
                         ))}
-                      </Select>
+                      </MuiSelect>
                     </FormControl>
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Service Show Website
+                    </label>
+                    <Select
+                      isMulti
+                      options={websiteOptions}
+                      value={selectedWebsiteValues}
+                      onChange={handleMultiSelectChange}
+                      styles={customStyles}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      placeholder="Select options..."
+                    />
                   </div>
                 </div>
               </div>
