@@ -310,7 +310,7 @@ const ServicePriceEditMaster = () => {
 
               <div>
                 <Input
-                  label="Service Rate"
+                  label="Original Price"
                   type="text"
                   name="service_price_rate"
                   value={services.service_price_rate}
@@ -322,7 +322,7 @@ const ServicePriceEditMaster = () => {
 
               <div>
                 <Input
-                  label="Service Amount"
+                  label="Discount Price"
                   type="text"
                   name="service_price_amount"
                   value={services.service_price_amount}
@@ -333,7 +333,7 @@ const ServicePriceEditMaster = () => {
               </div>
               <div className="form-group">
                             <Input
-                              label="Service Holiday Amount"
+                              label="Holiday Price"
                               type="text"
                               name="service_holiday_amount"
                               value={services.service_holiday_amount}
@@ -344,7 +344,7 @@ const ServicePriceEditMaster = () => {
                           </div>
                           <div className="form-group">
                             <Input
-                              label="Service Weekend Amount"
+                              label="Weekend Price"
                               type="text"
                               name="service_weekend_amount"
                               value={services.service_weekend_amount}

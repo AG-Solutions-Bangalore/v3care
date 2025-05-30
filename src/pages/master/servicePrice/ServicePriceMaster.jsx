@@ -4,7 +4,7 @@ import MUIDataTable from "mui-datatables";
 import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
@@ -129,7 +129,7 @@ const ServicePriceMaster = () => {
     },
     {
       name: "service_price_rate",
-      label: "Price",
+      label: "Original Price",
       options: {
         filter: true,
         sort: true,
@@ -138,7 +138,7 @@ const ServicePriceMaster = () => {
 
     {
       name: "service_price_amount",
-      label: "Amount",
+      label: "Discount Price",
       options: {
         filter: true,
         sort: false,

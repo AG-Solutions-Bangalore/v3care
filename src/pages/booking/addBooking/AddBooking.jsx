@@ -26,13 +26,11 @@ import axios from "axios";
 import Fields from "../../../components/addBooking/TextField";
 import { Input } from "@material-tailwind/react";
 import { toast } from "react-toastify";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-
-
 
 // const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
@@ -83,7 +81,7 @@ const AddBooking = () => {
   var todayback = yyyy + "-" + mm + "-" + dd;
 
   const [currentYear, setCurrentYear] = useState("");
-
+  const userType = localStorage.getItem("user_type_id");
   const [booking, setBooking] = useState({
     order_date: todayback,
     order_year: currentYear,
@@ -187,6 +185,8 @@ const AddBooking = () => {
     let data = {
       order_service: selectedValue.target.value,
       order_service_sub: booking.order_service_sub,
+      branch_id: booking.branch_id,
+      order_service_date: booking.order_service_date,
     };
 
     axios({
@@ -206,6 +206,8 @@ const AddBooking = () => {
     let data = {
       order_service: localStorage.getItem("tempService"),
       order_service_sub: selectedValue.target.value,
+      branch_id: booking.branch_id,
+      order_service_date: booking.order_service_date,
     };
     axios({
       url: BASE_URL + "/api/panel-fetch-service-price",
@@ -429,7 +431,7 @@ const AddBooking = () => {
       order_remarks: booking.order_remarks,
       order_comment: booking.order_comment,
       branch_id:
-        localStorage.getItem("user_type_id") == "6"
+        userType == 6 || userType == 8
           ? booking.branch_id
           : localStorage.getItem("branch_id"),
       order_area: booking.order_area,
@@ -540,6 +542,22 @@ const AddBooking = () => {
                   onChange={(e) => onInputChange(e)}
                 />
               </div>
+              {userType == 6 || userType == 8 ? (
+                <div>
+                  <Fields
+                    required="required"
+                    title="Branch"
+                    type="branchDropdown"
+                    autoComplete="Name"
+                    name="branch_id"
+                    value={booking.branch_id}
+                    onChange={(e) => onInputChange(e)}
+                    options={branch}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
               <div>
                 <Fields
                   title="Service"
@@ -677,22 +695,6 @@ const AddBooking = () => {
                   startIcon={<PinDrop sx={{ color: "orange" }} />}
                 />
               </div>
-              {localStorage.getItem("user_type_id") == "6" ? (
-                <div>
-                  <Fields
-                    required="required"
-                    title="Branch"
-                    type="branchDropdown"
-                    autoComplete="Name"
-                    name="branch_id"
-                    value={booking.branch_id}
-                    onChange={(e) => onInputChange(e)}
-                    options={branch}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
             </div>
             <div className="text-2xl p-2">
               <h1> Address</h1>

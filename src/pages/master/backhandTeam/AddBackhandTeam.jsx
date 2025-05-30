@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
@@ -29,7 +29,7 @@ const AddBackhandTeam = () => {
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const userType = localStorage.getItem("user_type_id");
   UseEscapeKey();
   const [branch, setBranch] = useState([]);
   useEffect(() => {
@@ -120,7 +120,7 @@ const AddBackhandTeam = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Create Backhand Team"} />
+      <PageHeader title={"Create Admin"} />
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
@@ -166,7 +166,7 @@ const AddBackhandTeam = () => {
             </div>
 
             {/* Branch Select Field (conditional) */}
-            {localStorage.getItem("user_type_id") === "6" && (
+            {(userType == "6" || userType == "8") && (
               <FormControl fullWidth>
                 <InputLabel id="service-select-label">
                   <span className="text-sm relative bottom-[6px]">

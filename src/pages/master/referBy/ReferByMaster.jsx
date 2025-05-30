@@ -4,7 +4,7 @@ import MUIDataTable from "mui-datatables";
 import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import MasterFilter from "../../../components/MasterFilter";
@@ -104,6 +104,14 @@ const ReferByMaster = () => {
       },
     },
     {
+      name: "branch_name",
+      label: "Branch Name",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
       name: "refer_by",
       label: "Refer By",
       options: {
@@ -111,6 +119,7 @@ const ReferByMaster = () => {
         sort: true,
       },
     },
+
     {
       name: "refer_by_status",
       label: "Status",

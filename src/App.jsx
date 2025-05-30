@@ -96,13 +96,16 @@ import YesterdayBooking from "./pages/booking/yesterday/YesterdayBooking";
 import ServiceControl from "./pages/master/serviceControl/ServiceControl";
 import SuperServiceMaster from "./pages/master/superService/SuperServiceMaster";
 import SuperServiceEditMaster from "./pages/master/superService/SuperServiceEditMaster";
+import HolidayMaster from "./pages/master/holiday/HolidayMaster";
+import CreateHoliday from "./pages/master/holiday/CreateHoliday";
+import EditHoliday from "./pages/master/holiday/EditHoliday";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
   return (
     <>
       <ToastContainer />
-      <DisableRightClick />
+      {/* <DisableRightClick />  */}
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -118,7 +121,8 @@ const App = () => {
           userType === "1" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             <Route path="/view-booking/:id" element={<ViewBooking />} />
             <Route path="/booking-assign/:id" element={<BookingAssign />} />
@@ -168,7 +172,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             <Route path="/branch" element={<BranchMaster />} />
             <Route path="/add-branch" element={<AddBranch />} />
@@ -193,7 +198,10 @@ const App = () => {
             />
             <Route path="/service-control" element={<ServiceControl />} />
             <Route path="/super-service" element={<SuperServiceMaster />} />
-            <Route path="/super-service-edit/:id" element={<SuperServiceEditMaster />} />
+            <Route
+              path="/super-service-edit/:id"
+              element={<SuperServiceEditMaster />}
+            />
             <Route path="/field-team" element={<FieldTeamMaster />} />
             <Route path="/add-field-team" element={<AddFieldTeamMaster />} />
             <Route
@@ -220,12 +228,17 @@ const App = () => {
               path="/backhand-team-edit/:id"
               element={<BackhandEditTeamMaster />}
             />
+
+            <Route path="/holiday-list" element={<HolidayMaster />} />
+            <Route path="/holiday-create" element={<CreateHoliday />} />
+            <Route path="/holiday-edit/:id" element={<EditHoliday />} />
           </>
         )}
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             {/* vendor List  */}
             <Route path="/vendor-list" element={<VendorList />} />
@@ -251,7 +264,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             {/* ideal field list  */}
             <Route path="/idealfield-list" element={<IdealFieldList />} />
@@ -264,7 +278,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             {/* payment  */}
             <Route path="/pending-payment" element={<PendingPayment />} />
@@ -282,7 +297,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             {/* commission  */}
             <Route path="/commission-pending" element={<PendingCommission />} />
@@ -303,7 +319,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             {/* notification  */}
             <Route path="/notification" element={<NotificationList />} />
@@ -314,7 +331,8 @@ const App = () => {
         {(userType === "6" ||
           userType === "4" ||
           userType === "5" ||
-          userType === "7") && (
+          userType === "7" ||
+          userType === "8") && (
           <>
             <Route path="/booking-download" element={<BookingDownload />} />
             <Route

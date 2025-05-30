@@ -22,17 +22,11 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 
-const ReferByEditMaster = () => {
-  const [referBy, setReferBy] = useState({
-    refer_by: "",
-    branch_id: "",
-    refer_by_status: "",
+const EditHoliday = () => {
+  const [holiday, setHoliday] = useState({
+    holiday_date: "",
   });
 
-  const [status, setStatus] = useState([
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ]);
   UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -46,43 +40,20 @@ const ReferByEditMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {
-    setReferBy({
-      ...referBy,
+    setHoliday({
+      ...holiday,
       [e.target.name]: e.target.value,
     });
   };
-  useEffect(() => {
-    const fetchBranchData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/panel-fetch-branch`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
 
-        setBranch(response.data?.branch);
-      } catch (error) {
-        console.error("Error fetching branch data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBranchData();
-  }, []);
   useEffect(() => {
-    const fetchReferByData = async () => {
+    const fetchHolidayByData = async () => {
       setFetchLoading(true);
 
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-referby-by-id/${id}`,
+          `${BASE_URL}/api/panel-fetch-holiday-by-id/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -90,27 +61,25 @@ const ReferByEditMaster = () => {
           }
         );
 
-        setReferBy(response.data?.referby);
+        setHoliday(response.data?.holiday);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
         setFetchLoading(false);
       }
     };
-    fetchReferByData();
+    fetchHolidayByData();
   }, [id]);
   const handleBack = (e) => {
     e.preventDefault();
-    navigate(`/refer-by?page=${pageNo}`);
+    navigate(`/holiday-list?page=${pageNo}`);
   };
   const onSubmit = async (e) => {
     setLoading(true);
 
     e.preventDefault();
     let data = {
-      refer_by: referBy.refer_by,
-      branch_id: referBy.branch_id,
-      refer_by_status: referBy.refer_by_status,
+      holiday_date: holiday.holiday_date,
     };
 
     setIsButtonDisabled(true);
@@ -118,7 +87,7 @@ const ReferByEditMaster = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        `${BASE_URL}/api/panel-update-referby/${id}`,
+        `${BASE_URL}/api/panel-update-holiday/${id}`,
         data,
         {
           headers: {
@@ -128,12 +97,12 @@ const ReferByEditMaster = () => {
       );
       if (response.data?.code === 200) {
         toast.success(response.data?.msg || "Update successful");
-        navigate(`/refer-by?page=${pageNo}`);
+        navigate(`/holiday-list?page=${pageNo}`);
       } else {
         toast.error(response.data?.msg || "Update failed");
       }
     } catch (error) {
-      console.error("Error updating refer by", error);
+      console.error("Error updating holiday by", error);
       toast.error("Update failed. Please try again.");
       setLoading(false);
       setIsButtonDisabled(false);
@@ -145,7 +114,7 @@ const ReferByEditMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Edit Refer By"} onClick={handleBack} />
+      <PageHeader title={"Edit Holiday"} onClick={handleBack} />
       {fetchloading ? (
         <LoaderComponent />
       ) : (
@@ -156,65 +125,14 @@ const ReferByEditMaster = () => {
                 {/* Branch Name */}
                 <div className="form-group">
                   <Input
-                    label="Refer By"
-                    type="text"
-                    name="refer_by"
-                    value={referBy.refer_by}
+                    label="Holiday"
+                    type="date"
+                    name="holiday_date"
+                    value={holiday.holiday_date}
                     onChange={onInputChange}
                     required
-                    disabled
-                    labelProps={{
-                      className: "!text-gray-600 ",
-                    }}
                   />
                 </div>
-                <FormControl>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Branch Name
-                      <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="branch_id"
-                    value={referBy.branch_id}
-                    onChange={onInputChange}
-                    label="Branch Name *"
-                    required
-                  >
-                    {branch.map((item) => (
-                      <MenuItem key={item.id} value={String(item.id)}>
-                        {item.branch_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>{" "}
-                <FormControl>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Status <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="refer_by_status"
-                    value={referBy.refer_by_status}
-                    onChange={onInputChange}
-                    label="Status *"
-                    required
-                  >
-                    {status.map((data) => (
-                      <MenuItem key={data.value} value={String(data.value)}>
-                        {data.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
               </div>
 
               <div className="flex justify-center space-x-4 my-2">
@@ -241,4 +159,4 @@ const ReferByEditMaster = () => {
   );
 };
 
-export default ReferByEditMaster;
+export default EditHoliday;

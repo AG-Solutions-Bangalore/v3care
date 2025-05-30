@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
@@ -30,7 +30,7 @@ const AddFieldTeamMaster = () => {
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const userType = localStorage.getItem("user_type_id");
   const [branch, setBranch] = useState([]);
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
@@ -95,7 +95,7 @@ const AddFieldTeamMaster = () => {
         });
         navigate("/field-team");
       } else {
-        toast.error(res.data?.msg ||"duplicate entry");
+        toast.error(res.data?.msg || "duplicate entry");
         setLoading(false);
       }
     });
@@ -151,7 +151,7 @@ const AddFieldTeamMaster = () => {
               />
             </div>
 
-            {localStorage.getItem("user_type_id") === "6" && (
+            {(userType == "6" || userType == "8") && (
               <FormControl fullWidth>
                 <InputLabel id="service-select-label">
                   <span className="text-sm relative bottom-[6px]">

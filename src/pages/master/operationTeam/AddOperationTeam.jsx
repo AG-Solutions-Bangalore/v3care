@@ -3,12 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input, Textarea } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Autocomplete,
+  Typography,
+  Box,
+  TextField,
+  Checkbox,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
@@ -25,12 +37,17 @@ const AddOperationTeam = () => {
     user_type: "7",
     remarks: "",
   });
+  const [ViewBranchId, setViewBranchId] = useState([]);
+
+  const checkboxRef = React.useRef(null);
+
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
+  const userType = localStorage.getItem("user_type_id");
   UseEscapeKey();
   const [branch, setBranch] = useState([]);
   useEffect(() => {
@@ -73,6 +90,7 @@ const AddOperationTeam = () => {
       data.append("user_aadhar", selectedFile1);
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
+      data.append("view_branch_id", ViewBranchId);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-admin-user`,
@@ -85,7 +103,7 @@ const AddOperationTeam = () => {
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg ||"Create successful");
+        toast.success(response.data?.msg || "Create successful");
 
         setTeam({
           name: "",
@@ -102,7 +120,7 @@ const AddOperationTeam = () => {
 
         navigate("/operation-team");
       } else {
-        toast.error(response.data?.msg ||"Duplicate entry");
+        toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
@@ -114,11 +132,19 @@ const AddOperationTeam = () => {
     }
   };
 
+  const handleChange = (newValue) => {
+    setViewBranchId(newValue);
+    console.log("check", newValue);
+  };
+  const selectedServiceValues = ViewBranchId.map((service) => service.id);
+  console.log(selectedServiceValues, "selectedServiceValues");
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Operation Team"} />
+      <PageHeader title={"Create Office Staff"} />
 
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
@@ -165,7 +191,7 @@ const AddOperationTeam = () => {
             </div>
 
             {/* Branch Select Field (conditional) */}
-            {localStorage.getItem("user_type_id") === "6" && (
+            {(userType == "6" || userType == "8") && (
               <FormControl fullWidth>
                 <InputLabel id="service-select-label">
                   <span className="text-sm relative bottom-[6px]">
@@ -190,7 +216,56 @@ const AddOperationTeam = () => {
                 </Select>
               </FormControl>
             )}
+            <Typography
+              variant="h6"
+              // align="center"
+              sx={{ padding: "10px" }}
+            >
+              Services Details
+            </Typography>
 
+            <Box>
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={branch}
+                value={ViewBranchId}
+                disableCloseOnSelect
+                getOptionLabel={(option) =>
+                  option.service ?? option.branch_name
+                }
+                onChange={(event, newValue) => handleChange(newValue)}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.service ?? option.branch_name}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={
+                      <span style={{ fontSize: 13, fontWeight: 500 }}>
+                        Choose Branch <span style={{ color: "red" }}>*</span>
+                      </span>
+                    }
+                    InputProps={{
+                      ...params.InputProps,
+                      style: { padding: "0px" },
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      style: { padding: "10px" },
+                    }}
+                  />
+                )}
+              />
+            </Box>
             {/* Aadhar No Field */}
             <div>
               <Input

@@ -12,7 +12,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import {
   FormControl,
   InputLabel,
@@ -149,7 +149,7 @@ const OperationEditTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Edit Operation Team"} onClick={handleBack} />
+      <PageHeader title={"Edit Office Staff"} onClick={handleBack} />
       {fetchloading ? (
         <LoaderComponent />
       ) : (

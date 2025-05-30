@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
@@ -188,7 +188,7 @@ const OperationTeamMaster = () => {
           {userType !== "4" && (
             <ButtonConfigColor
               type="create"
-              label="Operation"
+              label="Office Staff"
               onClick={() => navigate("/add-operation-team")}
             />
           )}
@@ -232,7 +232,7 @@ const OperationTeamMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Operation Team List"
+            title="Office Staff List"
             data={operationData ? operationData : []}
             columns={columns}
             options={options}

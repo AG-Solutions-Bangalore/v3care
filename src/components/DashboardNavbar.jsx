@@ -96,7 +96,8 @@ const DashboardNavbar = ({
           {(useType === "1" ||
             useType === "5" ||
             useType === "6" ||
-            useType === "7") && (
+            useType === "7" ||
+            useType === "8") && (
             // <button
             //   className=" p-1 bg-white rounded-xl text-black shadow-xl hover:text-blue-700 animate-pulse"
             //   onClick={() => navigate("/add-booking")}

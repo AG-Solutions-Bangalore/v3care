@@ -12,7 +12,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { Button, Card, Input, Textarea } from "@material-tailwind/react";
 import {
   FormControl,
@@ -149,7 +149,7 @@ const BackhandEditTeamMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Edit Backhand Team"} onClick={handleBack} />
+      <PageHeader title={"Edit Admin"} onClick={handleBack} />
       {fetchloading ? (
         <LoaderComponent />
       ) : (
