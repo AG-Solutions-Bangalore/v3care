@@ -8,7 +8,7 @@ import {
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
@@ -101,7 +101,7 @@ const SignIn = () => {
               </div>
               <img
                 src="/img/v3logo.png"
-                alt="RK Cylinder Logo"
+                alt="V3 care  Logo"
                 className="h-14 w-auto rounded-lg  "
               />
             </div>
@@ -171,30 +171,6 @@ const SignIn = () => {
                 loading={loading}
                 className="w-full"
               />
-              <div className="flex items-center justify-between gap-2 mt-6">
-                <Typography
-                  variant="small"
-                  className="font-medium p-2 text-gray-900 hover:bg-blue-200 hover:rounded-lg border-b border-blue-500 "
-                >
-                  <Link
-                    to="/add-booking-outside"
-                    className="text-gray-900 ml-1"
-                  >
-                    Book Now
-                  </Link>
-                </Typography>
-                <Typography
-                  variant="small"
-                  className="font-medium p-2 text-gray-900 hover:bg-blue-200 hover:rounded-lg border-b border-blue-500"
-                >
-                  <Link
-                    to="/become-partner-outside"
-                    className="text-gray-900 ml-1"
-                  >
-                    Become Partner
-                  </Link>
-                </Typography>
-              </div>
             </form>
           </div>
         </div>

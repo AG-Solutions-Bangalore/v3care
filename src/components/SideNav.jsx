@@ -83,6 +83,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         "admin",
         "superadmin",
         "operationteam",
+        "masteradmins",
       ],
     },
     {
@@ -90,56 +91,63 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       icon: <RiAdminLine className="w-5 h-5 text-inherit" />,
       text: "Master",
       title: "Master",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "/vendor-list?page=1",
       icon: <BuildingStorefrontIcon className="w-5 h-5 text-inherit" />,
       text: "Vendor List",
       title: "Vendor List",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "/idealfield-list",
       icon: <CiViewList className="w-5 h-5 text-inherit" />,
       text: "Idle Field List",
       title: "Idle Field List",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "/today?page=1",
       icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
       text: "Booking",
       title: "Booking",
-      roles: ["user", "viewer", "admin", "superadmin", "operationteam"],
+      roles: [
+        "user",
+        "viewer",
+        "admin",
+        "superadmin",
+        "operationteam",
+        "masteradmins",
+      ],
     },
     {
       to: "/pending-payment?page=1",
       icon: <MdOutlinePayment className="w-5 h-5 text-inherit" />,
       text: "Payment",
       title: "Payment",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "/commission-pending?page=1",
       icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
       text: "Commission",
       title: "Commission",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "/notification",
       icon: <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />,
       text: "Notification",
       title: "Notification",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
       to: "#",
       icon: <IoDownloadOutline className="w-5 h-5 text-inherit" />,
       text: "Download",
       title: "Download",
-      roles: ["admin", "superadmin", "operationteam", "viewer"],
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
       subMenu: [
         {
           to: "/booking-download",
@@ -178,6 +186,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     5: "admin",
     6: "superadmin",
     7: "operationteam",
+    8: "masteradmins",
   };
 
   // const getFilteredMenuItems = () => {
@@ -414,10 +423,10 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         </ul>
       </div>
       {!isCollapsed && (
-        <div className="absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm animate-wave">
-          <div className="flex flex-col items-center gap-2 text-white">
+        <div className="group absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm border-l-2 border-r-2 border-red-900 overflow-hidden">
+          <div className="flex flex-col items-center gap-2 text-white relative">
             <div className="text-sm font-medium opacity-80">
-              Update on : 27-05-2025
+              Update on : 30-05-2025
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
@@ -150,6 +150,38 @@ const BackhandTeamMaster = () => {
         sort: true,
       },
     },
+    {
+      name: "user_type",
+      label: "UserType",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => {
+          let bgColor = "";
+          let label = "";
+
+          if (value == "6") {
+            bgColor = "bg-teal-600"; 
+            //from-lime-500 to-green-400
+            label = "Super Admin";
+          } else if (value == "5") {
+            bgColor = "bg-blue-500"; 
+            label = "Admin";
+          } else {
+            bgColor = "bg-gray-300";
+            label = value; 
+          }
+
+          return (
+            <span
+              className={`${bgColor} text-white px-3 py-1 rounded-full text-sm font-semibold`}
+            >
+              {label}
+            </span>
+          );
+        },
+      },
+    },
 
     {
       name: "status",
@@ -192,7 +224,7 @@ const BackhandTeamMaster = () => {
           {userType !== "4" && (
             <ButtonConfigColor
               type="create"
-              label="Backhand"
+              label="Admin"
               onClick={() => navigate("/backhand-team-add")}
             />
           )}
@@ -236,7 +268,7 @@ const BackhandTeamMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Backhand Team List"
+            title="Admin List"
             data={BackhandData ? BackhandData : []}
             columns={columns}
             options={options}

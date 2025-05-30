@@ -1,7 +1,7 @@
 import { Input, Button, Typography } from "@material-tailwind/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 
@@ -42,15 +42,21 @@ const ForgetPassword = () => {
     <section className="flex flex-col lg:flex-row min-h-screen">
       <div className="flex-1 flex items-center bg-[url('/img/fp.jpg')]  bg-cover bg-center bg-no-repeat justify-center px-4 lg:px-8 py-12 lg:w-1/2">
         <div className="w-full max-w-md p-8 bg-white/90  rounded-xl shadow-lg  shadow-blue-500 ">
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-between mb-4">
+            <div>
+              <h2 className="font-bold text-2xl text-[#002D74]">
+                Forget Password
+              </h2>
+              <p className="text-xs mt-4 text-[#002D74]">
+                Get started with V3Care
+              </p>
+            </div>
             <img
               src="/img/v3logo.png"
-              alt="RK Cylinder Logo"
+              alt="V3 care  Logo"
               className="h-14 w-auto rounded-lg  "
             />
           </div>
-          <h2 className="font-bold text-2xl text-[#002D74]">Forget Password</h2>
-          <p className="text-xs mt-4 text-[#002D74]">Get started with V3Care</p>
           <form
             method="POST"
             className="mt-8 mb-2 w-full"

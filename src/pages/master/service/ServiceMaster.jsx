@@ -4,7 +4,11 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL, NO_IMAGE_URL, SERVICE_IMAGE_URL} from "../../../base/BaseUrl";
+import {
+  BASE_URL,
+  NO_IMAGE_URL,
+  SERVICE_IMAGE_URL,
+} from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -73,30 +77,30 @@ const ServiceMaster = () => {
     navigate(`/service-edit/${id}`);
   };
   const columns = [
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <>
-              {userType !== "4" && (
-                <div
-                  onClick={(e) => handleEdit(e, id)}
-                  className="flex items-center space-x-2"
-                >
-                  <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Booking Info</title>
-                  </SquarePen>
-                </div>
-              )}
-            </>
-          );
-        },
-      },
-    },
+    ...(userType === "6" || userType === "8"
+      ? [
+          {
+            name: "id",
+            label: "Action",
+            options: {
+              filter: false,
+              sort: false,
+              customBodyRender: (id) => {
+                return (
+                  <div
+                    onClick={(e) => handleEdit(e, id)}
+                    className="flex items-center space-x-2"
+                  >
+                    <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                      <title>Booking Info</title>
+                    </SquarePen>
+                  </div>
+                );
+              },
+            },
+          },
+        ]
+      : []),
     // {
     //   name: "slNo",
     //   label: "SL No",
@@ -113,7 +117,7 @@ const ServiceMaster = () => {
       label: "Image",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
         customBodyRender: (image) => {
           const imageUrl = image
             ? `${SERVICE_IMAGE_URL}/${image}`
@@ -134,7 +138,7 @@ const ServiceMaster = () => {
       label: "Service",
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
     {
@@ -142,7 +146,7 @@ const ServiceMaster = () => {
       label: "Service Show Website",
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
     // {
@@ -158,7 +162,7 @@ const ServiceMaster = () => {
       label: "Status  ",
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
   ];
@@ -188,13 +192,14 @@ const ServiceMaster = () => {
     customToolbar: () => {
       return (
         <>
-          {userType !== "4" && (
-            <ButtonConfigColor
-              type="create"
-              label="Service"
-              onClick={() => navigate("/add-service")}
-            />
-          )}
+          {userType == "6" ||
+            (userType == "8" && (
+              <ButtonConfigColor
+                type="create"
+                label="Service"
+                onClick={() => navigate("/add-service")}
+              />
+            ))}
         </>
       );
     },

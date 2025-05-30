@@ -6,7 +6,7 @@ import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { Button, Input } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
@@ -36,17 +36,13 @@ const AddServicePrice = () => {
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
-        
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-branch`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/api/panel-fetch-branch`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setBranch(response.data?.branch);
       } catch (error) {
@@ -56,12 +52,10 @@ const AddServicePrice = () => {
       }
     };
     fetchServicepriceData();
-   
   }, []);
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
-        
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -81,7 +75,6 @@ const AddServicePrice = () => {
       }
     };
     fetchServicepriceData();
-   
   }, []);
 
   useEffect(() => {
@@ -89,7 +82,6 @@ const AddServicePrice = () => {
 
     const fetchServicepricedData = async () => {
       try {
-       
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -109,7 +101,6 @@ const AddServicePrice = () => {
       }
     };
     fetchServicepricedData();
-   
   }, [services.service_id]);
 
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
@@ -175,10 +166,10 @@ const AddServicePrice = () => {
       <div className="w-full mt-5 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <FormControl fullWidth>
+            <FormControl fullWidth>
               <InputLabel id="branch-select-label">
                 <span className=" text-sm  bottom-[6px] relative  ">
-                 Branch<span className="text-red-700">*</span>
+                  Branch<span className="text-red-700">*</span>
                 </span>
               </InputLabel>
               <Select
@@ -254,55 +245,55 @@ const AddServicePrice = () => {
                 value={services.service_price_for}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
 
             {/* Service Rate Field */}
             <div className="form-group">
               <Input
-                label="Service Rate"
+                label="Original Price"
                 type="text"
                 name="service_price_rate"
                 value={services.service_price_rate}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
 
             {/* Service Amount Field */}
             <div className="form-group">
               <Input
-                label="Service Amount"
+                label="Discount Price"
                 type="text"
                 name="service_price_amount"
                 value={services.service_price_amount}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
             <div className="form-group">
               <Input
-                label="Service Holiday Amount"
+                label="Holiday Price"
                 type="text"
                 name="service_holiday_amount"
                 value={services.service_holiday_amount}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
             <div className="form-group">
               <Input
-                label="Service Weekend Amount"
+                label="Weekend Price"
                 type="text"
                 name="service_weekend_amount"
                 value={services.service_weekend_amount}
                 onChange={onInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
           </div>

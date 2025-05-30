@@ -4,7 +4,11 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL, NO_IMAGE_URL, SERVICE_SUB_IMAGE_URL} from "../../../base/BaseUrl";
+import {
+  BASE_URL,
+  NO_IMAGE_URL,
+  SERVICE_SUB_IMAGE_URL,
+} from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -71,37 +75,41 @@ const ServiceSubMaster = () => {
     navigate(`/service-sub-edit/${id}`);
   };
   const columns = [
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id) => {
-          return (
-            <>
-              {userType !== "4" && (
-                <div
-                  onClick={(e) => handleEdit(e, id)}
-                  className="flex items-center space-x-2"
-                >
-                  <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Booking Info</title>
-                  </SquarePen>
-                </div>
-              )}
-            </>
-          );
-        },
-      },
-    },
+    ...(userType == "6" || userType == "8"
+      ? [
+          {
+            name: "id",
+            label: "Action",
+            options: {
+              filter: false,
+              sort: false,
+              customBodyRender: (id) => {
+                return (
+                  <>
+                    {userType !== "4" && (
+                      <div
+                        onClick={(e) => handleEdit(e, id)}
+                        className="flex items-center space-x-2"
+                      >
+                        <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                          <title>Booking Info</title>
+                        </SquarePen>
+                      </div>
+                    )}
+                  </>
+                );
+              },
+            },
+          },
+        ]
+      : []),
 
     {
       name: "service_sub_image",
       label: "Image",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
         customBodyRender: (image) => {
           const imageUrl = image
             ? `${SERVICE_SUB_IMAGE_URL}/${image}`
@@ -118,11 +126,19 @@ const ServiceSubMaster = () => {
     },
 
     {
+      name: "service",
+      label: "Service",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
       name: "service_sub",
       label: "Service Sub",
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
 
@@ -131,7 +147,7 @@ const ServiceSubMaster = () => {
       label: "Status  ",
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
   ];
@@ -158,13 +174,14 @@ const ServiceSubMaster = () => {
     customToolbar: () => {
       return (
         <>
-          {userType !== "4" && (
-            <ButtonConfigColor
-              type="create"
-              label="Service Sub"
-              onClick={() => navigate("/add-service-sub")}
-            />
-          )}
+          {userType == "6" ||
+            (userType == "8" && (
+              <ButtonConfigColor
+                type="create"
+                label="Service Sub"
+                onClick={() => navigate("/add-service-sub")}
+              />
+            ))}
         </>
       );
     },

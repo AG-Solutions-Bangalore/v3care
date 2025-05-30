@@ -12,7 +12,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -77,13 +77,11 @@ const AddVendor = () => {
     setSerCount(1);
     setAreaCount(1);
   };
-
+  const userType = localStorage.getItem("user_type_id");
   const [vendor, setVendor] = useState({
     vendor_short: "",
     branch_id:
-      localStorage.getItem("user_type_id") == "6"
-        ? ""
-        : localStorage.getItem("branch_id"),
+      userType == 6 || userType == 8 ? "" : localStorage.getItem("branch_id"),
     vendor_company: "",
     vendor_mobile: "",
     vendor_email: "",
@@ -231,7 +229,7 @@ const AddVendor = () => {
     data.append("vendor_gst_no", vendor.vendor_gst_no);
     data.append(
       "branch_id",
-      localStorage.getItem("user_type_id") == "6"
+      userType == 6 || userType == 8
         ? vendor.branch_id
         : localStorage.getItem("branch_id")
     );
@@ -495,7 +493,6 @@ const AddVendor = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  // placeholder="Choose services"
                   label={
                     <label
                       style={{

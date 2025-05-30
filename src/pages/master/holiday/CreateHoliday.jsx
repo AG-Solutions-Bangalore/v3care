@@ -1,21 +1,18 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
+import { Input } from "@material-tailwind/react";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Input } from "@material-tailwind/react";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-const AddReferBy = () => {
-  const [referby, setReferBy] = useState({
-    refer_by: "",
-    branch_id: "",
+const CreateHoliday = () => {
+  const [holiday, seHoliday] = useState({
+    holiday_date: "",
   });
   const navigate = useNavigate();
   UseEscapeKey();
@@ -24,8 +21,8 @@ const AddReferBy = () => {
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
-    setReferBy({
-      ...referby,
+    seHoliday({
+      ...holiday,
       [e.target.name]: e.target.value,
     });
   };
@@ -64,13 +61,12 @@ const AddReferBy = () => {
 
     try {
       let data = {
-        refer_by: referby.refer_by,
-        branch_id: referby.branch_id,
+        holiday_date: holiday.holiday_date,
       };
 
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${BASE_URL}/api/panel-create-referby`,
+        `${BASE_URL}/api/panel-create-holiday`,
         data,
         {
           headers: {
@@ -80,9 +76,9 @@ const AddReferBy = () => {
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg || "ReferBy Created Successfully");
-        setReferBy({ refer_by: "", branch_id: "" });
-        navigate("/refer-by");
+        toast.success(response.data?.msg || "Holiday Created Successfully");
+        seHoliday({ holiday_date: "" });
+        navigate("/holiday-list");
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
       }
@@ -99,43 +95,20 @@ const AddReferBy = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Refer By"} />
+      <PageHeader title={"Create Holiday"} />
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div className="form-group">
               <Input
-                label="Refer By"
+                label="Holiday Date"
                 required
-                name="refer_by"
-                value={referby.refer_by}
+                type="date"
+                name="holiday_date"
+                value={holiday.holiday_date}
                 onChange={onInputChange}
               />
             </div>
-            <FormControl>
-              <InputLabel id="service-select-label">
-                <span className="text-sm relative bottom-[6px]">
-                  Branch Name
-                  <span className="text-red-700">*</span>
-                </span>
-              </InputLabel>
-              <Select
-                sx={{ height: "40px", borderRadius: "5px" }}
-                labelId="service-select-label"
-                id="service-select"
-                name="branch_id"
-                value={referby.branch_id}
-                onChange={onInputChange}
-                label="Branch Id *"
-                required
-              >
-                {branch.map((item) => (
-                  <MenuItem key={item.id} value={String(item.id)}>
-                    {item.branch_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>{" "}
           </div>
 
           <div className="flex justify-center space-x-4">
@@ -160,4 +133,4 @@ const AddReferBy = () => {
   );
 };
 
-export default AddReferBy;
+export default CreateHoliday;
