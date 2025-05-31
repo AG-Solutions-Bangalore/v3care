@@ -6,11 +6,22 @@ import MasterFilter from "../../../components/MasterFilter";
 import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input, Textarea } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Box,
+  Autocomplete,
+  TextField,
+  Checkbox,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 const AddBackhandTeam = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -25,6 +36,7 @@ const AddBackhandTeam = () => {
     remarks: "",
   });
   const navigate = useNavigate();
+  const [ViewBranchId, setViewBranchId] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
@@ -53,14 +65,20 @@ const AddBackhandTeam = () => {
       [e.target.name]: e.target.value,
     });
   };
+  const handleChange = (newValue) => {
+    setViewBranchId(newValue);
+  };
 
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Disable button to prevent multiple clicks
     setIsButtonDisabled(true);
-
+    const selectedServiceValues = ViewBranchId.map(
+      (service) => service.id
+    ).join(",");
     try {
       const data = new FormData();
       data.append("name", team.name);
@@ -73,6 +91,7 @@ const AddBackhandTeam = () => {
       data.append("user_aadhar", selectedFile1);
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
+      data.append("view_branch_id", selectedServiceValues);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-admin-user`,
@@ -167,29 +186,83 @@ const AddBackhandTeam = () => {
 
             {/* Branch Select Field (conditional) */}
             {(userType == "6" || userType == "8") && (
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Branch <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="branch_id"
-                  value={team.branch_id}
-                  onChange={onInputChange}
-                  label="Branch *"
-                  required
-                >
-                  {branch.map((branchdata) => (
-                    <MenuItem key={branchdata.id} value={String(branchdata.id)}>
-                      {branchdata.branch_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <>
+                <FormControl fullWidth>
+                  <InputLabel id="service-select-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Branch <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="service-select-label"
+                    id="service-select"
+                    name="branch_id"
+                    value={team.branch_id}
+                    onChange={onInputChange}
+                    label="Branch *"
+                    required
+                  >
+                    {branch.map((branchdata) => (
+                      <MenuItem
+                        key={branchdata.id}
+                        value={String(branchdata.id)}
+                      >
+                        {branchdata.branch_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <Box>
+                  <Autocomplete
+                    multiple
+                    id="checkboxes-tags-demo"
+                    options={branch}
+                    value={ViewBranchId}
+                    disableCloseOnSelect
+                    getOptionLabel={(option) =>
+                      option.service ?? option.branch_name
+                    }
+                    onChange={(event, newValue) => handleChange(newValue)}
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props}>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.service ?? option.branch_name}
+                      </li>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 500,
+                            }}
+                          >
+                            Choose Branch{" "}
+                            <span style={{ color: "red" }}>*</span>
+                          </span>
+                        }
+                        InputProps={{
+                          ...params.InputProps,
+                          style: { padding: "0px" },
+                        }}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { padding: "10px" },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+              </>
             )}
 
             {/* Aadhar No Field */}

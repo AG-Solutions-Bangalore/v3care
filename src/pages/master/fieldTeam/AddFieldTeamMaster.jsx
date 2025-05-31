@@ -23,6 +23,7 @@ const AddFieldTeamMaster = () => {
     user_pancard: "",
     user_type: "1",
     remarks: "",
+    view_branch_id: "",
   });
   const navigate = useNavigate();
   UseEscapeKey();
@@ -48,10 +49,20 @@ const AddFieldTeamMaster = () => {
   }, []);
 
   const onInputChange = (e) => {
-    setTeam({
-      ...team,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "branch_id") {
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        branch_id: value,
+        view_branch_id: value,
+      }));
+    } else {
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: value,
+      }));
+    }
   };
 
   const onSubmit = (e) => {
@@ -69,6 +80,7 @@ const AddFieldTeamMaster = () => {
     data.append("user_aadhar_no", team.user_aadhar_no);
     data.append("user_aadhar", selectedFile1);
     data.append("user_pancard_no", team.user_pancard_no);
+    data.append("view_branch_id", team.view_branch_id);
     data.append("user_pancard", selectedFile2);
     axios({
       url: BASE_URL + "/api/panel-create-admin-user",
