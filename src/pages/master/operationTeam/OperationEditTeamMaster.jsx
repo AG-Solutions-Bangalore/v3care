@@ -44,6 +44,7 @@ const OperationEditTeamMaster = () => {
     user_aadhar: "",
     user_pancard_no: "",
     user_pancard: "",
+    view_branch_id: "",
   });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -120,6 +121,7 @@ const OperationEditTeamMaster = () => {
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
+      data.append("view_branch_id", team.view_branch_id);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,

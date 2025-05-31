@@ -20,12 +20,17 @@ import {
   Select,
   MenuItem,
   TextField,
+  Box,
+  Autocomplete,
+  Checkbox,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -48,11 +53,15 @@ const BackhandEditTeamMaster = () => {
   });
   const navigate = useNavigate();
   const storedPageNo = localStorage.getItem("page-no");
+  const [ViewBranchId, setViewBranchId] = useState([]);
+  const [viewBranchIds, setViewBranchIds] = useState([]);
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [branch, setBranch] = useState([]);
+
   UseEscapeKey();
   const validateOnlyDigits = (inputtxt) => {
     return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
@@ -68,10 +77,22 @@ const BackhandEditTeamMaster = () => {
     }
     setTeam({ ...team, [name]: value });
   };
-
   useEffect(() => {
-    setFetchLoading(true); // Start loading
+    var theLoginToken = localStorage.getItem("token");
 
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + theLoginToken,
+      },
+    };
+
+    fetch(BASE_URL + "/api/panel-fetch-branch", requestOptions)
+      .then((response) => response.json())
+      .then((data) => setBranch(data.branch));
+  }, []);
+  useEffect(() => {
+    setFetchLoading(true);
     axios({
       url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
       method: "GET",
@@ -80,7 +101,14 @@ const BackhandEditTeamMaster = () => {
       },
     })
       .then((res) => {
-        setTeam(res.data.adminUser);
+        const adminUser = res.data.adminUser;
+        setTeam(adminUser);
+
+        const ids = adminUser.view_branch_id
+          ? adminUser.view_branch_id.split(",").map((id) => Number(id.trim()))
+          : [];
+
+        setViewBranchIds(ids);
       })
       .catch((error) => {
         console.error("Error fetching admin user data:", error);
@@ -89,10 +117,29 @@ const BackhandEditTeamMaster = () => {
         setFetchLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (
+      branch.length &&
+      viewBranchIds.length &&
+      ViewBranchId.length === 0 // ✅ don't re-set if already filled
+    ) {
+      const selectedBranchObjects = branch.filter((b) =>
+        viewBranchIds.includes(b.id)
+      );
+      setViewBranchId(selectedBranchObjects);
+    }
+  }, [branch, viewBranchIds]);
+
   const handleBack = (e) => {
     e.preventDefault();
     navigate(`/backhand-team?page=${pageNo}`);
   };
+  const handleChange = (newValue) => {
+    setViewBranchId(newValue);
+  };
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -109,6 +156,9 @@ const BackhandEditTeamMaster = () => {
     setIsButtonDisabled(true);
 
     try {
+      const selectedServiceValues = ViewBranchId.map(
+        (service) => service.id
+      ).join(",");
       const data = new FormData();
       data.append("name", team.name);
       data.append("mobile", team.mobile);
@@ -120,6 +170,7 @@ const BackhandEditTeamMaster = () => {
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
+      data.append("view_branch_id", selectedServiceValues);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
@@ -145,7 +196,6 @@ const BackhandEditTeamMaster = () => {
       setIsButtonDisabled(false);
     }
   };
-
   return (
     <Layout>
       <MasterFilter />
@@ -197,7 +247,57 @@ const BackhandEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
+                <Box>
+                  <Autocomplete
+                    multiple
+                    id="checkboxes-tags-demo"
+                    options={branch}
+                    value={ViewBranchId}
+                    disableCloseOnSelect
+                    getOptionLabel={(option) =>
+                      option.service ?? option.branch_name
+                    }
+                    onChange={(event, newValue) => handleChange(newValue)}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    renderOption={(props, option, { selected }) => (
+                      <li {...props}>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.service ?? option.branch_name}
+                      </li>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 500,
+                            }}
+                          >
+                            Choose Branch{" "}
+                            <span style={{ color: "red" }}>*</span>
+                          </span>
+                        }
+                        InputProps={{
+                          ...params.InputProps,
+                          style: { padding: "0px" },
+                        }}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { padding: "10px" },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
                 {/* Aadhar No Field */}
                 <div>
                   <Input

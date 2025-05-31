@@ -12,7 +12,7 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { Button, Card, Input, Textarea } from "@material-tailwind/react";
 import {
   FormControl,
@@ -45,6 +45,7 @@ const FieldTeamEditMaster = () => {
     user_aadhar: "",
     user_pancard_no: "",
     user_pancard: "",
+    view_branch_id: "",
   });
   const navigate = useNavigate();
   const [selectedFile1, setSelectedFile1] = useState(null);
@@ -129,6 +130,7 @@ const FieldTeamEditMaster = () => {
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
+      data.append("view_branch_id", team.view_branch_id);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
@@ -297,22 +299,6 @@ const FieldTeamEditMaster = () => {
                   ></Textarea>
                 </div>
               </div>
-
-              {/* <div className="flex justify-center mt-6 space-x-4">
-              <Button type="submit" className="mr-2 mb-2" onClick={onSubmit}>
-                <div className="flex gap-1">
-                  <MdSend className="w-4 h-4" />
-                  <span>Update</span>
-                </div>
-              </Button>
-
-              <Button className="mr-2 mb-2" onClick={handleBack}>
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </div> */}
 
               <div className="flex justify-center space-x-4 my-2">
                 <ButtonConfigColor

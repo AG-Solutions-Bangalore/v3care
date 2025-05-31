@@ -1,28 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { BASE_URL } from "../../../base/BaseUrl";
+import { Input, Textarea } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import { Button, Input, Textarea } from "@material-tailwind/react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Autocomplete,
-  Typography,
-  Box,
-  TextField,
-  Checkbox,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const AddOperationTeam = () => {
   const [team, setTeam] = useState({
@@ -36,6 +23,7 @@ const AddOperationTeam = () => {
     user_pancard: "",
     user_type: "7",
     remarks: "",
+    view_branch_id: "",
   });
   const [ViewBranchId, setViewBranchId] = useState([]);
 
@@ -66,10 +54,20 @@ const AddOperationTeam = () => {
   }, []);
 
   const onInputChange = (e) => {
-    setTeam({
-      ...team,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "branch_id") {
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        branch_id: value,
+        view_branch_id: value,
+      }));
+    } else {
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: value,
+      }));
+    }
   };
 
   const onSubmit = async (e) => {
@@ -90,7 +88,7 @@ const AddOperationTeam = () => {
       data.append("user_aadhar", selectedFile1);
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
-      data.append("view_branch_id", ViewBranchId);
+      data.append("view_branch_id", team.view_branch_id);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-admin-user`,
@@ -132,14 +130,6 @@ const AddOperationTeam = () => {
     }
   };
 
-  const handleChange = (newValue) => {
-    setViewBranchId(newValue);
-    console.log("check", newValue);
-  };
-  const selectedServiceValues = ViewBranchId.map((service) => service.id);
-  console.log(selectedServiceValues, "selectedServiceValues");
-  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
       <MasterFilter />
@@ -216,56 +206,7 @@ const AddOperationTeam = () => {
                 </Select>
               </FormControl>
             )}
-            <Typography
-              variant="h6"
-              // align="center"
-              sx={{ padding: "10px" }}
-            >
-              Services Details
-            </Typography>
 
-            <Box>
-              <Autocomplete
-                multiple
-                id="checkboxes-tags-demo"
-                options={branch}
-                value={ViewBranchId}
-                disableCloseOnSelect
-                getOptionLabel={(option) =>
-                  option.service ?? option.branch_name
-                }
-                onChange={(event, newValue) => handleChange(newValue)}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option.service ?? option.branch_name}
-                  </li>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={
-                      <span style={{ fontSize: 13, fontWeight: 500 }}>
-                        Choose Branch <span style={{ color: "red" }}>*</span>
-                      </span>
-                    }
-                    InputProps={{
-                      ...params.InputProps,
-                      style: { padding: "0px" },
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      style: { padding: "10px" },
-                    }}
-                  />
-                )}
-              />
-            </Box>
             {/* Aadhar No Field */}
             <div>
               <Input
