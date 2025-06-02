@@ -89,7 +89,7 @@ const MasterFilter = () => {
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
     },
-    ...(userType == "6" && userType == "8"
+    ...(userType == "6" || userType == "8"
       ? [
           {
             label: "Admin",

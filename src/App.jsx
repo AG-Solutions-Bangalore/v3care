@@ -105,7 +105,7 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      {/* <DisableRightClick />  */}
+      <DisableRightClick /> 
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />

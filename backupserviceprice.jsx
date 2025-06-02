@@ -1,16 +1,16 @@
 import axios from "axios";
-import { View } from "lucide-react";
+import { SquarePen } from "lucide-react";
 import MUIDataTable from "mui-datatables";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
@@ -40,10 +40,14 @@ const ServicePriceMaster = () => {
   useEffect(() => {
     const fetchServicePriceData = async () => {
       try {
+        if (!isPanelUp) {
+          navigate("/maintenance");
+          return;
+        }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service-price-list-new`,
+          `${BASE_URL}/api/panel-fetch-service-price-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -65,15 +69,40 @@ const ServicePriceMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/service-price-edit/${id}`);
   };
-  const handleViewServiceInfo = (e, service_id, service_sub_id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/service-price-edit/${service_id}`, {
-      state: { service_id, service_sub_id },
-    });
-  };
   const columns = [
+    {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <>
+              {userType !== "4" && (
+                <div
+                  onClick={(e) => handleEdit(e, id)}
+                  className="flex items-center space-x-2"
+                >
+                  <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                    <title>Booking Info</title>
+                  </SquarePen>
+                </div>
+              )}
+            </>
+          );
+        },
+      },
+    },
+
+    {
+      name: "branch_name",
+      label: "Branch",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
     {
       name: "service",
       label: "Service",
@@ -88,6 +117,55 @@ const ServicePriceMaster = () => {
       options: {
         filter: true,
         sort: true,
+      },
+    },
+    {
+      name: "service_price_for",
+      label: "Price For",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+    {
+      name: "service_price_rate",
+      label: "Original Price",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
+
+    {
+      name: "service_price_amount",
+      label: "Discount Price",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "service_holiday_amount",
+      label: "Holiday Amount",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "service_weekend_amount",
+      label: "Weekend Amount",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "service_price_status",
+      label: "Status",
+      options: {
+        filter: true,
+        sort: false,
       },
     },
   ];
@@ -105,18 +183,12 @@ const ServicePriceMaster = () => {
       setPage(currentPage);
       navigate(`/service-price?page=${currentPage + 1}`);
     },
-
     setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
         },
       };
-    },
-    onRowClick: (rowData, rowMeta, e) => {
-      const service_id = servicePriceData[rowMeta.dataIndex].service_id;
-      const service_sub_id = servicePriceData[rowMeta.dataIndex].service_sub_id;
-      handleViewServiceInfo(e, service_id, service_sub_id)();
     },
     customToolbar: () => {
       return (
@@ -168,7 +240,7 @@ const ServicePriceMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Service Price List Test"
+            title="Service Price List"
             data={servicePriceData ? servicePriceData : []}
             columns={columns}
             options={options}
