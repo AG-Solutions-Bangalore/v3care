@@ -136,6 +136,13 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
+      to: "/web-enquiry?page=1",
+      icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
+      text: "Web Enquiry",
+      title: "Web Enquiry",
+      roles: ["superadmin", "operationteam", "masteradmins"],
+    },
+    {
       to: "/notification",
       icon: <IoMdNotificationsOutline className="w-5 h-5 text-inherit" />,
       text: "Notification",
@@ -426,7 +433,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="group absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm border-l-2 border-r-2 border-red-900 overflow-hidden">
           <div className="flex flex-col items-center gap-2 text-white relative">
             <div className="text-sm font-medium opacity-80">
-              Update on : 02-06-2025
+              Update on : 03-06-2025
             </div>
           </div>
         </div>
