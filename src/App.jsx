@@ -99,13 +99,14 @@ import SuperServiceEditMaster from "./pages/master/superService/SuperServiceEdit
 import HolidayMaster from "./pages/master/holiday/HolidayMaster";
 import CreateHoliday from "./pages/master/holiday/CreateHoliday";
 import EditHoliday from "./pages/master/holiday/EditHoliday";
+import WebEnquiry from "./pages/webenquiry/WebEnquiry";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
   return (
     <>
       <ToastContainer />
-      <DisableRightClick /> 
+      <DisableRightClick />
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/register" element={<SIgnUp />} />
@@ -314,6 +315,12 @@ const App = () => {
               path="/received-commission-view/:id"
               element={<ReceivedCommissionView />}
             />
+          </>
+        )}
+        {(userType === "6" || userType === "7" || userType === "8") && (
+          <>
+            {/* commission  */}
+            <Route path="/web-enquiry" element={<WebEnquiry />} />
           </>
         )}
         {(userType === "6" ||

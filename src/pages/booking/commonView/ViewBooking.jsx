@@ -13,7 +13,7 @@ import {
 } from "@material-tailwind/react";
 import { FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import { toast } from "react-toastify";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -23,6 +23,8 @@ import MUIDataTable from "mui-datatables";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import GroupBookingView from "./GroupBookingView";
+import AllBooking from "../allBooking/AllBooking";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ const ViewBooking = () => {
   const [bookingAssign, setBookingAssign] = useState({});
   // no need check at once and remove it
   const [vendor, setVendor] = useState({});
+  const [groupbooking, setGroupBooking] = useState({});
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [followup, setFollowUp] = useState([]);
@@ -68,6 +71,7 @@ const ViewBooking = () => {
       setBookingAssign(response.data.bookingAssign);
       setVendor(response.data.vendor);
       setFollowUp(response.data?.bookingFollowup);
+      setGroupBooking(response.data?.groupbooking);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {
@@ -77,7 +81,7 @@ const ViewBooking = () => {
 
   useEffect(() => {
     fetchBookingData();
-  }, []);
+  }, [id]);
 
   const notifyUpdate = async () => {
     e.preventDefault();
@@ -379,167 +383,183 @@ const ViewBooking = () => {
       {loading ? (
         <LoaderComponent />
       ) : (
-        <div className="container mx-auto mt-2">
-          <div className="flex gap-4">
-            <div className="flex-grow">
-              <div className="mb-2">
-                <div className="flex justify-start space-x-4 ">
-                  {/* Home Deep Cleaning Button */}
-                  <button
-                    onClick={() => setActiveTab("bookingDetails")}
-                    className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                      activeTab === "bookingDetails"
-                        ? "border-green-500 bg-green-100 text-green-600"
-                        : "border-transparent hover:bg-green-50"
-                    }`}
-                  >
-                    <FaClipboardList />
-                    Booking Overview
-                  </button>
+        <>
+          <div className="container mx-auto mt-2">
+            <div className="flex gap-4">
+              <div className="flex-grow">
+                <div className="mb-2">
+                  <div className="flex justify-start space-x-4 ">
+                    <button
+                      onClick={() => setActiveTab("bookingDetails")}
+                      className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                        activeTab === "bookingDetails"
+                          ? "border-green-500 bg-green-100 text-green-600"
+                          : "border-transparent hover:bg-green-50"
+                      }`}
+                    >
+                      <FaClipboardList />
+                      Booking Overview
+                    </button>
 
-                  {/* Booking Overview Button */}
-                  {/* <button
-                  onClick={() => setActiveTab("customerInfo")}
-                  className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                    activeTab === "customerInfo"
-                      ? "border-green-500 bg-green-100 text-green-600"
-                      : "border-transparent hover:bg-green-50"
-                  }`}
-                >
-                  <FaClipboardList />
-                  Booking Overview
-                </button> */}
-
-                  {/* Other Details Button */}
-                  <button
-                    onClick={() => setActiveTab("additionalInfo")}
-                    className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
-                      activeTab === "additionalInfo"
-                        ? "border-red-500 bg-red-100 text-red-600"
-                        : "border-transparent hover:bg-red-50"
-                    }`}
-                  >
-                    <FaInfoCircle />
-                    Other Details
-                  </button>
+                    <button
+                      onClick={() => setActiveTab("additionalInfo")}
+                      className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                        activeTab === "additionalInfo"
+                          ? "border-red-500 bg-red-100 text-red-600"
+                          : "border-transparent hover:bg-red-50"
+                      }`}
+                    >
+                      <FaInfoCircle />
+                      Other Details
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("groupBookingInfo")}
+                      className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${
+                        activeTab === "groupBookingInfo"
+                          ? "border-blue-500 bg-blue-100 text-blue-600"
+                          : "border-transparent hover:bg-blue-50"
+                      }`}
+                    >
+                      <FaClipboardList />
+                      Group Booking
+                    </button>
+                  </div>
                 </div>
-
-                {/* Main Content Based on Active Tab */}
-                <Card className="mt-2">
-                  <CardBody>{renderActiveTabContent()}</CardBody>
-                </Card>
-              </div>
-              <div>
-                {/* Payment Card */}
-                <Card className="mb-6">
-                  <CardHeader floated={false} className="h-12 p-4">
-                    <Typography variant="h6" color="blue-gray">
-                      Booking Assign
-                    </Typography>
-                  </CardHeader>
-                  {/* here booking assign table  */}
-                  <CardBody>
-                    {bookingAssign.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto border-collapse ">
-                          <thead>
-                            <tr className="bg-gray-200 text-left ">
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">Full Name</span>
-                              </th>
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">
-                                  Start Time
-                                </span>
-                              </th>
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">
-                                  On the Way Time
-                                </span>
-                              </th>
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">End Time</span>
-                              </th>
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">Remarks</span>
-                              </th>
-                              <th className="p-3 border border-gray-700">
-                                <span className="text-gray-700">Status</span>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {bookingAssign.map((dataSumm, key) => (
-                              <tr
-                                key={key}
-                                className="bg-white border-b hover:bg-gray-50"
-                              >
-                                <td className="p-3 border border-gray-700">
-                                  <span className="text-gray-900">
-                                    {dataSumm.name}
-                                  </span>
-                                </td>
-                                <td className="p-3 border border-gray-700">
-                                  <span className="text-gray-900">
-                                    {dataSumm.order_start_time}
-                                  </span>
-                                </td>
-                                <td className="p-3 border border-gray-700">
-                                  <span className="text-gray-900">
-                                    {dataSumm.order_way_time}
-                                  </span>
-                                </td>
-                                <td className="p-3 border border-gray-700">
-                                  <span className="text-gray-900">
-                                    {dataSumm.order_end_time}
-                                  </span>
-                                </td>
-                                <td className="p-3 border border-gray-700">
-                                  <span className="text-gray-900">
-                                    {dataSumm.order_assign_remarks}
-                                  </span>
-                                </td>
-                                <td className="p-3 border border-gray-700">
-                                  <span
-                                    className={`${
-                                      dataSumm.order_assign_status ===
-                                      "Completed"
-                                        ? "text-green-500"
-                                        : "text-red-500"
-                                    }`}
-                                  >
-                                    {dataSumm.order_assign_status}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <div className="text-center py-4">
-                        <h1 className="text-gray-700 text-lg">
-                          No Data Available
-                        </h1>
-                      </div>
-                    )}
-                  </CardBody>
-                </Card>
-                  <Card className="mb-6">
-                    {/* here booking assign table  */}
-                    <CardBody>
-                      <MUIDataTable
-                        title={"Followup"}
-                        data={followup ? followup : []}
-                        columns={columns}
-                        options={options}
-                      />
-                    </CardBody>
-                  </Card>
+                {activeTab == "bookingDetails" ||
+                activeTab == "additionalInfo" ? (
+                  <>
+                    <Card className="my-2 ">
+                      <CardBody>{renderActiveTabContent()}</CardBody>
+                    </Card>
+                    <div>
+                      <Card className="mb-6">
+                        <CardHeader floated={false} className="h-12 p-4">
+                          <Typography variant="h6" color="blue-gray">
+                            Booking Assign
+                          </Typography>
+                        </CardHeader>
+                        <CardBody>
+                          {bookingAssign.length > 0 ? (
+                            <div className="overflow-x-auto">
+                              <table className="min-w-full table-auto border-collapse ">
+                                <thead>
+                                  <tr className="bg-gray-200 text-left ">
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        Full Name
+                                      </span>
+                                    </th>
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        Start Time
+                                      </span>
+                                    </th>
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        On the Way Time
+                                      </span>
+                                    </th>
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        End Time
+                                      </span>
+                                    </th>
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        Remarks
+                                      </span>
+                                    </th>
+                                    <th className="p-3 border border-gray-700">
+                                      <span className="text-gray-700">
+                                        Status
+                                      </span>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {bookingAssign.map((dataSumm, key) => (
+                                    <tr
+                                      key={key}
+                                      className="bg-white border-b hover:bg-gray-50"
+                                    >
+                                      <td className="p-3 border border-gray-700">
+                                        <span className="text-gray-900">
+                                          {dataSumm.name}
+                                        </span>
+                                      </td>
+                                      <td className="p-3 border border-gray-700">
+                                        <span className="text-gray-900">
+                                          {dataSumm.order_start_time}
+                                        </span>
+                                      </td>
+                                      <td className="p-3 border border-gray-700">
+                                        <span className="text-gray-900">
+                                          {dataSumm.order_way_time}
+                                        </span>
+                                      </td>
+                                      <td className="p-3 border border-gray-700">
+                                        <span className="text-gray-900">
+                                          {dataSumm.order_end_time}
+                                        </span>
+                                      </td>
+                                      <td className="p-3 border border-gray-700">
+                                        <span className="text-gray-900">
+                                          {dataSumm.order_assign_remarks}
+                                        </span>
+                                      </td>
+                                      <td className="p-3 border border-gray-700">
+                                        <span
+                                          className={`${
+                                            dataSumm.order_assign_status ===
+                                            "Completed"
+                                              ? "text-green-500"
+                                              : "text-red-500"
+                                          }`}
+                                        >
+                                          {dataSumm.order_assign_status}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          ) : (
+                            <div className="text-center py-4">
+                              <h1 className="text-gray-700 text-lg">
+                                No Data Available
+                              </h1>
+                            </div>
+                          )}
+                        </CardBody>
+                      </Card>
+                      <Card className="mb-6">
+                        <CardBody>
+                          <MUIDataTable
+                            title={"Followup"}
+                            data={followup ? followup : []}
+                            columns={columns}
+                            options={options}
+                          />
+                        </CardBody>
+                      </Card>
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full overflow-x-auto px-2"></div>
+                )}
               </div>
             </div>
           </div>
-        </div>
+          {activeTab == "groupBookingInfo" && (
+            <div className="w-full overflow-x-auto px-2">
+              <GroupBookingView
+                groupbooking={groupbooking}
+                setActiveTab={setActiveTab}
+              />
+            </div>
+          )}
+        </>
       )}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogContent>

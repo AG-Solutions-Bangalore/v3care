@@ -1,147 +1,64 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSquarePlus } from "react-icons/ci";
 import Moment from "moment";
-import BookingFilter from "../../../components/BookingFilter";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
-import { TextField } from "@mui/material";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
+import { useLocation, useNavigate } from "react-router-dom";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
-import GroupBookingView from "../commonView/GroupBookingView";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-const AllBooking = () => {
-  const [allBookingData, setAllBookingData] = useState(null);
-
+const GroupBookingView = ({ groupbooking, setActiveTab }) => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
-  const [filteredBookingData, setFilteredBookingData] = useState([]);
-  const location = useLocation();
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 10;
-  const searchParams = new URLSearchParams(location.search);
-  const pageParam = searchParams.get("page");
   const [uniqueDates, setUniqueDates] = useState([]);
   const [uniqueDate, setUniqueDate] = useState([]);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const pageParam = searchParams.get("page");
+
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   useEffect(() => {
-    if (pageParam) {
-      setPage(parseInt(pageParam) - 1);
-    } else {
-      const storedPageNo = localStorage.getItem("page-no");
-      if (storedPageNo) {
-        setPage(parseInt(storedPageNo) - 1);
-        navigate(`/all-booking?page=${storedPageNo}`);
-      } else {
-        localStorage.setItem("page-no", 1);
-        setPage(0);
-      }
-    }
-  }, [location]);
+    if (!groupbooking || !Array.isArray(groupbooking)) return;
 
-  const handleDateChange = (event) => {
-    const date = event.target.value;
-    setSelectedDate(date);
-    localStorage.setItem("filteredDate", date);
+    const dates = [
+      ...new Set(
+        groupbooking?.map((item) =>
+          Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+        )
+      ),
+    ].sort(
+      (a, b) =>
+        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
+    );
 
-    if (date) {
-      const filteredData = allBookingData.filter((item) => {
-        const itemDate = new Date(item.order_service_date);
-        const selectedDateObj = new Date(date);
-        return itemDate.toDateString() === selectedDateObj.toDateString();
-      });
-      setFilteredBookingData(filteredData);
-    } else {
-      setFilteredBookingData(allBookingData);
-    }
-  };
-  useEffect(() => {
-    const storedDate = localStorage.getItem("filteredDate");
+    const serviceDates = [
+      ...new Set(
+        groupbooking?.map((item) =>
+          Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+        )
+      ),
+    ].sort(
+      (a, b) =>
+        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
+    );
 
-    if (storedDate && allBookingData) {
-      const filteredData = allBookingData.filter((item) => {
-        const itemDate = new Date(item.order_service_date);
-        const selectedDateObj = new Date(storedDate);
-        return itemDate.toDateString() === selectedDateObj.toDateString();
-      });
+    const formattedDates = dates.map((date) =>
+      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+    );
 
-      setSelectedDate(storedDate);
-      setFilteredBookingData(filteredData);
-    } else {
-      setFilteredBookingData(allBookingData);
-    }
-  }, [allBookingData]);
+    const formattedServiceDates = serviceDates.map((date) =>
+      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+    );
+
+    setUniqueDates(formattedDates);
+    setUniqueDate(formattedServiceDates);
+  }, [groupbooking]);
+
   UseEscapeKey();
-
-  useEffect(() => {
-    const fetchTodayData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-list-all`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        setAllBookingData(response.data?.booking);
-        setFilteredBookingData(response.data?.booking);
-
-        // Extract unique dates, convert to YYYY-MM-DD for sorting
-        const dates = [
-          ...new Set(
-            response.data?.booking.map((item) =>
-              Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-            )
-          ),
-        ].sort(
-          (a, b) =>
-            Moment(b, "YYYY-MM-DD").valueOf() -
-            Moment(a, "YYYY-MM-DD").valueOf()
-        );
-        const date = [
-          ...new Set(
-            response.data?.booking.map((item) =>
-              Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-            )
-          ),
-        ].sort(
-          (a, b) =>
-            Moment(b, "YYYY-MM-DD").valueOf() -
-            Moment(a, "YYYY-MM-DD").valueOf()
-        );
-
-        // Convert back to DD-MM-YYYY format after sorting
-        const formattedDates = dates.map((date) =>
-          Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
-        );
-        // Convert back to DD-MM-YYYY format after sorting
-        const formattedDate = date.map((date) =>
-          Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
-        );
-
-        setUniqueDates(formattedDates);
-        setUniqueDate(formattedDate);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTodayData();
-  }, []);
 
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -155,11 +72,7 @@ const AllBooking = () => {
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
-  };
-  const handleReset = () => {
-    setSelectedDate(null);
-    setFilteredBookingData(allBookingData);
-    localStorage.removeItem("filteredDate");
+    setActiveTab("bookingDetails");
   };
 
   const columns = [
@@ -470,7 +383,7 @@ const AllBooking = () => {
           }
 
           return (
-            <div className="w-48 overflow-x-auto">
+            <div className="w-40 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
                 <tbody className="flex flex-wrap h-[40px] border-1 border-black w-48">
                   <tr>
@@ -595,17 +508,11 @@ const AllBooking = () => {
     download: false,
     print: false,
 
+    count: groupbooking?.length || 0,
     onRowClick: (rowData, rowMeta, e) => {
-      const id = allBookingData[rowMeta.dataIndex].id;
-
+      const id = groupbooking[rowMeta.dataIndex].id;
+      console.log(id, "id");
       handleView(e, id)();
-    },
-    count: allBookingData?.length || 0,
-    rowsPerPage: rowsPerPage,
-    page: page,
-    onChangePage: (currentPage) => {
-      setPage(currentPage);
-      navigate(`/all-booking?page=${currentPage + 1}`);
     },
     setRowProps: (rowData) => {
       const orderStatus = rowData[21];
@@ -638,73 +545,17 @@ const AllBooking = () => {
         },
       };
     },
-
-    // Custom Toolbar with Date Input
-    customToolbar: () => {
-      return (
-        <>
-          <TextField
-            label="Filter by Date"
-            type="date"
-            value={selectedDate || ""}
-            onChange={handleDateChange}
-            size="small"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            className="mr-4"
-          />
-
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
-          >
-            Reset
-          </button>
-        </>
-      );
-    },
-    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
-      return (
-        <div className="flex justify-end items-center p-4">
-          <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
-            {Math.ceil(count / rowsPerPage)}
-          </span>
-          <IoIosArrowBack
-            onClick={page === 0 ? null : () => changePage(page - 1)}
-            className={`w-6 h-6 cursor-pointer ${
-              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
-            }  hover:text-red-600`}
-          />
-          <IoIosArrowForward
-            onClick={
-              page >= Math.ceil(count / rowsPerPage) - 1
-                ? null
-                : () => changePage(page + 1)
-            }
-            className={`w-6 h-6 cursor-pointer ${
-              page >= Math.ceil(count / rowsPerPage) - 1
-                ? "text-gray-400 cursor-not-allowed"
-                : "text-blue-600"
-            }  hover:text-red-600`}
-          />
-        </div>
-      );
-    },
   };
 
   return (
-    <Layout>
-      <BookingFilter />
-
+    <>
       {loading ? (
         <LoaderComponent />
       ) : (
-        <div className="mt-1">
+        <div className="w-full overflow-x-auto">
           <MUIDataTable
-            title={"All Booking List"}
-            data={filteredBookingData}
+            title={"Group Booking"}
+            data={groupbooking || []}
             columns={columns}
             options={options}
           />
@@ -715,8 +566,8 @@ const AllBooking = () => {
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
       />
-    </Layout>
+    </>
   );
 };
 
-export default AllBooking;
+export default GroupBookingView;
