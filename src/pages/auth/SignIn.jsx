@@ -37,7 +37,7 @@ const SignIn = () => {
       // Send POST request to login API with form data
       const res = await axios.post(`${BASE_URL}/api/panel-login`, formData);
 
-      if (res.status === 200 && res.data?.msg === "success.") {
+      if (res.data.code == 200) {
         const token = res.data.UserInfo?.token;
         if (token) {
           // Store the token in localStorage
@@ -55,11 +55,15 @@ const SignIn = () => {
           toast.error("Login Failed, Token not received.");
         }
       } else {
-        toast.error("Login Failed, Please check your credentials.");
+        toast.error(
+          res.data.msg || "Login Failed, Please check your credentials."
+        );
       }
     } catch (error) {
-      console.error(error);
-      toast.error("An error occurred during login.");
+      console.error(error.response.data.message);
+      toast.error(
+        error.response.data.message || "An error occurred during login."
+      );
     }
 
     setLoading(false);

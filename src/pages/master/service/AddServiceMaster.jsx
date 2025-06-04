@@ -158,7 +158,7 @@ const AddServiceMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create ServiceD"} />
+      <PageHeader title={"Create Service"} />
 
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>

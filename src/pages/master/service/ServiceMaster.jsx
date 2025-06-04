@@ -101,17 +101,7 @@ const ServiceMaster = () => {
           },
         ]
       : []),
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
+
     {
       name: "service_image",
       label: "Image",
@@ -147,16 +137,53 @@ const ServiceMaster = () => {
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          if (!value) return null;
+          const values =
+            typeof value == "string"
+              ? value.split(",").map((v) => parseInt(v.trim()))
+              : Array.isArray(value)
+              ? value
+              : [value];
+
+          const renderBadge = (val) => {
+            let label = "";
+            let colorClass = "";
+
+            switch (val) {
+              case 1:
+                label = "Popular";
+                colorClass = "bg-blue-600";
+                break;
+              case 2:
+                label = "Most Popular";
+                colorClass = "bg-teal-600";
+                break;
+              case 3:
+                label = "Super Popular";
+                colorClass = "bg-red-600";
+                break;
+              default:
+                label = "Unknown";
+                colorClass = "bg-gray-400";
+            }
+
+            return (
+              <span
+                key={val}
+                className={`text-white text-xs font-medium px-2 py-1 rounded-full mr-1 mb-1 inline-block ${colorClass}`}
+              >
+                {label}
+              </span>
+            );
+          };
+
+          return (
+            <div className="flex flex-wrap">{values.map(renderBadge)}</div>
+          );
+        },
       },
     },
-    // {
-    //   name: "service_comm",
-    //   label: "Commision",
-    //   options: {
-    //     filter: true,
-    //     sort: false,
-    //   },
-    // },
     {
       name: "service_status",
       label: "Status  ",
