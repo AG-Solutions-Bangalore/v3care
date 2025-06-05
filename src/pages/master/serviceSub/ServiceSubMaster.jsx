@@ -178,7 +178,7 @@ const ServiceSubMaster = () => {
             (userType == "8" && (
               <ButtonConfigColor
                 type="create"
-                label="Service Sub"
+                label="Sub Service"
                 onClick={() => navigate("/add-service-sub")}
               />
             ))}
@@ -222,7 +222,7 @@ const ServiceSubMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Service Sub List"
+            title="Sub Service  List"
             data={serviceSubData ? serviceSubData : []}
             columns={columns}
             options={options}

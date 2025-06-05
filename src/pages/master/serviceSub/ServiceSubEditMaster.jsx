@@ -4,7 +4,11 @@ import MasterFilter from "../../../components/MasterFilter";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Card, Input } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-import {BASE_URL, NO_IMAGE_URL, SERVICE_SUB_IMAGE_URL} from "../../../base/BaseUrl";
+import {
+  BASE_URL,
+  NO_IMAGE_URL,
+  SERVICE_SUB_IMAGE_URL,
+} from "../../../base/BaseUrl";
 import axios from "axios";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -141,7 +145,7 @@ const ServiceSubEditMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Edit Service Sub"} onClick={handleBack} />
+      <PageHeader title={"Edit Sub Service"} onClick={handleBack} />
       {fetchloading ? (
         <LoaderComponent />
       ) : (
@@ -179,7 +183,7 @@ const ServiceSubEditMaster = () => {
                 </div>
                 <div className="mb-6">
                   <Input
-                    label="Service Sub"
+                    label="Sub Service"
                     type="text"
                     name="service_sub"
                     value={services.service_sub}

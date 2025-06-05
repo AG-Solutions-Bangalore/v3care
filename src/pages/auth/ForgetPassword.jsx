@@ -4,37 +4,83 @@ import { Link } from "react-router-dom";
 import { BASE_URL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import axios from "axios";
 
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-  const onResetPassword = (e) => {
+  const validate = () => {
+    let valid = true;
+    setUsernameError("");
+    setEmailError("");
+
+    if (!username.trim()) {
+      setUsernameError("Username is required");
+      valid = false;
+    }
+
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      valid = false;
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())) {
+      setEmailError("Invalid email format");
+      valid = false;
+    }
+
+    return valid;
+  };
+  // const onResetPassword = (e) => {
+  //   e.preventDefault();
+
+  //   if (email !== "" && username !== "") {
+  //     setLoading(true); // Start loading
+
+  //     axios(
+  //       `${BASE_URL}/api/panel-send-password?username=${username}&email=${email}`,
+  //       {
+  //         method: "POST",
+  //       }
+  //     )
+  //       .then((response) => response.json())
+  //       .then((response) => {
+  //         toast.success("New Password Sent to your Email");
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         toast.error(error.response.data.msg, "Email Not sent.");
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //       });
+  //   } else {
+  //     toast.warning("Please enter a Username & Email");
+  //   }
+  // };
+  const onResetPassword = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
 
-    if (email !== "" && username !== "") {
-      setLoading(true); // Start loading
+    setLoading(true);
 
-      fetch(
-        `${BASE_URL}/api/panel-send-password?username=${username}&email=${email}`,
-        {
-          method: "POST",
-        }
-      )
-        .then((response) => response.json())
-        .then((response) => {
-          toast.success("New Password Sent to your Email");
-        })
-        .catch((error) => {
-          toast.error("Email Not sent.");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      toast.warning("Please enter a Username & Email");
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-send-password?username=${username}&email=${email}`
+      );
+
+      toast.success(response.data.msg || "New Password Sent to your Email");
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Email not sent due to a server error."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,10 +91,10 @@ const ForgetPassword = () => {
           <div className="flex justify-between mb-4">
             <div>
               <h2 className="font-bold text-2xl text-[#002D74]">
-                Forget Password
+                Forgot Password ?
               </h2>
               <p className="text-xs mt-4 text-[#002D74]">
-                Get started with V3Care
+                User Name & Email To Reset Password
               </p>
             </div>
             <img
@@ -63,51 +109,65 @@ const ForgetPassword = () => {
             onSubmit={onResetPassword}
           >
             <div className="mb-6 flex flex-col gap-6">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="-mb-3 font-medium"
-              >
-                Username
-              </Typography>
-              <Input
-                id="username"
-                name="username"
-                size="lg"
-                placeholder="Enter your username"
-                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="-mb-3 font-medium"
-              >
-                Email Address
-              </Typography>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                size="lg"
-                placeholder="name@gmail.com"
-                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
-                labelProps={{
-                  className: "before:content-none after:content-none",
-                }}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div>
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="mb-3 font-medium"
+                >
+                  User Name
+                </Typography>
+                <Input
+                  id="username"
+                  name="username"
+                  size="lg"
+                  placeholder="Enter your User Name"
+                  className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                  labelProps={{
+                    className: "hidden",
+                  }}
+                  maxLength={50}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  error={!!usernameError}
+                />
+                {usernameError && (
+                  <p className="text-red-600 text-sm mt-1">{usernameError}</p>
+                )}
+              </div>
+              <div>
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="mb-3 font-medium"
+                >
+                  Email Address
+                </Typography>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  size="lg"
+                  maxLength={50}
+                  placeholder="name@gmail.com"
+                  className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                  labelProps={{
+                    className: "hidden",
+                  }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={!!emailError}
+                />
+                {emailError && (
+                  <p className="text-red-600 text-sm mt-1">{emailError}</p>
+                )}
+              </div>
             </div>
 
             <ButtonConfigColor
               type="default"
               buttontype="submit"
-              label="Forget Password"
+              label="Restore Password"
               loading={loading}
               className="w-full"
             />

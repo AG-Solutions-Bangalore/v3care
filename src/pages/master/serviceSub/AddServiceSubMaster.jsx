@@ -103,7 +103,7 @@ const AddServiceSubMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Service Sub"} />
+      <PageHeader title={"Create Sub Service"} />
 
       <div className="w-full mt-2 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
@@ -153,12 +153,13 @@ const AddServiceSubMaster = () => {
             {/* Service Sub Field */}
             <div className="form-group">
               <Input
-                label="Service Sub"
+                label="Sub Service"
                 type="text"
                 name="service_sub"
                 value={services.service_sub}
                 onChange={onInputChange}
                 required
+                maxLength={180}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>

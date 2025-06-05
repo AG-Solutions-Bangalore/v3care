@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "@material-tailwind/react";
 import Layout from "../../layout/Layout";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
@@ -86,6 +86,8 @@ const Profile = () => {
               id="name"
               type="text"
               value={firstName}
+              maxLength={50}
+              required
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Enter your name"
             />
@@ -94,6 +96,8 @@ const Profile = () => {
               id="mobile"
               type="tel"
               value={phone}
+              maxLength={10}
+              required
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Enter your mobile number"
             />
@@ -101,7 +105,9 @@ const Profile = () => {
               label="Email"
               id="email"
               type="email"
+              maxLength={50}
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
             />

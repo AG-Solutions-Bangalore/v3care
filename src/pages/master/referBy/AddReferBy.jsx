@@ -99,15 +99,16 @@ const AddReferBy = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Refer By"} />
+      <PageHeader title={"Create Referred By"} />
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-2 gap-6 mb-6">
             <div className="form-group">
               <Input
-                label="Refer By"
+                label="Referred By"
                 required
                 name="refer_by"
+                maxLength={80}
                 value={referby.refer_by}
                 onChange={onInputChange}
               />

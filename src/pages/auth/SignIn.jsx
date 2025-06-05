@@ -5,18 +5,42 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
+  const validate = () => {
+    let valid = true;
+    setPasswordError("");
+    setEmailError("");
+
+    if (!email.trim()) {
+      setEmailError("username is required");
+      valid = false;
+    }
+
+    if (!password.trim()) {
+      setPasswordError("Password is required");
+      valid = false;
+    }
+
+    return valid;
+  };
   const handleSumbit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.warning("Please enter a Email & Password");
-      return;
-    }
+    // if (!email || !password) {
+    //   toast.warning("Please enter a Email & Password");
+    //   return;
+    // }
+    if (!validate()) return;
 
     setLoading(true);
 
@@ -92,7 +116,8 @@ const SignIn = () => {
               <div>
                 <h2 className="font-bold text-2xl text-[#002D74]">Login</h2>
                 <p className="text-xs mt-4 text-[#002D74]">
-                  If you are already a member, easily log in
+                  {/* If you are already a member, easily log in */}
+                  Existing Member, Login Now
                 </p>
               </div>
               <img
@@ -108,44 +133,49 @@ const SignIn = () => {
               className="mt-8 mb-2 w-full"
             >
               <div className="mb-6 flex flex-col gap-6">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="-mb-3 font-medium"
-                >
-                  Username
-                </Typography>
-                <Input
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  size="lg"
-                  placeholder="Enter User Name"
-                  className="!border-t-blue-gray-200 focus:!border-t-gray-900"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                />
-                <div className="flex justify-between">
+                <div>
                   <Typography
                     variant="small"
                     color="blue-gray"
-                    className="-mb-3 font-medium"
+                    className="mb-3 font-medium"
                   >
-                    Password
+                    User Name
                   </Typography>
-                  <Typography
-                    variant="small"
-                    className=" -mb-3 font-medium hover:text-orange-600  text-gray-500 border-b border-black   "
-                  >
-                    <Link tabIndex={-1} to="/forget-password">
-                      Forgot Password
-                    </Link>
-                  </Typography>
-                </div>
+                  <Input
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    size="lg"
+                    placeholder="Enter User Name"
+                    // className="!border-t-blue-gray-200 focus:!border-t-gray-900"
+                    className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                    labelProps={{
+                      className: "hidden",
+                    }}
+                    maxLength={50}
+                    error={!!emailError}
 
-                <Input
+                    // labelProps={{
+                    //   className: "before:content-none after:content-none",
+                    // }}
+                  />
+                  {emailError && (
+                    <p className="text-red-600 text-sm mt-1">{emailError}</p>
+                  )}
+                </div>
+                <div>
+                  <div className="flex justify-between">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="mb-3 font-medium"
+                    >
+                      Password
+                    </Typography>
+                  </div>
+
+                  {/* <Input
                   id="password"
                   name="password"
                   value={password}
@@ -157,7 +187,55 @@ const SignIn = () => {
                   labelProps={{
                     className: "before:content-none after:content-none",
                   }}
-                />
+                /> */}
+                  <div className="relative w-full">
+                    <Input
+                      id="password"
+                      name="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPassword ? "text" : "password"}
+                      size="lg"
+                      maxLength={16}
+                      placeholder="********"
+                      // className="!border-t-blue-gray-200 focus:!border-t-gray-900 pr-10"
+                      // labelProps={{
+                      //   className: "before:content-none after:content-none",
+                      // }}
+                      className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                      labelProps={{
+                        className: "hidden",
+                      }}
+                      error={!!passwordError}
+                    />
+                    {passwordError && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {passwordError}
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash size={20} />
+                    ) : (
+                      <IoEye size={20} />
+                    )}
+                  </button>
+                </div>
+                <div className="flex justify-end">
+                  <Typography
+                    variant="small"
+                    className=" -mb-3 font-medium hover:text-orange-600  text-gray-500 border-b border-black   "
+                  >
+                    <Link tabIndex={-1} to="/forget-password">
+                      Forgot Password ?
+                    </Link>
+                  </Typography>
+                </div>
               </div>
 
               <ButtonConfigColor

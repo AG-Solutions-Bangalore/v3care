@@ -145,7 +145,7 @@ const ReferByEditMaster = () => {
   return (
     <Layout>
       <MasterFilter />
-      <PageHeader title={"Edit Refer By"} onClick={handleBack} />
+      <PageHeader title={"Edit Referred By"} onClick={handleBack} />
       {fetchloading ? (
         <LoaderComponent />
       ) : (
@@ -156,7 +156,7 @@ const ReferByEditMaster = () => {
                 {/* Branch Name */}
                 <div className="form-group">
                   <Input
-                    label="Refer By"
+                    label="Referred By"
                     type="text"
                     name="refer_by"
                     value={referBy.refer_by}

@@ -486,7 +486,7 @@ const AddBooking = () => {
               <FormControl fullWidth>
                 <InputLabel id="order_refer_by-label">
                   <span className="text-sm relative bottom-[6px]">
-                    Refer By <span className="text-red-700">*</span>
+                    Referred By <span className="text-red-700">*</span>
                   </span>
                 </InputLabel>
                 <Select
@@ -496,7 +496,7 @@ const AddBooking = () => {
                   name="order_refer_by"
                   value={booking.order_refer_by}
                   onChange={onInputChange}
-                  label="Refer By *"
+                  label="Referred By *"
                   required
                 >
                   {referby.map((data) => (
@@ -509,10 +509,11 @@ const AddBooking = () => {
               <div className="form-group">
                 <Fields
                   required="required"
-                  title="Customer"
+                  title="Customer Name"
                   type="textField"
                   autoComplete="Name"
                   name="order_customer"
+                  maxLength={50}
                   value={booking.order_customer}
                   onChange={(e) => onInputChange(e)}
                 />
@@ -772,6 +773,7 @@ const AddBooking = () => {
                   autoComplete="Name"
                   name="order_amount"
                   value={booking.order_amount}
+                  maxLength={10}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                 />
@@ -783,6 +785,7 @@ const AddBooking = () => {
                   type="textField"
                   autoComplete="Name"
                   name="order_advance"
+                  maxLength={10}
                   value={booking.order_advance}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<CurrencyRupee sx={{ color: "red" }} />}
@@ -809,6 +812,7 @@ const AddBooking = () => {
                   title="KM"
                   type="textField"
                   autoComplete="Name"
+                  maxLength={8}
                   name="order_km"
                   value={booking.order_km}
                   onChange={(e) => onInputChange(e)}
@@ -823,7 +827,7 @@ const AddBooking = () => {
             <div className={styles["address-div"]}>
               <div>
                 <Typography variant="small" className={styles["heading"]}>
-                  Search Place .. <span style={{ color: "red" }}> *</span>
+                  Search Place <span style={{ color: "red" }}> *</span>
                 </Typography>
                 <input
                   className={styles["search-div"]}
@@ -831,7 +835,7 @@ const AddBooking = () => {
                   id="order_address"
                   required
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search Places ..."
+                  placeholder="Search Place"
                   value={query}
                 />
               </div>
@@ -845,6 +849,7 @@ const AddBooking = () => {
                   type="textField"
                   autoComplete="Name"
                   name="order_flat"
+                  maxLength={80}
                   value={booking.order_flat}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<HomeIcon sx={{ color: "green" }} />}
@@ -858,6 +863,7 @@ const AddBooking = () => {
                   type="textField"
                   autoComplete="Name"
                   name="order_landmark"
+                  maxLength={80}
                   value={booking.order_landmark}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<Place sx={{ color: "green" }} />}
@@ -885,6 +891,7 @@ const AddBooking = () => {
                   type="textField"
                   autoComplete="Name"
                   name="order_remarks"
+                  maxLength={80}
                   value={booking.order_remarks}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<Place sx={{ color: "green" }} />}
