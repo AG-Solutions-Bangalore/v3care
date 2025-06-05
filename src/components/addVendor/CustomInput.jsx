@@ -3,7 +3,7 @@ import { InputAdornment } from "@mui/material";
 import React, { forwardRef } from "react";
 
 const CustomInput = forwardRef(
-  ({ label, icon: Icon, required, type, ...props }, ref) => {
+  ({ label, icon: Icon, required, type, maxLength, ...props }, ref) => {
     return (
       <div>
         <Input
@@ -26,7 +26,7 @@ const CustomInput = forwardRef(
           required={required}
           type={type}
           // inputProps={inputProps}
-          // maxLength={maxLength}
+          maxLength={maxLength}
           InputProps={{
             startAdornment: Icon ? (
               <InputAdornment position="start">

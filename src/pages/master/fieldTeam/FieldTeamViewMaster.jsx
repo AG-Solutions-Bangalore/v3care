@@ -73,7 +73,7 @@ const FieldTeamViewMaster = ({ fieldId, onClose }) => {
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-xl font-bold text-black">
-                Field Team Details
+                Field Team Details 
               </h1>
 
               <div className="flex gap-2">

@@ -1,28 +1,20 @@
-import {
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-  Carousel,
-} from "@material-tailwind/react";
-import { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Carousel, Input, Typography } from "@material-tailwind/react";
 import axios from "axios";
-import { BASE_URL } from "../../base/BaseUrl";
-import { ContextPanel } from "../../utils/ContextPanel";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
 
   const handleSumbit = async (e) => {
     e.preventDefault();
-    if (!isPanelUp) {
-      navigate("/maintenance");
+    if (!email || !password) {
+      toast.warning("Please enter a Email & Password");
       return;
     }
 

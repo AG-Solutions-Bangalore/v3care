@@ -1,36 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import Layout from "../../../layout/Layout";
 import {
-  Autocomplete,
-  Button,
-  InputAdornment,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  Person,
-  PhoneIphone,
-  Email,
   CurrencyRupee,
+  Email,
+  MiscellaneousServices,
   PinDrop,
   Place,
-  Assignment,
-  MiscellaneousServices,
-  WhatsApp,
 } from "@mui/icons-material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import Layout from "../../../layout/Layout";
 import styles from "./AddBooking.module.css";
 
+import { Input } from "@material-tailwind/react";
 import HomeIcon from "@mui/icons-material/Home";
 import axios from "axios";
-import Fields from "../../../components/addBooking/TextField";
-import { Input } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
-import { useNavigate } from "react-router-dom";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Fields from "../../../components/addBooking/TextField";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 // const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
@@ -406,6 +401,7 @@ const AddBooking = () => {
       toast.error("Fill all the filled");
       return;
     }
+
     let data = {
       order_date: booking.order_date,
       order_year: currentYear,
@@ -475,7 +471,7 @@ const AddBooking = () => {
         <form id="addIdniv" onSubmit={onSubmit}>
           <div className={styles["form-container"]}>
             <div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <Fields
                   title="Refer By"
                   type="dropdown"
@@ -485,7 +481,31 @@ const AddBooking = () => {
                   onChange={(e) => onInputChange(e)}
                   options={referby}
                 />
-              </div>
+              </div> */}
+
+              <FormControl fullWidth>
+                <InputLabel id="order_refer_by-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Refer By <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="order_refer_by-label"
+                  id="order_refer_by"
+                  name="order_refer_by"
+                  value={booking.order_refer_by}
+                  onChange={onInputChange}
+                  label="Refer By *"
+                  required
+                >
+                  {referby.map((data) => (
+                    <MenuItem key={data.refer_by} value={data.refer_by}>
+                      {data.refer_by}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <div className="form-group">
                 <Fields
                   required="required"
@@ -544,7 +564,7 @@ const AddBooking = () => {
               </div>
               {userType == 6 || userType == 8 ? (
                 <div>
-                  <Fields
+                  {/* <Fields
                     required="required"
                     title="Branch"
                     type="branchDropdown"
@@ -553,13 +573,37 @@ const AddBooking = () => {
                     value={booking.branch_id}
                     onChange={(e) => onInputChange(e)}
                     options={branch}
-                  />
+                  /> */}
+
+                  <FormControl fullWidth>
+                    <InputLabel id="order_refer_by-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Branch <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="branch_id-label"
+                      id="branch_id"
+                      name="branch_id"
+                      value={booking.branch_id}
+                      onChange={(e) => onInputChange(e)}
+                      label="Branch *"
+                      required
+                    >
+                      {branch.map((data) => (
+                        <MenuItem key={data.value} value={data.id}>
+                          {data.branch_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               ) : (
                 ""
               )}
               <div>
-                <Fields
+                {/* <Fields
                   title="Service"
                   type="serviceDropdown"
                   autoComplete="Name"
@@ -569,13 +613,39 @@ const AddBooking = () => {
                     onInputChange(e), HalfA(e);
                   }}
                   options={serdata}
-                />
+                /> */}
+                <FormControl fullWidth>
+                  <InputLabel id="order_service-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Service <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="order_service-label"
+                    id="order_service"
+                    name="order_service"
+                    value={booking.order_service}
+                    onChange={(e) => {
+                      onInputChange(e), HalfA(e);
+                    }}
+                    label="Service *"
+                    required
+                  >
+                    {serdata.map((data) => (
+                      <MenuItem key={data.value} value={data.id}>
+                        {data.service}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
+
               {booking.order_service == "23" ? (
                 ""
               ) : serdatasub.length > 0 ? (
                 <div>
-                  <Fields
+                  {/* <Fields
                     title="Service Sub"
                     type="subServiceDropdown"
                     autoComplete="Name"
@@ -585,7 +655,32 @@ const AddBooking = () => {
                       onInputChange(e), HalfB(e);
                     }}
                     options={serdatasub}
-                  />
+                  /> */}
+                  <FormControl fullWidth>
+                    <InputLabel id="order_service_sub-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Service Sub <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="order_service_sub-label"
+                      id="order_service_sub"
+                      name="order_service_sub"
+                      value={booking.order_service_sub}
+                      onChange={(e) => {
+                        onInputChange(e), HalfB(e);
+                      }}
+                      label="Service Sub *"
+                      required
+                    >
+                      {serdatasub.map((data) => (
+                        <MenuItem key={data.value} value={data.id}>
+                          {data.service_sub}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               ) : (
                 ""
@@ -594,7 +689,7 @@ const AddBooking = () => {
                 ""
               ) : (
                 <div>
-                  <Fields
+                  {/* <Fields
                     required="required"
                     title="Price For"
                     type="priceforDropdown"
@@ -605,7 +700,32 @@ const AddBooking = () => {
                       onInputChange(e), HalfC(e);
                     }}
                     options={pricedata}
-                  />
+                  /> */}
+                  <FormControl fullWidth>
+                    <InputLabel id="order_service_price_for-label">
+                      <span className="text-sm relative bottom-[6px]">
+                        Price For <span className="text-red-700">*</span>
+                      </span>
+                    </InputLabel>
+                    <Select
+                      sx={{ height: "40px", borderRadius: "5px" }}
+                      labelId="order_service_price_for-label"
+                      id="order_service_price_for"
+                      name="order_service_price_for"
+                      value={booking.order_service_price_for}
+                      onChange={(e) => {
+                        onInputChange(e), HalfC(e);
+                      }}
+                      label="Price For *"
+                      required
+                    >
+                      {pricedata.map((data) => (
+                        <MenuItem key={data.value} value={data.id}>
+                          {data.service_price_for} - {data.service_price_rate}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               )}
             </div>

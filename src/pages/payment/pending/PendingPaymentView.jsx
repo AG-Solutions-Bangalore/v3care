@@ -1,29 +1,25 @@
-import { useNavigate, useParams } from "react-router-dom";
-import Layout from "../../../layout/Layout";
-import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
-import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
-  Input,
-  Select,
-  Option,
-  Button,
+  CardHeader,
   Textarea,
+  Typography,
 } from "@material-tailwind/react";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { ArrowLeft } from "lucide-react";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
@@ -299,7 +295,7 @@ const PendingPaymentView = () => {
                   <form onSubmit={updateData}>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                       <div className="md:col-span-4">
-                        <Select
+                        {/* <Select
                           label="Select Payment Mode"
                           name="order_check_payment_type"
                           value={payment.order_check_payment_type || ""}
@@ -318,7 +314,34 @@ const PendingPaymentView = () => {
                               {mode.payment_mode}
                             </Option>
                           ))}
-                        </Select>
+                        </Select> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="order_check_payment_type-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Payment Mode
+                              <span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <Select
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="order_check_payment_type"
+                            id="id"
+                            name="order_check_payment_type"
+                            value={payment.order_check_payment_type || ""}
+                            onChange={onInputChange}
+                            label="Payment Mode *"
+                            required
+                          >
+                            {paymentModes.map((item) => (
+                              <MenuItem
+                                key={item.id}
+                                value={String(item.payment_mode)}
+                              >
+                                {item.payment_mode}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>{" "}
                       </div>
                       <div className="md:col-span-8">
                         {" "}

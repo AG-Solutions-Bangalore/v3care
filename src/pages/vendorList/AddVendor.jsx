@@ -131,14 +131,15 @@ const AddVendor = () => {
   };
 
   const [users1, setUsers1] = useState([useTemplate1]);
-
+  const [location, setLocation] = useState([]);
+  const [loadingPin, setLoadingPin] = useState(false);
+  const [pinError, setPinError] = useState("");
   const onChange1 = (e, index) => {
     const updatedUsers = users1.map((user, i) =>
       index == i
         ? Object.assign(user, { [e.target.name]: e.target.value })
         : user
     );
-    console.log("chanage", updatedUsers);
     setUsers1(updatedUsers);
   };
 
@@ -265,10 +266,10 @@ const AddVendor = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }).then((res) => {
-        console.log("res post", res);
         if (res.data.code == "200") {
           toast.success(res.data?.msg || "Vendor Created Succesfully");
           navigate("/vendor-list");
+          resetForm();
         } else {
           if (res.data.code == "402") {
             toast.error(res.data?.msg || "Mobile No Duplicate");
@@ -280,31 +281,59 @@ const AddVendor = () => {
         }
       });
     }
-
-    resetForm();
   };
 
-  const [location, setLocation] = useState([]);
+  // const CheckPincode = (test, selectedValue) => {
+  //   const pincode = test.target.value;
+  //   if (pincode.length == "6") {
+  //     fetch("https://api.v3care.in/api/external/pin/" + pincode)
+  //       .then((response) => response.json())
+  //       .then((response) => {
+  //         const tempUsers = [...users1];
 
-  const CheckPincode = (test, selectedValue) => {
-    const pincode = test.target.value;
-    if (pincode.length == "6") {
-      fetch("https://api.v3care.in/api/external/pin/" + pincode)
-        .then((response) => response.json())
-        .then((response) => {
-          const tempUsers = [...users1];
+  //         tempUsers[selectedValue].vendor_branch_city = response.city;
+  //         tempUsers[selectedValue].vendor_branch_district = response.district;
+  //         tempUsers[selectedValue].vendor_branch_state = response.state;
+  //         setUsers1(tempUsers);
+  //         if (response.areas != null) {
+  //           setLocation(response.areas);
+  //         }
+  //       });
+  //   }
+  // };
+  const CheckPincode = async (e, selectedValue) => {
+    const pincode = e.target.value;
+    if (pincode.length === 6) {
+      setLoadingPin(true);
+      setPinError("");
 
-          tempUsers[selectedValue].vendor_branch_city = response.city;
-          tempUsers[selectedValue].vendor_branch_district = response.district;
-          tempUsers[selectedValue].vendor_branch_state = response.state;
-          setUsers1(tempUsers);
-          if (response.areas != null) {
-            setLocation(response.areas);
-          }
-        });
+      try {
+        const res = await fetch(
+          "https://api.v3care.in/api/external/pin/" + pincode
+        );
+        if (!res.ok) {
+          throw new Error("Failed to fetch pincode info");
+        }
+
+        const response = await res.json();
+
+        const tempUsers = [...users1];
+        tempUsers[selectedValue].vendor_branch_city = response.city;
+        tempUsers[selectedValue].vendor_branch_district = response.district;
+        tempUsers[selectedValue].vendor_branch_state = response.state;
+        setUsers1(tempUsers);
+
+        if (response.areas !== null) {
+          setLocation(response.areas);
+        }
+      } catch (error) {
+        console.error("Error fetching pincode:", error);
+        setPinError("Unable to fetch location. Please try again.");
+      } finally {
+        setLoadingPin(false);
+      }
     }
   };
-
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
@@ -464,9 +493,6 @@ const AddVendor = () => {
           </Typography>
 
           <Box>
-            {/* <div>
-              <h3 style={{ fontSize: "17px", fontWeight: 600 }}>Services*</h3>
-            </div> */}
             <Autocomplete
               multiple
               id="checkboxes-tags-demo"
@@ -526,44 +552,79 @@ const AddVendor = () => {
           >
             Address Details
           </Typography>
+
           <Box>
             {users1.map((user, index) => (
               <div key={index} className={styles["form-container"]}>
-                <CustomInput
-                  label="Pincode"
-                  icon={PinDrop}
-                  name="vendor_branch_pincode"
-                  required
-                  value={user.vendor_branch_pincode}
-                  onChange={(e) => {
-                    onChange1(e, index), CheckPincode(e, index);
-                  }}
-                />
-                <CustomInput
-                  label={<span className="!text-gray-600">City</span>}
-                  icon={LocationCityIcon}
-                  name="vendor_branch_city"
-                  disabled
-                  required
-                  value={user.vendor_branch_city}
-                  onChange={(e) => onChange1(e, index)}
-                />
-                <CustomInput
-                  label={<span className="!text-gray-600">District</span>}
-                  disabled
-                  required
-                  name="vendor_branch_district"
-                  value={user.vendor_branch_district}
-                  onChange={(e) => onChange1(e, index)}
-                />
-                <CustomInput
-                  label={<span className="!text-gray-600">State</span>}
-                  disabled
-                  name="vendor_branch_state"
-                  required
-                  value={user.vendor_branch_state}
-                  onChange={(e) => onChange1(e, index)}
-                />
+                <div>
+                  <CustomInput
+                    label="Pincode"
+                    icon={PinDrop}
+                    name="vendor_branch_pincode"
+                    required
+                    value={user.vendor_branch_pincode}
+                    maxLength="6"
+                    onChange={(e) => {
+                      onChange1(e, index), CheckPincode(e, index);
+                    }}
+                  />
+                  {loadingPin && (
+                    <p className="text-blue-500 text-sm mt-1">Loading...</p>
+                  )}
+                  {pinError && (
+                    <p className="text-red-500 text-sm mt-1">{pinError}</p>
+                  )}
+                </div>
+
+                <div>
+                  <CustomInput
+                    label={<span className="!text-gray-600">City</span>}
+                    icon={LocationCityIcon}
+                    name="vendor_branch_city"
+                    disabled
+                    required
+                    value={user.vendor_branch_city}
+                    onChange={(e) => onChange1(e, index)}
+                  />
+                  {loadingPin && (
+                    <p className="text-blue-500 text-sm mt-1">Loading...</p>
+                  )}
+                  {pinError && (
+                    <p className="text-red-500 text-sm mt-1">{pinError}</p>
+                  )}
+                </div>
+                <div>
+                  <CustomInput
+                    label={<span className="!text-gray-600">District</span>}
+                    disabled
+                    required
+                    name="vendor_branch_district"
+                    value={user.vendor_branch_district}
+                    onChange={(e) => onChange1(e, index)}
+                  />
+                  {loadingPin && (
+                    <p className="text-blue-500 text-sm mt-1">Loading...</p>
+                  )}
+                  {pinError && (
+                    <p className="text-red-500 text-sm mt-1">{pinError}</p>
+                  )}
+                </div>
+                <div>
+                  <CustomInput
+                    label={<span className="!text-gray-600">State</span>}
+                    disabled
+                    name="vendor_branch_state"
+                    required
+                    value={user.vendor_branch_state}
+                    onChange={(e) => onChange1(e, index)}
+                  />
+                  {loadingPin && (
+                    <p className="text-blue-500 text-sm mt-1">Loading...</p>
+                  )}
+                  {pinError && (
+                    <p className="text-red-500 text-sm mt-1">{pinError}</p>
+                  )}
+                </div>
                 <Dropdown
                   label="Street/Location/Village "
                   name="vendor_branch_location"
