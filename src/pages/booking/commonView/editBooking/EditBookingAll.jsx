@@ -1,45 +1,27 @@
-import React from "react";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import BookingFilter from "../../../../components/BookingFilter";
+import Layout from "../../../../layout/Layout";
 
 import {
-  FaHome,
-  FaClipboardList,
-  FaInfoCircle,
-  FaCommentDots,
-} from "react-icons/fa"; // Icons for the tabs
-import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
   Input,
-  Option,
-  Spinner,
   Textarea,
+  Typography,
 } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import {BASE_URL} from "../../../../base/BaseUrl";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import { BASE_URL } from "../../../../base/BaseUrl";
 // import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
-import { toast } from "react-toastify";
+import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { MdEdit } from "react-icons/md";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
-} from "@mui/material";
-import { ArrowLeft } from "lucide-react";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { toast } from "react-toastify";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../../components/common/LoaderComponent";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 
 const status = [
   {
@@ -171,7 +153,6 @@ const EditBookingAll = () => {
       const bookingData = {
         ...bookingRes.data?.booking,
         order_comm: bookingRes.data?.booking?.order_comm ?? 0,
- 
       };
       setBooking(bookingData);
       setOrderRef(bookingRes.data?.booking?.order_ref);
@@ -191,6 +172,19 @@ const EditBookingAll = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !booking.order_payment_type ||
+      !booking.order_amount ||
+      !booking.order_comm_percentage ||
+      !booking?.order_comm ||
+      !booking?.order_time ||
+      !booking?.branch_id ||
+      !booking?.order_status
+    ) {
+      toast.error("Fill the required field");
+      return;
+    }
+
     setLoading(true);
     setIsButtonDisabled(true);
 
@@ -279,7 +273,7 @@ const EditBookingAll = () => {
           <>
             <ButtonConfigColor
               type="create"
-              label="Folloe Up"
+              label="Follow Up"
               onClick={handleClickOpen}
             />
           </>
@@ -419,6 +413,10 @@ const EditBookingAll = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setFollowUps({
+      order_followup_description: "",
+      order_followup_date: moment().format("YYYY-MM-DD"),
+    });
   };
 
   const onSubmitFollowup = (e) => {
@@ -443,7 +441,7 @@ const EditBookingAll = () => {
         if (res.data.code == "200") {
           toast.success(res.data?.msg || "Followup Created Successfully");
           handleClose();
-          fetchBookingData();
+          fetchAllData();
 
           setFollowUps({
             order_followup_description: "",
@@ -689,7 +687,7 @@ const EditBookingAll = () => {
 
                         <div className="col-span-3">
                           <FormControl fullWidth>
-                            <InputLabel id="service-select-label">
+                            <InputLabel id="order_payment_type-label">
                               <span className="text-sm relative bottom-[6px]">
                                 Payment Mode{" "}
                                 <span className="text-red-700">*</span>
@@ -697,8 +695,8 @@ const EditBookingAll = () => {
                             </InputLabel>
                             <Select
                               sx={{ height: "40px", borderRadius: "5px" }}
-                              labelId="service-select-label"
-                              id="service-select"
+                              labelId="order_payment_type-label"
+                              id="service-order_payment_type"
                               name="order_payment_type"
                               value={booking.order_payment_type}
                               onChange={(e) => onInputChange(e)}
@@ -811,7 +809,7 @@ const EditBookingAll = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <button
+          {/* <button
             onClick={handleClose}
             className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
           >
@@ -823,7 +821,23 @@ const EditBookingAll = () => {
             onClick={(e) => onSubmitFollowup(e)}
           >
             Submit
-          </button>
+          </button> */}
+
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={handleClose}
+            />
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              loading={loading}
+              onClick={(e) => onSubmitFollowup(e)}
+            />
+          </div>
         </DialogActions>
       </Dialog>
     </Layout>

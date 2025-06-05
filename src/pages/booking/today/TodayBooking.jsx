@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import MUIDataTable from "mui-datatables";
 import { CiSquarePlus } from "react-icons/ci";
 import Moment from "moment";
@@ -17,7 +17,7 @@ import AssignDetailsModal from "../../../components/AssignDetailsModal";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
-  
+
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const TodayBooking = () => {
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
   const [openModal, setOpenModal] = useState(false);
-    const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -44,10 +44,6 @@ const TodayBooking = () => {
   }, [location]);
   UseEscapeKey();
 
-
-  
-
- 
   useEffect(() => {
     const fetchTodayData = async () => {
       try {
@@ -63,8 +59,6 @@ const TodayBooking = () => {
         );
 
         setTodayBookingData(response.data?.booking);
-
-        
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -316,84 +310,86 @@ const TodayBooking = () => {
         },
       },
     },
-   //14
-   {
-    name: "order_assign",
-    label: "Order Assign",
-    options: {
-      filter: false,
-      sort: false,
-      display: "exclude",
-      viewColumns: false,
+    //14
+    {
+      name: "order_assign",
+      label: "Order Assign",
+      options: {
+        filter: false,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+      },
     },
-  },
-  //15
-  {
-    name: "order_no_assign",
-    label: "No of Assign",
-    options: {
-      filter: false,
-      sort: false,
-      customBodyRender: (value, tableMeta) => {
-        const orderAssign = tableMeta.rowData[14];
-       
-        const activeAssignments = orderAssign.filter(
-          (assign) => assign.order_assign_status !== "Cancel"
-        );
-        const count = activeAssignments.length;
-        
-        if (count > 0) {
-          return (
-            <button
-              className="w-16 hover:bg-red-200 border border-gray-200 rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedAssignDetails(activeAssignments);
-                setOpenModal(true);
-              }}
-            >
-              {count}
-            </button>
+    //15
+    {
+      name: "order_no_assign",
+      label: "No of Assign",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderAssign = tableMeta.rowData[14];
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
           );
-        }
-        return <span>{count}</span>;
+          const count = activeAssignments.length;
+
+          if (count > 0) {
+            return (
+              <button
+                className="w-16 hover:bg-red-200 border border-gray-200 rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedAssignDetails(activeAssignments);
+                  setOpenModal(true);
+                }}
+              >
+                {count}
+              </button>
+            );
+          }
+          return <span>{count}</span>;
+        },
       },
     },
-  },
-  // 16
-  {
-    name: "assignment_details",
-    label: "Assign Details",
-    options: {
-      filter: false,
-      sort: false,
-      customBodyRender: (value, tableMeta) => {
-        const orderAssign = tableMeta.rowData[14];
-       
-        const activeAssignments = orderAssign.filter(
-          (assign) => assign.order_assign_status !== "Cancel"
-        );
-        
-        if (activeAssignments.length === 0) {
-          return <span>-</span>;
-        }
-        
-        return (
-          <div className="w-48 overflow-x-auto">
-            <table className="min-w-full table-auto border-collapse text-sm">
-              <tbody className="flex flex-wrap h-[40px] border border-black w-48">
-                <tr>
-                  <td className="text-xs px-[2px] leading-[12px]">
-                    {activeAssignments.map(assign => assign.user.name).join(", ")}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        );
+    // 16
+    {
+      name: "assignment_details",
+      label: "Assign Details",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderAssign = tableMeta.rowData[14];
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
+          );
+
+          if (activeAssignments.length === 0) {
+            return <span>-</span>;
+          }
+
+          return (
+            <div className="w-48 overflow-x-auto">
+              <table className="min-w-full table-auto border-collapse text-sm">
+                <tbody className="flex flex-wrap h-[40px] border border-black w-48">
+                  <tr>
+                    <td className="text-xs px-[2px] leading-[12px]">
+                      {activeAssignments
+                        .map((assign) => assign.user.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          );
+        },
       },
     },
-  },
     //17
     {
       name: "order_payment_amount",
@@ -469,8 +465,8 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[19];
-          const status = tableMeta.rowData[20];
+          const confirmBy = tableMeta.rowData[20];
+          const status = tableMeta.rowData[21];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -516,24 +512,25 @@ const TodayBooking = () => {
 
     setRowProps: (rowData) => {
       const orderStatus = rowData[21];
+      console.log(orderStatus, "orderStatus");
       let backgroundColor = "";
-      if (orderStatus === "Confirmed") {
+      if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
-      } else if (orderStatus === "Completed") {
+      } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light
-      } else if (orderStatus === "Inspection") {
+      } else if (orderStatus == "Inspection") {
         backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "RNR") {
+      } else if (orderStatus == "RNR") {
         backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "Pending") {
+      } else if (orderStatus == "Pending") {
         backgroundColor = "#fff"; // white
-      } else if (orderStatus === "Cancel") {
+      } else if (orderStatus == "Cancel") {
         backgroundColor = "#F76E6E"; // light  red
-      } else if (orderStatus === "On the way") {
+      } else if (orderStatus == "On the way") {
         backgroundColor = "#fff3cd"; // light  yellow
-      } else if (orderStatus === "In Progress") {
+      } else if (orderStatus == "In Progress") {
         backgroundColor = "#A7FCA7"; // light  green
-      } else if (orderStatus === "Vendor") {
+      } else if (orderStatus == "Vendor") {
         backgroundColor = "#F38121"; // light  ornage
       }
 
@@ -592,10 +589,10 @@ const TodayBooking = () => {
         </div>
       )}
       <AssignDetailsModal
-           open={openModal}
-           handleOpen={setOpenModal}
-           assignDetails={selectedAssignDetails}
-         />
+        open={openModal}
+        handleOpen={setOpenModal}
+        assignDetails={selectedAssignDetails}
+      />
     </Layout>
   );
 };

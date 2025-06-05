@@ -1,23 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { MdSend } from "react-icons/md";
 
-import Layout from "../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import { ContextPanel } from "../../utils/ContextPanel";
-import axios from "axios";
-import {BASE_URL} from "../../base/BaseUrl";
 import { Input } from "@material-tailwind/react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import SelectInput from "@mui/material/Select/SelectInput";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
+import Layout from "../../layout/Layout";
+import { ContextPanel } from "../../utils/ContextPanel";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -122,6 +114,10 @@ const EditVendorUser = () => {
                   value={vendor.name}
                   onChange={onInputChange}
                   required
+                  disabled
+                  labelProps={{
+                    className: "!text-gray-900",
+                  }}
                   className="w-full px-4 py-2 bg-gray-100 border rounded-md "
                 />
               </div>
@@ -134,8 +130,8 @@ const EditVendorUser = () => {
                   value={vendor.mobile}
                   onChange={onInputChange}
                   required
-                  maxLength="10"
-                  minLength="10"
+                  maxLength={10}
+                  minLength={10}
                   className="w-full px-4 py-2 bg-gray-100 border rounded-md "
                 />
               </div>
@@ -170,16 +166,20 @@ const EditVendorUser = () => {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center">
-              <button
-                type="submit"
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-3 rounded-md shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ease-in-out disabled:opacity-50"
-                onClick={onSubmit}
-                // disabled={isButtonDisabled}
-              >
-                <MdSend className="w-5 h-5" />
-                <span>Update</span>
-              </button>
+            <div className="flex justify-center space-x-4 my-2">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update"
+                loading={loading}
+              />
+
+              <ButtonConfigColor
+                type="back"
+                buttontype="button"
+                label="Cancel"
+                onClick={() => navigate(-1)}
+              />
             </div>
           </form>
         </div>

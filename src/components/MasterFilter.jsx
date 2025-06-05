@@ -14,7 +14,7 @@ const MasterFilter = () => {
 
   const buttons = [
     {
-      label: "Refer By",
+      label: "Referred By",
       path: "/refer-by",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
@@ -50,7 +50,7 @@ const MasterFilter = () => {
       textColor: "text-purple-900",
     },
     {
-      label: "Service Sub",
+      label: "Sub Service",
       path: "/service-sub",
       color: "from-yellow-500 to-orange-300",
       hoverColor: "hover:bg-yellow-50",

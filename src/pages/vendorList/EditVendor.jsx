@@ -411,7 +411,7 @@ const EditVendor = () => {
 
               <div>
                 <Input
-                  label="  Reference Mobile 1"
+                  label="Reference Mobile 1"
                   type="text"
                   name="vendor_ref_mobile_1"
                   value={vendor.vendor_ref_mobile_1}

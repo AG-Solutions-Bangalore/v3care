@@ -1,30 +1,19 @@
-import React, { useContext } from "react";
-import Layout from "../../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
-import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Input,
-  Select,
-  Option,
-  Button,
-  Textarea,
-} from "@material-tailwind/react";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { Card, CardBody, Textarea, Typography } from "@material-tailwind/react";
+import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { ArrowLeft } from "lucide-react";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 const CommissionBy = [
   {
     value: "Vendor",
@@ -96,7 +85,7 @@ const PendingCommissionView = () => {
 
     try {
       const res = await axios.put(
-        `${BASE_URL}/api/panel-update-payment-status/${id}`,
+        `${BASE_URL}/api/panel-update-comm-status/${id}`,
         {},
         {
           headers: {
@@ -107,7 +96,7 @@ const PendingCommissionView = () => {
 
       if (res.data.code == "200") {
         toast.success(res.data?.msg || "Received Updated Successfully");
-        navigate("/received-payment");
+        navigate(-1);
       } else {
         toast.error(res.data?.msg || "Network Error");
       }
@@ -305,7 +294,7 @@ const PendingCommissionView = () => {
                   <form onSubmit={updateData}>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                       <div className="md:col-span-4">
-                        <Select
+                        {/* <Select
                           label={
                             <>
                               Select Commission received By{" "}
@@ -325,7 +314,34 @@ const PendingCommissionView = () => {
                               {mode.label}
                             </Option>
                           ))}
-                        </Select>
+                        </Select> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="order_comm_received_by-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Select Commission received By
+                              <span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <Select
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="order_comm_received_by"
+                            id="id"
+                            name="order_comm_received_by"
+                            value={payment.order_comm_received_by || ""}
+                            onChange={onInputChange}
+                            label="Select Commission received By *"
+                            required
+                          >
+                            {CommissionBy.map((item) => (
+                              <MenuItem
+                                key={item.id}
+                                value={String(item.value)}
+                              >
+                                {item.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>{" "}
                       </div>
                       <div className="md:col-span-8">
                         {" "}

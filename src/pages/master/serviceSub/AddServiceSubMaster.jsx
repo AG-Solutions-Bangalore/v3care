@@ -4,14 +4,14 @@ import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Button, Input, Select } from "@material-tailwind/react";
-import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
+import { Button, Input } from "@material-tailwind/react";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const AddServiceSubMaster = () => {
   const [services, setServices] = useState({
@@ -92,7 +92,7 @@ const AddServiceSubMaster = () => {
           service_sub: "",
           service_sub_image: "",
         });
-        navigate("/service");
+        navigate(-1);
       } else {
         toast.error(res.data?.msg || "duplicate entry");
       }
@@ -103,14 +103,13 @@ const AddServiceSubMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Service Sub"} />
+      <PageHeader title={"Create Sub Service"} />
 
       <div className="w-full mt-2 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Service Select Field */}
-            <div className="form-group">
-              <Select
+            {/* <Select
                 label="Service"
                 name="service_id"
                 required
@@ -126,22 +125,44 @@ const AddServiceSubMaster = () => {
                     {ser.service}
                   </SelectOption>
                 ))}
+              </Select> */}
+            <FormControl>
+              <InputLabel id="service-select-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Service
+                  <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="service-select-label"
+                id="id"
+                name="service_id"
+                value={services.service_id}
+                onChange={onInputChange}
+                label="Service *"
+                required
+              >
+                {serdata.map((item) => (
+                  <MenuItem key={item.id} value={String(item.id)}>
+                    {item.service}
+                  </MenuItem>
+                ))}
               </Select>
-            </div>
-
+            </FormControl>{" "}
             {/* Service Sub Field */}
             <div className="form-group">
               <Input
-                label="Service Sub"
+                label="Sub Service"
                 type="text"
                 name="service_sub"
                 value={services.service_sub}
                 onChange={onInputChange}
                 required
+                maxLength={180}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-
             {/* File Upload Field */}
             <div className="form-group">
               <Input

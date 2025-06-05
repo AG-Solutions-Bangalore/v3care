@@ -84,7 +84,7 @@ const ServicePriceMaster = () => {
     },
     {
       name: "service_sub",
-      label: "Service Sub",
+      label: "Sub Service",
       options: {
         filter: true,
         sort: true,
@@ -168,7 +168,7 @@ const ServicePriceMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Service Price List Test"
+            title="Services Price List"
             data={servicePriceData ? servicePriceData : []}
             columns={columns}
             options={options}

@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { IoIosArrowBack, IoIosArrowForward, IoMdPeople } from "react-icons/io";
@@ -72,12 +72,9 @@ const VendorList = () => {
 
   const handleActivate = async (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     try {
-      if (!isPanelUp) {
-        navigate("/maintenance");
-        return;
-      }
-      setLoading(true);
+      // setLoading(true);
       const token = localStorage.getItem("token");
       const res = await axios({
         url: BASE_URL + "/api/panel-create-vendor-has-users/" + id,
@@ -107,8 +104,6 @@ const VendorList = () => {
     } catch (error) {
       console.error("Error fetching pending activate data", error);
       toast.error("Error fetching pending activate data");
-    } finally {
-      setLoading(false);
     }
   };
   const handleEdit = (e, id) => {

@@ -113,7 +113,7 @@ const ReferByMaster = () => {
     },
     {
       name: "refer_by",
-      label: "Refer By",
+      label: "Referred By",
       options: {
         filter: true,
         sort: true,
@@ -158,7 +158,7 @@ const ReferByMaster = () => {
             <>
               <ButtonConfigColor
                 type="create"
-                label="Refer by"
+                label="Referred By"
                 onClick={() => navigate("/add-referby")}
               />
             </>
@@ -205,7 +205,7 @@ const ReferByMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Refer By List"
+            title="Referred By List"
             data={referData ?? []}
             columns={columns}
             options={options}

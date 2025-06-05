@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md"; 
-import Select from 'react-select';
+import { MdSend, MdArrowBack } from "react-icons/md";
+import Select from "react-select";
 
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
@@ -14,52 +14,52 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
 const serviceShowWebsite = [
-    {
-        id:1,
-        name:"Popular"
-    },
-    {
-        id:2,
-        name:"Most Popular"
-    },
-    {
-        id:3,
-        name:"Super Popular"
-    },
+  {
+    id: 1,
+    name: "Popular",
+  },
+  {
+    id: 2,
+    name: "Most Popular",
+  },
+  {
+    id: 3,
+    name: "Super Popular",
+  },
 ];
 
 const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: "40px",
-      height: "40px",
-      borderRadius: "0.375rem",
-      borderColor: "#e5e7eb",
-      "&:hover": {
-        borderColor: "#9ca3af",
-      },
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      height: "40px",
-      padding: "0 8px",
-    }),
-    input: (provided) => ({
-      ...provided,
-      margin: "0px",
-    }),
-    indicatorsContainer: (provided) => ({
-      ...provided,
-      height: "40px",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#3b82f6" : "white",
-      color: state.isSelected ? "white" : "#1f2937",
-      "&:hover": {
-        backgroundColor: "#e5e7eb",
-      },
-    }),
+  control: (provided) => ({
+    ...provided,
+    minHeight: "40px",
+    height: "40px",
+    borderRadius: "0.375rem",
+    borderColor: "#e5e7eb",
+    "&:hover": {
+      borderColor: "#9ca3af",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: "40px",
+    padding: "0 8px",
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: "0px",
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: "40px",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#3b82f6" : "white",
+    color: state.isSelected ? "white" : "#1f2937",
+    "&:hover": {
+      backgroundColor: "#e5e7eb",
+    },
+  }),
 };
 
 const AddServiceMaster = () => {
@@ -90,23 +90,28 @@ const AddServiceMaster = () => {
   };
 
   const handleMultiSelectChange = (selectedOptions) => {
-    setServices(prev => ({
+    setServices((prev) => ({
       ...prev,
-      service_show_website: selectedOptions ? selectedOptions.map(option => option.id) : []
+      service_show_website: selectedOptions
+        ? selectedOptions.map((option) => option.id)
+        : [],
     }));
   };
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setIsButtonDisabled(true);
-  
+
     const data = new FormData();
     data.append("service", services.service);
     data.append("service_image", selectedFile);
     data.append("service_comm", services.service_comm);
-   
-    data.append("service_show_website", services.service_show_website.join(','));
-  
+
+    data.append(
+      "service_show_website",
+      services.service_show_website.join(",")
+    );
+
     try {
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-service`,
@@ -117,17 +122,17 @@ const AddServiceMaster = () => {
           },
         }
       );
-  
+
       if (response.data.code === 200) {
-        toast.success(response.data?.msg );
-        
+        toast.success(response.data?.msg);
+
         setServices({
           service: "",
           service_comm: "",
           service_image: "",
           service_show_website: [],
         });
-  
+
         navigate("/service");
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
@@ -142,15 +147,13 @@ const AddServiceMaster = () => {
     }
   };
 
-  
-  const websiteOptions = serviceShowWebsite.map(item => ({
+  const websiteOptions = serviceShowWebsite.map((item) => ({
     value: item.id,
     label: item.name,
-    id: item.id
+    id: item.id,
   }));
 
-  
-  const selectedWebsiteValues = websiteOptions.filter(option => 
+  const selectedWebsiteValues = websiteOptions.filter((option) =>
     services.service_show_website.includes(option.id)
   );
 
@@ -166,19 +169,20 @@ const AddServiceMaster = () => {
             {/* Service Field */}
             <div className="form-group">
               <Input
-                label="service"
+                label="Service"
                 type="text"
                 name="service"
                 value={services.service}
                 onChange={onInputChange}
                 required
+                maxLength={250}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none   transition-all duration-300 shadow-sm"
               />
             </div>
 
             <div className="form-group">
               <Input
-                label="service image"
+                label="Service Image"
                 type="file"
                 name="service_image"
                 onChange={(e) => setSelectedFile(e.target.files[0])}

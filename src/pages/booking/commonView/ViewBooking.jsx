@@ -307,9 +307,10 @@ const ViewBooking = () => {
       toast.error("Order Follow-up Description is required");
       return;
     }
-    setIsButtonDisabled(true);
+    // setIsButtonDisabled(true);
     const data = {
-      order_ref: orderref,
+      // order_ref: orderref,
+      order_ref: booking?.order_ref,
       order_followup_date: followups.order_followup_date,
       order_followup_description: followups.order_followup_description,
     };
@@ -596,7 +597,7 @@ const ViewBooking = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <button
+          {/* <button
             onClick={handleClose}
             className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
           >
@@ -608,7 +609,22 @@ const ViewBooking = () => {
             onClick={(e) => onSubmitFollowup(e)}
           >
             Submit
-          </button>
+          </button> */}
+
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={handleClose}
+            />
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Submit"
+              onClick={(e) => onSubmitFollowup(e)}
+            />
+          </div>
         </DialogActions>
       </Dialog>
     </Layout>

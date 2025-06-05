@@ -4,7 +4,7 @@ import { MdSend, MdArrowBack } from "react-icons/md";
 import Layout from "../../../layout/Layout";
 import MasterFilter from "../../../components/MasterFilter";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import {
   Card,
@@ -103,6 +103,7 @@ const AddBranch = () => {
                 label="Branch Name"
                 required
                 name="branch_name"
+                maxLength={80}
                 value={branch.branch_name}
                 onChange={onInputChange}
               />

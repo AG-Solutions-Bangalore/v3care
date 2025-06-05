@@ -317,7 +317,7 @@ const ServicePriceEditMaster = () => {
 
                 {rows.map((row) => (
                   <div key={row.id} className="mb-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                       <Input
                         label="Price For"
                         type="text"
@@ -328,7 +328,7 @@ const ServicePriceEditMaster = () => {
                         }
                         required
                         containerProps={{
-                          className: "min-w-0 w-full",
+                          className: "!min-w-0 w-full",
                         }}
                         className="!w-full"
                       />
@@ -344,7 +344,7 @@ const ServicePriceEditMaster = () => {
                         }
                         required
                         containerProps={{
-                          className: "min-w-0 w-full",
+                          className: "!min-w-0 w-full",
                         }}
                         className="!w-full"
                       />
@@ -360,7 +360,7 @@ const ServicePriceEditMaster = () => {
                         }
                         required
                         containerProps={{
-                          className: "min-w-0 w-full",
+                          className: "!min-w-0 w-full",
                         }}
                         className="!w-full"
                       />
@@ -376,7 +376,7 @@ const ServicePriceEditMaster = () => {
                         }
                         required
                         containerProps={{
-                          className: "min-w-0 w-full",
+                          className: "!min-w-0 w-full",
                         }}
                         className="!w-full"
                       />
@@ -392,7 +392,7 @@ const ServicePriceEditMaster = () => {
                         }
                         required
                         containerProps={{
-                          className: "min-w-0 w-full",
+                          className: "!min-w-0 w-full",
                         }}
                         className="!w-full"
                       />

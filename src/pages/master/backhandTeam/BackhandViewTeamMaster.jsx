@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import {BASE_URL, USER_DOCUMENT} from "../../../base/BaseUrl";
+import { BASE_URL, USER_DOCUMENT } from "../../../base/BaseUrl";
 import {
   FaUser,
   FaMobile,
@@ -70,17 +70,13 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
         ) : (
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-xl font-bold text-black">
-                Field Team Details
-              </h1>
+              <h1 className="text-xl font-bold text-black">Admin Details</h1>
 
               <div className="flex gap-2">
                 <button
                   onClick={() =>
                     window.open(
-                      `${USER_DOCUMENT}/`
-                      +
-                        fieldTeamViewData?.user_aadhar,
+                      `${USER_DOCUMENT}/` + fieldTeamViewData?.user_aadhar,
                       "_blank"
                     )
                   }
@@ -95,8 +91,7 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
                 <button
                   onClick={() =>
                     window.open(
-                      `${USER_DOCUMENT}/`+
-                        fieldTeamViewData?.user_pancard,
+                      `${USER_DOCUMENT}/` + fieldTeamViewData?.user_pancard,
                       "_blank"
                     )
                   }
@@ -163,7 +158,7 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
                   type="edit"
                   buttontype="submit"
                   label="Edit"
-                  onClick={() => navigate("/field-team-edit/" + backhandId)}
+                  onClick={() => navigate("/backhand-team-edit/" + backhandId)}
                 />
               )}
 
