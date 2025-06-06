@@ -133,7 +133,7 @@ const VendorList = () => {
   const columns = [
     {
       name: "id",
-      label: "Action",
+      label: "ACTION",
       options: {
         filter: false,
         sort: false,
@@ -222,7 +222,7 @@ const VendorList = () => {
 
     {
       name: "vendor_status",
-      label: "Status",
+      label: "STATUS",
       options: {
         filter: true,
         sort: false,

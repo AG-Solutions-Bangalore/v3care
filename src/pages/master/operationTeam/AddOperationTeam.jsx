@@ -10,6 +10,7 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import InputMask from "react-input-mask";
 
 const AddOperationTeam = () => {
   const [team, setTeam] = useState({
@@ -53,9 +54,45 @@ const AddOperationTeam = () => {
       .then((data) => setBranch(data.branch));
   }, []);
 
+  // const onInputChange = (e) => {
+  //   const { name, value } = e.target;
+
+  //   if (name === "branch_id") {
+  //     setTeam((prevTeam) => ({
+  //       ...prevTeam,
+  //       branch_id: value,
+  //       view_branch_id: value,
+  //     }));
+  //   } else {
+  //     setTeam((prevTeam) => ({
+  //       ...prevTeam,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
   const onInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "mobile" || name == "user_aadhar_no") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: digitsOnly,
+      }));
+      return;
+    }
 
+    if (name === "user_pancard_no") {
+      const input = value.toUpperCase();
+      const allowed = /^[A-Z0-9]{0,10}$/;
+
+      if (allowed.test(input)) {
+        setTeam((prevTeam) => ({
+          ...prevTeam,
+          user_pancard_no: input,
+        }));
+      }
+      return;
+    }
     if (name === "branch_id") {
       setTeam((prevTeam) => ({
         ...prevTeam,
@@ -149,6 +186,7 @@ const AddOperationTeam = () => {
                 onChange={onInputChange}
                 required
                 className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
+                maxLength={80}
               />
             </div>
 
@@ -232,7 +270,7 @@ const AddOperationTeam = () => {
             </div>
 
             {/* Pancard No Field */}
-            <div>
+            {/* <div>
               <Input
                 label="Pancard No"
                 type="text"
@@ -242,12 +280,34 @@ const AddOperationTeam = () => {
                 maxLength={10}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
+            </div> */}
+            <div>
+              <InputMask
+                mask="aaaaa 9999 a"
+                value={team.user_pancard_no}
+                onChange={onInputChange}
+                name="user_pancard_no"
+                formatChars={{
+                  9: "[0-9]",
+                  a: "[A-Z]",
+                }}
+              >
+                {() => (
+                  <div>
+                    <Input
+                      type="text"
+                      label="PAN"
+                      name="user_pancard_no"
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    />
+                  </div>
+                )}
+              </InputMask>
             </div>
-
             {/* Pancard Photo Upload */}
             <div>
               <Input
-                label="Pancard Photo"
+                label="PAN Photo"
                 type="file"
                 name="user_pancard"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}
@@ -263,6 +323,7 @@ const AddOperationTeam = () => {
                 value={team.remarks}
                 onChange={onInputChange}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                maxLength={980}
               ></Textarea>
             </div>
           </div>

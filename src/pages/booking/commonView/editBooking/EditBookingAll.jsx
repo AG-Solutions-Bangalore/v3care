@@ -125,6 +125,7 @@ const EditBookingAll = () => {
         "order_payment_amount",
         "order_comm",
         "order_comm_percentage",
+        "order_payment_amount",
       ].includes(name)
     ) {
       if (validateOnlyDigits(value)) {
@@ -669,6 +670,7 @@ const EditBookingAll = () => {
                             name="order_comment"
                             value={booking.order_comment}
                             onChange={(e) => onInputChange(e)}
+                            maxLength={980}
                           />
                         </div>
                       </div>
@@ -724,6 +726,7 @@ const EditBookingAll = () => {
                           name="order_transaction_details"
                           value={booking.order_transaction_details}
                           onChange={(e) => onInputChange(e)}
+                          maxLength={980}
                         />
                       </div>
                     </div>

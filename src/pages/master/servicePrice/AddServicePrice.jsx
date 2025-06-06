@@ -245,6 +245,7 @@ const AddServicePrice = () => {
                 value={services.service_price_for}
                 onChange={onInputChange}
                 required
+                maxLength={16}
                 // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
@@ -258,6 +259,8 @@ const AddServicePrice = () => {
                 value={services.service_price_rate}
                 onChange={onInputChange}
                 required
+                maxLength={16}
+
                 // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
@@ -271,6 +274,8 @@ const AddServicePrice = () => {
                 value={services.service_price_amount}
                 onChange={onInputChange}
                 required
+                maxLength={16}
+
                 // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
@@ -282,6 +287,8 @@ const AddServicePrice = () => {
                 value={services.service_holiday_amount}
                 onChange={onInputChange}
                 required
+                maxLength={16}
+
                 // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
@@ -293,6 +300,8 @@ const AddServicePrice = () => {
                 value={services.service_weekend_amount}
                 onChange={onInputChange}
                 required
+                maxLength={16}
+
                 // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>

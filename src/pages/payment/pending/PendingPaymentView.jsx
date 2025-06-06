@@ -350,6 +350,7 @@ const PendingPaymentView = () => {
                           name="order_check_payment_details"
                           value={payment.order_check_payment_details}
                           onChange={onInputChange}
+                          maxLength={980}
                         />
                       </div>
                     </div>

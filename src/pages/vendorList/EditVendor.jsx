@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import axios from "axios";
 import { Button, Input } from "@material-tailwind/react";
 import {
@@ -151,6 +151,8 @@ const EditVendor = () => {
     const { name, value } = e.target;
     if (
       (name === "vendor_mobile" ||
+        name === "vendor_gst_no" ||
+        name == "vendor_aadhar_no" ||
         name === "vendor_ref_mobile_1" ||
         name === "vendor_ref_mobile_2") &&
       !validateOnlyDigits(value)
@@ -406,6 +408,7 @@ const EditVendor = () => {
                   value={vendor.vendor_ref_name_1}
                   onChange={(e) => onInputChange(e)}
                   className="w-full border border-gray-700 rounded-md p-2"
+                  maxLength={80}
                 />
               </div>
 
@@ -417,6 +420,7 @@ const EditVendor = () => {
                   value={vendor.vendor_ref_mobile_1}
                   onChange={(e) => onInputChange(e)}
                   className="w-full border border-gray-300 rounded-md p-2"
+                  maxLength={10}
                 />
               </div>
 
@@ -428,14 +432,16 @@ const EditVendor = () => {
                   value={vendor.vendor_ref_name_2}
                   onChange={(e) => onInputChange(e)}
                   className="w-full border border-gray-300 rounded-md p-2"
+                  maxLength={80}
                 />
               </div>
 
               <div>
                 <Input
-                  label="   Reference Mobile 2"
+                  label="Reference Mobile 2"
                   type="text"
                   name="vendor_ref_mobile_2"
+                  maxLength={10}
                   value={vendor.vendor_ref_mobile_2}
                   onChange={(e) => onInputChange(e)}
                   className="w-full border border-gray-300 rounded-md p-2"
@@ -549,6 +555,7 @@ const EditVendor = () => {
                     value={user.vendor_branch_flat}
                     onChange={(e) => onChange1(e, index)}
                     className="w-full border border-gray-700 rounded-md p-2"
+                    maxLength={500}
                   />
                   <input
                     type="hidden"
@@ -565,6 +572,7 @@ const EditVendor = () => {
                     value={user.vendor_branch_building}
                     onChange={(e) => onChange1(e, index)}
                     className="w-full border border-gray-700 rounded-md p-2"
+                    maxLength={500}
                   />
                 </div>
                 <div>
@@ -575,6 +583,7 @@ const EditVendor = () => {
                     value={user.vendor_branch_landmark}
                     onChange={(e) => onChange1(e, index)}
                     className="w-full border border-gray-700 rounded-md p-2"
+                    maxLength={500}
                   />
                 </div>
                 <div>
@@ -679,21 +688,6 @@ const EditVendor = () => {
                 </div>
               </div>
             ))}
-            {/* <div className="mt-4 text-center">
-            <Button type="submit" className="mr-2 mb-2" onClick={onSubmit}>
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Update</span>
-              </div>
-            </Button>
-
-            <Button className="mr-2 mb-2" onClick={handleBack}>
-              <div className="flex gap-1">
-                <MdArrowBack className="w-4 h-4" />
-                <span>Back</span>
-              </div>
-            </Button>
-          </div> */}
             <div className="flex justify-center space-x-4 my-2">
               <ButtonConfigColor
                 type="edit"

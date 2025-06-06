@@ -13,9 +13,11 @@ import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../utils/ContextPanel";
 import { toast } from "react-toastify";
 import axios from "axios";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { FaEyeSlash } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -24,11 +26,15 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConformPassword, setShowConformPassword] = useState(false);
 
   const handleSumbit = async (e) => {
     e.preventDefault();
-    if (!isPanelUp) {
-      navigate("/maintenance");
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error("Fill the required Field");
+
       return;
     }
 
@@ -44,7 +50,6 @@ const ChangePassword = () => {
 
     setLoading(true);
 
-    //create a formData object and append state values
     const formData = new FormData();
     formData.append("username", localStorage.getItem("username"));
     formData.append("old_password", oldPassword);
@@ -80,7 +85,7 @@ const ChangePassword = () => {
       <div className="mt-2 mb-8 flex flex-col gap-12">
         <Card>
           <CardBody className="flex flex-row gap-4">
-            <Input
+            {/* <Input
               type="password"
               label="Old Password"
               value={oldPassword}
@@ -88,8 +93,54 @@ const ChangePassword = () => {
               size="lg"
               color="blue"
               required
-            />
-            <Input
+            /> */}
+            <div className="relative w-full">
+              <Input
+                id="password"
+                name="password"
+                value={oldPassword}
+                label="Old Password"
+                onChange={(e) => setOldPassword(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                size="lg"
+                maxLength={16}
+                placeholder="********"
+              />
+
+              <button
+                type="button"
+                className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <IoEye size={20} />}
+              </button>
+            </div>
+            <div className="relative w-full">
+              <Input
+                id="password"
+                name="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                label="New Password"
+                type={showNewPassword ? "text" : "password"}
+                size="lg"
+                maxLength={16}
+                placeholder="********"
+              />
+
+              <button
+                type="button"
+                className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+              >
+                {showNewPassword ? (
+                  <FaEyeSlash size={20} />
+                ) : (
+                  <IoEye size={20} />
+                )}
+              </button>
+            </div>
+            {/* <Input
               type="password"
               label="New Password"
               value={newPassword}
@@ -97,8 +148,8 @@ const ChangePassword = () => {
               size="lg"
               color="blue"
               required
-            />
-            <Input
+            /> */}
+            {/* <Input
               type="password"
               label="Confirm Password"
               value={confirmPassword}
@@ -106,7 +157,33 @@ const ChangePassword = () => {
               size="lg"
               color="blue"
               required
-            />
+            /> */}
+
+            <div className="relative w-full">
+              <Input
+                id="password"
+                name="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                label="Confirm Password"
+                type={showConformPassword ? "text" : "password"}
+                size="lg"
+                maxLength={16}
+                placeholder="********"
+              />
+
+              <button
+                type="button"
+                className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
+                onClick={() => setShowConformPassword((prev) => !prev)}
+              >
+                {showConformPassword ? (
+                  <FaEyeSlash size={20} />
+                ) : (
+                  <IoEye size={20} />
+                )}
+              </button>
+            </div>
           </CardBody>
           <CardFooter className="pt-0 flex justify-center">
             <div className="flex justify-center space-x-4">
