@@ -5,7 +5,7 @@ import { MdTitle, MdDescription, MdImage } from "react-icons/md";
 import { Button } from "@mui/material";
 import Layout from "../../layout/Layout";
 import axios from "axios";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
@@ -100,6 +100,7 @@ const AddNotification = () => {
                 onChange={onInputChange}
                 className="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-md  "
                 required
+                maxLength={80}
               />
             </div>
           </div>
@@ -132,6 +133,7 @@ const AddNotification = () => {
                 className="w-full pl-10 pr-4 py-2 border border-gray-700 rounded-md "
                 rows="4"
                 required
+                maxLength={550}
               />
             </div>
           </div>

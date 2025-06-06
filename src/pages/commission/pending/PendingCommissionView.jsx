@@ -350,6 +350,7 @@ const PendingCommissionView = () => {
                           name="order_comm_remark"
                           value={payment.order_comm_remark}
                           onChange={onInputChange}
+                          maxLength={980}
                         />
                       </div>
                     </div>

@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { BASE_URL } from "../../../base/BaseUrl";
-import axios from "axios";
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Input, Textarea } from "@material-tailwind/react";
 import {
+  Autocomplete,
+  Box,
+  Checkbox,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  Box,
-  Autocomplete,
+  Select,
   TextField,
-  Checkbox,
 } from "@mui/material";
-import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import { toast } from "react-toastify";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import InputMask from "react-input-mask";
+
 const AddBackhandTeam = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -58,12 +59,18 @@ const AddBackhandTeam = () => {
       .then((response) => response.json())
       .then((data) => setBranch(data.branch));
   }, []);
-
+  const validateOnlyDigits = (inputtxt) => {
+    return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
+  };
   const onInputChange = (e) => {
-    setTeam({
-      ...team,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    if (
+      (name == "mobile" || name == "user_aadhar_no") &&
+      !validateOnlyDigits(value)
+    ) {
+      return;
+    }
+    setTeam({ ...team, [name]: value });
   };
   const handleChange = (newValue) => {
     setViewBranchId(newValue);
@@ -152,6 +159,7 @@ const AddBackhandTeam = () => {
                 value={team.name}
                 onChange={onInputChange}
                 required
+                maxLength={80}
                 className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
               />
             </div>
@@ -290,9 +298,9 @@ const AddBackhandTeam = () => {
             </div>
 
             {/* Pancard No Field */}
-            <div>
+            {/* <div>
               <Input
-                label="Pancard No"
+                label="PAN"
                 type="text"
                 name="user_pancard_no"
                 value={team.user_pancard_no}
@@ -300,12 +308,34 @@ const AddBackhandTeam = () => {
                 maxLength={10}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
+            </div> */}
+            <div>
+              <InputMask
+                mask="aaaaa 9999 a"
+                value={team.user_pancard_no}
+                onChange={onInputChange}
+                name="user_pancard_no"
+                formatChars={{
+                  9: "[0-9]",
+                  a: "[A-Z]",
+                }}
+              >
+                {() => (
+                  <div>
+                    <Input
+                      type="text"
+                      label="PAN"
+                      name="user_pancard_no"
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    />
+                  </div>
+                )}
+              </InputMask>
             </div>
-
             {/* Pancard Photo Upload */}
             <div>
               <Input
-                label="Pancard Photo"
+                label="PAN Photo"
                 type="file"
                 name="user_pancard"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}

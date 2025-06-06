@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { Button, Input, Textarea } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { toast } from "react-toastify";
+import { Input, Textarea } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { useEffect, useState } from "react";
+import InputMask from "react-input-mask";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const AddFieldTeamMaster = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -50,7 +50,27 @@ const AddFieldTeamMaster = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "mobile" || name == "user_aadhar_no") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: digitsOnly,
+      }));
+      return;
+    }
 
+    if (name === "user_pancard_no") {
+      const input = value.toUpperCase();
+      const allowed = /^[A-Z0-9]{0,10}$/;
+
+      if (allowed.test(input)) {
+        setTeam((prevTeam) => ({
+          ...prevTeam,
+          user_pancard_no: input,
+        }));
+      }
+      return;
+    }
     if (name === "branch_id") {
       setTeam((prevTeam) => ({
         ...prevTeam,
@@ -132,6 +152,7 @@ const AddFieldTeamMaster = () => {
                 value={team.name}
                 onChange={onInputChange}
                 required
+                maxLength={80}
                 className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
               />
             </div>
@@ -159,6 +180,7 @@ const AddFieldTeamMaster = () => {
                 required
                 value={team.email}
                 onChange={onInputChange}
+                maxLength={50}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
@@ -215,8 +237,31 @@ const AddFieldTeamMaster = () => {
 
             {/* Pancard No Field */}
             <div>
+              <InputMask
+                mask="aaaaa 9999 a"
+                value={team.user_pancard_no}
+                onChange={onInputChange}
+                name="user_pancard_no"
+                formatChars={{
+                  9: "[0-9]",
+                  a: "[A-Z]",
+                }}
+              >
+                {() => (
+                  <div>
+                    <Input
+                      type="text"
+                      label="PAN"
+                      name="user_pancard_no"
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    />
+                  </div>
+                )}
+              </InputMask>
+            </div>
+            {/* <div>
               <Input
-                label="Pancard No"
+                label="PAN"
                 type="text"
                 name="user_pancard_no"
                 value={team.user_pancard_no}
@@ -224,16 +269,16 @@ const AddFieldTeamMaster = () => {
                 maxLength={10}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
-            </div>
+            </div> */}
 
             {/* Pancard Photo Upload */}
             <div>
               <Input
-                label="Pancard Photo"
+                label="PAN Photo"
                 type="file"
                 name="user_pancard"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}
-                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                // className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
 
@@ -244,6 +289,7 @@ const AddFieldTeamMaster = () => {
                 name="remarks"
                 value={team.remarks}
                 onChange={onInputChange}
+                maxLength={950}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               ></Textarea>
             </div>

@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { Card, Input, Textarea } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import {
-  FaUser,
-  FaMobile,
-  FaEnvelope,
-  FaIdCard,
-  FaFileAlt,
-  FaClipboardList,
-} from "react-icons/fa";
-import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import { BASE_URL } from "../../../base/BaseUrl";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import { Button, Card, Input, Textarea } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import InputMask from "react-input-mask";
+
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -82,7 +69,15 @@ const OperationEditTeamMaster = () => {
       },
     })
       .then((res) => {
-        setTeam(res.data.adminUser);
+        const rawData = res?.data?.adminUser || {};
+        const normalizedData = Object.fromEntries(
+          Object.entries(rawData).map(([key, value]) => {
+            if (value === null || value === "null") return [key, ""];
+            return [key, value];
+          })
+        );
+
+        setTeam(normalizedData);
       })
       .catch((error) => {
         console.error("Error fetching admin user data:", error);
@@ -167,6 +162,7 @@ const OperationEditTeamMaster = () => {
                     value={team.name}
                     onChange={onInputChange}
                     required
+                    maxLength={80}
                     className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
                   />
                 </div>
@@ -220,7 +216,7 @@ const OperationEditTeamMaster = () => {
                   <small className="text-gray-500">{team.user_aadhar}</small>
                 </div>
 
-                <div>
+                {/* <div>
                   <Input
                     label="Pancard No"
                     type="text"
@@ -230,8 +226,30 @@ const OperationEditTeamMaster = () => {
                     maxLength={10}
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
+                </div> */}
+                <div>
+                  <InputMask
+                    mask="aaaaa 9999 a"
+                    value={team.user_pancard_no}
+                    onChange={onInputChange}
+                    name="user_pancard_no"
+                    formatChars={{
+                      9: "[0-9]",
+                      a: "[A-Z]",
+                    }}
+                  >
+                    {() => (
+                      <div>
+                        <Input
+                          type="text"
+                          label="PAN"
+                          name="user_pancard_no"
+                          className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                        />
+                      </div>
+                    )}
+                  </InputMask>
                 </div>
-
                 <div>
                   <Input
                     label="Pancard File"

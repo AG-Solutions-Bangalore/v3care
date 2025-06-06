@@ -152,7 +152,11 @@ const AddVendor = () => {
     }
   };
   const onInputChange = (e) => {
-    if (e.target.name == "vendor_mobile") {
+    if (
+      e.target.name == "vendor_mobile" ||
+      e.target.name == "vendor_aadhar_no" ||
+      e.target.name == "vendor_gst_no"
+    ) {
       if (validateOnlyDigits(e.target.value)) {
         setVendor({
           ...vendor,
@@ -338,7 +342,7 @@ const AddVendor = () => {
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
-      <PageHeader title={"Vendor Create"} />
+      <PageHeader title={"Create Vendor"} />
 
       <Box
         sx={{
@@ -358,6 +362,7 @@ const AddVendor = () => {
               name="vendor_short"
               value={vendor.vendor_short}
               onChange={(e) => onInputChange(e)}
+              maxLength={80}
             />
             <CustomInput
               label="Company"
@@ -365,6 +370,7 @@ const AddVendor = () => {
               name="vendor_company"
               required
               value={vendor.vendor_company}
+              maxLength={80}
               onChange={(e) => onInputChange(e)}
             />
             <CustomInput
@@ -379,7 +385,7 @@ const AddVendor = () => {
               onChange={(e) => onInputChange(e)}
             />
             <CustomInput
-              label="Email"
+              label="Email Id"
               icon={Email}
               name="vendor_email"
               required
@@ -418,7 +424,7 @@ const AddVendor = () => {
             <CustomInput
               label="GST No"
               name="vendor_gst_no"
-              inputProps={{ maxLength: 15 }}
+              maxLength={15}
               value={vendor.vendor_gst_no}
               onChange={(e) => onInputChange(e)}
             />
@@ -458,13 +464,14 @@ const AddVendor = () => {
               name="vendor_ref_name_1"
               value={vendor.vendor_ref_name_1}
               onChange={(e) => onInputChange(e)}
+              maxLength={80}
             />
             <CustomInput
               label="Reference Mobile No 1"
               icon={PhoneIphone}
               type="tel"
               name="vendor_ref_mobile_1"
-              inputProps={{ maxLength: 10 }}
+              maxLength={10}
               value={vendor.vendor_ref_mobile_1}
               onChange={(e) => onInputChange(e)}
             />
@@ -473,13 +480,13 @@ const AddVendor = () => {
               name="vendor_ref_name_2"
               value={vendor.vendor_ref_name_2}
               onChange={(e) => onInputChange(e)}
+              maxLength={80}
             />
             <CustomInput
               label="Reference Mobile No 2"
               icon={PhoneIphone}
-              type="tel"
+              maxLength={10}
               name="vendor_ref_mobile_2"
-              inputProps={{ maxLength: 10 }}
               value={vendor.vendor_ref_mobile_2}
               onChange={(e) => onInputChange(e)}
             />
@@ -563,9 +570,15 @@ const AddVendor = () => {
                     name="vendor_branch_pincode"
                     required
                     value={user.vendor_branch_pincode}
-                    maxLength="6"
+                    maxLength={6}
+                    // onChange={(e) => {
+                    //   onChange1(e, index), CheckPincode(e, index);
+                    // }}
                     onChange={(e) => {
-                      onChange1(e, index), CheckPincode(e, index);
+                      const digitsOnly = e.target.value.replace(/\D/g, "");
+                      e.target.value = digitsOnly;
+                      onChange1(e, index);
+                      CheckPincode(e, index);
                     }}
                   />
                   {loadingPin && (
@@ -640,6 +653,7 @@ const AddVendor = () => {
                   name="vendor_branch_flat"
                   value={user.vendor_branch_flat}
                   onChange={(e) => onChange1(e, index)}
+                  maxLength={500}
                 />
 
                 <CustomInput
@@ -647,12 +661,14 @@ const AddVendor = () => {
                   name="vendor_branch_building"
                   value={user.vendor_branch_building}
                   onChange={(e) => onChange1(e, index)}
+                  maxLength={500}
                 />
                 <CustomInput
                   label="Landmark"
                   name="vendor_branch_landmark"
                   value={user.vendor_branch_landmark}
                   onChange={(e) => onChange1(e, index)}
+                  maxLength={500}
                 />
               </div>
             ))}

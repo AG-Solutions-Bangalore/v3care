@@ -25,7 +25,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import {BASE_URL} from "../../../../base/BaseUrl";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import MUIDataTable from "mui-datatables";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
@@ -104,7 +104,6 @@ const PostponeBooking = () => {
       const bookingData = {
         ...response.data?.booking,
         order_comm: response.data?.booking?.order_comm ?? 0,
-       
       };
       setBooking(bookingData);
       setOrderRef(response.data?.booking.order_ref);
@@ -411,26 +410,26 @@ const PostponeBooking = () => {
                     </div>
                   </div>
                   <div className="form-group relative">
-                        <Input
-                          fullWidth
-                          required
-                          label="Commission (%)"
-                          name="order_comm_percentage"
-                          value={booking.order_comm_percentage}
-                          onChange={(e) => onInputChange(e)}
-                        />
-                        <span
-                          className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
-                          onClick={() => {
-                            setBooking((prev) => ({
-                              ...prev,
-                              order_comm: autoCommissionCalc,
-                            }));
-                          }}
-                        >
-                          (₹{autoCommissionCalc})
-                        </span>
-                      </div>
+                    <Input
+                      fullWidth
+                      required
+                      label="Commission (%)"
+                      name="order_comm_percentage"
+                      value={booking.order_comm_percentage}
+                      onChange={(e) => onInputChange(e)}
+                    />
+                    <span
+                      className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                      onClick={() => {
+                        setBooking((prev) => ({
+                          ...prev,
+                          order_comm: autoCommissionCalc,
+                        }));
+                      }}
+                    >
+                      (₹{autoCommissionCalc})
+                    </span>
+                  </div>
                   <div>
                     <div>
                       <Input
@@ -453,6 +452,7 @@ const PostponeBooking = () => {
                       name="order_comment"
                       value={booking.order_comment}
                       onChange={(e) => onInputChange(e)}
+                      maxLength={980}
                     />
                   </div>
                   <div>
@@ -463,6 +463,7 @@ const PostponeBooking = () => {
                       name="order_postpone_reason"
                       value={booking.order_postpone_reason}
                       onChange={(e) => onInputChange(e)}
+                      maxLength={980}
                     />
                   </div>
                 </div>

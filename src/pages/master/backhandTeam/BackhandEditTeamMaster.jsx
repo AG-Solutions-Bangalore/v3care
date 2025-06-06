@@ -1,36 +1,28 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import InputMask from "react-input-mask";
+import { Card, Input, Textarea } from "@material-tailwind/react";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import {
-  FaUser,
-  FaMobile,
-  FaEnvelope,
-  FaIdCard,
-  FaFileAlt,
-  FaClipboardList,
-} from "react-icons/fa";
-import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { Button, Card, Input, Textarea } from "@material-tailwind/react";
-import {
+  Autocomplete,
+  Box,
+  Checkbox,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
   TextField,
-  Box,
-  Autocomplete,
-  Checkbox,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -102,8 +94,15 @@ const BackhandEditTeamMaster = () => {
     })
       .then((res) => {
         const adminUser = res.data.adminUser;
-        setTeam(adminUser);
+        const rawData = res?.data?.adminUser || {};
+        const normalizedData = Object.fromEntries(
+          Object.entries(rawData).map(([key, value]) => {
+            if (value === null || value === "null") return [key, ""];
+            return [key, value];
+          })
+        );
 
+        setTeam(normalizedData);
         const ids = adminUser.view_branch_id
           ? adminUser.view_branch_id.split(",").map((id) => Number(id.trim()))
           : [];
@@ -216,6 +215,7 @@ const BackhandEditTeamMaster = () => {
                     value={team.name}
                     onChange={onInputChange}
                     required
+                    maxLength={80}
                     className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
                   />
                 </div>
@@ -247,58 +247,59 @@ const BackhandEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-                <Box>
-                  <Autocomplete
-                    multiple
-                    id="checkboxes-tags-demo"
-                    options={branch}
-                    value={ViewBranchId}
-                    disableCloseOnSelect
-                    getOptionLabel={(option) =>
-                      option.service ?? option.branch_name
-                    }
-                    onChange={(event, newValue) => handleChange(newValue)}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    renderOption={(props, option, { selected }) => (
-                      <li {...props}>
-                        <Checkbox
-                          icon={icon}
-                          checkedIcon={checkedIcon}
-                          style={{ marginRight: 8 }}
-                          checked={selected}
-                        />
-                        {option.service ?? option.branch_name}
-                      </li>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={
-                          <span
-                            style={{
-                              fontSize: 13,
-                              fontWeight: 500,
-                            }}
-                          >
-                            Choose Branch{" "}
-                            <span style={{ color: "red" }}>*</span>
-                          </span>
-                        }
-                        InputProps={{
-                          ...params.InputProps,
-                          style: { padding: "0px" },
-                        }}
-                        inputProps={{
-                          ...params.inputProps,
-                          style: { padding: "10px" },
-                        }}
+              </div>
+              <Box>
+                <Autocomplete
+                  multiple
+                  id="checkboxes-tags-demo"
+                  options={branch}
+                  value={ViewBranchId}
+                  disableCloseOnSelect
+                  getOptionLabel={(option) =>
+                    option.service ?? option.branch_name
+                  }
+                  onChange={(event, newValue) => handleChange(newValue)}
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
                       />
-                    )}
-                  />
-                </Box>
-                {/* Aadhar No Field */}
+                      {option.service ?? option.branch_name}
+                    </li>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label={
+                        <span
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 500,
+                          }}
+                        >
+                          Choose Branch <span style={{ color: "red" }}>*</span>
+                        </span>
+                      }
+                      InputProps={{
+                        ...params.InputProps,
+                        style: { padding: "0px" },
+                      }}
+                      inputProps={{
+                        ...params.inputProps,
+                        style: { padding: "10px" },
+                      }}
+                    />
+                  )}
+                />
+              </Box>
+              {/* Aadhar No Field */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-4">
                 <div>
                   <Input
                     label="Aadhar No"
@@ -325,7 +326,7 @@ const BackhandEditTeamMaster = () => {
                 </div>
 
                 {/* Pancard No Field */}
-                <div>
+                {/* <div>
                   <Input
                     label="Pancard No"
                     type="text"
@@ -335,13 +336,35 @@ const BackhandEditTeamMaster = () => {
                     maxLength={10}
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
+                </div> */}
+                <div>
+                  <InputMask
+                    mask="aaaaa 9999 a"
+                    value={team.user_pancard_no}
+                    onChange={onInputChange}
+                    name="user_pancard_no"
+                    formatChars={{
+                      9: "[0-9]",
+                      a: "[A-Z]",
+                    }}
+                  >
+                    {() => (
+                      <div>
+                        <Input
+                          type="text"
+                          label="PAN"
+                          name="user_pancard_no"
+                          className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                        />
+                      </div>
+                    )}
+                  </InputMask>
                 </div>
-
                 {/* Pancard File Upload */}
 
                 <div>
                   <Input
-                    label="Pancard File"
+                    label="PAN Photo"
                     type="file"
                     name="user_pancard"
                     onChange={(e) => setSelectedFile2(e.target.files[0])}

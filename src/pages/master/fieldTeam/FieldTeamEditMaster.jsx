@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  FaUser,
-  FaMobile,
-  FaEnvelope,
-  FaIdCard,
-  FaFileAlt,
-  FaClipboardList,
-} from "react-icons/fa";
-import { MdArrowBack, MdDescription, MdSend } from "react-icons/md";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { Button, Card, Input, Textarea } from "@material-tailwind/react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import InputMask from "react-input-mask";
+import { useNavigate, useParams } from "react-router-dom";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+
+import { Card, Input, Textarea } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -47,6 +34,8 @@ const FieldTeamEditMaster = () => {
     user_pancard: "",
     view_branch_id: "",
   });
+  console.log(team, "team");
+
   const navigate = useNavigate();
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
@@ -67,23 +56,53 @@ const FieldTeamEditMaster = () => {
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
 
   const onInputChange = (e) => {
-    if (e.target.name == "mobile") {
-      if (validateOnlyDigits(e.target.value)) {
-        setTeam({
-          ...team,
-          [e.target.name]: e.target.value,
-        });
-      }
+    const { name, value } = e.target;
+    console.log(value);
+
+    if (name === "mobile" || name == "user_aadhar_no") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: digitsOnly,
+      }));
+      return;
+    }
+
+    if (name === "branch_id") {
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        branch_id: value,
+        view_branch_id: value,
+      }));
     } else {
-      setTeam({
-        ...team,
-        [e.target.name]: e.target.value,
-      });
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        [name]: value,
+      }));
     }
   };
 
+  // useEffect(() => {
+  //   setFetchLoading(true); // Start loading
+  //   axios({
+  //     url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       setTeam(res.data.adminUser || "");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching admin user data:", error);
+  //     })
+  //     .finally(() => {
+  //       setFetchLoading(false);
+  //     });
+  // }, [id]);
   useEffect(() => {
-    setFetchLoading(true); // Start loading
+    setFetchLoading(true);
     axios({
       url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
       method: "GET",
@@ -92,7 +111,15 @@ const FieldTeamEditMaster = () => {
       },
     })
       .then((res) => {
-        setTeam(res.data.adminUser);
+        const rawData = res?.data?.adminUser || {};
+        const normalizedData = Object.fromEntries(
+          Object.entries(rawData).map(([key, value]) => {
+            if (value === null || value === "null") return [key, ""];
+            return [key, value];
+          })
+        );
+
+        setTeam(normalizedData);
       })
       .catch((error) => {
         console.error("Error fetching admin user data:", error);
@@ -177,6 +204,7 @@ const FieldTeamEditMaster = () => {
                     value={team.name}
                     onChange={onInputChange}
                     required
+                    maxLength={80}
                     className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
                   />
                 </div>
@@ -236,7 +264,7 @@ const FieldTeamEditMaster = () => {
                 </div>
 
                 {/* Pancard No Field */}
-                <div>
+                {/* <div>
                   <Input
                     label="Pancard No"
                     type="text"
@@ -246,13 +274,34 @@ const FieldTeamEditMaster = () => {
                     maxLength={10}
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
+                </div> */}
+                <div>
+                  <InputMask
+                    mask="aaaaa 9999 a"
+                    value={team.user_pancard_no}
+                    onChange={onInputChange}
+                    formatChars={{
+                      9: "[0-9]",
+                      a: "[A-Z]",
+                    }}
+                  >
+                    {() => (
+                      <div>
+                        <Input
+                          type="text"
+                          label="PAN"
+                          name="user_pancard_no"
+                          className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                        />
+                      </div>
+                    )}
+                  </InputMask>
                 </div>
-
                 {/* Pancard File Upload */}
 
                 <div>
                   <Input
-                    label="Pancard File"
+                    label="PAN Photo"
                     type="file"
                     name="user_pancard"
                     onChange={(e) => setSelectedFile2(e.target.files[0])}
@@ -293,8 +342,9 @@ const FieldTeamEditMaster = () => {
                   <Textarea
                     label="Remarks"
                     name="remarks"
-                    value={team.remarks}
+                    value={team.remarks ? team.remarks : " "}
                     onChange={onInputChange}
+                    maxLength={980}
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   ></Textarea>
                 </div>

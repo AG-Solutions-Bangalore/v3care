@@ -202,7 +202,7 @@ const SignIn = () => {
                       // labelProps={{
                       //   className: "before:content-none after:content-none",
                       // }}
-                      className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
+                      className="!border  !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                       labelProps={{
                         className: "hidden",
                       }}
@@ -213,18 +213,19 @@ const SignIn = () => {
                         {passwordError}
                       </p>
                     )}
+
+                    <button
+                      type="button"
+                      className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <FaEyeSlash size={20} />
+                      ) : (
+                        <IoEye size={20} />
+                      )}
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    className="absolute right-2 top-2/4 -translate-y-2/4 text-gray-600"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <FaEyeSlash size={20} />
-                    ) : (
-                      <IoEye size={20} />
-                    )}
-                  </button>
                 </div>
                 <div className="flex justify-end">
                   <Typography
