@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import Layout from "../../layout/Layout";
 import { BASE_URL } from "../../base/BaseUrl";
 import axios from "axios";
-import { Button, Input } from "@material-tailwind/react";
+import { Button, Input, Textarea } from "@material-tailwind/react";
 import {
   FormControl,
   InputLabel,
@@ -23,6 +23,16 @@ const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
+];
+const training = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
 ];
 const EditVendor = () => {
   const navigate = useNavigate();
@@ -51,6 +61,11 @@ const EditVendor = () => {
     vendor_ref_name_2: "",
     vendor_ref_mobile_1: "",
     vendor_ref_mobile_2: "",
+    vendor_job_skills: "",
+    vendor_training: "",
+    vendor_trained_bywhom: "",
+    vendor_last_training_date: "",
+    vendor_date_of_joining: "",
   });
 
   const [users, setUsers] = useState([
@@ -399,7 +414,7 @@ const EditVendor = () => {
             </div>
 
             {/* Reference Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               <div>
                 <Input
                   label="Reference Name 1"
@@ -448,7 +463,59 @@ const EditVendor = () => {
                 />
               </div>
             </div>
-
+            <div className="my-3">
+              <Textarea
+                label="Job Skills"
+                name="vendor_job_skills"
+                value={vendor.vendor_job_skills}
+                onChange={(e) => onInputChange(e)}
+              />
+            </div>
+            <div className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <FormControl fullWidth>
+                <InputLabel id="vendor_training-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Training Completed
+                    <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="vendor_training-label"
+                  id="vendor_training"
+                  name="vendor_training"
+                  value={vendor.vendor_training}
+                  onChange={(e) => onInputChange(e)}
+                  label="Training Completed"
+                >
+                  {training.map((item) => (
+                    <MenuItem key={item.value} value={String(item.value)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>{" "}
+              <Input
+                label="Trained By whom"
+                name="vendor_trained_bywhom"
+                value={vendor.vendor_trained_bywhom}
+                onChange={(e) => onInputChange(e)}
+              />
+              <Input
+                type="date"
+                label="Training Date"
+                name="vendor_last_training_date"
+                value={vendor.vendor_last_training_date}
+                onChange={(e) => onInputChange(e)}
+              />
+              <Input
+                type="date"
+                label="Date of joining"
+                name="vendor_date_of_joining"
+                value={vendor.vendor_date_of_joining}
+                onChange={(e) => onInputChange(e)}
+              />
+            </div>
             {/* Status */}
 
             <FormControl fullWidth>

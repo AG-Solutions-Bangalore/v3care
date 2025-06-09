@@ -6,7 +6,15 @@ import BusinessIcon from "@mui/icons-material/Business";
 import HouseIcon from "@mui/icons-material/House";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import React, { useState, useEffect } from "react";
-import { TextField, Autocomplete, Checkbox } from "@mui/material";
+import {
+  TextField,
+  Autocomplete,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { useRef } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
@@ -19,12 +27,24 @@ import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { Textarea } from "@material-tailwind/react";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 // const theme = createTheme();
 
 // theme.typography.h3 = {
 //   fontSize: "1px",
 // };
+
+const training = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
+];
 const AddVendor = () => {
   UseEscapeKey();
   const [services, setServices] = useState([]);
@@ -53,6 +73,11 @@ const AddVendor = () => {
     vendor_branch_city: "",
     vendor_branch_district: "",
     vendor_branch_state: "",
+    vendor_job_skills: "",
+    vendor_training: "",
+    vendor_trained_bywhom: "",
+    vendor_last_training_date: "",
+    vendor_date_of_joining: "",
   };
 
   const inputRef1 = useRef(null);
@@ -101,6 +126,12 @@ const AddVendor = () => {
     vendor_ref_name_2: "",
     vendor_ref_mobile_1: "",
     vendor_ref_mobile_2: "",
+    //new
+    vendor_job_skills: "",
+    vendor_training: "",
+    vendor_trained_bywhom: "",
+    vendor_last_training_date: "",
+    vendor_date_of_joining: "",
   });
   const [selectedFile1, setSelectedFile1] = React.useState(null);
   const [selectedFile2, setSelectedFile2] = React.useState(null);
@@ -223,8 +254,12 @@ const AddVendor = () => {
   }, []);
 
   const onSubmit = (e) => {
-    setTest([]);
-
+    e.preventDefault();
+    console.log(test, "test");
+if (!test || test.length === 0) {
+    toast.error("Please select at least one service.");
+    return;
+  }
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
@@ -249,6 +284,11 @@ const AddVendor = () => {
     data.append("vendor_ref_mobile_1", vendor.vendor_ref_mobile_1);
     data.append("vendor_ref_name_2", vendor.vendor_ref_name_2);
     data.append("vendor_ref_mobile_2", vendor.vendor_ref_mobile_2);
+    data.append("vendor_training", vendor.vendor_training);
+    data.append("vendor_trained_bywhom", vendor.vendor_trained_bywhom);
+    data.append("vendor_last_training_date", vendor.vendor_last_training_date);
+    data.append("vendor_date_of_joining", vendor.vendor_date_of_joining);
+    data.append("vendor_job_skills", vendor.vendor_job_skills);
     const selectedServiceValues = test.map((service) => service.service);
 
     data.append("vendor_service", selectedServiceValues);
@@ -353,7 +393,7 @@ const AddVendor = () => {
         }}
       >
         <form id="addIndiv">
-          <Typography variant="h6">Personal Details</Typography>
+          <Typography variant="h6">Personal Details test</Typography>
 
           <Box className={styles["form-container"]}>
             <CustomInput
@@ -488,6 +528,59 @@ const AddVendor = () => {
               maxLength={10}
               name="vendor_ref_mobile_2"
               value={vendor.vendor_ref_mobile_2}
+              onChange={(e) => onInputChange(e)}
+            />
+          </Box>
+          <Box className="my-3">
+            <Textarea
+              label="Job Skills"
+              name="vendor_job_skills"
+              value={vendor.vendor_job_skills}
+              onChange={(e) => onInputChange(e)}
+            />
+          </Box>
+          <Box className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <FormControl fullWidth>
+              <InputLabel id="vendor_training-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Training Completed
+                  <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="vendor_training-label"
+                id="vendor_training"
+                name="vendor_training"
+                value={vendor.vendor_training}
+                onChange={(e) => onInputChange(e)}
+                label="Training Completed"
+              >
+                {training.map((item) => (
+                  <MenuItem key={item.value} value={String(item.value)}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>{" "}
+            <CustomInput
+              label="Trained By whom"
+              name="vendor_trained_bywhom"
+              value={vendor.vendor_trained_bywhom}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              type="date"
+              label="Training Date"
+              name="vendor_last_training_date"
+              value={vendor.vendor_last_training_date}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              type="date"
+              label="Date of joining"
+              name="vendor_date_of_joining"
+              value={vendor.vendor_date_of_joining}
               onChange={(e) => onInputChange(e)}
             />
           </Box>

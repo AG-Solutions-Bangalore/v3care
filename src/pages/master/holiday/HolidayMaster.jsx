@@ -109,8 +109,16 @@ const HolidayMaster = () => {
         filter: true,
         sort: true,
         customBodyRender: (value) => {
-          return moment(value).format("DD-MM-YYYY"); // You can change format
+          return moment(value).format("DD-MM-YYYY");
         },
+      },
+    },
+    {
+      name: "holiday_name",
+      label: "Name",
+      options: {
+        filter: true,
+        sort: true,
       },
     },
   ];

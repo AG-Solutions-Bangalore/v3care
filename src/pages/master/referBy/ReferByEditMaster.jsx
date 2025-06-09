@@ -27,6 +27,7 @@ const ReferByEditMaster = () => {
     refer_by: "",
     branch_id: "",
     refer_by_status: "",
+    refer_by_contact_no: "",
   });
 
   const [status, setStatus] = useState([
@@ -45,11 +46,26 @@ const ReferByEditMaster = () => {
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+  // const onInputChange = (e) => {
+  //   setReferBy({
+  //     ...referBy,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
   const onInputChange = (e) => {
-    setReferBy({
-      ...referBy,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    if (name === "refer_by_contact_no") {
+      const cleanedValue = value.replace(/\D/g, "").slice(0, 10);
+      setReferBy({
+        ...referBy,
+        [name]: cleanedValue,
+      });
+    } else {
+      setReferBy({
+        ...referBy,
+        [name]: value,
+      });
+    }
   };
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -111,6 +127,7 @@ const ReferByEditMaster = () => {
       refer_by: referBy.refer_by,
       branch_id: referBy.branch_id,
       refer_by_status: referBy.refer_by_status,
+      refer_by_contact_no: referBy.refer_by_contact_no,
     };
 
     setIsButtonDisabled(true);
@@ -152,7 +169,7 @@ const ReferByEditMaster = () => {
         <div className="container mx-auto ">
           <Card className="p-6 mt-2">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {/* Branch Name */}
                 <div className="form-group">
                   <Input
@@ -192,6 +209,12 @@ const ReferByEditMaster = () => {
                     ))}
                   </Select>
                 </FormControl>{" "}
+                <Input
+                  label="Referred Mobile"
+                  name="refer_by_contact_no"
+                  value={referBy.refer_by_contact_no}
+                  onChange={onInputChange}
+                />
                 <FormControl>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">

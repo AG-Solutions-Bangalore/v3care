@@ -16,6 +16,7 @@ const AddReferBy = () => {
   const [referby, setReferBy] = useState({
     refer_by: "",
     branch_id: "",
+    refer_by_contact_no: "",
   });
   const navigate = useNavigate();
   UseEscapeKey();
@@ -23,12 +24,28 @@ const AddReferBy = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // const onInputChange = (e) => {
+  //   setReferBy({
+  //     ...referby,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
   const onInputChange = (e) => {
-    setReferBy({
-      ...referby,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    if (name === "refer_by_contact_no") {
+      const cleanedValue = value.replace(/\D/g, "").slice(0, 10);
+      setReferBy({
+        ...referby,
+        [name]: cleanedValue,
+      });
+    } else {
+      setReferBy({
+        ...referby,
+        [name]: value,
+      });
+    }
   };
+
   useEffect(() => {
     const fetchBranchData = async () => {
       try {
@@ -66,6 +83,7 @@ const AddReferBy = () => {
       let data = {
         refer_by: referby.refer_by,
         branch_id: referby.branch_id,
+        refer_by_contact_no: referby.refer_by_contact_no,
       };
 
       const token = localStorage.getItem("token");
@@ -102,7 +120,7 @@ const AddReferBy = () => {
       <PageHeader title={"Create Referred By"} />
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
             <div className="form-group">
               <Input
                 label="Referred By"
@@ -137,6 +155,12 @@ const AddReferBy = () => {
                 ))}
               </Select>
             </FormControl>{" "}
+            <Input
+              label="Referred Mobile"
+              name="refer_by_contact_no"
+              value={referby.refer_by_contact_no}
+              onChange={onInputChange}
+            />
           </div>
 
           <div className="flex justify-center space-x-4">
