@@ -131,7 +131,7 @@ const Jobs = () => {
             <FaCalendarAlt className="text-red-600 text-lg" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Today's Jobs</h2>
+            <h2 className="text-xl font-bold text-gray-900">Today's Jobs </h2>
           </div>
         </div>
       </div>

@@ -1,17 +1,21 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md";
-import Select from "react-select";
-
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { toast } from "react-toastify";
+import { Input, Textarea } from "@material-tailwind/react";
 import axios from "axios";
-import { Button, Input } from "@material-tailwind/react";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as SelectMaterial,
+} from "@mui/material";
 
 const serviceShowWebsite = [
   {
@@ -68,8 +72,15 @@ const AddServiceMaster = () => {
     service_comm: "",
     service_image: "",
     service_show_website: [],
+    service_meta_title: "",
+    service_meta_description: "",
+    service_slug: "",
+    service_meta_full_length: "",
+    super_service_id: "",
   });
   UseEscapeKey();
+  const [superservice, setSuperservice] = useState([]);
+
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -77,7 +88,26 @@ const AddServiceMaster = () => {
 
   // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
+  useEffect(() => {
+    const fetchServiceData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-super-service`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
+        setSuperservice(response.data?.servicesuper);
+      } catch (error) {
+        console.error("Error fetching servicesuper data", error);
+      }
+    };
+    fetchServiceData();
+  }, []);
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (["service_comm"].includes(name)) {
@@ -106,6 +136,11 @@ const AddServiceMaster = () => {
     data.append("service", services.service);
     data.append("service_image", selectedFile);
     data.append("service_comm", services.service_comm);
+    data.append("service_meta_title", services.service_meta_title);
+    data.append("service_meta_description", services.service_meta_description);
+    data.append("service_slug", services.service_slug);
+    data.append("service_meta_full_length", services.service_meta_full_length);
+    data.append("super_service_id", services.super_service_id);
 
     data.append(
       "service_show_website",
@@ -165,8 +200,29 @@ const AddServiceMaster = () => {
 
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-            {/* Service Field */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <FormControl fullWidth>
+              <InputLabel id="super_service_id-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Service Id
+                </span>
+              </InputLabel>
+              <SelectMaterial
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="super_service_id-label"
+                id="super_service_id-select"
+                name="super_service_id"
+                value={services.super_service_id}
+                onChange={onInputChange}
+                label="Service Id"
+              >
+                {superservice.map((item) => (
+                  <MenuItem key={item.id} value={String(item.id)}>
+                    {item.serviceSuper}
+                  </MenuItem>
+                ))}
+              </SelectMaterial>
+            </FormControl>{" "}
             <div className="form-group">
               <Input
                 label="Service"
@@ -179,7 +235,6 @@ const AddServiceMaster = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none   transition-all duration-300 shadow-sm"
               />
             </div>
-
             <div className="form-group">
               <Input
                 label="Service Image"
@@ -189,9 +244,8 @@ const AddServiceMaster = () => {
                 className="w-full px-4 pb-2 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
               />
             </div>
-
-            <div className="form-group">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="form-group relative">
+              <label className="block text-xs font-medium text-gray-700 absolute -top-4 left-0">
                 Service Show Website
               </label>
               <Select
@@ -202,11 +256,36 @@ const AddServiceMaster = () => {
                 styles={customStyles}
                 className="basic-multi-select"
                 classNamePrefix="select"
-                placeholder="Select options..."
+                placeholder="Select Service..."
               />
             </div>
           </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+            <Textarea
+              label="Meta Title"
+              value={services?.service_meta_title}
+              name="service_meta_title"
+              onChange={onInputChange}
+            />
+            <Textarea
+              label="Meta Description"
+              value={services?.service_meta_description}
+              name="service_meta_description"
+              onChange={onInputChange}
+            />
+            <Textarea
+              label="Service Slug"
+              value={services?.service_slug}
+              name="service_slug"
+              onChange={onInputChange}
+            />
+            <Textarea
+              label="Service Meta  Full length"
+              value={services?.service_meta_full_length}
+              name="service_meta_full_length"
+              onChange={onInputChange}
+            />
+          </div>
           <div className="flex justify-center space-x-4">
             <ButtonConfigColor
               type="submit"

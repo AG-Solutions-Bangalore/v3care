@@ -11,6 +11,17 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+
+const training = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
+];
 const AddFieldTeamMaster = () => {
   const [team, setTeam] = useState({
     name: "",
@@ -24,6 +35,14 @@ const AddFieldTeamMaster = () => {
     user_type: "1",
     remarks: "",
     view_branch_id: "",
+
+    //new
+    user_job_skills: "",
+    user_designation: null,
+    user_training: "",
+    user_trained_bywhom: "",
+    user_last_training: "",
+    user_joinining_date: "",
   });
   const navigate = useNavigate();
   UseEscapeKey();
@@ -102,6 +121,13 @@ const AddFieldTeamMaster = () => {
     data.append("user_pancard_no", team.user_pancard_no);
     data.append("view_branch_id", team.view_branch_id);
     data.append("user_pancard", selectedFile2);
+    //new
+    data.append("user_designation", team.user_designation);
+    data.append("user_job_skills", team.user_job_skills);
+    data.append("user_training", team.user_training);
+    data.append("user_trained_bywhom", team.user_trained_bywhom);
+    data.append("user_last_training", team.user_last_training);
+    data.append("user_joinining_date", team.user_joinining_date);
     axios({
       url: BASE_URL + "/api/panel-create-admin-user",
       method: "POST",
@@ -142,7 +168,7 @@ const AddFieldTeamMaster = () => {
 
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
             {/* Full Name Field */}
             <div>
               <Input
@@ -156,7 +182,6 @@ const AddFieldTeamMaster = () => {
                 className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
               />
             </div>
-
             {/* Mobile No Field */}
             <div>
               <Input
@@ -171,7 +196,6 @@ const AddFieldTeamMaster = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-
             <div>
               <Input
                 label="Email Id"
@@ -184,7 +208,6 @@ const AddFieldTeamMaster = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-
             {(userType == "6" || userType == "8") && (
               <FormControl fullWidth>
                 <InputLabel id="service-select-label">
@@ -210,7 +233,6 @@ const AddFieldTeamMaster = () => {
                 </Select>
               </FormControl>
             )}
-
             {/* Aadhar No Field */}
             <div>
               <Input
@@ -223,7 +245,6 @@ const AddFieldTeamMaster = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-
             {/* Aadhar Photo Upload */}
             <div>
               <Input
@@ -234,7 +255,6 @@ const AddFieldTeamMaster = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
               />
             </div>
-
             {/* Pancard No Field */}
             <div>
               <InputMask
@@ -259,18 +279,6 @@ const AddFieldTeamMaster = () => {
                 )}
               </InputMask>
             </div>
-            {/* <div>
-              <Input
-                label="PAN"
-                type="text"
-                name="user_pancard_no"
-                value={team.user_pancard_no}
-                onChange={onInputChange}
-                maxLength={10}
-                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-              />
-            </div> */}
-
             {/* Pancard Photo Upload */}
             <div>
               <Input
@@ -278,11 +286,68 @@ const AddFieldTeamMaster = () => {
                 type="file"
                 name="user_pancard"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}
-                // className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-
-            {/* Remarks Field */}
+            <FormControl fullWidth>
+              <InputLabel id="user_training-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Training Completed
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="user_training-label"
+                id="user_training"
+                name="user_training"
+                value={team.user_training}
+                onChange={(e) => onInputChange(e)}
+                label="Training Completed"
+              >
+                {training.map((item) => (
+                  <MenuItem key={item.value} value={String(item.value)}>
+                    {item.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>{" "}
+            <div>
+              <Input
+                label="Trained By"
+                name="user_trained_bywhom"
+                value={team.user_trained_bywhom}
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
+            </div>
+            <div>
+              <Input
+                label="Last Training"
+                name="user_last_training"
+                value={team.user_last_training}
+                type="date"
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
+            </div>
+            <div>
+              <Input
+                label="Joining Date"
+                name="user_joinining_date"
+                type="date"
+                value={team.user_joinining_date}
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
+            </div>
+            <div className="col-span-2">
+              <Textarea
+                label="Job Skills"
+                name="user_job_skills"
+                value={team.user_job_skills}
+                onChange={onInputChange}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
+            </div>{" "}
             <div className="col-span-2">
               <Textarea
                 label="Remarks"

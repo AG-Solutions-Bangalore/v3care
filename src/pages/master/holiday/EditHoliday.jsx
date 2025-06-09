@@ -1,38 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { useNavigate, useParams } from "react-router-dom";
-import { FaBuilding } from "react-icons/fa";
-import { Button, Card, Input } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Card, Input } from "@material-tailwind/react";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { ContextPanel } from "../../../utils/ContextPanel";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MdArrowBack, MdSend } from "react-icons/md";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const EditHoliday = () => {
   const [holiday, setHoliday] = useState({
     holiday_date: "",
+    holiday_name: "",
   });
 
   UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
-  const [branch, setBranch] = useState([]);
-  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -80,6 +68,7 @@ const EditHoliday = () => {
     e.preventDefault();
     let data = {
       holiday_date: holiday.holiday_date,
+      holiday_name: holiday.holiday_name,
     };
 
     setIsButtonDisabled(true);
@@ -121,8 +110,14 @@ const EditHoliday = () => {
         <div className="container mx-auto ">
           <Card className="p-6 mt-2">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Branch Name */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="Holiday Name"
+                  required
+                  name="holiday_name"
+                  value={holiday.holiday_name}
+                  onChange={onInputChange}
+                />
                 <div className="form-group">
                   <Input
                     label="Holiday"

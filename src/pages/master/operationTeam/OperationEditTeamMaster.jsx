@@ -2,6 +2,7 @@ import { Card, Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import InputMask from "react-input-mask";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
@@ -11,13 +12,21 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import InputMask from "react-input-mask";
 
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
 ];
-
+const training = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
+];
 const OperationEditTeamMaster = () => {
   const { id } = useParams();
   UseEscapeKey();
@@ -32,6 +41,13 @@ const OperationEditTeamMaster = () => {
     user_pancard_no: "",
     user_pancard: "",
     view_branch_id: "",
+    //new
+    user_job_skills: null,
+    user_designation: "",
+    user_training: "",
+    user_trained_bywhom: "",
+    user_last_training: "",
+    user_joinining_date: "",
   });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -118,6 +134,14 @@ const OperationEditTeamMaster = () => {
       data.append("user_type", team.user_type);
       data.append("view_branch_id", team.view_branch_id);
 
+      //new
+      data.append("user_designation", team.user_designation);
+      data.append("user_job_skills", team.user_job_skills);
+      data.append("user_training", team.user_training);
+      data.append("user_trained_bywhom", team.user_trained_bywhom);
+      data.append("user_last_training", team.user_last_training);
+      data.append("user_joinining_date", team.user_joinining_date);
+
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
         data,
@@ -153,7 +177,7 @@ const OperationEditTeamMaster = () => {
         <div className="container mx-auto ">
           <Card className="p-6 mt-2">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
                 <div>
                   <Input
                     label="Full Name"
@@ -166,7 +190,6 @@ const OperationEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
                   />
                 </div>
-
                 <div>
                   <Input
                     label="Mobile No"
@@ -180,7 +203,6 @@ const OperationEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 <div>
                   <Input
                     label="Email Id"
@@ -192,7 +214,6 @@ const OperationEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 <div>
                   <Input
                     label="Aadhar No"
@@ -204,7 +225,6 @@ const OperationEditTeamMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 <div>
                   <Input
                     label="Aadhar File"
@@ -215,7 +235,6 @@ const OperationEditTeamMaster = () => {
                   />
                   <small className="text-gray-500">{team.user_aadhar}</small>
                 </div>
-
                 {/* <div>
                   <Input
                     label="Pancard No"
@@ -252,6 +271,67 @@ const OperationEditTeamMaster = () => {
                 </div>
                 <div>
                   <Input
+                    label="Designation"
+                    name="user_designation"
+                    value={team.user_designation}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <FormControl fullWidth>
+                  <InputLabel id="user_training-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Training Completed
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="user_training-label"
+                    id="user_training"
+                    name="user_training"
+                    value={team.user_training}
+                    onChange={(e) => onInputChange(e)}
+                    label="Training Completed"
+                  >
+                    {training.map((item) => (
+                      <MenuItem key={item.value} value={String(item.value)}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>{" "}
+                {/* Remarks Field */}
+                <div>
+                  <Input
+                    label="Trained By"
+                    name="user_trained_bywhom"
+                    value={team.user_trained_bywhom}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Last Training"
+                    name="user_last_training"
+                    value={team.user_last_training}
+                    type="date"
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Joining Date"
+                    name="user_joinining_date"
+                    type="date"
+                    value={team.user_joinining_date}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <div>
+                  <Input
                     label="Pancard File"
                     type="file"
                     name="user_pancard"
@@ -260,7 +340,6 @@ const OperationEditTeamMaster = () => {
                   />
                   <small className="text-gray-500">{team.user_pancard}</small>
                 </div>
-
                 <FormControl fullWidth>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -284,9 +363,7 @@ const OperationEditTeamMaster = () => {
                     ))}
                   </Select>
                 </FormControl>
-
                 {/* Remarks Field */}
-
                 <div className="col-span-3">
                   <Textarea
                     label="Remarks"

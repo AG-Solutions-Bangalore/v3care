@@ -1,37 +1,32 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import MasterFilter from "../../../components/MasterFilter";
-import { FaBuilding } from "react-icons/fa";
-import { Button, Card, Input } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Card, Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { ContextPanel } from "../../../utils/ContextPanel";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import { MdArrowBack, MdSend } from "react-icons/md";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BranchEditMaster = () => {
   const [branch, setBranch] = useState({
     branch_name: "",
     branch_status: "",
+    branch_pincode: "",
+    branch_state_name: "",
+    branch_contact_person: "",
+    branch_contact_no: "",
   });
 
-  const [status, setStatus] = useState([
+  const status = [
     { value: "Active", label: "Active" },
     { value: "Inactive", label: "Inactive" },
-  ]);
+  ];
   UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -43,13 +38,25 @@ const BranchEditMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
 
+  // const onInputChange = (e) => {
+  //   setBranch({
+  //     ...branch,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
   const onInputChange = (e) => {
+    const { name, value } = e.target;
+
+    let newValue = value;
+    if (name === "branch_pincode" || name === "branch_contact_no") {
+      newValue = value.replace(/\D/g, "");
+    }
+
     setBranch({
       ...branch,
-      [e.target.name]: e.target.value,
+      [name]: newValue,
     });
   };
-
   useEffect(() => {
     const fetchBranchData = async () => {
       setFetchLoading(true);
@@ -89,6 +96,10 @@ const BranchEditMaster = () => {
     let data = {
       branch_name: branch.branch_name,
       branch_status: branch.branch_status,
+      branch_pincode: branch.branch_pincode,
+      branch_state_name: branch.branch_state_name,
+      branch_contact_person: branch.branch_contact_person,
+      branch_contact_no: branch.branch_contact_no,
     };
 
     setIsButtonDisabled(true);
@@ -104,7 +115,6 @@ const BranchEditMaster = () => {
           },
         }
       );
-      console.log("Form submitted", branch);
       if (response.data.code == "200") {
         toast.success(response.data?.msg || "update succesfull");
         navigate(`/branch?page=${pageNo}`);
@@ -131,25 +141,49 @@ const BranchEditMaster = () => {
         ) : (
           <Card className="p-6 mt-6">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Branch Name */}
-                <div className="form-group">
-                  <Input
-                    label="Branch"
-                    type="text"
-                    name="branch_name"
-                    value={branch.branch_name}
-                    onChange={onInputChange}
-                    required
-                    disabled
-                    labelProps={{
-                      className: "!text-gray-600 ",
-                    }}
-                  />
-                </div>
-
-                {/* Branch Status */}
-
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                {/* Branch Name Field */}
+                <Input
+                  fullWidth
+                  label="Branch Name"
+                  required
+                  name="branch_name"
+                  maxLength={80}
+                  value={branch.branch_name}
+                  onChange={onInputChange}
+                />
+                <Input
+                  fullWidth
+                  label="Pincode"
+                  name="branch_pincode"
+                  maxLength={6}
+                  value={branch.branch_pincode}
+                  onChange={onInputChange}
+                />
+                <Input
+                  fullWidth
+                  label="State Name"
+                  name="branch_state_name"
+                  maxLength={80}
+                  value={branch.branch_state_name}
+                  onChange={onInputChange}
+                />
+                <Input
+                  fullWidth
+                  label="Contact Person"
+                  name="branch_contact_person"
+                  maxLength={80}
+                  value={branch.branch_contact_person}
+                  onChange={onInputChange}
+                />
+                <Input
+                  fullWidth
+                  label="Contact No"
+                  name="branch_contact_no"
+                  maxLength={10}
+                  value={branch.branch_contact_no}
+                  onChange={onInputChange}
+                />
                 <FormControl fullWidth>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">

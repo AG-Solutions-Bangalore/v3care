@@ -4,7 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -101,7 +101,39 @@ const BranchMaster = () => {
       label: "Branch",
       options: {
         filter: true,
-        sort: true,
+        sort: false,
+      },
+    },
+    {
+      name: "branch_state_name",
+      label: "State Name",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "branch_contact_person",
+      label: "Contact Person",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "branch_contact_no",
+      label: "Contact No",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "branch_pincode",
+      label: "Pincode",
+      options: {
+        filter: true,
+        sort: false,
       },
     },
 

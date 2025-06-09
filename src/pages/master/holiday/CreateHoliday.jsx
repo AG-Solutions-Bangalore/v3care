@@ -13,10 +13,10 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const CreateHoliday = () => {
   const [holiday, seHoliday] = useState({
     holiday_date: "",
+    holiday_name: "",
   });
   const navigate = useNavigate();
   UseEscapeKey();
-  const [branch, setBranch] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -26,26 +26,6 @@ const CreateHoliday = () => {
       [e.target.name]: e.target.value,
     });
   };
-  useEffect(() => {
-    const fetchBranchData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/panel-fetch-branch`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setBranch(response.data?.branch);
-      } catch (error) {
-        console.error("Error fetching branch data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBranchData();
-  }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -62,6 +42,7 @@ const CreateHoliday = () => {
     try {
       let data = {
         holiday_date: holiday.holiday_date,
+        holiday_name: holiday.holiday_name,
       };
 
       const token = localStorage.getItem("token");
@@ -78,7 +59,7 @@ const CreateHoliday = () => {
       if (response.data.code == "200") {
         toast.success(response.data?.msg || "Holiday Created Successfully");
         seHoliday({ holiday_date: "" });
-        navigate("/holiday-list");
+        navigate(-1);
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
       }
@@ -99,6 +80,13 @@ const CreateHoliday = () => {
       <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-2 gap-6 mb-6">
+            <Input
+              label="Holiday Name"
+              required
+              name="holiday_name"
+              value={holiday.holiday_name}
+              onChange={onInputChange}
+            />
             <div className="form-group">
               <Input
                 label="Holiday Date"

@@ -119,6 +119,14 @@ const ReferByMaster = () => {
         sort: true,
       },
     },
+    {
+      name: "refer_by_contact_no",
+      label: "Contact No",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
 
     {
       name: "refer_by_status",

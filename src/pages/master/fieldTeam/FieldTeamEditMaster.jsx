@@ -17,6 +17,16 @@ const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
 ];
+const training = [
+  {
+    value: "Yes",
+    label: "Yes",
+  },
+  {
+    value: "No",
+    label: "No",
+  },
+];
 const FieldTeamEditMaster = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -33,8 +43,14 @@ const FieldTeamEditMaster = () => {
     user_pancard_no: "",
     user_pancard: "",
     view_branch_id: "",
+    //new
+    user_job_skills: "",
+    user_designation: null,
+    user_training: "",
+    user_trained_bywhom: "",
+    user_last_training: "",
+    user_joinining_date: "",
   });
-  console.log(team, "team");
 
   const navigate = useNavigate();
   const [selectedFile1, setSelectedFile1] = useState(null);
@@ -82,25 +98,6 @@ const FieldTeamEditMaster = () => {
     }
   };
 
-  // useEffect(() => {
-  //   setFetchLoading(true); // Start loading
-  //   axios({
-  //     url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //     },
-  //   })
-  //     .then((res) => {
-  //       setTeam(res.data.adminUser || "");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching admin user data:", error);
-  //     })
-  //     .finally(() => {
-  //       setFetchLoading(false);
-  //     });
-  // }, [id]);
   useEffect(() => {
     setFetchLoading(true);
     axios({
@@ -158,6 +155,13 @@ const FieldTeamEditMaster = () => {
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
       data.append("view_branch_id", team.view_branch_id);
+      //new
+      data.append("user_designation", team.user_designation);
+      data.append("user_job_skills", team.user_job_skills);
+      data.append("user_training", team.user_training);
+      data.append("user_trained_bywhom", team.user_trained_bywhom);
+      data.append("user_last_training", team.user_last_training);
+      data.append("user_joinining_date", team.user_joinining_date);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
@@ -194,7 +198,7 @@ const FieldTeamEditMaster = () => {
         <div className="container mx-auto ">
           <Card className="p-6 mt-2">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
                 {/* Full Name Field */}
                 <div>
                   <Input
@@ -208,7 +212,6 @@ const FieldTeamEditMaster = () => {
                     className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
                   />
                 </div>
-
                 {/* Mobile No Field */}
                 <div>
                   <Input
@@ -223,7 +226,6 @@ const FieldTeamEditMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 {/* Email Field */}
                 <div>
                   <Input
@@ -236,7 +238,6 @@ const FieldTeamEditMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 {/* Aadhar No Field */}
                 <div>
                   <Input
@@ -249,9 +250,7 @@ const FieldTeamEditMaster = () => {
                     className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
                   />
                 </div>
-
                 {/* Aadhar File Upload */}
-
                 <div>
                   <Input
                     label="Aadhar File"
@@ -262,19 +261,6 @@ const FieldTeamEditMaster = () => {
                   />
                   <small className="text-gray-500">{team.user_aadhar}</small>
                 </div>
-
-                {/* Pancard No Field */}
-                {/* <div>
-                  <Input
-                    label="Pancard No"
-                    type="text"
-                    name="user_pancard_no"
-                    value={team.user_pancard_no}
-                    onChange={onInputChange}
-                    maxLength={10}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                  />
-                </div> */}
                 <div>
                   <InputMask
                     mask="aaaaa 9999 a"
@@ -298,7 +284,6 @@ const FieldTeamEditMaster = () => {
                   </InputMask>
                 </div>
                 {/* Pancard File Upload */}
-
                 <div>
                   <Input
                     label="PAN Photo"
@@ -309,9 +294,57 @@ const FieldTeamEditMaster = () => {
                   />
                   <small className="text-gray-500">{team.user_pancard}</small>
                 </div>
-
-                {/* Status Dropdown */}
-
+                <FormControl fullWidth>
+                  <InputLabel id="user_training-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Training Completed
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="user_training-label"
+                    id="user_training"
+                    name="user_training"
+                    value={team.user_training}
+                    onChange={(e) => onInputChange(e)}
+                    label="Training Completed"
+                  >
+                    {training.map((item) => (
+                      <MenuItem key={item.value} value={String(item.value)}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>{" "}
+                <div>
+                  <Input
+                    label="Trained By"
+                    name="user_trained_bywhom"
+                    value={team.user_trained_bywhom}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Last Training"
+                    name="user_last_training"
+                    value={team.user_last_training}
+                    type="date"
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Joining Date"
+                    name="user_joinining_date"
+                    type="date"
+                    value={team.user_joinining_date}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>
                 <FormControl fullWidth>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -335,10 +368,17 @@ const FieldTeamEditMaster = () => {
                     ))}
                   </Select>
                 </FormControl>
-
+                <div className="col-span-2">
+                  <Textarea
+                    label="Job Skills"
+                    name="user_job_skills"
+                    value={team.user_job_skills}
+                    onChange={onInputChange}
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                  />
+                </div>{" "}
                 {/* Remarks Field */}
-
-                <div className="col-span-3">
+                <div className="col-span-2">
                   <Textarea
                     label="Remarks"
                     name="remarks"
