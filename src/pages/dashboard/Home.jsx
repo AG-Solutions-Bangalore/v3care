@@ -16,9 +16,9 @@ const Home = () => {
         <div className="mt-4">
           <Jobs />
         </div>
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <FieldJobs />
-        </div>
+        </div> */}
         <div className="mt-4">
           <BookingOrder />
         </div>

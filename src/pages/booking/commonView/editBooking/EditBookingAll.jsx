@@ -153,7 +153,7 @@ const EditBookingAll = () => {
       ]);
       const bookingData = {
         ...bookingRes.data?.booking,
-        order_comm: bookingRes.data?.booking?.order_comm ?? 0,
+        order_comm: bookingRes.data?.booking?.order_comm || "0",
       };
       setBooking(bookingData);
       setOrderRef(bookingRes.data?.booking?.order_ref);
