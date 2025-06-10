@@ -1,68 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { 
-  Card, 
-  CardHeader, 
-  CardBody, 
-  Typography,
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
   IconButton,
-  Chip 
+  Typography,
 } from "@material-tailwind/react";
-import { HiMiniMinus } from "react-icons/hi2";
-import { TfiReload } from "react-icons/tfi";
-import { MdCancel } from "react-icons/md";
-import { FaCalendarAlt, FaPhoneAlt, FaStore, FaUser } from "react-icons/fa";
 import moment from "moment";
-import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { FaCalendarAlt, FaPhoneAlt, FaStore, FaUser } from "react-icons/fa";
+import { HiMiniMinus } from "react-icons/hi2";
+import { MdCancel } from "react-icons/md";
+import { TfiReload } from "react-icons/tfi";
 
-const BookingOrder = () => {
-  const dateyear = ["2024-25"];
+const BookingOrder = ({ datas, loading, fetchData }) => {
   const [data, setData] = useState([]);
   const [fullClose, setFullClose] = useState(true);
   const [showTable, setShowTable] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
 
   const getStatusColor = (status) => {
     const statusColors = {
-      "Pending": "blue",
-      "Confirmed": "green",
-      "Cancelled": "red",
+      Pending: "blue",
+      Confirmed: "green",
+      Cancelled: "red",
       "In Progress": "amber",
-      "Completed": "green",
-      // Add more status colors as needed
+      Completed: "green",
     };
     return statusColors[status] || "gray";
   };
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-dashboard-data/${dateyear}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setData(response.data.booking_tomm);
-    } catch (error) {
-      console.error("Error fetching booking data:", error);
-      toast.error("Failed to fetch booking data");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (datas.booking_tomm) {
+      setData(datas.booking_tomm);
       setReload(false);
     }
-  };
-
+  }, [datas.booking_tomm]);
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("token");
-    if (!isLoggedIn) {
-      navigate("/");
-      return;
-    }
     if (reload || data.length === 0) {
       fetchData();
     }
@@ -71,20 +45,24 @@ const BookingOrder = () => {
   if (!fullClose) return null;
 
   return (
-    <div >
+    <div>
       <Card className="w-full shadow-lg ">
-        <CardHeader 
-          floated={false} 
+        <CardHeader
+          floated={false}
           className="bg-white shadow-none rounded-none"
         >
           <div className="flex items-center justify-between gap-4 ">
             <div className="flex items-center gap-3">
               <FaCalendarAlt className="text-red-400 text-xl" />
-              <Typography variant="h5" color="blue-gray" className="font-medium">
+              <Typography
+                variant="h5"
+                color="blue-gray"
+                className="font-medium"
+              >
                 Tomorrow's Booking Orders
               </Typography>
             </div>
-            
+
             <div className="flex gap-2">
               <IconButton
                 variant="text"
@@ -156,19 +134,32 @@ const BookingOrder = () => {
                 ) : (
                   data.map((order, index) => {
                     const isLast = index === data.length - 1;
-                    const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                    const classes = isLast
+                      ? "p-4"
+                      : "p-4 border-b border-blue-gray-50";
 
                     return (
-                      <tr key={order.order_ref} className="hover:bg-blue-gray-50/50">
+                      <tr
+                        key={order.order_ref}
+                        className="hover:bg-blue-gray-50/50"
+                      >
                         <td className={classes}>
-                          <Typography variant="small" color="blue-gray" className="font-normal">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
                             {order.order_ref}
                           </Typography>
                         </td>
                         <td className={classes}>
                           <div className="flex items-center gap-2">
                             <FaStore className="text-red-300" />
-                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
                               {order.branch_name}
                             </Typography>
                           </div>
@@ -176,7 +167,11 @@ const BookingOrder = () => {
                         <td className={classes}>
                           <div className="flex items-center gap-2">
                             <FaUser className="text-blue-gray-300" />
-                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
                               {order.order_customer}
                             </Typography>
                           </div>
@@ -184,23 +179,41 @@ const BookingOrder = () => {
                         <td className={classes}>
                           <div className="flex items-center gap-2">
                             <FaPhoneAlt className="text-green-300" />
-                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
                               {order.order_customer_mobile}
                             </Typography>
                           </div>
                         </td>
                         <td className={classes}>
-                          <Typography variant="small" color="blue-gray" className="font-normal">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
                             {moment(order.order_date).format("DD-MM-YYYY")}
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <Typography variant="small" color="blue-gray" className="font-normal">
-                            {moment(order.order_service_date).format("DD-MM-YYYY")}
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {moment(order.order_service_date).format(
+                              "DD-MM-YYYY"
+                            )}
                           </Typography>
                         </td>
                         <td className={classes}>
-                          <Typography variant="small" color="blue-gray" className="font-normal">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
                             {order.order_custom_price <= 1
                               ? order.order_service
                               : order.order_custom}

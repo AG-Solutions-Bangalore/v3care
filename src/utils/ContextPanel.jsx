@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../base/BaseUrl";
+import { BASE_URL } from "../base/BaseUrl";
 
 export const ContextPanel = createContext();
 
 const AppProvider = ({ children }) => {
+  const [currentYear, setCurrentYear] = useState("");
   const [isPanelUp, setIsPanelUp] = useState(true);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +27,19 @@ const AppProvider = ({ children }) => {
       setError(true);
     }
   };
+  useEffect(() => {
+    const fetchYearData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {});
 
+        setCurrentYear(response?.data?.year.current_year);
+      } catch (error) {
+        console.error("Error fetching year data:", error);
+      }
+    };
+
+    fetchYearData();
+  }, []);
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -42,6 +55,7 @@ const AppProvider = ({ children }) => {
         "/forget-password",
         "/add-booking-outside",
         "/become-partner-outside",
+        "/maintenance",
       ].includes(location.pathname)
     ) {
       navigate("/");
@@ -58,7 +72,9 @@ const AppProvider = ({ children }) => {
   }, [location.pathname]);
 
   return (
-    <ContextPanel.Provider value={{ isPanelUp, setIsPanelUp, userType }}>
+    <ContextPanel.Provider
+      value={{ isPanelUp, setIsPanelUp, userType, currentYear }}
+    >
       {children}
     </ContextPanel.Provider>
   );

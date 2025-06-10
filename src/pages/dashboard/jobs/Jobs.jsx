@@ -13,9 +13,10 @@ import { BASE_URL } from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const JobCard = ({ title, value, icon: Icon, status, loading }) => {
-  // Helper function to determine status colors
+  const naviagte = useNavigate();
   const getStatusColor = (status) => {
     const colors = {
       inspection: "text-blue-600 bg-blue-50",
@@ -32,7 +33,10 @@ const JobCard = ({ title, value, icon: Icon, status, loading }) => {
   const statusColor = getStatusColor(status);
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden border border-gray-100">
+    <div
+      className="bg-white rounded-lg overflow-hidden border border-gray-100 cursor-pointer"
+      onClick={() => naviagte("/today?page=1")}
+    >
       <div className="p-4">
         <div className="flex flex-col items-center">
           <div
@@ -52,10 +56,7 @@ const JobCard = ({ title, value, icon: Icon, status, loading }) => {
   );
 };
 
-const Jobs = () => {
-  const dateyear = ["2024-25"];
-  const [loading, setLoading] = useState(false);
-
+const Jobs = ({ datas, loading, userType }) => {
   const [data, setData] = useState({
     booking_Inspection_today: 0,
     booking_Confirmed_today: 0,
@@ -111,33 +112,32 @@ const Jobs = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-dashboard-data/${dateyear}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching booking data:", error);
-        toast.error("Failed to fetch jobs data");
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (datas) {
+      const {
+        booking_Inspection_today,
+        booking_Confirmed_today,
+        booking_Vendor_today,
+        booking_way_today,
+        booking_Progress_today,
+        booking_Completed_today,
+        booking_field_count,
+      } = datas;
 
-    fetchData();
-  }, []);
+      setData({
+        booking_Inspection_today,
+        booking_Confirmed_today,
+        booking_Vendor_today,
+        booking_way_today,
+        booking_Progress_today,
+        booking_Completed_today,
+        booking_field_count,
+      });
+    }
+  }, [datas]);
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-2">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
             <FaCalendarAlt className="text-red-600 text-lg" />
@@ -148,7 +148,13 @@ const Jobs = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div
+        className={`grid gap-4 mt-4 ${
+          userType == 8
+            ? "grid-cols-1 md:grid-cols-3"
+            : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+        }`}
+      >
         {jobCards.map((card, index) => (
           <JobCard
             key={index}

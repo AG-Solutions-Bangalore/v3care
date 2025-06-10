@@ -1,35 +1,41 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  FaHourglassHalf,
-  FaCheckCircle,
+  FaCalendarAlt,
   FaCalendarDay,
   FaCalendarWeek,
-  FaCalendarAlt,
+  FaCheckCircle,
+  FaHourglassHalf,
 } from "react-icons/fa";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { toast } from "react-toastify";
+import { FiLoader } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
-const DashboardCard = ({ title, value, icon: Icon, trend }) => (
-  <div className="bg-white rounded-lg overflow-hidden">
-    {/* <div className="p-6 border-b border-gray-100"> */}
+const DashboardCard = ({ title, value, icon: Icon, loading, link }) => {
+  const navigate = useNavigate();
 
-    <div className="p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        </div>
-        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-50">
-          <Icon className="w-6 h-6 text-red-600" />
+  return (
+    <div
+      className="bg-white rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition"
+      onClick={() => navigate(link)}
+    >
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
+            {loading ? (
+              <FiLoader className="animate-spin text-lg text-red-600" />
+            ) : (
+              <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+            )}
+          </div>
+          <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-50">
+            <Icon className="w-6 h-6 text-red-600" />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
-
-const Cards = () => {
-  const dateyear = ["2024-25"];
+  );
+};
+const Cards = ({ datas, loading }) => {
   const [data, setData] = useState({
     booking_pending_count: 0,
     booking_Confirmed_count: 0,
@@ -42,54 +48,48 @@ const Cards = () => {
       title: "Pending Bookings",
       value: data.booking_pending_count,
       icon: FaHourglassHalf,
+      link: "/pending?page=1",
     },
     {
       title: "Confirmed Bookings",
       value: data.booking_Confirmed_count,
       icon: FaCheckCircle,
+      link: "/confirmed?page=1",
     },
     {
       title: "Today's Bookings",
       value: data.booking_current_count,
       icon: FaCalendarDay,
+      link: "/today?page=1",
     },
     {
       title: "Tomorrow's Bookings",
       value: data.booking_tomm_count,
       icon: FaCalendarWeek,
+      link: "/tomorrow?page=1",
     },
   ];
-
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("id");
-    if (!isLoggedIn) {
-      navigate("/");
-      return;
+    if (datas) {
+      const {
+        booking_pending_count,
+        booking_Confirmed_count,
+        booking_current_count,
+        booking_tomm_count,
+      } = datas;
+
+      setData({
+        booking_pending_count,
+        booking_Confirmed_count,
+        booking_current_count,
+        booking_tomm_count,
+      });
     }
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-dashboard-data/${dateyear}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching booking data:", error);
-        toast.error("Failed to fetch dashboard data");
-      }
-    };
-
-    fetchData();
-  }, []);
+  }, [datas]);
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
             <FaCalendarAlt className="text-red-600 text-lg" />
@@ -109,6 +109,8 @@ const Cards = () => {
             title={card.title}
             value={card.value}
             icon={card.icon}
+            loading={loading}
+            link={card.link}
           />
         ))}
       </div>
