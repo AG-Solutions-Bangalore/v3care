@@ -14,6 +14,8 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BranchEditMaster = () => {
+  const [states, setStates] = useState([]);
+
   const [branch, setBranch] = useState({
     branch_name: "",
     branch_status: "",
@@ -38,12 +40,23 @@ const BranchEditMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
 
-  // const onInputChange = (e) => {
-  //   setBranch({
-  //     ...branch,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
+  useEffect(() => {
+    const fetchStateData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${BASE_URL}/api/panel-fetch-state`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setStates(response.data?.state || []);
+      } catch (error) {
+        console.error("Error fetching branch data", error);
+      } 
+    };
+    fetchStateData();
+  }, []);
   const onInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -160,14 +173,30 @@ const BranchEditMaster = () => {
                   value={branch.branch_pincode}
                   onChange={onInputChange}
                 />
-                <Input
-                  fullWidth
-                  label="State Name"
-                  name="branch_state_name"
-                  maxLength={80}
-                  value={branch.branch_state_name}
-                  onChange={onInputChange}
-                />
+                <FormControl>
+                  <InputLabel id="branch_state_name-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      State
+                      <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="branch_state_name-label"
+                    id="branch_state_name"
+                    name="branch_state_name"
+                    value={branch.branch_state_name}
+                    onChange={onInputChange}
+                    label="State Name *"
+                    required
+                  >
+                    {states.map((item) => (
+                      <MenuItem key={item.state} value={String(item.state)}>
+                        {item.state}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>{" "}
                 <Input
                   fullWidth
                   label="Contact Person"

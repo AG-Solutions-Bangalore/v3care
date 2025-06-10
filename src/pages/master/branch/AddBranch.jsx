@@ -1,6 +1,6 @@
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
@@ -9,8 +9,11 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const AddBranch = () => {
+  const [states, setStates] = useState([]);
+
   const [branch, setBranch] = useState({
     branch_name: "",
     branch_pincode: "",
@@ -23,12 +26,23 @@ const AddBranch = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   UseEscapeKey();
-  // const onInputChange = (e) => {
-  //   setBranch({
-  //     ...branch,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
+  useEffect(() => {
+    const fetchStateData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${BASE_URL}/api/panel-fetch-state`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setStates(response.data?.state || []);
+      } catch (error) {
+        console.error("Error fetching branch data", error);
+      } 
+    };
+    fetchStateData();
+  }, []);
   const onInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -116,20 +130,36 @@ const AddBranch = () => {
               value={branch.branch_name}
               onChange={onInputChange}
             />
+            <FormControl>
+              <InputLabel id="branch_state_name-label">
+                <span className="text-sm relative bottom-[6px]">
+                  State
+                  <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="branch_state_name-label"
+                id="branch_state_name"
+                name="branch_state_name"
+                value={branch.branch_state_name}
+                onChange={onInputChange}
+                label="State Name *"
+                required
+              >
+                {states.map((item) => (
+                  <MenuItem key={item.state} value={String(item.state)}>
+                    {item.state}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>{" "}
             <Input
               fullWidth
               label="Pincode"
               name="branch_pincode"
               maxLength={6}
               value={branch.branch_pincode}
-              onChange={onInputChange}
-            />
-            <Input
-              fullWidth
-              label="State Name"
-              name="branch_state_name"
-              maxLength={80}
-              value={branch.branch_state_name}
               onChange={onInputChange}
             />
             <Input
