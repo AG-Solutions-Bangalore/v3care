@@ -102,6 +102,7 @@ import CreateHoliday from "./pages/master/holiday/CreateHoliday";
 import EditHoliday from "./pages/master/holiday/EditHoliday";
 import WebEnquiry from "./pages/webenquiry/WebEnquiry";
 import ValidationWrapper from "./components/common/ValidationWrapper";
+import SuperServiceCreateMaster from "./pages/master/superService/SuperServiceCreateMaster";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -212,6 +213,10 @@ const App = () => {
               />
               <Route path="/service-control" element={<ServiceControl />} />
               <Route path="/super-service" element={<SuperServiceMaster />} />
+              <Route
+                path="/super-service-create"
+                element={<SuperServiceCreateMaster />}
+              />
               <Route
                 path="/super-service-edit/:id"
                 element={<SuperServiceEditMaster />}

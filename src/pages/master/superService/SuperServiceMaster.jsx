@@ -161,7 +161,19 @@ const SuperServiceMaster = () => {
         },
       };
     },
-
+    customToolbar: () => {
+      return (
+        <>
+          <>
+            <ButtonConfigColor
+              type="create"
+              label="Super Service"
+              onClick={() => navigate("/super-service-create")}
+            />
+          </>
+        </>
+      );
+    },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
         <div className="flex justify-end items-center p-4">

@@ -204,7 +204,8 @@ const AddServiceMaster = () => {
             <FormControl fullWidth>
               <InputLabel id="super_service_id-label">
                 <span className="text-sm relative bottom-[6px]">
-                  Service Id
+                Super  Service
+                  <span className="text-red-700">*</span>
                 </span>
               </InputLabel>
               <SelectMaterial
@@ -214,7 +215,8 @@ const AddServiceMaster = () => {
                 name="super_service_id"
                 value={services.super_service_id}
                 onChange={onInputChange}
-                label="Service Id"
+                label="Super Service"
+                required
               >
                 {superservice.map((item) => (
                   <MenuItem key={item.id} value={String(item.id)}>

@@ -16,9 +16,15 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as SelectMaterial,
+  TextField,
+} from "@mui/material";
 const ServiceMaster = () => {
-  const [serviceData, setServiceData] = useState(null);
+  const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -27,6 +33,8 @@ const ServiceMaster = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedSuperService, setSelectedSuperService] = useState("All");
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -62,6 +70,7 @@ const ServiceMaster = () => {
         );
 
         setServiceData(response.data?.service);
+        setFilteredData(response.data?.service || []);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -76,6 +85,24 @@ const ServiceMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/service-edit/${id}`);
   };
+  const uniqueSuperServices = [
+    "All",
+    ...new Set(serviceData.map((item) => item.serviceSuper)),
+  ];
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value;
+    setSelectedSuperService(value);
+
+    if (value === "All") {
+      setFilteredData(serviceData);
+    } else {
+      setFilteredData(
+        serviceData.filter((item) => item.serviceSuper === value)
+      );
+    }
+  };
+
   const columns = [
     ...(userType === "6" || userType === "8"
       ? [
@@ -202,7 +229,7 @@ const ServiceMaster = () => {
     viewColumns: true,
     download: false,
     print: false,
-    count: serviceData?.length || 0,
+    count: filteredData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -216,17 +243,42 @@ const ServiceMaster = () => {
         },
       };
     },
+
     customToolbar: () => {
       return (
         <>
-          {userType == "6" ||
-            (userType == "8" && (
-              <ButtonConfigColor
-                type="create"
-                label="Service"
-                onClick={() => navigate("/add-service")}
-              />
-            ))}
+          <FormControl sx={{ minWidth: 100, marginRight: "10px" }}>
+            <InputLabel id="super_service_id-label">
+              <span className="text-sm relative bottom-[6px]">
+                Super Service <span className="text-red-700">*</span>
+              </span>
+            </InputLabel>
+            <SelectMaterial
+              sx={{ height: "40px", borderRadius: "5px" }}
+              labelId="super_service_id-label"
+              id="super_service_id-select"
+              name="super_service_id"
+              value={selectedSuperService}
+              onChange={handleFilterChange}
+              label="Super Service"
+              required
+            >
+              {uniqueSuperServices.map((item, idx) => (
+                <MenuItem key={idx} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </SelectMaterial>
+          </FormControl>
+
+          {(userType == "6" || userType == "8") && (
+            <ButtonConfigColor
+              type="create"
+              label="Service"
+              className="space-x-4"
+              onClick={() => navigate("/add-service")}
+            />
+          )}
         </>
       );
     },
@@ -268,7 +320,7 @@ const ServiceMaster = () => {
         <div className="mt-1">
           <MUIDataTable
             title="Service List"
-            data={serviceData ? serviceData : []}
+            data={filteredData ? filteredData : []}
             columns={columns}
             options={options}
           />
