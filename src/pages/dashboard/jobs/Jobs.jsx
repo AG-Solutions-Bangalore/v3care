@@ -104,7 +104,7 @@ const Jobs = ({ datas, loading, userType }) => {
       status: "completed",
     },
     {
-      title: "Field Job",
+      title: "Field Team",
       value: data?.booking_field_count,
       icon: MdOutlineWorkOutline,
       status: "fieldjob",
