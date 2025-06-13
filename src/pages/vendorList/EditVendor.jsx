@@ -471,7 +471,7 @@ const EditVendor = () => {
                 onChange={(e) => onInputChange(e)}
               />
             </div>
-            <div className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
               <FormControl fullWidth>
                 <InputLabel id="vendor_training-label">
                   <span className="text-sm relative bottom-[6px]">
@@ -518,10 +518,10 @@ const EditVendor = () => {
             </div>
             {/* Status */}
 
-            <FormControl fullWidth>
+            <FormControl fullWidth >
               <InputLabel id="service-select-label">
                 <span className="text-sm relative bottom-[6px]">
-                  Status <span className="text-red-700">*</span>
+                  Status cc <span className="text-red-700">*</span>
                 </span>
               </InputLabel>
               <Select

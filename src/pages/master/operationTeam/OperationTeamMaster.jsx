@@ -104,7 +104,7 @@ const OperationTeamMaster = () => {
                   onClick={(e) => handleEdit(e, id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 >
-                  <title>Booking Info</title>
+                  <title>Edit Office</title>
                 </SquarePen>
               )}
             </div>

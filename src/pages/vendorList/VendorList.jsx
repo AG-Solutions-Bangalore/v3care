@@ -153,7 +153,7 @@ const VendorList = () => {
                       </SquarePen>
                       <FiUsers
                         onClick={(e) => handleViewVendor(e, id)}
-                        title="view Vendor"
+                        title="View Vendor User List"
                         className="h-5 w-5 cursor-pointer  hover:text-blue-700"
                       />
                     </>

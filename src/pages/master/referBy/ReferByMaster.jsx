@@ -93,7 +93,7 @@ const ReferByMaster = () => {
                     className="flex items-center space-x-2"
                   >
                     <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                      <title>Booking Info</title>
+                      <title>Edit Referred</title>
                     </SquarePen>
                   </div>
                 </>

@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
@@ -27,8 +27,8 @@ const ConfirmedBooking = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-   const [openModal, setOpenModal] = useState(false);
-      const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -44,7 +44,7 @@ const ConfirmedBooking = () => {
     }
   }, [location]);
   UseEscapeKey();
- 
+
   useEffect(() => {
     const fetchConfirmData = async () => {
       try {
@@ -64,8 +64,6 @@ const ConfirmedBooking = () => {
         );
 
         setConfirmBookData(response.data?.booking);
-
-       
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -105,7 +103,7 @@ const ConfirmedBooking = () => {
                   //   navigate(`/edit-booking/${id}`);
                   // }}
                   onClick={(e) => handleEdit(e, id)}
-                  title="edit booking"
+                  title="Edit Boking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
@@ -150,7 +148,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
-//3
+    //3
     {
       name: "order_customer",
       label: "Customer",
@@ -174,7 +172,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-//5
+    //5
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -193,7 +191,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-//6
+    //6
     {
       name: "order_service_date",
       label: "Service Date",
@@ -310,12 +308,12 @@ const ConfirmedBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const orderAssign = tableMeta.rowData[12];
-         
+
           const activeAssignments = orderAssign.filter(
             (assign) => assign.order_assign_status !== "Cancel"
           );
           const count = activeAssignments.length;
-          
+
           if (count > 0) {
             return (
               <button
@@ -343,22 +341,24 @@ const ConfirmedBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const orderAssign = tableMeta.rowData[12];
-         
+
           const activeAssignments = orderAssign.filter(
             (assign) => assign.order_assign_status !== "Cancel"
           );
-          
+
           if (activeAssignments.length === 0) {
             return <span>-</span>;
           }
-          
+
           return (
             <div className="w-48 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
                 <tbody className="flex flex-wrap h-[40px] border-1 border-black w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
-                      {activeAssignments.map(assign => assign.user.name).join(", ")}
+                      {activeAssignments
+                        .map((assign) => assign.user.name)
+                        .join(", ")}
                     </td>
                   </tr>
                 </tbody>
@@ -368,7 +368,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-//15
+    //15
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -551,11 +551,11 @@ const ConfirmedBooking = () => {
           />
         </div>
       )}
-     <AssignDetailsModal
-           open={openModal}
-           handleOpen={setOpenModal}
-           assignDetails={selectedAssignDetails}
-         />
+      <AssignDetailsModal
+        open={openModal}
+        handleOpen={setOpenModal}
+        assignDetails={selectedAssignDetails}
+      />
     </Layout>
   );
 };
