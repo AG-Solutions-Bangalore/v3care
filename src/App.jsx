@@ -113,8 +113,8 @@ const App = () => {
     <>
       <ValidationWrapper>
         <ToastContainer />
-        {/* <DisableRightClick />
-        <DevToolsBlocker /> */}
+        <DisableRightClick />
+        <DevToolsBlocker />
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/register" element={<SIgnUp />} />
