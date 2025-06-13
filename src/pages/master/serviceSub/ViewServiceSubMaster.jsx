@@ -148,12 +148,6 @@ const ViewServiceSubMaster = () => {
           label2={
             <div className="flex justify-between items-center">
               <div className="flex space-x-4 items-end">
-                <ButtonConfigColor
-                  type="print"
-                  label="Print"
-                  onClick={handlePrintPdf}
-                />
-
                 <div className="flex flex-col text-sm">
                   <label
                     htmlFor="branchSelect"
@@ -195,6 +189,11 @@ const ViewServiceSubMaster = () => {
                     ))}
                   </select>
                 </div>
+                <ButtonConfigColor
+                  type="print"
+                  label="Print"
+                  onClick={handlePrintPdf}
+                />
               </div>
             </div>
           }
