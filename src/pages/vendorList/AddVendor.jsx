@@ -393,7 +393,7 @@ if (!test || test.length === 0) {
         }}
       >
         <form id="addIndiv">
-          <Typography variant="h6">Personal Details test</Typography>
+          <Typography variant="h6">Personal Details</Typography>
 
           <Box className={styles["form-container"]}>
             <CustomInput

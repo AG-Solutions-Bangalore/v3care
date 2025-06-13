@@ -87,7 +87,7 @@ const BranchMaster = () => {
                   className="flex items-center space-x-2"
                 >
                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Booking Info</title>
+                    <title>Edit Branch</title>
                   </SquarePen>
                 </div>
               )}
@@ -173,12 +173,6 @@ const BranchMaster = () => {
       return (
         <>
           {userType !== "4" && (
-            // <Link
-            //   to="/add-branch"
-            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            // >
-            //   + Branch
-            // </Link>
             <ButtonConfigColor
               type="create"
               label="Branch"

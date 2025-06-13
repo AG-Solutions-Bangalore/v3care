@@ -69,9 +69,17 @@ const SuperServiceMaster = () => {
   }, []);
 
   const handleEdit = (e, id) => {
+    e.stopPropagation();
+
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
     navigate(`/super-service-edit/${id}`);
+  };
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/super-service-view/${id}`);
   };
   const columns = [
     {
@@ -89,7 +97,7 @@ const SuperServiceMaster = () => {
                   className="flex items-center space-x-2"
                 >
                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Super Service Edit</title>
+                    <title>Edit Super Service</title>
                   </SquarePen>
                 </div>
               )}
@@ -153,6 +161,11 @@ const SuperServiceMaster = () => {
     onChangePage: (currentPage) => {
       setPage(currentPage);
       navigate(`/service?page=${currentPage + 1}`);
+    },
+    onRowClick: (rowData, rowMeta, e) => {
+      const id = serviceData[rowMeta.dataIndex].id;
+
+      handleView(e, id)();
     },
     setRowProps: (rowData) => {
       return {

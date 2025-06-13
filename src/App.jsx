@@ -103,6 +103,9 @@ import EditHoliday from "./pages/master/holiday/EditHoliday";
 import WebEnquiry from "./pages/webenquiry/WebEnquiry";
 import ValidationWrapper from "./components/common/ValidationWrapper";
 import SuperServiceCreateMaster from "./pages/master/superService/SuperServiceCreateMaster";
+import ViewServiceMaster from "./pages/master/service/ViewServiceMaster";
+import ViewServiceSubMaster from "./pages/master/serviceSub/ViewServiceSubMaster";
+import ViewSuperServiceMaster from "./pages/master/superService/ViewSuperServiceMaster";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -207,6 +210,11 @@ const App = () => {
               />
               <Route path="/service-price" element={<ServicePriceMaster />} />
               <Route path="/add-service-price" element={<AddServicePrice />} />
+              <Route path="/view-service/:id" element={<ViewServiceMaster />} />
+              <Route
+                path="/view-service-sub/:id"
+                element={<ViewServiceSubMaster />}
+              />
               <Route
                 path="/service-price-edit/:id"
                 element={<ServicePriceEditMaster />}
@@ -220,6 +228,10 @@ const App = () => {
               <Route
                 path="/super-service-edit/:id"
                 element={<SuperServiceEditMaster />}
+              />
+              <Route
+                path="/super-service-view/:id"
+                element={<ViewSuperServiceMaster />}
               />
               <Route path="/field-team" element={<FieldTeamMaster />} />
               <Route path="/add-field-team" element={<AddFieldTeamMaster />} />

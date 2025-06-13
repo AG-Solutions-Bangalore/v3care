@@ -82,6 +82,7 @@ const ServiceMaster = () => {
 
   const handleEdit = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
     navigate(`/service-edit/${id}`);
   };
@@ -119,7 +120,7 @@ const ServiceMaster = () => {
                     className="flex items-center space-x-2"
                   >
                     <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                      <title>Booking Info</title>
+                      <title>Edit Service</title>
                     </SquarePen>
                   </div>
                 );
@@ -220,6 +221,12 @@ const ServiceMaster = () => {
       },
     },
   ];
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-service/${id}`);
+  };
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -243,7 +250,11 @@ const ServiceMaster = () => {
         },
       };
     },
+    onRowClick: (rowData, rowMeta, e) => {
+      const id = filteredData[rowMeta.dataIndex].id;
 
+      handleView(e, id)();
+    },
     customToolbar: () => {
       return (
         <>

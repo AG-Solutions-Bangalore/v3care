@@ -109,7 +109,7 @@ const BackhandTeamMaster = () => {
                   onClick={(e) => handleEdit(e, id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 >
-                  <title>Booking Info</title>
+                  <title>Edit Admin</title>
                 </SquarePen>
               )}
             </div>
@@ -161,15 +161,15 @@ const BackhandTeamMaster = () => {
           let label = "";
 
           if (value == "6") {
-            bgColor = "bg-teal-600"; 
+            bgColor = "bg-teal-600";
             //from-lime-500 to-green-400
             label = "Super Admin";
           } else if (value == "5") {
-            bgColor = "bg-blue-500"; 
+            bgColor = "bg-blue-500";
             label = "Admin";
           } else {
             bgColor = "bg-gray-300";
-            label = value; 
+            label = value;
           }
 
           return (

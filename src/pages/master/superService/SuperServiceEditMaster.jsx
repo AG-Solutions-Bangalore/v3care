@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import Layout from '../../../layout/Layout';
-import MasterFilter from '../../../components/MasterFilter';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Card, Input } from '@material-tailwind/react';
-import { BASE_URL, NO_IMAGE_URL, SUPER_SERVICE_IMAGE_URL } from '../../../base/BaseUrl';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import Layout from "../../../layout/Layout";
+import MasterFilter from "../../../components/MasterFilter";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Card, Input, Textarea } from "@material-tailwind/react";
+import {
+  BASE_URL,
+  NO_IMAGE_URL,
+  SUPER_SERVICE_IMAGE_URL,
+} from "../../../base/BaseUrl";
+import axios from "axios";
+import { toast } from "react-toastify";
 import {
   FormControl,
   InputLabel,
   Select as MuiSelect,
-  MenuItem
-} from '@mui/material';
-import { MdArrowBack } from 'react-icons/md';
-import UseEscapeKey from '../../../utils/UseEscapeKey';
-import ButtonConfigColor from '../../../components/common/ButtonConfig/ButtonConfigColor';
-import PageHeader from '../../../components/common/PageHeader/PageHeader';
-import LoaderComponent from '../../../components/common/LoaderComponent';
+  MenuItem,
+} from "@mui/material";
+import { MdArrowBack } from "react-icons/md";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -28,12 +32,18 @@ const SuperServiceEditMaster = () => {
   const [superService, setSuperService] = useState({
     serviceSuper: "",
     serviceSuper_status: "",
-    serviceSuper_image: ""
+    serviceSuper_image: "",
+    serviceSuper_url: "",
+    serviceSuper_meta_title: "",
+    serviceSuper_meta_description: "",
+    serviceSuper_meta_tags: "",
+    serviceSuper_keywords: "",
   });
   UseEscapeKey();
   const navigate = useNavigate();
   const storedPageNo = localStorage.getItem("page-no");
-  const pageNo = storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
@@ -47,16 +57,21 @@ const SuperServiceEditMaster = () => {
           `${BASE_URL}/api/panel-fetch-super-service-by-id/${id}`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
         );
-        
+
         setSuperService(
           response.data.servicesuper || {
             serviceSuper: "",
             serviceSuper_status: "",
-            serviceSuper_image: ""
+            serviceSuper_image: "",
+            serviceSuper_url: "",
+            serviceSuper_meta_title: "",
+            serviceSuper_meta_description: "",
+            serviceSuper_meta_tags: "",
+            serviceSuper_keywords: "",
           }
         );
       } catch (error) {
@@ -90,8 +105,18 @@ const SuperServiceEditMaster = () => {
     const data = new FormData();
     data.append("serviceSuper", superService.serviceSuper);
 
-      data.append("serviceSuper_image", selectedFile);
- 
+    data.append("serviceSuper_image", selectedFile);
+    data.append(
+      "serviceSuper_meta_title",
+      superService.serviceSuper_meta_title
+    );
+    data.append(
+      "serviceSuper_meta_description",
+      superService.serviceSuper_meta_description
+    );
+    data.append("serviceSuper_meta_tags", superService.serviceSuper_meta_tags);
+    data.append("serviceSuper_keywords", superService.serviceSuper_keywords);
+    data.append("serviceSuper_url", superService.serviceSuper_url);
     data.append("serviceSuper_status", superService.serviceSuper_status);
 
     const form = document.getElementById("addIndiv");
@@ -104,7 +129,7 @@ const SuperServiceEditMaster = () => {
         data,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          'Content-Type': 'multipart/form-data'
+          "Content-Type": "multipart/form-data",
         },
       })
         .then((res) => {
@@ -148,14 +173,13 @@ const SuperServiceEditMaster = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Super Service Image */}
                 <div className="flex flex-col items-center">
-                  <img 
-                    src={imageUrl} 
-                    alt="Super Service" 
+                  <img
+                    src={imageUrl}
+                    alt="Super Service"
                     className="w-52 h-52 mb-4 object-cover"
                   />
-                  
                 </div>
-                
+
                 {/* Super Service Fields */}
                 <div className="p-2">
                   <div className="mb-6">
@@ -172,13 +196,27 @@ const SuperServiceEditMaster = () => {
                     />
                   </div>
                   <div className="mb-6">
-                  <Input
-                    label="Image"
-                    type="file"
-                    name="serviceSuper_image"
-                    onChange={(e) => setSelectedFile(e.target.files[0])}
-                    className="w-full border border-gray-300 rounded-md"
-                  />
+                    <Input
+                      label="Super Service Url"
+                      type="text"
+                      name="serviceSuper_url"
+                      value={superService.serviceSuper_url}
+                      onChange={onInputChange}
+                      required
+                      labelProps={{
+                        className: "!text-gray-600",
+                      }}
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <Input
+                      label="Image"
+                      type="file"
+                      accept="image/*"
+                      name="serviceSuper_image"
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      className="w-full border border-gray-300 rounded-md"
+                    />
                   </div>
 
                   <div className="mb-4">
@@ -206,7 +244,32 @@ const SuperServiceEditMaster = () => {
                   </div>
                 </div>
               </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                <Textarea
+                  label="Meta Title"
+                  value={superService?.serviceSuper_meta_title}
+                  name="serviceSuper_meta_title"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Meta Description"
+                  value={superService?.serviceSuper_meta_description}
+                  name="serviceSuper_meta_description"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Meta Tags"
+                  value={superService?.serviceSuper_meta_tags}
+                  name="serviceSuper_meta_tags"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Keywords"
+                  value={superService?.serviceSuper_keywords}
+                  name="serviceSuper_keywords"
+                  onChange={onInputChange}
+                />
+              </div>
               <div className="flex justify-center space-x-4 my-2">
                 <ButtonConfigColor
                   type="edit"

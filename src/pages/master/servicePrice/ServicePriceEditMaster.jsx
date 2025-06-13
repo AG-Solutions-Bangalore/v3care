@@ -1,8 +1,8 @@
 import { Card, Input } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 // import { BiStatus } from "react-icons/bi";
@@ -18,10 +18,10 @@ const statusOptions = [
   { value: "Inactive", label: "Inactive" },
 ];
 const ServicePriceEditMaster = () => {
-  const { id } = useParams();
   const location = useLocation();
   const { service_id, service_sub_id } = location.state || {};
   UseEscapeKey();
+  const [selectedBranch, setSelectedBranch] = useState("All");
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
@@ -222,33 +222,83 @@ const ServicePriceEditMaster = () => {
       return acc;
     }, {});
 
+  const branchOptions = ["All", ...Object.keys(groupedServices)];
+  const filteredGroupedServices = useMemo(() => {
+    const filtered = {};
+
+    Object.entries(groupedServices).forEach(([branch, services]) => {
+      if (selectedBranch !== "All" && branch !== selectedBranch) return;
+      if (services.length > 0) {
+        filtered[branch] = services;
+      }
+    });
+
+    return filtered;
+  }, [groupedServices, selectedBranch]);
+
   return (
     <Layout>
       <MasterFilter />
       <PageHeader
-        title={"Edit Service Price"}
-        onClick={handleBack}
-        label2={
-          <div className="flex space-x-3">
-            <div>
+        title={
+          <div className="flex justify-between items-center space-x-4 ">
+            <h2>Edit Service Price</h2>
+
+            <div className="flex items-end">
               <FormControl fullWidth>
-                <InputLabel>
-                  <span className="text-sm">Status</span>
+                <InputLabel id="selectedBranch-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Filter Branch
+                  </span>
                 </InputLabel>
                 <Select
+                  sx={{
+                    height: "40px",
+                    borderRadius: "5px",
+                    minWidth: "200px",
+                  }}
+                  labelId="selectedBranch-label"
+                  id="selectedBranch"
+                  name="selectedBranch"
+                  value={selectedBranch}
+                  onChange={(e) => setSelectedBranch(e.target.value)}
+                  label="Filter Branch"
+                  required
+                >
+                  {branchOptions.map((branch) => (
+                    <MenuItem key={branch} value={branch}>
+                      {branch}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>{" "}
+            </div>
+          </div>
+        }
+        onClick={handleBack}
+        label2={
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-4 items-end">
+        
+              <FormControl fullWidth>
+                <InputLabel id="service_price_status-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Status
+                    <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{
+                    height: "40px",
+                    borderRadius: "5px",
+                    minWidth: "150px",
+                  }}
+                  labelId="service_price_status-label"
+                  id="service_price_status"
                   name="service_price_status"
-                  label="Status"
                   value={servicesupdatestatus.service_price_status || ""}
                   onChange={onInputChangeStatus}
-                  sx={{
-                    minWidth: 200,
-                    width: "100%",
-                    height: 36,
-                    ".MuiSelect-select": {
-                      padding: "8px 12px",
-                    },
-                  }}
-                  size="small"
+                  label="Status *"
                   required
                 >
                   {statusOptions.map((data) => (
@@ -257,15 +307,15 @@ const ServicePriceEditMaster = () => {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl>{" "}
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                onClick={onSubmitStatus}
+                label="Update Status"
+                loading={loadingstatus}
+              />
             </div>
-            <ButtonConfigColor
-              type="edit"
-              buttontype="submit"
-              onClick={onSubmitStatus}
-              label="Update Status"
-              loading={loadingstatus}
-            />
           </div>
         }
       />
@@ -306,133 +356,135 @@ const ServicePriceEditMaster = () => {
             </div>
           </div>
           <form id="editServiceForm">
-            {Object.entries(groupedServices).map(([branchName, rows]) => (
-              <div
-                key={branchName}
-                className="mb-8 border border-gray-300 rounded-md p-4 shadow-sm"
-              >
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">
-                  {branchName}
-                </h2>
+            {Object.entries(filteredGroupedServices).map(
+              ([branchName, rows]) => (
+                <div
+                  key={branchName}
+                  className="mb-8 border border-gray-300 rounded-md p-4 shadow-sm"
+                >
+                  <h2 className="text-lg font-semibold text-blue-600 mb-4">
+                    {branchName}
+                  </h2>
 
-                {rows.map((row) => (
-                  <div key={row.id} className="mb-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                      <Input
-                        label="Price For"
-                        type="text"
-                        name="service_price_for"
-                        value={row.service_price_for}
-                        onChange={(e) =>
-                          onInputChange(e, row.id, "service_price_for")
-                        }
-                        required
-                        containerProps={{
-                          className: "!min-w-0 w-full",
-                        }}
-                        className="!w-full"
-                      />
-
-                      {/* Original Price */}
-                      <Input
-                        label="Original"
-                        type="text"
-                        name="service_price_rate"
-                        value={row.service_price_rate}
-                        onChange={(e) =>
-                          onInputChange(e, row.id, "service_price_rate")
-                        }
-                        required
-                        containerProps={{
-                          className: "!min-w-0 w-full",
-                        }}
-                        className="!w-full"
-                      />
-
-                      {/* Discount Price */}
-                      <Input
-                        label="Discount"
-                        type="text"
-                        name="service_price_amount"
-                        value={row.service_price_amount}
-                        onChange={(e) =>
-                          onInputChange(e, row.id, "service_price_amount")
-                        }
-                        required
-                        containerProps={{
-                          className: "!min-w-0 w-full",
-                        }}
-                        className="!w-full"
-                      />
-
-                      {/* Holiday Price */}
-                      <Input
-                        label="Holiday"
-                        type="text"
-                        name="service_holiday_amount"
-                        value={row.service_holiday_amount}
-                        onChange={(e) =>
-                          onInputChange(e, row.id, "service_holiday_amount")
-                        }
-                        required
-                        containerProps={{
-                          className: "!min-w-0 w-full",
-                        }}
-                        className="!w-full"
-                      />
-
-                      {/* Weekend Price */}
-                      <Input
-                        label="Weekend"
-                        type="text"
-                        name="service_weekend_amount"
-                        value={row.service_weekend_amount}
-                        onChange={(e) =>
-                          onInputChange(e, row.id, "service_weekend_amount")
-                        }
-                        required
-                        containerProps={{
-                          className: "!min-w-0 w-full",
-                        }}
-                        className="!w-full"
-                      />
-
-                      <FormControl
-                        fullWidth
-                        sx={{
-                          minWidth: 0,
-                        }}
-                      >
-                        <InputLabel id={`status-select-${row.id}`}>
-                          <span className="text-sm">Status</span>
-                        </InputLabel>
-                        <Select
-                          labelId={`status-select-${row.id}`}
-                          id={`status-${row.id}`}
-                          name="service_price_status"
-                          label="Status"
-                          value={row.service_price_status}
+                  {rows.map((row) => (
+                    <div key={row.id} className="mb-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        <Input
+                          label="Price For"
+                          type="text"
+                          name="service_price_for"
+                          value={row.service_price_for}
                           onChange={(e) =>
-                            onInputChange(e, row.id, "service_price_status")
+                            onInputChange(e, row.id, "service_price_for")
                           }
-                          sx={{
-                            height: "40px",
-                            fontSize: "14px",
-                          }}
                           required
+                          containerProps={{
+                            className: "!min-w-0 w-full",
+                          }}
+                          className="!w-full"
+                        />
+
+                        {/* Original Price */}
+                        <Input
+                          label="Original"
+                          type="text"
+                          name="service_price_rate"
+                          value={row.service_price_rate}
+                          onChange={(e) =>
+                            onInputChange(e, row.id, "service_price_rate")
+                          }
+                          required
+                          containerProps={{
+                            className: "!min-w-0 w-full",
+                          }}
+                          className="!w-full"
+                        />
+
+                        {/* Discount Price */}
+                        <Input
+                          label="Discount"
+                          type="text"
+                          name="service_price_amount"
+                          value={row.service_price_amount}
+                          onChange={(e) =>
+                            onInputChange(e, row.id, "service_price_amount")
+                          }
+                          required
+                          containerProps={{
+                            className: "!min-w-0 w-full",
+                          }}
+                          className="!w-full"
+                        />
+
+                        {/* Holiday Price */}
+                        <Input
+                          label="Holiday"
+                          type="text"
+                          name="service_holiday_amount"
+                          value={row.service_holiday_amount}
+                          onChange={(e) =>
+                            onInputChange(e, row.id, "service_holiday_amount")
+                          }
+                          required
+                          containerProps={{
+                            className: "!min-w-0 w-full",
+                          }}
+                          className="!w-full"
+                        />
+
+                        {/* Weekend Price */}
+                        <Input
+                          label="Weekend"
+                          type="text"
+                          name="service_weekend_amount"
+                          value={row.service_weekend_amount}
+                          onChange={(e) =>
+                            onInputChange(e, row.id, "service_weekend_amount")
+                          }
+                          required
+                          containerProps={{
+                            className: "!min-w-0 w-full",
+                          }}
+                          className="!w-full"
+                        />
+
+                        <FormControl
+                          fullWidth
+                          sx={{
+                            minWidth: 0,
+                          }}
                         >
-                          {statusOptions.map((data) => (
-                            <MenuItem key={data.value} value={data.value}>
-                              {data.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                          <InputLabel id={`status-select-${row.id}`}>
+                            <span className="text-sm">Status</span>
+                          </InputLabel>
+                          <Select
+                            labelId={`status-select-${row.id}`}
+                            id={`status-${row.id}`}
+                            name="service_price_status"
+                            label="Status"
+                            value={row.service_price_status}
+                            onChange={(e) =>
+                              onInputChange(e, row.id, "service_price_status")
+                            }
+                            sx={{
+                              height: "40px",
+                              fontSize: "14px",
+                            }}
+                            required
+                          >
+                            {statusOptions.map((data) => (
+                              <MenuItem key={data.value} value={data.value}>
+                                {data.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))}
+                  ))}
+                </div>
+              )
+            )}
           </form>
         </Card>
       )}

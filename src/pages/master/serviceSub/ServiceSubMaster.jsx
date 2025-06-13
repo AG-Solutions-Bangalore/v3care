@@ -70,6 +70,8 @@ const ServiceSubMaster = () => {
     fetchServiceSubData();
   }, []);
   const handleEdit = (e, id) => {
+    e.stopPropagation();
+
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
     navigate(`/service-sub-edit/${id}`);
@@ -92,7 +94,7 @@ const ServiceSubMaster = () => {
                         className="flex items-center space-x-2"
                       >
                         <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                          <title>Booking Info</title>
+                          <title>Edit Sub Service</title>
                         </SquarePen>
                       </div>
                     )}
@@ -151,6 +153,12 @@ const ServiceSubMaster = () => {
       },
     },
   ];
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/view-service-sub/${id}`);
+  };
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -170,6 +178,11 @@ const ServiceSubMaster = () => {
           borderBottom: "5px solid #f1f7f9",
         },
       };
+    },
+    onRowClick: (rowData, rowMeta, e) => {
+      const id = serviceSubData[rowMeta.dataIndex].id;
+
+      handleView(e, id)();
     },
     customToolbar: () => {
       return (

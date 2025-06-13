@@ -175,7 +175,7 @@ const AllBooking = () => {
               {userType !== "4" && (
                 <CiSquarePlus
                   onClick={(e) => handleEdit(e, id)}
-                  title="edit booking"
+                  title="Edit Boking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}

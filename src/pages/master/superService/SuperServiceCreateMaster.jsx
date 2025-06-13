@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { useNavigate, useParams } from "react-router-dom";
-import { Button, Card, Input } from "@material-tailwind/react";
-import {
-  BASE_URL,
-  NO_IMAGE_URL,
-  SUPER_SERVICE_IMAGE_URL,
-} from "../../../base/BaseUrl";
+import { Card, Input, Textarea } from "@material-tailwind/react";
 import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  FormControl,
-  InputLabel,
-  Select as MuiSelect,
-  MenuItem,
-} from "@mui/material";
-import { MdArrowBack } from "react-icons/md";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const SuperServiceCreateMaster = () => {
   const [superService, setSuperService] = useState({
     serviceSuper: "",
     serviceSuper_image: "",
+    serviceSuper_url: "",
+    serviceSuper_meta_title: "",
+    serviceSuper_meta_description: "",
+    serviceSuper_meta_tags: "",
+    serviceSuper_keywords: "",
   });
   UseEscapeKey();
   const navigate = useNavigate();
@@ -57,6 +50,17 @@ const SuperServiceCreateMaster = () => {
     data.append("serviceSuper", superService.serviceSuper);
 
     data.append("serviceSuper_image", selectedFile);
+    data.append("serviceSuper_url", superService.serviceSuper_url);
+    data.append(
+      "serviceSuper_meta_title",
+      superService.serviceSuper_meta_title
+    );
+    data.append(
+      "serviceSuper_meta_description",
+      superService.serviceSuper_meta_description
+    );
+    data.append("serviceSuper_meta_tags", superService.serviceSuper_meta_tags);
+    data.append("serviceSuper_keywords", superService.serviceSuper_keywords);
 
     const form = document.getElementById("addIndiv");
     if (form.checkValidity()) {
@@ -103,7 +107,7 @@ const SuperServiceCreateMaster = () => {
             onSubmit={onSubmit}
             className="p-4"
           >
-            <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="mb-6">
                 <Input
                   label="Super Service Name"
@@ -119,16 +123,55 @@ const SuperServiceCreateMaster = () => {
               </div>
               <div className="mb-6">
                 <Input
+                  label="Super Service Url"
+                  type="text"
+                  name="serviceSuper_url"
+                  value={superService.serviceSuper_url}
+                  onChange={onInputChange}
+                  required
+                  labelProps={{
+                    className: "!text-gray-600",
+                  }}
+                />
+              </div>
+              <div className="mb-6">
+                <Input
                   label="Image"
                   type="file"
                   required
+                  accept="image/*"
                   name="serviceSuper_image"
                   onChange={(e) => setSelectedFile(e.target.files[0])}
                   className="w-full border border-gray-300 rounded-md"
                 />
               </div>
             </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+              <Textarea
+                label="Meta Title"
+                value={superService?.serviceSuper_meta_title}
+                name="serviceSuper_meta_title"
+                onChange={onInputChange}
+              />
+              <Textarea
+                label="Meta Description"
+                value={superService?.serviceSuper_meta_description}
+                name="serviceSuper_meta_description"
+                onChange={onInputChange}
+              />
+              <Textarea
+                label="Meta Tags"
+                value={superService?.serviceSuper_meta_tags}
+                name="serviceSuper_meta_tags"
+                onChange={onInputChange}
+              />
+              <Textarea
+                label="Keywords"
+                value={superService?.serviceSuper_keywords}
+                name="serviceSuper_keywords"
+                onChange={onInputChange}
+              />
+            </div>
             <div className="flex justify-center space-x-4 my-2">
               <ButtonConfigColor
                 type="submit"
