@@ -106,14 +106,16 @@ import SuperServiceCreateMaster from "./pages/master/superService/SuperServiceCr
 import ViewServiceMaster from "./pages/master/service/ViewServiceMaster";
 import ViewServiceSubMaster from "./pages/master/serviceSub/ViewServiceSubMaster";
 import ViewSuperServiceMaster from "./pages/master/superService/ViewSuperServiceMaster";
+import CustomerList from "./pages/customer/CustomerList";
+import CustomerView from "./pages/customer/CustomerView";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
   return (
     <>
-      <ValidationWrapper>
+      {/* <ValidationWrapper> */}
         <ToastContainer />
-        <DisableRightClick />
+        <DisableRightClick /> 
         <DevToolsBlocker />
         <Routes>
           <Route path="/" element={<SignIn />} />
@@ -124,6 +126,8 @@ const App = () => {
           <Route path="/maintenance" element={<Maintenance />} />
           {/* dashboard  */}
           <Route path="/home" element={<Home />} />
+          <Route path="/customer" element={<CustomerList />} />
+          <Route path="/customer-view/:customer_name/:customer_mobile" element={<CustomerView />} />
 
           {/* booking  */}
           {(userType === "6" ||
@@ -407,7 +411,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
-      </ValidationWrapper>
+      {/* </ValidationWrapper> */}
     </>
   );
 };

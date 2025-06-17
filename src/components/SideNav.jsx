@@ -13,6 +13,7 @@ import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
 import { CiViewList } from "react-icons/ci";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoDownloadOutline } from "react-icons/io5";
+import { User } from "lucide-react";
 
 const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const sidenavRef = useRef(null);
@@ -93,6 +94,22 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       title: "Booking",
       roles: [
         "user",
+        "viewer",
+        "admin",
+        "superadmin",
+        "operationteam",
+        "masteradmins",
+      ],
+    },
+    {
+      to: "/customer?page=1",
+      icon: <User className="w-5 h-5 text-inherit" />,
+      text: "Customer",
+      title: "Customer",
+      roles: [
+        "user",
+        "vendoruser",
+        "vendor",
         "viewer",
         "admin",
         "superadmin",
@@ -435,7 +452,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="group absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm border-l-2 border-r-2 border-red-900 overflow-hidden">
           <div className="flex flex-col items-center gap-2 text-white relative">
             <div className="text-sm font-medium opacity-80">
-              Updated : 13-06-2025
+              Updated : 17-06-2025
             </div>
           </div>
         </div>
