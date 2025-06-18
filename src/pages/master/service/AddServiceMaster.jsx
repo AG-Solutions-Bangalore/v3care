@@ -115,6 +115,17 @@ const AddServiceMaster = () => {
     };
     fetchServiceData();
   }, []);
+
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/--+/g, '-')
+      .substring(0, 50);
+  };
+
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (["service_comm"].includes(name)) {
@@ -122,7 +133,18 @@ const AddServiceMaster = () => {
         setServices((prev) => ({ ...prev, [name]: value }));
       }
     } else {
-      setServices((prev) => ({ ...prev, [name]: value }));
+      setServices((prev) => {
+        const updatedService = {
+          ...prev,
+          [name]: value,
+        };
+    
+        if (name === "service_meta_title") {
+          updatedService.service_slug = generateSlug(value);
+        }
+    
+        return updatedService;
+      });
     }
   };
 
@@ -325,6 +347,7 @@ const AddServiceMaster = () => {
               value={services?.service_slug}
               name="service_slug"
               onChange={onInputChange}
+
             />
             <Textarea
               label="Service Meta  Full length"

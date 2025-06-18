@@ -75,6 +75,17 @@ const MasterFilter = () => {
           },
         ]
       : []),
+    ...(userType == "8"
+      ? [
+          {
+            label: "Right Sidebar",
+            path: "/right-sidebar-content",
+            color: "from-lime-500 to-red-400",
+            hoverColor: "hover:bg-red-50",
+            textColor: "text-red-900",
+          },
+        ]
+      : []),
     {
       label: "Field Team",
       path: "/field-team",

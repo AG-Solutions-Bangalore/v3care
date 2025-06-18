@@ -27,6 +27,10 @@ const NOTIFICATION_IMAGE = "https://agscare.site/crmapi/storage/app/public/notif
 
 
 
+const RIGHTSIDEBAR_IMAGE = "https://agscare.site/crmapi/storage/app/public/service_details"
+
+
+
 
 export {
     BASE_URL,
@@ -39,7 +43,8 @@ export {
     VENDOR_ADAHAR_FRONT_URL,
     USER_DOCUMENT,
     NOTIFICATION_IMAGE,
-    SUPER_SERVICE_IMAGE_URL
+    SUPER_SERVICE_IMAGE_URL,
+    RIGHTSIDEBAR_IMAGE,
     
 
   };

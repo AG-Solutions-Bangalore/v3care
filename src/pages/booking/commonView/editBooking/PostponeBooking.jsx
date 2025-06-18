@@ -104,6 +104,8 @@ const PostponeBooking = () => {
       const bookingData = {
         ...response.data?.booking,
         order_comm: response.data?.booking?.order_comm ?? 0,
+        order_person_name: response.data?.booking?.order_person_name ?? "",
+        order_person_contact_no: response.data?.booking?.order_person_contact_no ?? 0,
       };
       setBooking(bookingData);
       setOrderRef(response.data?.booking.order_ref);
@@ -173,6 +175,8 @@ const PostponeBooking = () => {
     let data = {
       order_service_date: booking.order_service_date,
       order_time: booking.order_time,
+      order_person_contact_no: booking.order_person_contact_no,
+      order_person_name: booking.order_person_name,
       order_comm_percentage: booking.order_comm_percentage,
       order_comm: booking.order_comm,
       order_comment: booking.order_comment,
@@ -379,6 +383,42 @@ const PostponeBooking = () => {
             {/* here booking assign table  */}
             <CardBody>
               <form id="addIdniv" onSubmit={onSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
+                      <div className="form-group">
+                        <Input
+                        
+                          label="Person Name"
+                          name="order_person_name"
+                          value={booking.order_person_name}
+                          onChange={(e) => onInputChange(e)}
+                      
+                        />
+                      </div>
+                      <div className="form-group">
+                        <Input
+                        
+                          label="Person Contact No"
+                          name="order_person_contact_no"
+                          value={booking.order_person_contact_no}
+                          onChange={(e) => onInputChange(e)}
+                        minLength={10}
+                        maxLength={10}
+                        onKeyDown={(e) => {
+                        
+                          if (
+                            ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
+                          ) {
+                            return;
+                          }
+                         
+                          if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                          }
+                        }}
+                        />
+                      </div>
+                    </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <div>

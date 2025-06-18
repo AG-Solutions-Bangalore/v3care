@@ -12,7 +12,7 @@ const IdealFieldListFilter = () => {
 
   const buttons = [
     {
-      label: "V3 Care Idle Field List",
+      label: "V3 Care On Job List",
       path: "/idealfield-list",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",

@@ -74,10 +74,14 @@ const EditBookingAll = () => {
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
     order_status: "",
+    order_person_contact_no: "",
+    order_person_name: "",
     order_payment_type: "",
     order_payment_amount: "",
+    order_vendor_id: "",
+    order_amount: 0,
   });
-
+console.log("order_vendor_id",booking?.order_vendor_id)
   const [paymentmode, setPaymentMode] = useState([]);
   // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
@@ -154,6 +158,7 @@ const EditBookingAll = () => {
       const bookingData = {
         ...bookingRes.data?.booking,
         order_comm: bookingRes.data?.booking?.order_comm || "0",
+        order_amount: bookingRes.data?.booking?.order_amount || 0,
       };
       setBooking(bookingData);
       setOrderRef(bookingRes.data?.booking?.order_ref);
@@ -173,16 +178,29 @@ const EditBookingAll = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !booking.order_payment_type ||
-      !booking.order_amount ||
-      !booking.order_comm_percentage ||
-      !booking?.order_comm ||
-      !booking?.order_time ||
-      !booking?.branch_id ||
-      !booking?.order_status
-    ) {
-      toast.error("Fill the required field");
+    const missingFields = [];
+  
+    if (booking.order_amount === undefined || booking.order_amount === null) {
+      missingFields.push("Amount");
+    }
+    if (!booking.order_comm_percentage && booking.order_vendor_id) {
+      missingFields.push("Commission (%) or Vendor ID");
+    }
+    if (!booking.order_comm && booking.order_vendor_id) {
+      missingFields.push("Commission Amount or Vendor ID");
+    }
+    if (!booking.order_time) {
+      missingFields.push("Time Slot");
+    }
+    if (!booking.branch_id) {
+      missingFields.push("Branch");
+    }
+    if (!booking.order_status) {
+      missingFields.push("Status");
+    }
+  
+    if (missingFields.length > 0) {
+      toast.error(`Please fill the following required fields: ${missingFields.join(", ")}`);
       return;
     }
 
@@ -192,6 +210,8 @@ const EditBookingAll = () => {
     const data = {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
+      order_person_contact_no: booking.order_person_contact_no,
+      order_person_name: booking.order_person_name,
       order_advance: booking.order_advance,
       order_time: booking.order_time,
       order_status: booking.order_status,
@@ -508,6 +528,41 @@ const EditBookingAll = () => {
               <div className={`${activeTab === "followUp" ? "hidden" : ""}`}>
                 <Card className="mb-6">
                   <CardBody>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
+                      <div className="form-group">
+                        <Input
+                        
+                          label="Person Name"
+                          name="order_person_name"
+                          value={booking.order_person_name}
+                          onChange={(e) => onInputChange(e)}
+                      
+                        />
+                      </div>
+                      <div className="form-group">
+                        <Input
+                        
+                          label="Person Contact No"
+                          name="order_person_contact_no"
+                          value={booking.order_person_contact_no}
+                          onChange={(e) => onInputChange(e)}
+                        minLength={10}
+                        maxLength={10}
+                        onKeyDown={(e) => {
+                        
+                          if (
+                            ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
+                          ) {
+                            return;
+                          }
+                         
+                          if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                          }
+                        }}
+                        />
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
                         <div>
@@ -600,10 +655,12 @@ const EditBookingAll = () => {
                           />
                         </div>
                       </div>
+                      {booking?.order_vendor_id !== null && (
+    <>
                       <div className="form-group relative">
                         <Input
                           fullWidth
-                          required
+                          required={booking.order_vendor_id}
                           label="Commission (%)"
                           name="order_comm_percentage"
                           value={booking.order_comm_percentage}
@@ -623,10 +680,10 @@ const EditBookingAll = () => {
                       </div>
 
                       <div>
-                        <div className="form-group">
+                        <div className="form-group " >
                           <Input
                             fullWidth
-                            required
+                            required={booking.order_vendor_id}
                             label="Commission Amount"
                             name="order_comm"
                             value={booking.order_comm}
@@ -634,8 +691,15 @@ const EditBookingAll = () => {
                           />
                         </div>
                       </div>
+                      </> )}
 
-                      <div>
+
+
+
+
+
+
+                      <div className={`${booking?.order_vendor_id == null ? " col-span-2" : ""}`}>
                         <div className="form-group">
                           <Input
                             fullWidth
@@ -648,7 +712,7 @@ const EditBookingAll = () => {
                         </div>
                       </div>
 
-                      <div>
+                      <div className={`${booking?.order_vendor_id == null ? " col-span-2" : ""}`}> 
                         <div className="form-group">
                           <Input
                             fullWidth
@@ -692,7 +756,7 @@ const EditBookingAll = () => {
                             <InputLabel id="order_payment_type-label">
                               <span className="text-sm relative bottom-[6px]">
                                 Payment Mode{" "}
-                                <span className="text-red-700">*</span>
+                                
                               </span>
                             </InputLabel>
                             <Select
@@ -702,8 +766,8 @@ const EditBookingAll = () => {
                               name="order_payment_type"
                               value={booking.order_payment_type}
                               onChange={(e) => onInputChange(e)}
-                              label="Payment Mode *"
-                              required
+                              label="Payment Mode"
+                              
                             >
                               {paymentmode.map((data) => (
                                 <MenuItem

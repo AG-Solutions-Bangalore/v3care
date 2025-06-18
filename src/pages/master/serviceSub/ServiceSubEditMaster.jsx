@@ -189,10 +189,8 @@ const ServiceSubEditMaster = () => {
                     value={services.service_sub}
                     onChange={onInputChange}
                     required
-                    disabled
-                    labelProps={{
-                      className: "!text-gray-600   ",
-                    }}
+                    
+                    
                   />
                 </div>
                 <div className="mb-6">
