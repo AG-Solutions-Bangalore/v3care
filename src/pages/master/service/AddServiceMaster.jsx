@@ -16,6 +16,7 @@ import {
   MenuItem,
   Select as SelectMaterial,
 } from "@mui/material";
+import {CircleMinus, MinusCircleIcon, PlusCircleIcon} from "lucide-react"
 
 const serviceShowWebsite = [
   {
@@ -77,10 +78,16 @@ const AddServiceMaster = () => {
     service_slug: "",
     service_meta_full_length: "",
     super_service_id: "",
+    service_includes: "",
+    faq_data: [
+      {
+        service_faq_heading: "",
+        service_faq_description: ""
+      }
+    ]
   });
   UseEscapeKey();
   const [superservice, setSuperservice] = useState([]);
-
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -127,6 +134,30 @@ const AddServiceMaster = () => {
         : [],
     }));
   };
+
+  const handleFaqChange = (index, field, value) => {
+    const updatedFaqData = services.faq_data.map((faq, i) => 
+      i === index ? { ...faq, [field]: value } : faq
+    );
+    setServices(prev => ({ ...prev, faq_data: updatedFaqData }));
+  };
+  
+  const addFaqRow = () => {
+    setServices(prev => ({
+      ...prev,
+      faq_data: [
+        ...prev.faq_data,
+        { service_faq_heading: "", service_faq_description: "" }
+      ]
+    }));
+  };
+  
+  const removeFaqRow = (index) => {
+    if (services.faq_data.length > 1) {
+      const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
+      setServices(prev => ({ ...prev, faq_data: updatedFaqData }));
+    }
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -141,12 +172,20 @@ const AddServiceMaster = () => {
     data.append("service_slug", services.service_slug);
     data.append("service_meta_full_length", services.service_meta_full_length);
     data.append("super_service_id", services.super_service_id);
+    data.append("service_includes", services.service_includes);
 
     data.append(
       "service_show_website",
       services.service_show_website.join(",")
     );
+    services.faq_data.forEach((faq, index) => {
+      data.append(`faq_data[${index}][service_faq_heading]`, faq.service_faq_heading);
+      data.append(`faq_data[${index}][service_faq_description]`, faq.service_faq_description);
+    });
+  
+  
 
+    
     try {
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-service`,
@@ -166,6 +205,12 @@ const AddServiceMaster = () => {
           service_comm: "",
           service_image: "",
           service_show_website: [],
+          faq_data: [
+            {
+              service_faq_heading: "",
+              service_faq_description: ""
+            }
+          ]
         });
 
         navigate("/service");
@@ -288,6 +333,98 @@ const AddServiceMaster = () => {
               onChange={onInputChange}
             />
           </div>
+          <div>
+          <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
+                      
+                      </div>
+            <Textarea
+              label="Service Include"
+              value={services?.service_includes}
+              name="service_includes"
+              onChange={onInputChange}
+            />
+            <p className="text-xs px-2 text-gray-700 mt-1">
+  Separate multiple items with commas (e.g., cleaning, painting, repairs).
+</p>
+
+          </div>
+           {/* FAQ Section */}
+                    <div className="mb-6 mt-1">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">FAQ 
+
+
+                          <span className=" text-xs px-1">(max -5)</span>
+                        </h3>
+                      
+                      </div>
+          
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+  <tr>
+    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+      FAQ Heading
+    </th>
+    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+      FAQ Description
+    </th>
+    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '80px' }}>
+      Action
+    </th>
+  </tr>
+</thead>
+<tbody className="bg-white divide-y divide-gray-200">
+  {services.faq_data.map((faq, index) => (
+    <tr key={index}>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <Textarea
+          label="FAQ heading"
+          value={faq.service_faq_heading}
+          onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
+          className="w-full"
+        />
+      </td>
+      <td className="px-6 py-4">
+        <Textarea
+          label="FAQ description"
+          value={faq.service_faq_description}
+          onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
+          className="w-full"
+        />
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <button
+          type="button"
+          onClick={() => removeFaqRow(index)}
+          disabled={services.faq_data.length <= 1}
+          className={`text-red-600 hover:text-red-900 ${services.faq_data.length <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          <MinusCircleIcon />
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+                        </table>
+                      </div>
+                      <button
+                          type="button"
+                          onClick={addFaqRow}
+                          // className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-2"
+                          disabled={services.faq_data.length === 5}
+                          className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2
+                            ${services.faq_data.length === 5
+                              ? 'bg-gray-400 text-white cursor-not-allowed'
+                              : 'bg-blue-500 text-white hover:bg-blue-600'}
+                          `}
+                        >
+                           <PlusCircleIcon className="h-5 w-5" />
+                          Add FAQ
+                        </button>
+                    </div>
           <div className="flex justify-center space-x-4">
             <ButtonConfigColor
               type="submit"

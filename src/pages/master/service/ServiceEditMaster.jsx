@@ -1,4 +1,4 @@
-import { Card, Input, Textarea } from "@material-tailwind/react";
+import { Card, Input, Textarea, Dialog, DialogHeader, DialogBody, DialogFooter, Button } from "@material-tailwind/react";
 import {
   FormControl,
   InputLabel,
@@ -22,6 +22,8 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { TrashIcon, MinusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon } from "lucide-react";
 
 const statusOptions = [
   { value: "Active", label: "Active" },
@@ -41,6 +43,11 @@ const serviceShowWebsite = [
     id: 3,
     name: "Super Popular",
   },
+];
+
+const faqStatusOptions = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
 ];
 
 const customStyles = {
@@ -88,13 +95,29 @@ const ServiceEditMaster = () => {
     service_meta_title: "",
     service_meta_description: "",
     service_slug: "",
+    service_includes: "",
     service_meta_full_length: "",
     super_service_id: "",
+    faq_data: []
   });
+
+  // Dialog state
+  const [openDialog, setOpenDialog] = useState(false);
+  const [faqToDelete, setFaqToDelete] = useState({ id: null, index: null });
+
+  const handleOpenDialog = (faqId, index) => {
+    setFaqToDelete({ id: faqId, index });
+    setOpenDialog(true);
+  };
+
   UseEscapeKey();
   const [superservice, setSuperservice] = useState([]);
-
   const navigate = useNavigate();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fetchloading, setFetchLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   useEffect(() => {
     const fetchServiceData = async () => {
       try {
@@ -107,7 +130,6 @@ const ServiceEditMaster = () => {
             },
           }
         );
-
         setSuperservice(response.data?.servicesuper);
       } catch (error) {
         console.error("Error fetching servicesuper data", error);
@@ -115,13 +137,10 @@ const ServiceEditMaster = () => {
     };
     fetchServiceData();
   }, []);
+
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [fetchloading, setFetchLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const validateOnlyDigits = (inputtxt) => {
     const phoneno = /^\d+$/;
@@ -147,10 +166,69 @@ const ServiceEditMaster = () => {
     }));
   };
 
+  const handleFaqChange = (index, field, value) => {
+    const updatedFaqData = services.faq_data.map((faq, i) => 
+      i === index ? { ...faq, [field]: value } : faq
+    );
+    setService(prev => ({ ...prev, faq_data: updatedFaqData }));
+  };
+
+  const addFaqRow = () => {
+    setService(prev => ({
+      ...prev,
+      faq_data: [
+        ...prev.faq_data,
+        { 
+          service_faq_heading: "", 
+          service_faq_description: "",
+          service_faq_status: "Active",
+          id: null
+        }
+      ]
+    }));
+  };
+  const handleRemoveFaq = (index) => {
+    const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
+    setService(prev => ({ ...prev, faq_data: updatedFaqData }));
+  };
+
+  const confirmDeleteFaq = async () => {
+  const { id: faqId, index } = faqToDelete;
+  
+  if (faqId) {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/api/panel-delete-service-faq-by-id/${faqId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      
+      if (response.data.code === 200) {
+        toast.success(response.data.msg);
+        const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
+        setService(prev => ({ ...prev, faq_data: updatedFaqData }));
+      } else {
+        toast.error(response.data.msg || "Failed to delete FAQ");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error deleting FAQ");
+    }
+  } else {
+    if (services.faq_data.length > 1) {
+      const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
+      setService(prev => ({ ...prev, faq_data: updatedFaqData }));
+    }
+  }
+  
+  setOpenDialog(false);
+};
+
   useEffect(() => {
     const fetchServiceData = async () => {
       setFetchLoading(true);
-
       try {
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-service-by-id/${id}`,
@@ -166,6 +244,7 @@ const ServiceEditMaster = () => {
           service_status: "",
           service_image: "",
           service_comm: "",
+          service_includes: "",
           service_show_website: [],
           service_meta_title: "",
           service_meta_description: "",
@@ -182,6 +261,9 @@ const ServiceEditMaster = () => {
           serviceData.service_show_website = [];
         }
 
+        
+        serviceData.faq_data = response.data.serviceFAQ || [];
+        
         setService(serviceData);
       } catch (error) {
         console.error("Error fetching service:", error);
@@ -204,7 +286,9 @@ const ServiceEditMaster = () => {
 
     const data = new FormData();
     data.append("service", services.service);
-    data.append("service_image", selectedFile);
+    if (selectedFile) {
+      data.append("service_image", selectedFile);
+    }
     data.append("service_status", services.service_status);
     data.append("service_comm", services.service_comm);
     data.append("service_meta_title", services.service_meta_title);
@@ -212,11 +296,20 @@ const ServiceEditMaster = () => {
     data.append("service_slug", services.service_slug);
     data.append("service_meta_full_length", services.service_meta_full_length);
     data.append("super_service_id", services.super_service_id);
+    data.append("service_includes", services.service_includes);
 
     data.append(
       "service_show_website",
       services.service_show_website.join(",")
     );
+
+    // Append FAQ data
+    services.faq_data.forEach((faq, index) => {
+      data.append(`faq_data[${index}][id]`, faq.id || '');
+      data.append(`faq_data[${index}][service_faq_heading]`, faq.service_faq_heading);
+      data.append(`faq_data[${index}][service_faq_description]`, faq.service_faq_description);
+      data.append(`faq_data[${index}][service_faq_status]`, faq.service_faq_status);
+    });
 
     const form = document.getElementById("addIndiv");
     if (form.checkValidity()) {
@@ -232,17 +325,18 @@ const ServiceEditMaster = () => {
       })
         .then((res) => {
           if (res.data.code == "200") {
-            toast.success(res.data?.msg || "update succesfull");
+            toast.success(res.data?.msg || "Update successful");
             navigate(`/service?page=${pageNo}`);
           } else {
             setLoading(false);
             setIsButtonDisabled(false);
-            toast.error(res.data?.msg || "duplicate entry");
+            toast.error(res.data?.msg || "Duplicate entry");
           }
         })
-        .finally(() => {
-          setIsButtonDisabled(false);
+        .catch((error) => {
+          toast.error(error.response?.data?.message || "Error updating service");
           setLoading(false);
+          setIsButtonDisabled(false);
         });
     }
   };
@@ -392,12 +486,146 @@ const ServiceEditMaster = () => {
                   onChange={onInputChange}
                 />
                 <Textarea
-                  label="Service Meta  Full length"
+                  label="Service Meta Full length"
                   value={services?.service_meta_full_length}
                   name="service_meta_full_length"
                   onChange={onInputChange}
                 />
               </div>
+              <div>
+              <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
+                      
+                      </div>
+            <Textarea
+              label="Service Include"
+              value={services?.service_includes}
+              name="service_includes"
+              onChange={onInputChange}
+            />
+            <p className="text-xs px-2 text-gray-700 mt-1">
+  Separate multiple items with commas (e.g., cleaning, painting, repairs).
+</p>
+
+          </div>
+              {/* FAQ Section */}
+              <div className="mb-6 mt-1">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">FAQ  <span className=" text-xs px-1">(max -5)</span></h3>
+              
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          FAQ Heading
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          FAQ Description
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {services.faq_data.map((faq, index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Textarea
+                              label="FAQ heading"
+                              value={faq.service_faq_heading}
+                              onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
+                              className="w-full"
+                            />
+                          </td>
+                          <td className="px-6 py-4">
+                            <Textarea
+                              label="FAQ description"
+                              value={faq.service_faq_description}
+                              onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
+                              className="w-full"
+                            />
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <FormControl fullWidth>
+                              <MuiSelect
+                                sx={{ height: "40px", borderRadius: "5px", minWidth: "120px" }}
+                                name={`faq_status_${index}`}
+                                value={faq.service_faq_status || "Active"}
+                                onChange={(e) => handleFaqChange(index, 'service_faq_status', e.target.value)}
+                              >
+                                {faqStatusOptions.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </MuiSelect>
+                            </FormControl>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+  <button
+    type="button"
+    onClick={() => faq.id ? handleOpenDialog(faq.id, index) : handleRemoveFaq(index)}
+    className="text-red-600 hover:text-red-900 flex items-center gap-1"
+  >
+    {faq.id ? (
+      <TrashIcon className="h-5 w-5" />
+    ) : (
+      <MinusCircleIcon className="h-5 w-5" />
+    )}
+  </button>
+</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <button
+                    type="button"
+                    onClick={addFaqRow}
+                    disabled={services.faq_data.length === 5}
+                    className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2
+                      ${services.faq_data.length === 5
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'}
+                    `}
+                  >
+                    <PlusCircleIcon className="h-5 w-5" />
+                    Add FAQ
+                  </button>
+              </div>
+
+              {/* Confirmation Dialog */}
+              <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
+                <DialogHeader>Confirm Deletion</DialogHeader>
+                <DialogBody>
+                  Are you sure you want to delete this FAQ? This action cannot be undone.
+                </DialogBody>
+                <DialogFooter>
+                  <Button
+                    variant="text"
+                    color="red"
+                    onClick={() => setOpenDialog(false)}
+                    className="mr-1"
+                  >
+                    <span>Cancel</span>
+                  </Button>
+                  <Button
+                    variant="gradient"
+                    color="red"
+                    onClick={confirmDeleteFaq}
+                  >
+                    <span>Confirm</span>
+                  </Button>
+                </DialogFooter>
+              </Dialog>
+
               <div className="flex justify-center space-x-4 my-2">
                 <ButtonConfigColor
                   type="edit"
