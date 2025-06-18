@@ -20,6 +20,7 @@ import {
   Input,
   Option,
   Button,
+  Spinner,
 } from "@material-tailwind/react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
@@ -111,8 +112,12 @@ const EditBookingInspection = () => {
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
     order_status: "",
+    order_person_contact_no: "",
+    order_person_name: "",
     order_payment_type: "",
+    order_vendor_id: "",
     order_inspection_status: "",
+    order_amount: 0,
   });
   const [open, setOpen] = useState(false);
 
@@ -173,6 +178,7 @@ const EditBookingInspection = () => {
       const bookingData = {
         ...response.data?.booking,
         order_comm: response.data?.booking?.order_comm ?? 0,
+        order_amount: response.data?.booking?.order_amount ?? 0,
        
       };
       setBooking(bookingData);
@@ -213,6 +219,8 @@ const EditBookingInspection = () => {
       order_service_date: booking.order_service_date,
       order_amount: booking.order_amount,
       order_advance: booking.order_advance,
+      order_person_contact_no: booking.order_person_contact_no,
+      order_person_name: booking.order_person_name,
       order_time: booking.order_time,
       order_status: booking.order_status,
       order_comm: booking.order_comm,
@@ -500,6 +508,41 @@ const EditBookingInspection = () => {
               <Card className="mb-6">
                 {/* here booking assign table  */}
                 <CardBody>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
+                                        <div className="form-group">
+                                          <Input
+                                          
+                                            label="Person Name"
+                                            name="order_person_name"
+                                            value={booking.order_person_name}
+                                            onChange={(e) => onInputChange(e)}
+                                        
+                                          />
+                                        </div>
+                                        <div className="form-group">
+                                          <Input
+                                          
+                                            label="Person Contact No"
+                                            name="order_person_contact_no"
+                                            value={booking.order_person_contact_no}
+                                            onChange={(e) => onInputChange(e)}
+                                          minLength={10}
+                                          maxLength={10}
+                                          onKeyDown={(e) => {
+                                          
+                                            if (
+                                              ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
+                                            ) {
+                                              return;
+                                            }
+                                           
+                                            if (!/[0-9]/.test(e.key)) {
+                                              e.preventDefault();
+                                            }
+                                          }}
+                                          />
+                                        </div>
+                                      </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <FormControl fullWidth>
                       <InputLabel id="service-select-label">
@@ -585,10 +628,13 @@ const EditBookingInspection = () => {
                         />
                       </div>
                     </div>
+
+                    {booking?.order_vendor_id !== null && (
+ <>
                     <div className="form-group relative">
                         <Input
                           fullWidth
-                          required
+                          required={booking.order_vendor_id}
                           label="Commission (%)"
                           name="order_comm_percentage"
                           value={booking.order_comm_percentage}
@@ -610,7 +656,7 @@ const EditBookingInspection = () => {
                       <div className="form-group">
                         <Input
                           fullWidth
-                          required
+                          required={booking.order_vendor_id}
                           label="Commission Amount"
                           name="order_comm"
                           value={booking.order_comm}
@@ -618,6 +664,10 @@ const EditBookingInspection = () => {
                         />
                       </div>
                     </div>
+ </> )}
+
+
+
 
                     <div>
                       <div className="form-group">
@@ -673,7 +723,7 @@ const EditBookingInspection = () => {
                       <FormControl fullWidth>
                         <InputLabel id="service-select-label">
                           <span className="text-sm relative bottom-[6px]">
-                            Payment Mode <span className="text-red-700">*</span>
+                            Payment 
                           </span>
                         </InputLabel>
                         <Select
@@ -684,7 +734,7 @@ const EditBookingInspection = () => {
                           value={booking.order_payment_type}
                           onChange={(e) => onInputChange(e)}
                           label="Payment Mode *"
-                          required
+                          
                         >
                           {paymentmode.map((data) => (
                             <MenuItem

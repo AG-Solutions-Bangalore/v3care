@@ -146,14 +146,30 @@ const ServiceEditMaster = () => {
     const phoneno = /^\d+$/;
     return inputtxt.match(phoneno) || inputtxt.length === 0;
   };
-
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/--+/g, '-')
+      .substring(0, 50);
+  };
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "service_comm" && !validateOnlyDigits(value)) return;
 
-    setService({
-      ...services,
-      [name]: value,
+    setService((prev) => {
+      const updatedService = {
+        ...prev,
+        [name]: value,
+      };
+  
+      if (name === "service_meta_title") {
+        updatedService.service_slug = generateSlug(value);
+      }
+  
+      return updatedService;
     });
   };
 
@@ -409,10 +425,8 @@ const ServiceEditMaster = () => {
                       value={services.service}
                       onChange={onInputChange}
                       required
-                      disabled
-                      labelProps={{
-                        className: "!text-gray-600   ",
-                      }}
+                      
+                      
                     />
                   </div>
                   <div className="mb-6">
@@ -484,6 +498,7 @@ const ServiceEditMaster = () => {
                   value={services?.service_slug}
                   name="service_slug"
                   onChange={onInputChange}
+                   
                 />
                 <Textarea
                   label="Service Meta Full length"

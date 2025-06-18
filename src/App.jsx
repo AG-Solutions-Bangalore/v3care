@@ -108,6 +108,9 @@ import ViewServiceSubMaster from "./pages/master/serviceSub/ViewServiceSubMaster
 import ViewSuperServiceMaster from "./pages/master/superService/ViewSuperServiceMaster";
 import CustomerList from "./pages/customer/CustomerList";
 import CustomerView from "./pages/customer/CustomerView";
+import RightSidebarList from "./pages/master/rightSidebar/RightSidebarList";
+import CreateRightSidebar from "./pages/master/rightSidebar/CreateRightSidebar";
+import EditRightSidebar from "./pages/master/rightSidebar/EditRightSidebar";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -115,8 +118,8 @@ const App = () => {
     <>
       {/* <ValidationWrapper> */}
         <ToastContainer />
-        <DisableRightClick /> 
-        <DevToolsBlocker />
+        {/* <DisableRightClick />  */}
+        {/* <DevToolsBlocker />  */}
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/register" element={<SIgnUp />} />
@@ -270,6 +273,11 @@ const App = () => {
               <Route path="/holiday-list" element={<HolidayMaster />} />
               <Route path="/holiday-create" element={<CreateHoliday />} />
               <Route path="/holiday-edit/:id" element={<EditHoliday />} />
+
+
+              <Route path="/right-sidebar-content" element={<RightSidebarList />} />
+              <Route path="/add-right-sidebar-content" element={<CreateRightSidebar />} />
+              <Route path="/right-sidebar-content-edit/:id" element={<EditRightSidebar />} />
             </>
           )}
           {(userType === "6" ||
