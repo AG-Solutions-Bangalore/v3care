@@ -25,6 +25,8 @@ const DashboardNavbar = ({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const useType = localStorage.getItem("user_type_id");
+  const headerUserType = localStorage.getItem("header_user_type");
+  const headerName = localStorage.getItem("name");
   const [openModal, setOpenModal] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -125,6 +127,10 @@ const DashboardNavbar = ({
               <BsFullscreen className="h-5 w-5" />
             )}
           </IconButton>
+          <div className="flex flex-col items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-center">
+  <span className="text-xs font-semibold leading-tight">{headerName}</span>
+  <span className="text-[10px] font-medium leading-tight">{headerUserType}</span>
+</div>
 
           {/* Mobile Sidebar Toggle */}
           <IconButton

@@ -228,7 +228,10 @@ const ViewBooking = () => {
                   : ""}
               </Typography>
               <Typography className="text-black">
-                <strong>Amount:</strong> {booking?.order_payment_amount}
+                <strong>Booking Amount:</strong> {booking?.order_amount}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Paid Amount:</strong> {booking?.order_payment_amount}
               </Typography>
               <Typography className="text-black">
                 <strong>Type:</strong> {booking.order_payment_type}
@@ -238,9 +241,11 @@ const ViewBooking = () => {
                 {booking.order_transaction_details}
               </Typography>
               {/* add condition  */}
+              {booking.order_vendor_id !== null && (
               <Typography className="text-black">
                 <strong>Vendor:</strong> {vendor.vendor_company}
               </Typography>
+              )}
             </div>
           </div>
         );

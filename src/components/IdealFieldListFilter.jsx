@@ -19,7 +19,7 @@ const IdealFieldListFilter = () => {
       textColor: "text-pink-900",
     },
     {
-      label: "Vendor Idle Field List",
+      label: "Vendor On Job List",
       path: "/idealfield-vendor-list",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",

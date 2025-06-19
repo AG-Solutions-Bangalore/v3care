@@ -218,7 +218,7 @@ const CreateRightSidebar = () => {
           <div className="w-full lg:w-2/5 p-6 border-b lg:border-b-0 lg:border-r border-gray-200">
             <h2 className="text-xl font-semibold mb-4">Preview</h2>
             
-            <div className="border rounded-lg p-4 bg-gray-50 h-full">
+            <div className="border rounded-lg p-4 bg-gray-50 h-fit">
               {previewImage ? (
                 <img 
                   src={previewImage} 
@@ -247,11 +247,11 @@ const CreateRightSidebar = () => {
       </p>
     ) : (
       <p className="text-gray-700  text-sm whitespace-pre-line break-words">
-        {formData.serviceDetails.split(' ').slice(0, 100).join(' ')}
-        {formData.serviceDetails.split(' ').length > 100 && '...'}
+        {formData.serviceDetails.split(' ').slice(0, 50).join(' ')}
+        {formData.serviceDetails.split(' ').length > 50 && '...'}
       </p>
     )}
-    {formData.serviceDetails.split(' ').length > 100 && (
+    {formData.serviceDetails.split(' ').length > 50 && (
       <span
         className="text-blue-600 underline cursor-pointer hover:text-blue-800 mt-1 inline-block"
         onClick={() => setShowFullText(prev => !prev)}
