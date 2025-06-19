@@ -66,6 +66,7 @@ const SignIn = () => {
             res.data.UserInfo.user.user_type
           );
           localStorage.setItem("branch_id", res.data.UserInfo.user.branch_id);
+          localStorage.setItem("header_user_type", res.data.user_type.userType);
           navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");

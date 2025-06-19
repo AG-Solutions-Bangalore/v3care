@@ -10,13 +10,12 @@ import {
   DialogFooter,
   Button
 } from "@material-tailwind/react";
-import { FaCalendarAlt, FaUserCheck, FaUserClock, FaUsers, FaMapMarkerAlt, FaPhone, FaTimes } from "react-icons/fa";
+import { FaCalendarAlt, FaUserCheck, FaUserClock, FaUsers, FaMapMarkerAlt, FaPhone, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import axios from "axios";
 import { BASE_URL } from "../../base/BaseUrl";
 import IdealFieldListFilter from "../../components/IdealFieldListFilter";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import LoaderComponent from "../../components/common/LoaderComponent";
-import { months } from "moment/moment";
 
 const IdealFieldList = () => {
   UseEscapeKey();
@@ -29,19 +28,13 @@ const IdealFieldList = () => {
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [activeTab, setActiveTab] = useState("all");
   
- 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
   
-
-  const [fromDate, setFromDate] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`
-  );
-  const [toDate, setToDate] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
-  );
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     const fetchIdealData = async () => {
@@ -106,18 +99,34 @@ const IdealFieldList = () => {
     setSelectedUser(data);
     setIsModalOpen(true);
     setOrderData([]);
+    
+    
+    const now = new Date();
+    setCurrentMonth(now.getMonth());
+    setCurrentYear(now.getFullYear());
+    
+   
+    fetchMonthData(now.getMonth(), now.getFullYear(), data.id);
   };
 
-  const handleModalSubmit = async () => {
+  const fetchMonthData = async (month, year, userId) => {
     try {
       setModalLoading(true);
       const token = localStorage.getItem("token");
+      
+
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      
+      const fromDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+      const toDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay.getDate()).padStart(2, "0")}`;
+      
       const response = await axios.post(
         `${BASE_URL}/api/panel-fetch-ideal-field-details`,
         {
           from_date: fromDate,
           to_date: toDate,
-          user_id: selectedUser.id
+          user_id: userId
         },
         {
           headers: {
@@ -127,12 +136,6 @@ const IdealFieldList = () => {
       );
 
       setOrderData(response.data?.data || []);
-      
-    
-      setTimeout(() => {
-        initializeCalendar();
-      }, 100);
-      
     } catch (error) {
       console.error("Error fetching order data", error);
     } finally {
@@ -140,49 +143,139 @@ const IdealFieldList = () => {
     }
   };
 
-  const initializeCalendar = () => {
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) return;
+  const handlePrevMonth = () => {
+    let newMonth = currentMonth - 1;
+    let newYear = currentYear;
+    
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear = currentYear - 1;
+    }
+    
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    fetchMonthData(newMonth, newYear, selectedUser.id);
+  };
 
-   
-    calendarEl.innerHTML = '';
-
-   
-    const serviceDates = orderData.map(order => order.order_service_date);
-
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      height: 'auto',
-      contentHeight: 'auto',
-      aspectRatio: 1.5,
-      headerToolbar: {
-        left: 'prev,next',
-        center: 'title',
-        right: ''
-      },
-      events: serviceDates.map(date => ({
-        title: 'Service',
-        date: date,
-        backgroundColor: '#10b981',
-        borderColor: '#10b981',
-        display: 'background'
-      })),
-      dayCellDidMount: function(info) {
-        const dateStr = info.date.toISOString().split('T')[0];
-        if (serviceDates.includes(dateStr)) {
-          info.el.style.backgroundColor = '#dcfce7';
-          info.el.style.border = '2px solid #10b981';
-        }
-      }
-    });
-
-    calendar.render();
+  const handleNextMonth = () => {
+    let newMonth = currentMonth + 1;
+    let newYear = currentYear;
+    
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear = currentYear + 1;
+    }
+    
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+    fetchMonthData(newMonth, newYear, selectedUser.id);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
     setOrderData([]);
+  };
+
+  const renderCustomCalendar = () => {
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+    
+
+    const serviceDates = orderData.map(order => order.order_service_date);
+    
+
+    const serviceCount = serviceDates.length;
+    const nonServiceCount = daysInMonth - serviceCount;
+    
+
+    const days = [];
+    
+   
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      days.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
+    }
+    
+   
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const hasService = serviceDates.includes(dateStr);
+      
+      days.push(
+        <div 
+          key={`day-${day}`}
+          className={`h-10 w-10 flex items-center justify-center rounded-full text-sm
+            ${hasService ? 'bg-green-100 text-green-800 border border-green-300' : 'text-gray-600'}`}
+        >
+          {day}
+        </div>
+      );
+    }
+    
+    // comaparision of the date 
+    const now = new Date();
+    const currentMonthNow = now.getMonth();
+    const currentYearNow = now.getFullYear();
+    const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
+
+    return (
+      <div className="space-y-4">
+
+        <div className="flex items-center justify-between">
+          <Button
+            variant="text"
+            size="sm"
+            onClick={handlePrevMonth}
+            className="p-1 rounded-full"
+          >
+            <FaChevronLeft size={14} />
+          </Button>
+          
+          <Typography variant="h6" className="font-medium">
+            {monthNames[currentMonth]} {currentYear}
+          </Typography>
+          
+          <Button
+            variant="text"
+            size="sm"
+            onClick={handleNextMonth}
+            className="p-1 rounded-full"
+            disabled={isCurrentMonth && now.getDate() < daysInMonth}
+          >
+            <FaChevronRight size={14} />
+          </Button>
+        </div>
+        
+      
+        <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day}>{day}</div>
+          ))}
+        </div>
+        
+     
+        <div className="grid grid-cols-7 gap-1 mb-4">
+          {days}
+        </div>
+        
+       
+        {/* <div className="flex items-center justify-center gap-4 mt-4">
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <Typography variant="small" className="text-xs">
+              Service Days: {serviceCount}
+            </Typography>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+            <Typography variant="small" className="text-xs">
+              Non-Service Days: {nonServiceCount}
+            </Typography>
+          </div>
+        </div> */}
+      </div>
+    );
   };
 
   const renderCard = (data) => {
@@ -221,10 +314,6 @@ const IdealFieldList = () => {
   return (
     <Layout>
       <IdealFieldListFilter />
-      
-     
-      <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/main.min.css" rel="stylesheet" />
-      <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
       
       {loading ? (
         <LoaderComponent />
@@ -308,7 +397,7 @@ const IdealFieldList = () => {
                     Assigned
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
+                    <span className="inline-block w-2 h-2 rounded-full bg-red-200"></span>
                     Unassigned
                   </span>
                 </p>
@@ -336,128 +425,65 @@ const IdealFieldList = () => {
         </div>
       )}
 
-    
-<Dialog open={isModalOpen} handler={closeModal} size="xl" className="bg-white">
-  <DialogHeader className="flex items-center justify-between p-3 border-b">
-    <div>
-      <Typography variant="h6" color="blue-gray">
-        {selectedUser?.name}
-      </Typography>
-      <Typography variant="small" color="gray" className="font-normal text-xs">
-        {selectedUser?.branch_name} | {selectedUser?.mobile}
-      </Typography>
-    </div>
-    
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1">
-          <Typography variant="small" color="blue-gray" className="font-medium text-xs whitespace-nowrap">
-            From:
-          </Typography>
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="w-28 p-1 text-xs border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
-          />
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <Typography variant="small" color="blue-gray" className="font-medium text-xs whitespace-nowrap">
-            To:
-          </Typography>
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="w-28 p-1 text-xs border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none"
-          />
-        </div>
-      </div>
-      
-      <Button
-        onClick={handleModalSubmit}
-        disabled={modalLoading}
-        className="bg-blue-500 hover:bg-blue-600 text-xs py-1 px-2"
-        size="sm"
-      >
-        {modalLoading ? "..." : "Go"}
-      </Button>
-      
-      <Button
-        variant="text"
-        color="blue-gray"
-        onClick={closeModal}
-        className="p-1 rounded-full"
-      >
-        <FaTimes size={14} />
-      </Button>
-    </div>
-  </DialogHeader>
-  
-  <DialogBody className="p-0">
-    {modalLoading ? (
-      <div className="flex justify-center items-center h-96">
-      <div className="flex justify-center items-center h-96">
-    <div className="w-16 h-16 border-4 border-t-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
-      </div>
-    ) : orderData.length > 0 ? (
-      <div className="grid grid-cols-1 lg:grid-cols-2 h-[650px]">
-     
-        <div className="border-r border-gray-200 p-4 h-full overflow-hidden">
-          <Typography variant="small" color="blue-gray" className="mb-2 font-medium">
-            Service Calendar
-          </Typography>
-          <div id="calendar" className="h-[calc(100%-24px)]"></div>
-        </div>
-        
-
-        <div className="p-4 h-full flex flex-col">
-          <div className="flex justify-between items-center mb-2">
-            <Typography variant="small" color="blue-gray" className="font-medium">
-              Orders Summary
+      <Dialog open={isModalOpen} handler={closeModal} size="xs" className="bg-white">
+        <DialogHeader className="flex items-center justify-between p-3 border-b">
+          <div className="flex items-center gap-2">
+            <Typography variant="h6" color="blue-gray">
+              {selectedUser?.name}
             </Typography>
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-              {orderData.length} orders
-            </span>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <Typography variant="small" className="text-xs">
+              {new Set(orderData.map(order => order.order_service_date)).size}
+              </Typography>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full bg-gray-300"></div>
+              <Typography variant="small" className="text-xs">
+              {new Date(currentYear, currentMonth + 1, 0).getDate() - new Set(orderData.map(order => order.order_service_date)).size}
+              </Typography>
+            </div>
+            <Typography variant="small" color="gray" className="font-normal text-xs">
+             |  {selectedUser?.branch_name} 
+            </Typography>
           </div>
-          <div className="flex-1 overflow-y-auto text-xs border border-gray-200 rounded-lg">
-            {orderData.map((order, index) => (
-              <div key={order.id} className="p-2 border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium truncate">{order.order_service}</span>
-                  <span className="text-green-600 font-medium whitespace-nowrap">₹{order.order_amount}</span>
-                </div>
-                <div className="text-gray-700 mt-1">
-                  <div className="truncate">{order.order_customer}</div>
-                  <div className="flex justify-between text-xs">
-                    <span>{order.order_service_date}</span>
-                    <span className="text-blue-600">{order.order_ref}</span>
+          
+          <Button
+            variant="text"
+            color="blue-gray"
+            onClick={closeModal}
+            className="p-1 rounded-full"
+          >
+            <FaTimes size={14} />
+          </Button>
+        </DialogHeader>
+        
+        <DialogBody className="p-4">
+          {modalLoading ? (
+            <div className="flex justify-center items-center h-80">
+              <div className="w-8 h-8 border-2 border-t-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="space-y-0">
+              <div className="flex justify-center">
+                {renderCustomCalendar()}
+              </div>
+              
+              {orderData.length === 0 && (
+                <div className="flex justify-center items-center ">
+                  <div className="p-1 rounded-lg text-center bg-gray-50 border border-gray-100">
+
+                    <span className="text-red-900 text-xs font-medium">
+                      No jobs found for selected month
+                    </span>
+                   
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    ) : (
-      <div className="flex justify-center items-center h-96">
-        <Card className="p-4 text-center bg-gray-50 border border-gray-100">
-          <div className="text-gray-400 mb-2">
-            <FaCalendarAlt size={20} className="mx-auto" />
-          </div>
-          <Typography variant="small" className="text-gray-600 font-medium">
-            No orders found for selected date range
-          </Typography>
-          <Typography variant="small" className="text-gray-500 text-xs mt-1">
-            Try selecting a different date range
-          </Typography>
-        </Card>
-      </div>
-    )}
-  </DialogBody>
-</Dialog>
+              )}
+            </div>
+          )}
+        </DialogBody>
+      </Dialog>
     </Layout>
   );
 };
