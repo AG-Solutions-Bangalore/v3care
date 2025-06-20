@@ -231,32 +231,32 @@ const CustomerView = () => {
         }
       }
     },
-    {
-      name: "order_assign",
-      label: "STAFF",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const rowData = customerListData[tableMeta.rowIndex];
-          if (rowData.order_assign?.length > 0) {
-            return (
-              <Tooltip 
-                title={rowData.order_assign.map(assign => 
-                  `${assign.user.name} (${assign.user.mobile})`
-                ).join(", ")}
-                arrow
-              >
-                <span className="cursor-pointer text-blue-600 text-sm">
-                  {rowData.order_assign.length} assigned
-                </span>
-              </Tooltip>
-            );
-          }
-          return <span className="text-gray-400 text-sm">Not assigned</span>;
-        }
-      }
-    }
+    // {
+    //   name: "order_assign",
+    //   label: "STAFF",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       const rowData = customerListData[tableMeta.rowIndex];
+    //       if (rowData.order_assign?.length > 0) {
+    //         return (
+    //           <Tooltip 
+    //             title={rowData.order_assign.map(assign => 
+    //               `${assign.user.name} (${assign.user.mobile})`
+    //             ).join(", ")}
+    //             arrow
+    //           >
+    //             <span className="cursor-pointer text-blue-600 text-sm">
+    //               {rowData.order_assign.length} assigned
+    //             </span>
+    //           </Tooltip>
+    //         );
+    //       }
+    //       return <span className="text-gray-400 text-sm">Not assigned</span>;
+    //     }
+    //   }
+    // }
   ];
 
   const options = {
