@@ -6,11 +6,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   BASE_URL,
+  BLOGS_IMAGE,
   NO_IMAGE_URL,
-  SERVICE_IMAGE_URL,
-  SUPER_SERVICE_IMAGE_URL,
 } from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -18,8 +16,8 @@ import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 
-const SuperServiceMaster = () => {
-  const [serviceData, setServiceData] = useState(null);
+const BlogsMaster = () => {
+  const [blogsData, setBlogsData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -35,7 +33,7 @@ const SuperServiceMaster = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/super-service?page=${storedPageNo}`);
+        navigate(`/blogs?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
@@ -44,13 +42,13 @@ const SuperServiceMaster = () => {
   }, [location]);
   UseEscapeKey();
   useEffect(() => {
-    const fetchServiceData = async () => {
+    const fetchClientData = async () => {
       try {
         setLoading(true);
 
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-super-service-list`,
+          `${BASE_URL}/api/panel-fetch-blog-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,14 +56,14 @@ const SuperServiceMaster = () => {
           }
         );
 
-        setServiceData(response.data?.servicesuper);
+        setBlogsData(response.data?.blogs);
       } catch (error) {
-        console.error("Error fetching dashboard data", error);
+        console.error("Error fetching blogs data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchServiceData();
+    fetchClientData();
   }, []);
 
   const handleEdit = (e, id) => {
@@ -73,18 +71,13 @@ const SuperServiceMaster = () => {
 
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/super-service-edit/${id}`);
+    navigate(`/blogs-edit/${id}`);
   };
-  const handleView = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/super-service-view/${id}`);
-  };
+  
   const columns = [
     {
       name: "id",
-      label: "Action",
+      label: "ACTION",
       options: {
         filter: false,
         sort: false,
@@ -97,7 +90,7 @@ const SuperServiceMaster = () => {
                   className="flex items-center space-x-2"
                 >
                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Edit Super Service</title>
+                    <title>Edit Blog</title>
                   </SquarePen>
                 </div>
               )}
@@ -108,19 +101,21 @@ const SuperServiceMaster = () => {
     },
 
     {
-      name: "serviceSuper_image",
-      label: "Image",
+      name: "blogs_image",
+      label: "IMAGE",
       options: {
         filter: true,
         sort: false,
         customBodyRender: (image) => {
           const imageUrl = image
-            ? `${SUPER_SERVICE_IMAGE_URL}/${image}`
+            ? `${BLOGS_IMAGE}/${image}?t=${new Date().getTime()}`
             : `${NO_IMAGE_URL}`;
           return (
             <img
               src={imageUrl}
-              alt="Super Service"
+              alt="blogs"
+      
+            
               style={{ width: "40px", height: "40px", objectFit: "cover" }}
             />
           );
@@ -129,24 +124,17 @@ const SuperServiceMaster = () => {
     },
 
     {
-      name: "serviceSuper",
-      label: "Super Service",
+      name: "blogs_heading",
+      label: "Heading",
       options: {
         filter: true,
         sort: true,
       },
     },
-    {
-      name: "serviceSuper_sort",
-      label: "Sort",
-      options: {
-        filter: true,
-        sort: true,
-      },
-    },
+   
 
     {
-      name: "serviceSuper_status",
+      name: "blogs_status",
       label: "Status  ",
       options: {
         filter: true,
@@ -163,18 +151,14 @@ const SuperServiceMaster = () => {
     viewColumns: true,
     download: false,
     print: false,
-    count: serviceData?.length || 0,
+    count: blogsData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
-      navigate(`/service?page=${currentPage + 1}`);
+      navigate(`/blogs?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta, e) => {
-      const id = serviceData[rowMeta.dataIndex].id;
-
-      handleView(e, id)();
-    },
+    
     setRowProps: (rowData) => {
       return {
         style: {
@@ -188,8 +172,8 @@ const SuperServiceMaster = () => {
           <>
             <ButtonConfigColor
               type="create"
-              label="Super Service"
-              onClick={() => navigate("/super-service-create")}
+              label="blogs"
+              onClick={() => navigate("/blogs-create")}
             />
           </>
         </>
@@ -226,21 +210,22 @@ const SuperServiceMaster = () => {
   };
   return (
     <Layout>
-      <MasterFilter />
-      {loading ? (
-        <LoaderComponent />
-      ) : (
-        <div className="mt-1">
-          <MUIDataTable
-            title="Super Service List"
-            data={serviceData ? serviceData : []}
-            columns={columns}
-            options={options}
-          />
-        </div>
-      )}
-    </Layout>
-  );
-};
+    <MasterFilter />
+    {loading ? (
+      <LoaderComponent />
+    ) : (
+      <div className="mt-1">
+        <MUIDataTable
+          title="Blogs List"
+          data={blogsData ? blogsData : []}
+          columns={columns}
+          options={options}
+        />
+      </div>
+    )}
+  </Layout>
+  )
+}
 
-export default SuperServiceMaster;
+
+export default BlogsMaster

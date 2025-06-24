@@ -19,6 +19,7 @@ const SuperServiceCreateMaster = () => {
     serviceSuper_meta_description: "",
     serviceSuper_meta_tags: "",
     serviceSuper_keywords: "",
+    serviceSuper_sort: "",
   });
   UseEscapeKey();
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const SuperServiceCreateMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [serviceSuperError,setServiceSuperError]=useState(null)
 
   const handleBack = (e) => {
     e.preventDefault();
@@ -36,21 +38,34 @@ const SuperServiceCreateMaster = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "serviceSuper") {
+   
+      if (value.includes('/') || value.includes('\\')) {
+        setServiceSuperError("Service Super name cannot contain slashes ( / or \\ )");
+        return;
+      } else {
+        setServiceSuperError("");
+      }
+    }
     setSuperService({
       ...superService,
       [name]: value,
     });
   };
-
+ 
   const onSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-
+    if (serviceSuperError) {
+      setLoading(false);
+      return;
+    }
     const data = new FormData();
     data.append("serviceSuper", superService.serviceSuper);
 
     data.append("serviceSuper_image", selectedFile);
     data.append("serviceSuper_url", superService.serviceSuper_url);
+    data.append("serviceSuper_sort", superService.serviceSuper_sort);
     data.append(
       "serviceSuper_meta_title",
       superService.serviceSuper_meta_title
@@ -105,9 +120,9 @@ const SuperServiceCreateMaster = () => {
             id="addIndiv"
             autoComplete="off"
             onSubmit={onSubmit}
-            className="p-4"
+            className=""
           >
-            <div className="p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="mb-6">
                 <Input
                   label="Super Service Name"
@@ -120,6 +135,11 @@ const SuperServiceCreateMaster = () => {
                     className: "!text-gray-600",
                   }}
                 />
+                 {serviceSuperError && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {serviceSuperError}
+                      </p>
+                    )}
               </div>
               <div className="mb-6">
                 <Input
@@ -127,6 +147,19 @@ const SuperServiceCreateMaster = () => {
                   type="text"
                   name="serviceSuper_url"
                   value={superService.serviceSuper_url}
+                  onChange={onInputChange}
+                  required
+                  labelProps={{
+                    className: "!text-gray-600",
+                  }}
+                />
+              </div>
+              <div className="mb-6">
+                <Input
+                  label="Super Service Sort"
+                  type="text"
+                  name="serviceSuper_sort"
+                  value={superService.serviceSuper_sort}
                   onChange={onInputChange}
                   required
                   labelProps={{

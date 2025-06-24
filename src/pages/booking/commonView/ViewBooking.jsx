@@ -212,21 +212,27 @@ const ViewBooking = () => {
               </Typography>
               <Typography className="text-black">
                 <strong>Service:</strong>{" "}
-                {booking.order_custom_price <= "1"
-                  ? booking.order_service
-                  : booking.order_custom}
+                {booking.order_service}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
               </Typography>
             </div>
             <div className="space-y-2">
-              <Typography className="text-black">
-                <strong>Sub-service:</strong>{" "}
-                {booking.order_custom_price <= "1"
-                  ? booking.order_service_sub
-                  : ""}
+           
+              {booking.order_service == "Custom" && (
+                <Typography className="text-black">
+                <strong>Custom:</strong>{" "}
+                {booking.order_custom }
               </Typography>
+              )}
+              {booking.order_service !== "Custom" && (
+                <Typography className="text-black">
+                <strong>Sub Service:</strong>{" "}
+                {booking.order_service_sub }
+              </Typography>
+              )}
+              
               <Typography className="text-black">
                 <strong>Booking Amount:</strong> {booking?.order_amount}
               </Typography>

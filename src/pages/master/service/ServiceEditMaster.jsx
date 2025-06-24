@@ -91,6 +91,7 @@ const ServiceEditMaster = () => {
     service_status: "",
     service_image: "",
     service_comm: "",
+    service_sort: "",
     service_show_website: [],
     service_meta_title: "",
     service_meta_description: "",
@@ -104,6 +105,8 @@ const ServiceEditMaster = () => {
   // Dialog state
   const [openDialog, setOpenDialog] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState({ id: null, index: null });
+  const [activeTab, setActiveTab] = useState("basic");
+  const [formErrors, setFormErrors] = useState({});
 
   const handleOpenDialog = (faqId, index) => {
     setFaqToDelete({ id: faqId, index });
@@ -190,57 +193,73 @@ const ServiceEditMaster = () => {
   };
 
   const addFaqRow = () => {
-    setService(prev => ({
-      ...prev,
-      faq_data: [
-        ...prev.faq_data,
-        { 
-          service_faq_heading: "", 
-          service_faq_description: "",
-          service_faq_status: "Active",
-          id: null
-        }
-      ]
-    }));
+    if (services.faq_data.length < 5) {
+      setService(prev => ({
+        ...prev,
+        faq_data: [
+          ...prev.faq_data,
+          { 
+            service_faq_heading: "", 
+            service_faq_description: "",
+            service_faq_status: "Active",
+            id: null
+          }
+        ]
+      }));
+    }
   };
+
   const handleRemoveFaq = (index) => {
     const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
     setService(prev => ({ ...prev, faq_data: updatedFaqData }));
   };
 
   const confirmDeleteFaq = async () => {
-  const { id: faqId, index } = faqToDelete;
-  
-  if (faqId) {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}/api/panel-delete-service-faq-by-id/${faqId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+    const { id: faqId, index } = faqToDelete;
+    
+    if (faqId) {
+      try {
+        const response = await axios.delete(
+          `${BASE_URL}/api/panel-delete-service-faq-by-id/${faqId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        
+        if (response.data.code === 200) {
+          toast.success(response.data.msg);
+          const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
+          setService(prev => ({ ...prev, faq_data: updatedFaqData }));
+        } else {
+          toast.error(response.data.msg || "Failed to delete FAQ");
         }
-      );
-      
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Error deleting FAQ");
+      }
+    } else {
+      if (services.faq_data.length > 1) {
         const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
         setService(prev => ({ ...prev, faq_data: updatedFaqData }));
-      } else {
-        toast.error(response.data.msg || "Failed to delete FAQ");
       }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Error deleting FAQ");
     }
-  } else {
-    if (services.faq_data.length > 1) {
-      const updatedFaqData = services.faq_data.filter((_, i) => i !== index);
-      setService(prev => ({ ...prev, faq_data: updatedFaqData }));
-    }
-  }
+    
+    setOpenDialog(false);
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
   
-  setOpenDialog(false);
-};
+    if (!services.super_service_id) errors.super_service_id = "Super Service is required";
+    if (!services.service) errors.service = "Service is required";
+    if (!services.service_sort) errors.service_sort = "Service Sort is required";
+    if (!services.service_status) errors.service_status = "Status is required";
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   useEffect(() => {
     const fetchServiceData = async () => {
@@ -260,6 +279,7 @@ const ServiceEditMaster = () => {
           service_status: "",
           service_image: "",
           service_comm: "",
+          service_sort: "",
           service_includes: "",
           service_show_website: [],
           service_meta_title: "",
@@ -297,8 +317,18 @@ const ServiceEditMaster = () => {
   };
 
   const onSubmit = (e) => {
-    setLoading(true);
+ 
     e.preventDefault();
+    setLoading(true);
+        if (!validateForm()) {
+         
+          setActiveTab("basic");
+          toast.error("Please fill all required fields in Basic Information");
+          setLoading(false);
+          setIsButtonDisabled(false);
+          return;
+        }
+      
 
     const data = new FormData();
     data.append("service", services.service);
@@ -307,6 +337,7 @@ const ServiceEditMaster = () => {
     }
     data.append("service_status", services.service_status);
     data.append("service_comm", services.service_comm);
+    data.append("service_sort", services.service_sort);
     data.append("service_meta_title", services.service_meta_title);
     data.append("service_meta_description", services.service_meta_description);
     data.append("service_slug", services.service_slug);
@@ -356,13 +387,29 @@ const ServiceEditMaster = () => {
         });
     }
   };
-
+  const hasBasicErrors = () => {
+    return !services.super_service_id || !services.service || !services.service_sort || !services.service_status;
+  };
   const websiteOptions = serviceShowWebsite.map((item) => ({
     value: item.id,
     label: item.name,
     id: item.id,
   }));
 
+  const handleKeyDown = (event) => {
+    if (
+      event.key === 'Backspace' ||
+      event.key === 'Delete' ||
+      event.key === 'Tab' ||
+      event.key === 'Escape' ||
+      event.key === 'Enter' ||
+      (event.key >= '0' && event.key <= '9') ||
+      event.key === '.'
+    ) {
+      return;
+    }
+    event.preventDefault();
+  };
   const selectedWebsiteValues = websiteOptions.filter((option) =>
     services.service_show_website.includes(option.id)
   );
@@ -385,235 +432,296 @@ const ServiceEditMaster = () => {
               autoComplete="off"
               onSubmit={onSubmit}
               className="p-4"
+              noValidate
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Service Image */}
-                <div className="flex justify-center items-center">
-                  <img src={imageUrl} alt="Service" className="w-52 h-52" />
-                </div>
-                {/* Service Fields */}
-                <div className="p-2 ">
-                  <FormControl fullWidth>
-                    <InputLabel id="super_service_id-label">
-                      <span className="text-sm relative bottom-[6px]">
-                        Super Service
-                        <span className="text-red-700">*</span>
-                      </span>
-                    </InputLabel>
-                    <SelectMaterial
-                      sx={{ height: "40px", borderRadius: "5px" }}
-                      labelId="super_service_id-label"
-                      id="super_service_id-select"
-                      name="super_service_id"
-                      value={services.super_service_id}
-                      onChange={onInputChange}
-                      label="Super Service"
-                      required
-                    >
-                      {superservice.map((item) => (
-                        <MenuItem key={item.id} value={String(item.id)}>
-                          {item.serviceSuper}
-                        </MenuItem>
-                      ))}
-                    </SelectMaterial>
-                  </FormControl>{" "}
-                  <div className="my-6">
-                    <Input
-                      label="Service"
-                      type="text"
-                      name="service"
-                      value={services.service}
-                      onChange={onInputChange}
-                      required
-                      
-                      
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <Input
-                      label="Image"
-                      type="file"
-                      name="service_image"
-                      onChange={(e) => setSelectedFile(e.target.files[0])}
-                      className="w-full border border-gray-700 rounded-md"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <FormControl fullWidth>
-                      <InputLabel id="service-select-label">
-                        <span className="text-sm relative bottom-[6px]">
-                          Status <span className="text-red-700">*</span>
-                        </span>
-                      </InputLabel>
-                      <MuiSelect
-                        sx={{ height: "40px", borderRadius: "5px" }}
-                        labelId="service-select-label"
-                        id="service-select"
-                        name="service_status"
-                        value={services.service_status}
-                        onChange={onInputChange}
-                        label="Status *"
-                        required
-                      >
-                        {statusOptions.map((data) => (
-                          <MenuItem key={data.value} value={String(data.value)}>
-                            {data.label}
-                          </MenuItem>
-                        ))}
-                      </MuiSelect>
-                    </FormControl>
-                  </div>
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Service Show Website
-                    </label>
-                    <Select
-                      isMulti
-                      options={websiteOptions}
-                      value={selectedWebsiteValues}
-                      onChange={handleMultiSelectChange}
-                      styles={customStyles}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      placeholder="Select options..."
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                <Textarea
-                  label="Meta Title"
-                  value={services?.service_meta_title}
-                  name="service_meta_title"
-                  onChange={onInputChange}
-                />
-                <Textarea
-                  label="Meta Description"
-                  value={services?.service_meta_description}
-                  name="service_meta_description"
-                  onChange={onInputChange}
-                />
-                <Textarea
-                  label="Service Slug"
-                  value={services?.service_slug}
-                  name="service_slug"
-                  onChange={onInputChange}
-                   
-                />
-                <Textarea
-                  label="Service Meta Full length"
-                  value={services?.service_meta_full_length}
-                  name="service_meta_full_length"
-                  onChange={onInputChange}
-                />
-              </div>
-              <div>
-              <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
-                      
-                      </div>
-            <Textarea
-              label="Service Include"
-              value={services?.service_includes}
-              name="service_includes"
-              onChange={onInputChange}
-            />
-            <p className="text-xs px-2 text-gray-700 mt-1">
-  Separate multiple items with commas (e.g., cleaning, painting, repairs).
-</p>
-
-          </div>
-              {/* FAQ Section */}
-              <div className="mb-6 mt-1">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800">FAQ  <span className=" text-xs px-1">(max -5)</span></h3>
-              
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          FAQ Heading
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          FAQ Description
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {services.faq_data.map((faq, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Textarea
-                              label="FAQ heading"
-                              value={faq.service_faq_heading}
-                              onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
-                              className="w-full"
-                            />
-                          </td>
-                          <td className="px-6 py-4">
-                            <Textarea
-                              label="FAQ description"
-                              value={faq.service_faq_description}
-                              onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
-                              className="w-full"
-                            />
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <FormControl fullWidth>
-                              <MuiSelect
-                                sx={{ height: "40px", borderRadius: "5px", minWidth: "120px" }}
-                                name={`faq_status_${index}`}
-                                value={faq.service_faq_status || "Active"}
-                                onChange={(e) => handleFaqChange(index, 'service_faq_status', e.target.value)}
-                              >
-                                {faqStatusOptions.map((option) => (
-                                  <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </MenuItem>
-                                ))}
-                              </MuiSelect>
-                            </FormControl>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-  <button
-    type="button"
-    onClick={() => faq.id ? handleOpenDialog(faq.id, index) : handleRemoveFaq(index)}
-    className="text-red-600 hover:text-red-900 flex items-center gap-1"
-  >
-    {faq.id ? (
-      <TrashIcon className="h-5 w-5" />
-    ) : (
-      <MinusCircleIcon className="h-5 w-5" />
-    )}
-  </button>
-</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              {/* Tabs Navigation */}
+              <div className="flex border-b border-gray-200 mb-6">
+              <button
+      type="button"
+      className={`py-2 px-4 font-medium text-sm focus:outline-none transition-all duration-300 relative ${
+        activeTab === "basic"
+          ? "border-b-2 border-blue-500 text-blue-600"
+          : "text-gray-500 hover:text-gray-700"
+      } ${hasBasicErrors() && Object.keys(formErrors).length > 0 ? "border-red-500" : ""}`}
+      onClick={() => setActiveTab("basic")}
+    >
+      Basic Information
+      {hasBasicErrors() && Object.keys(formErrors).length > 0 && (
+        <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+      )}
+    </button>
                 <button
-                    type="button"
-                    onClick={addFaqRow}
-                    disabled={services.faq_data.length === 5}
-                    className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2
-                      ${services.faq_data.length === 5
-                        ? 'bg-gray-400 text-white cursor-not-allowed'
-                        : 'bg-blue-500 text-white hover:bg-blue-600'}
-                    `}
-                  >
-                    <PlusCircleIcon className="h-5 w-5" />
-                    Add FAQ
-                  </button>
+                  type="button"
+                  className={`py-2 px-4 font-medium text-sm focus:outline-none transition-all duration-300 ${
+                    activeTab === "faq"
+                      ? "border-b-2 border-blue-500 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                  onClick={() => setActiveTab("faq")}
+                >
+                  FAQ
+                </button>
+              </div>
+
+              {/* Tab Contents */}
+              <div className="transition-all duration-300">
+                {/* Basic Information Tab */}
+                <div className={`${activeTab === "basic" ? "block" : "hidden"}`}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Service Image */}
+                    <div className="flex justify-center items-center">
+                      <img src={imageUrl} alt="Service" className="w-52 h-52" />
+                    </div>
+                    {/* Service Fields */}
+                    <div className="p-2 ">
+                      <FormControl fullWidth>
+                        <InputLabel id="super_service_id-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Super Service
+                            <span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <SelectMaterial
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="super_service_id-label"
+                          id="super_service_id-select"
+                          name="super_service_id"
+                          value={services.super_service_id}
+                          onChange={onInputChange}
+                          label="Super Service"
+                          error={!!formErrors.super_service_id}
+                          
+                        >
+                          {superservice.map((item) => (
+                            <MenuItem key={item.id} value={String(item.id)}>
+                              {item.serviceSuper}
+                            </MenuItem>
+                          ))}
+                        </SelectMaterial>
+                        {formErrors.super_service_id && (
+                          <p className="text-red-500 text-xs mt-1">{formErrors.super_service_id}</p>
+                        )}
+                      </FormControl>
+                      <div className="my-6">
+                        <Input
+                          label="Service"
+                          type="text"
+                          name="service"
+                          value={services.service}
+                          onChange={onInputChange}
+                          
+                          error={!!formErrors.service}
+                        />
+                        {formErrors.service && (
+                          <p className="text-red-500 text-xs mt-1">{formErrors.service}</p>
+                        )}
+                      </div>
+                      <div className="my-6">
+                        <Input
+                          label="Service Sort"
+                          type="text"
+                          name="service_sort"
+                          value={services.service_sort}
+                          onChange={onInputChange}
+                          onKeyDown={handleKeyDown}
+                          error={!!formErrors.service_sort}
+                        />
+                        {formErrors.service_sort && (
+                          <p className="text-red-500 text-xs mt-1">{formErrors.service_sort}</p>
+                        )}
+                      </div>
+                      <div className="mb-6">
+                        <Input
+                          label="Image"
+                          type="file"
+                          name="service_image"
+                          onChange={(e) => setSelectedFile(e.target.files[0])}
+                          className="w-full border border-gray-700 rounded-md"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <FormControl fullWidth>
+                          <InputLabel id="service-select-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Status <span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <MuiSelect
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="service-select-label"
+                            id="service-select"
+                            name="service_status"
+                            value={services.service_status}
+                            onChange={onInputChange}
+                            label="Status *"
+                            error={!!formErrors.service_status}
+                            
+                          >
+                            {statusOptions.map((data) => (
+                              <MenuItem key={data.value} value={String(data.value)}>
+                                {data.label}
+                              </MenuItem>
+                            ))}
+                          </MuiSelect>
+                          {formErrors.service_status && (
+                            <p className="text-red-500 text-xs mt-1">{formErrors.service_status}</p>
+                          )}
+                        </FormControl>
+                      </div>
+                      <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Service Show Website
+                        </label>
+                        <Select
+                          isMulti
+                          options={websiteOptions}
+                          value={selectedWebsiteValues}
+                          onChange={handleMultiSelectChange}
+                          styles={customStyles}
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          placeholder="Select options..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <Textarea
+                      label="Meta Title"
+                      value={services?.service_meta_title}
+                      name="service_meta_title"
+                      onChange={onInputChange}
+                    />
+                    <Textarea
+                      label="Meta Description"
+                      value={services?.service_meta_description}
+                      name="service_meta_description"
+                      onChange={onInputChange}
+                    />
+                    <Textarea
+                      label="Service Slug"
+                      value={services?.service_slug}
+                      name="service_slug"
+                      onChange={onInputChange}
+                    />
+                    <Textarea
+                      label="Service Meta Full length"
+                      value={services?.service_meta_full_length}
+                      name="service_meta_full_length"
+                      onChange={onInputChange}
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
+                    </div>
+                    <Textarea
+                      label="Service Include"
+                      value={services?.service_includes}
+                      name="service_includes"
+                      onChange={onInputChange}
+                    />
+                    <p className="text-xs px-2 text-gray-700 mt-1">
+                      Separate multiple items with commas (e.g., cleaning, painting, repairs).
+                    </p>
+                  </div>
+                </div>
+
+                {/* FAQ Tab */}
+                <div className={`${activeTab === "faq" ? "block" : "hidden"}`}>
+                  <div className="mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        FAQ <span className="text-xs px-1">(max -5)</span>
+                      </h3>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              FAQ Heading
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              FAQ Description
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Status
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {services.faq_data.map((faq, index) => (
+                            <tr key={index}>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Textarea
+                                  label="FAQ heading"
+                                  value={faq.service_faq_heading}
+                                  onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
+                                  className="w-full"
+                                />
+                              </td>
+                              <td className="px-6 py-4">
+                                <Textarea
+                                  label="FAQ description"
+                                  value={faq.service_faq_description}
+                                  onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
+                                  className="w-full"
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <FormControl fullWidth>
+                                  <MuiSelect
+                                    sx={{ height: "40px", borderRadius: "5px", minWidth: "120px" }}
+                                    name={`faq_status_${index}`}
+                                    value={faq.service_faq_status || "Active"}
+                                    onChange={(e) => handleFaqChange(index, 'service_faq_status', e.target.value)}
+                                  >
+                                    {faqStatusOptions.map((option) => (
+                                      <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                      </MenuItem>
+                                    ))}
+                                  </MuiSelect>
+                                </FormControl>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button
+                                  type="button"
+                                  onClick={() => faq.id ? handleOpenDialog(faq.id, index) : handleRemoveFaq(index)}
+                                  className="text-red-600 hover:text-red-900 flex items-center gap-1"
+                                >
+                                  {faq.id ? (
+                                    <TrashIcon className="h-5 w-5" />
+                                  ) : (
+                                    <MinusCircleIcon className="h-5 w-5" />
+                                  )}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addFaqRow}
+                      disabled={services.faq_data.length === 5}
+                      className={`mt-4 px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                        services.faq_data.length === 5
+                          ? 'bg-gray-400 text-white cursor-not-allowed'
+                          : 'bg-blue-500 text-white hover:bg-blue-600'
+                      }`}
+                    >
+                      <PlusCircleIcon className="h-5 w-5" />
+                      Add FAQ
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Confirmation Dialog */}

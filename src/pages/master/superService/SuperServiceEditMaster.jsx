@@ -34,6 +34,7 @@ const SuperServiceEditMaster = () => {
     serviceSuper_status: "",
     serviceSuper_image: "",
     serviceSuper_url: "",
+    serviceSuper_sort: "",
     serviceSuper_meta_title: "",
     serviceSuper_meta_description: "",
     serviceSuper_meta_tags: "",
@@ -48,6 +49,7 @@ const SuperServiceEditMaster = () => {
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [serviceSuperError,setServiceSuperError]=useState(null)
 
   useEffect(() => {
     const fetchSuperServiceData = async () => {
@@ -68,6 +70,7 @@ const SuperServiceEditMaster = () => {
             serviceSuper_status: "",
             serviceSuper_image: "",
             serviceSuper_url: "",
+            serviceSuper_sort: "",
             serviceSuper_meta_title: "",
             serviceSuper_meta_description: "",
             serviceSuper_meta_tags: "",
@@ -92,6 +95,15 @@ const SuperServiceEditMaster = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "serviceSuper") {
+   
+      if (value.includes('/') || value.includes('\\')) {
+        setServiceSuperError("Service Super name cannot contain slashes ( / or \\ )");
+        return;
+      } else {
+        setServiceSuperError("");
+      }
+    }
     setSuperService({
       ...superService,
       [name]: value,
@@ -101,7 +113,10 @@ const SuperServiceEditMaster = () => {
   const onSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-
+    if (serviceSuperError) {
+      setLoading(false);
+      return;
+    }
     const data = new FormData();
     data.append("serviceSuper", superService.serviceSuper);
 
@@ -117,6 +132,7 @@ const SuperServiceEditMaster = () => {
     data.append("serviceSuper_meta_tags", superService.serviceSuper_meta_tags);
     data.append("serviceSuper_keywords", superService.serviceSuper_keywords);
     data.append("serviceSuper_url", superService.serviceSuper_url);
+    data.append("serviceSuper_sort", superService.serviceSuper_sort);
     data.append("serviceSuper_status", superService.serviceSuper_status);
 
     const form = document.getElementById("addIndiv");
@@ -194,6 +210,11 @@ const SuperServiceEditMaster = () => {
                         className: "!text-gray-600",
                       }}
                     />
+                       {serviceSuperError && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {serviceSuperError}
+                      </p>
+                    )}
                   </div>
                   <div className="mb-6">
                     <Input
@@ -201,6 +222,19 @@ const SuperServiceEditMaster = () => {
                       type="text"
                       name="serviceSuper_url"
                       value={superService.serviceSuper_url}
+                      onChange={onInputChange}
+                      required
+                      labelProps={{
+                        className: "!text-gray-600",
+                      }}
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <Input
+                      label="Super Service Sort"
+                      type="text"
+                      name="serviceSuper_sort"
+                      value={superService.serviceSuper_sort}
                       onChange={onInputChange}
                       required
                       labelProps={{

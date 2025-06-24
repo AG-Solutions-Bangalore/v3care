@@ -168,7 +168,9 @@ const CustomerList = () => {
   return (
     <Layout>
          {loading ? (
-           <LoaderComponent />
+           <div className="mt-5">
+            <LoaderComponent />
+           </div>
          ) : (
            <div className="mt-5">
              <MUIDataTable

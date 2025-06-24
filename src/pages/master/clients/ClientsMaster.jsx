@@ -6,11 +6,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   BASE_URL,
+  CLIENTS_IMAGE,
   NO_IMAGE_URL,
-  SERVICE_IMAGE_URL,
-  SUPER_SERVICE_IMAGE_URL,
 } from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -18,7 +16,7 @@ import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 
-const SuperServiceMaster = () => {
+const ClientsMaster = () => {
   const [serviceData, setServiceData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
@@ -35,7 +33,7 @@ const SuperServiceMaster = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/super-service?page=${storedPageNo}`);
+        navigate(`/clients?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
@@ -44,13 +42,13 @@ const SuperServiceMaster = () => {
   }, [location]);
   UseEscapeKey();
   useEffect(() => {
-    const fetchServiceData = async () => {
+    const fetchClientData = async () => {
       try {
         setLoading(true);
 
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-super-service-list`,
+          `${BASE_URL}/api/panel-fetch-client-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,14 +56,14 @@ const SuperServiceMaster = () => {
           }
         );
 
-        setServiceData(response.data?.servicesuper);
+        setServiceData(response.data?.clients);
       } catch (error) {
-        console.error("Error fetching dashboard data", error);
+        console.error("Error fetching clients data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchServiceData();
+    fetchClientData();
   }, []);
 
   const handleEdit = (e, id) => {
@@ -73,18 +71,13 @@ const SuperServiceMaster = () => {
 
     e.preventDefault();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/super-service-edit/${id}`);
+    navigate(`/clients-edit/${id}`);
   };
-  const handleView = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/super-service-view/${id}`);
-  };
+  
   const columns = [
     {
       name: "id",
-      label: "Action",
+      label: "ACTION",
       options: {
         filter: false,
         sort: false,
@@ -97,7 +90,7 @@ const SuperServiceMaster = () => {
                   className="flex items-center space-x-2"
                 >
                   <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                    <title>Edit Super Service</title>
+                    <title>Edit Client</title>
                   </SquarePen>
                 </div>
               )}
@@ -108,19 +101,19 @@ const SuperServiceMaster = () => {
     },
 
     {
-      name: "serviceSuper_image",
-      label: "Image",
+      name: "client_image",
+      label: "IMAGE",
       options: {
         filter: true,
         sort: false,
         customBodyRender: (image) => {
           const imageUrl = image
-            ? `${SUPER_SERVICE_IMAGE_URL}/${image}`
+            ? `${CLIENTS_IMAGE}/${image}?t=${new Date().getTime()}`
             : `${NO_IMAGE_URL}`;
           return (
             <img
               src={imageUrl}
-              alt="Super Service"
+              alt="Clients"
               style={{ width: "40px", height: "40px", objectFit: "cover" }}
             />
           );
@@ -129,15 +122,15 @@ const SuperServiceMaster = () => {
     },
 
     {
-      name: "serviceSuper",
-      label: "Super Service",
+      name: "client_name",
+      label: "Name",
       options: {
         filter: true,
         sort: true,
       },
     },
     {
-      name: "serviceSuper_sort",
+      name: "client_sort",
       label: "Sort",
       options: {
         filter: true,
@@ -146,7 +139,7 @@ const SuperServiceMaster = () => {
     },
 
     {
-      name: "serviceSuper_status",
+      name: "client_status",
       label: "Status  ",
       options: {
         filter: true,
@@ -168,13 +161,9 @@ const SuperServiceMaster = () => {
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
-      navigate(`/service?page=${currentPage + 1}`);
+      navigate(`/clients?page=${currentPage + 1}`);
     },
-    onRowClick: (rowData, rowMeta, e) => {
-      const id = serviceData[rowMeta.dataIndex].id;
-
-      handleView(e, id)();
-    },
+    
     setRowProps: (rowData) => {
       return {
         style: {
@@ -188,8 +177,8 @@ const SuperServiceMaster = () => {
           <>
             <ButtonConfigColor
               type="create"
-              label="Super Service"
-              onClick={() => navigate("/super-service-create")}
+              label="Clients"
+              onClick={() => navigate("/clients-create")}
             />
           </>
         </>
@@ -226,21 +215,21 @@ const SuperServiceMaster = () => {
   };
   return (
     <Layout>
-      <MasterFilter />
-      {loading ? (
-        <LoaderComponent />
-      ) : (
-        <div className="mt-1">
-          <MUIDataTable
-            title="Super Service List"
-            data={serviceData ? serviceData : []}
-            columns={columns}
-            options={options}
-          />
-        </div>
-      )}
-    </Layout>
-  );
-};
+    <MasterFilter />
+    {loading ? (
+      <LoaderComponent />
+    ) : (
+      <div className="mt-1">
+        <MUIDataTable
+          title="Clients List"
+          data={serviceData ? serviceData : []}
+          columns={columns}
+          options={options}
+        />
+      </div>
+    )}
+  </Layout>
+  )
+}
 
-export default SuperServiceMaster;
+export default ClientsMaster

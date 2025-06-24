@@ -120,6 +120,20 @@ const MasterFilter = () => {
             hoverColor: "hover:bg-blue-50",
             textColor: "text-blue-900",
           },
+          {
+            label: "Clients",
+            path: "/clients",
+            color: "from-cyan-500 to-red-400",
+            hoverColor: "hover:bg-cyan-50",
+            textColor: "text-cyan-900",
+          },
+          {
+            label: "Blogs",
+            path: "/blogs",
+            color: "from-blue-500 to-yellow-400",
+            hoverColor: "hover:bg-yellow-50",
+            textColor: "text-black-900",
+          },
         ]
       : []),
   ];
