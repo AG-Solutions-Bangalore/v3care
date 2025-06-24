@@ -31,6 +31,12 @@ const RIGHTSIDEBAR_IMAGE = "https://agscare.site/crmapi/storage/app/public/servi
 
 
 
+const CLIENTS_IMAGE = "https://agscare.site/crmapi/storage/app/public/clients"
+
+const BLOGS_IMAGE = "https://agscare.site/crmapi/storage/app/public/blog"
+
+
+
 
 export {
     BASE_URL,
@@ -45,6 +51,8 @@ export {
     NOTIFICATION_IMAGE,
     SUPER_SERVICE_IMAGE_URL,
     RIGHTSIDEBAR_IMAGE,
+    CLIENTS_IMAGE,
+    BLOGS_IMAGE
     
 
   };

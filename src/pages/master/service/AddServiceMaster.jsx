@@ -16,7 +16,7 @@ import {
   MenuItem,
   Select as SelectMaterial,
 } from "@mui/material";
-import {CircleMinus, MinusCircleIcon, PlusCircleIcon} from "lucide-react"
+import { CircleMinus, MinusCircleIcon, PlusCircleIcon } from "lucide-react";
 
 const serviceShowWebsite = [
   {
@@ -71,6 +71,7 @@ const AddServiceMaster = () => {
   const [services, setServices] = useState({
     service: "",
     service_comm: "",
+    service_sort: "",
     service_image: "",
     service_show_website: [],
     service_meta_title: "",
@@ -86,7 +87,9 @@ const AddServiceMaster = () => {
       }
     ]
   });
-  UseEscapeKey();
+  
+  const [activeTab, setActiveTab] = useState("basic");
+  const [formErrors, setFormErrors] = useState({});
   const [superservice, setSuperservice] = useState([]);
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -95,6 +98,7 @@ const AddServiceMaster = () => {
 
   // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
+  
   useEffect(() => {
     const fetchServiceData = async () => {
       try {
@@ -165,13 +169,15 @@ const AddServiceMaster = () => {
   };
   
   const addFaqRow = () => {
-    setServices(prev => ({
-      ...prev,
-      faq_data: [
-        ...prev.faq_data,
-        { service_faq_heading: "", service_faq_description: "" }
-      ]
-    }));
+    if (services.faq_data.length < 5) {
+      setServices(prev => ({
+        ...prev,
+        faq_data: [
+          ...prev.faq_data,
+          { service_faq_heading: "", service_faq_description: "" }
+        ]
+      }));
+    }
   };
   
   const removeFaqRow = (index) => {
@@ -180,16 +186,42 @@ const AddServiceMaster = () => {
       setServices(prev => ({ ...prev, faq_data: updatedFaqData }));
     }
   };
+
+  const validateForm = () => {
+    const errors = {};
+    
+  
+    if (!services.super_service_id) errors.super_service_id = "Super Service is required";
+    if (!services.service) errors.service = "Service is required";
+    if (!services.service_sort) errors.service_sort = "Service Sort is required";
+    if (!selectedFile) errors.service_image = "Service Image is required";
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setIsButtonDisabled(true);
+   
+
+ 
+    if (!validateForm()) {
+     
+      setActiveTab("basic");
+      toast.error("Please fill all required fields in Basic Information");
+      setLoading(false);
+      setIsButtonDisabled(false);
+      return;
+    }
+  
 
     const data = new FormData();
     data.append("service", services.service);
     data.append("service_image", selectedFile);
     data.append("service_comm", services.service_comm);
     data.append("service_meta_title", services.service_meta_title);
+    data.append("service_sort", services.service_sort);
     data.append("service_meta_description", services.service_meta_description);
     data.append("service_slug", services.service_slug);
     data.append("service_meta_full_length", services.service_meta_full_length);
@@ -204,10 +236,7 @@ const AddServiceMaster = () => {
       data.append(`faq_data[${index}][service_faq_heading]`, faq.service_faq_heading);
       data.append(`faq_data[${index}][service_faq_description]`, faq.service_faq_description);
     });
-  
-  
-
-    
+    setIsButtonDisabled(true);
     try {
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-service`,
@@ -249,6 +278,23 @@ const AddServiceMaster = () => {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (
+      event.key === 'Backspace' ||
+      event.key === 'Delete' ||
+      event.key === 'Tab' ||
+      event.key === 'Escape' ||
+      event.key === 'Enter' ||
+      (event.key >= '0' && event.key <= '9') ||
+      event.key === '.'
+    ) {
+      return;
+    }
+    event.preventDefault();
+  };
+  const hasBasicErrors = () => {
+    return !services.super_service_id || !services.service || !services.service_sort || !services.service_status;
+  };
   const websiteOptions = serviceShowWebsite.map((item) => ({
     value: item.id,
     label: item.name,
@@ -265,190 +311,259 @@ const AddServiceMaster = () => {
 
       <PageHeader title={"Create Service"} />
 
-      <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
-        <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <FormControl fullWidth>
-              <InputLabel id="super_service_id-label">
-                <span className="text-sm relative bottom-[6px]">
-                Super  Service
-                  <span className="text-red-700">*</span>
-                </span>
-              </InputLabel>
-              <SelectMaterial
-                sx={{ height: "40px", borderRadius: "5px" }}
-                labelId="super_service_id-label"
-                id="super_service_id-select"
-                name="super_service_id"
-                value={services.super_service_id}
-                onChange={onInputChange}
-                label="Super Service"
-                required
-              >
-                {superservice.map((item) => (
-                  <MenuItem key={item.id} value={String(item.id)}>
-                    {item.serviceSuper}
-                  </MenuItem>
-                ))}
-              </SelectMaterial>
-            </FormControl>{" "}
-            <div className="form-group">
-              <Input
-                label="Service"
-                type="text"
-                name="service"
-                value={services.service}
-                onChange={onInputChange}
-                required
-                maxLength={250}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none   transition-all duration-300 shadow-sm"
-              />
+      <div className="w-full mt-2 mx-auto p-8 bg-white shadow-lg rounded-xl">
+        <form  autoComplete="off" onSubmit={onSubmit} noValidate>
+          {/* Tabs Navigation */}
+          <div className="flex border-b border-gray-200 mb-6">
+          <button
+      type="button"
+      className={`py-2 px-4 font-medium text-sm focus:outline-none transition-all duration-300 relative ${
+        activeTab === "basic"
+          ? "border-b-2 border-blue-500 text-blue-600"
+          : "text-gray-500 hover:text-gray-700"
+      } ${hasBasicErrors() && Object.keys(formErrors).length > 0 ? "border-red-500" : ""}`}
+      onClick={() => setActiveTab("basic")}
+    >
+      Basic Information
+      {hasBasicErrors() && Object.keys(formErrors).length > 0 && (
+        <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+      )}
+    </button>
+            <button
+              type="button"
+              className={`py-2 px-4 font-medium text-sm focus:outline-none transition-all duration-300 ${
+                activeTab === "faq"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("faq")}
+            >
+              FAQ
+            </button>
+          </div>
+
+          {/* Tab Contents */}
+          <div className="transition-all duration-300">
+            {/* Basic Information Tab */}
+            <div
+              className={`${activeTab === "basic" ? "block" : "hidden"}`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <FormControl fullWidth>
+                  <InputLabel id="super_service_id-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Super Service
+                      <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <SelectMaterial
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="super_service_id-label"
+                    id="super_service_id-select"
+                    name="super_service_id"
+                    value={services.super_service_id}
+                    onChange={onInputChange}
+                    label="Super Service"
+                    error={!!formErrors.super_service_id}
+                    
+                  >
+                    {superservice.map((item) => (
+                      <MenuItem key={item.id} value={String(item.id)}>
+                        {item.serviceSuper}
+                      </MenuItem>
+                    ))}
+                  </SelectMaterial>
+                  {formErrors.super_service_id && (
+                    <p className="text-red-500 text-xs mt-1">{formErrors.super_service_id}</p>
+                  )}
+                </FormControl>
+
+                <div className="form-group">
+                  <Input
+                    label="Service"
+                    type="text"
+                    name="service"
+                    value={services.service}
+                    onChange={onInputChange}
+                    maxLength={250}
+                    error={!!formErrors.service}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none transition-all duration-300 shadow-sm"
+                  />
+                  {formErrors.service && (
+                    <p className="text-red-500 text-xs mt-1">{formErrors.service}</p>
+                  )}
+                </div>
+                
+                <div className="form-group">
+                  <Input
+                    label="Service Sort"
+                    type="tel"
+                    name="service_sort"
+                    value={services.service_sort}
+                    onChange={onInputChange}
+                    
+                    onKeyDown={handleKeyDown}
+                    error={!!formErrors.service_sort}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none transition-all duration-300 shadow-sm"
+                  />
+                  {formErrors.service_sort && (
+                    <p className="text-red-500 text-xs mt-1">{formErrors.service_sort}</p>
+                  )}
+                </div>
+                
+                <div className="form-group">
+                  <Input
+                    label="Service Image"
+                    type="file"
+                    name="service_image"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                    error={!!formErrors.service_image}
+                    className="w-full px-4 pb-2 border border-gray-300 rounded-md focus:outline-none transition-all duration-300 shadow-sm"
+                  />
+                  {formErrors.service_image && (
+                    <p className="text-red-500 text-xs mt-1">{formErrors.service_image}</p>
+                  )}
+                </div>
+                
+                <div className="form-group relative col-span-1 md:col-span-2 lg:col-span-4">
+                  <label className="block text-xs font-medium text-gray-700 absolute -top-4 left-0">
+                    Service Show Website
+                  </label>
+                  <Select
+                    isMulti
+                    options={websiteOptions}
+                    value={selectedWebsiteValues}
+                    onChange={handleMultiSelectChange}
+                    styles={customStyles}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="Select Service..."
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                <Textarea
+                  label="Meta Title"
+                  value={services?.service_meta_title}
+                  name="service_meta_title"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Meta Description"
+                  value={services?.service_meta_description}
+                  name="service_meta_description"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Service Slug"
+                  value={services?.service_slug}
+                  name="service_slug"
+                  onChange={onInputChange}
+                />
+                <Textarea
+                  label="Service Meta Full length"
+                  value={services?.service_meta_full_length}
+                  name="service_meta_full_length"
+                  onChange={onInputChange}
+                />
+              </div>
+              
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
+                </div>
+                <Textarea
+                  label="Service Include"
+                  value={services?.service_includes}
+                  name="service_includes"
+                  onChange={onInputChange}
+                />
+                <p className="text-xs px-2 text-gray-700 mt-1">
+                  Separate multiple items with commas (e.g., cleaning, painting, repairs).
+                </p>
+              </div>
             </div>
-            <div className="form-group">
-              <Input
-                label="Service Image"
-                type="file"
-                name="service_image"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-                className="w-full px-4 pb-2 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
-              />
-            </div>
-            <div className="form-group relative">
-              <label className="block text-xs font-medium text-gray-700 absolute -top-4 left-0">
-                Service Show Website
-              </label>
-              <Select
-                isMulti
-                options={websiteOptions}
-                value={selectedWebsiteValues}
-                onChange={handleMultiSelectChange}
-                styles={customStyles}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                placeholder="Select Service..."
-              />
+
+            {/* FAQ Tab */}
+            <div
+              className={`transition-all duration-300 ${activeTab === "faq" ? "block" : "hidden"}`}
+            >
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    FAQ <span className="text-xs px-1">(max -5)</span>
+                  </h3>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          FAQ Heading
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          FAQ Description
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '80px' }}>
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {services.faq_data.map((faq, index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Textarea
+                              label="FAQ heading"
+                              value={faq.service_faq_heading}
+                              onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
+                              className="w-full"
+                            />
+                          </td>
+                          <td className="px-6 py-4">
+                            <Textarea
+                              label="FAQ description"
+                              value={faq.service_faq_description}
+                              onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
+                              className="w-full"
+                            />
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button
+                              type="button"
+                              onClick={() => removeFaqRow(index)}
+                              disabled={services.faq_data.length <= 1}
+                              className={`text-red-600 hover:text-red-900 ${services.faq_data.length <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                              <MinusCircleIcon />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={addFaqRow}
+                  disabled={services.faq_data.length === 5}
+                  className={`mt-4 px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                    services.faq_data.length === 5
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                >
+                  <PlusCircleIcon className="h-5 w-5" />
+                  Add FAQ
+                </button>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-            <Textarea
-              label="Meta Title"
-              value={services?.service_meta_title}
-              name="service_meta_title"
-              onChange={onInputChange}
-            />
-            <Textarea
-              label="Meta Description"
-              value={services?.service_meta_description}
-              name="service_meta_description"
-              onChange={onInputChange}
-            />
-            <Textarea
-              label="Service Slug"
-              value={services?.service_slug}
-              name="service_slug"
-              onChange={onInputChange}
 
-            />
-            <Textarea
-              label="Service Meta  Full length"
-              value={services?.service_meta_full_length}
-              name="service_meta_full_length"
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-          <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Includes</h3>
-                      
-                      </div>
-            <Textarea
-              label="Service Include"
-              value={services?.service_includes}
-              name="service_includes"
-              onChange={onInputChange}
-            />
-            <p className="text-xs px-2 text-gray-700 mt-1">
-  Separate multiple items with commas (e.g., cleaning, painting, repairs).
-</p>
-
-          </div>
-           {/* FAQ Section */}
-                    <div className="mb-6 mt-1">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">FAQ 
-
-
-                          <span className=" text-xs px-1">(max -5)</span>
-                        </h3>
-                      
-                      </div>
-          
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-  <tr>
-    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-      FAQ Heading
-    </th>
-    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-      FAQ Description
-    </th>
-    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{ width: '80px' }}>
-      Action
-    </th>
-  </tr>
-</thead>
-<tbody className="bg-white divide-y divide-gray-200">
-  {services.faq_data.map((faq, index) => (
-    <tr key={index}>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <Textarea
-          label="FAQ heading"
-          value={faq.service_faq_heading}
-          onChange={(e) => handleFaqChange(index, 'service_faq_heading', e.target.value)}
-          className="w-full"
-        />
-      </td>
-      <td className="px-6 py-4">
-        <Textarea
-          label="FAQ description"
-          value={faq.service_faq_description}
-          onChange={(e) => handleFaqChange(index, 'service_faq_description', e.target.value)}
-          className="w-full"
-        />
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <button
-          type="button"
-          onClick={() => removeFaqRow(index)}
-          disabled={services.faq_data.length <= 1}
-          className={`text-red-600 hover:text-red-900 ${services.faq_data.length <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          <MinusCircleIcon />
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-                        </table>
-                      </div>
-                      <button
-                          type="button"
-                          onClick={addFaqRow}
-                          // className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-2"
-                          disabled={services.faq_data.length === 5}
-                          className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2
-                            ${services.faq_data.length === 5
-                              ? 'bg-gray-400 text-white cursor-not-allowed'
-                              : 'bg-blue-500 text-white hover:bg-blue-600'}
-                          `}
-                        >
-                           <PlusCircleIcon className="h-5 w-5" />
-                          Add FAQ
-                        </button>
-                    </div>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center space-x-4 mt-8">
             <ButtonConfigColor
               type="submit"
               buttontype="submit"

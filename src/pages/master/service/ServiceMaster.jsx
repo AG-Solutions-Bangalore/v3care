@@ -159,6 +159,7 @@ const ServiceMaster = () => {
         sort: true,
       },
     },
+   
     {
       name: "service_show_website",
       label: "Service Show Website",
@@ -210,6 +211,14 @@ const ServiceMaster = () => {
             <div className="flex flex-wrap">{values.map(renderBadge)}</div>
           );
         },
+      },
+    },
+    {
+      name: "service_sort",
+      label: "Sort",
+      options: {
+        filter: true,
+        sort: true,
       },
     },
     {

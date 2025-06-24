@@ -111,6 +111,13 @@ import CustomerView from "./pages/customer/CustomerView";
 import RightSidebarList from "./pages/master/rightSidebar/RightSidebarList";
 import CreateRightSidebar from "./pages/master/rightSidebar/CreateRightSidebar";
 import EditRightSidebar from "./pages/master/rightSidebar/EditRightSidebar";
+
+import ClientsMaster from "./pages/master/clients/ClientsMaster";
+import ClientsCreateMaster from "./pages/master/clients/ClientsCreateMaster";
+import ClientsEditMaster from "./pages/master/clients/ClientsEditMaster";
+import BlogsMaster from "./pages/master/blogs/BlogsMaster";
+import BlogsEditMaster from "./pages/master/blogs/BlogsEditMaster";
+import BlogsCreateMaster from "./pages/master/blogs/BlogsCreateMaster";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -272,7 +279,17 @@ const App = () => {
 
               <Route path="/holiday-list" element={<HolidayMaster />} />
               <Route path="/holiday-create" element={<CreateHoliday />} />
+             
               <Route path="/holiday-edit/:id" element={<EditHoliday />} />
+
+              <Route path="/clients" element={<ClientsMaster />} />
+              <Route path="/clients-create" element={<ClientsCreateMaster />} />
+              <Route path="/clients-edit/:id" element={<ClientsEditMaster />} />
+
+
+              <Route path="/blogs" element={<BlogsMaster />} />
+              <Route path="/blogs-create" element={<BlogsCreateMaster />} />
+              <Route path="/blogs-edit/:id" element={<BlogsEditMaster />} />
 
 
               <Route path="/right-sidebar-content" element={<RightSidebarList />} />
