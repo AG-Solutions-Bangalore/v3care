@@ -642,7 +642,7 @@ const AddBooking = () => {
                 </FormControl>
               </div>
 
-              {booking.order_service == "23" ? (
+              {booking.order_service == "1" ? (
                 ""
               ) : serdatasub.length > 0 ? (
                 <div>
@@ -686,7 +686,7 @@ const AddBooking = () => {
               ) : (
                 ""
               )}
-              {booking.order_service == "23" ? (
+              {booking.order_service == "1" ? (
                 ""
               ) : (
                 <div>
@@ -731,7 +731,7 @@ const AddBooking = () => {
               )}
             </div>
             <div className={styles["custom-service-dev"]}>
-              {booking.order_service == "23" && (
+              {booking.order_service == "1" && (
                 <>
                   <div>
                     <Fields

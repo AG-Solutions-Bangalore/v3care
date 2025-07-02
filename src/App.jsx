@@ -123,10 +123,10 @@ const App = () => {
 
   return (
     <>
-      {/* <ValidationWrapper> */}
+      <ValidationWrapper>
         <ToastContainer />
-        <DisableRightClick /> 
-        <DevToolsBlocker /> 
+        <DisableRightClick />
+        <DevToolsBlocker />
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/register" element={<SIgnUp />} />
@@ -137,7 +137,10 @@ const App = () => {
           {/* dashboard  */}
           <Route path="/home" element={<Home />} />
           <Route path="/customer" element={<CustomerList />} />
-          <Route path="/customer-view/:customer_name/:customer_mobile" element={<CustomerView />} />
+          <Route
+            path="/customer-view/:customer_name/:customer_mobile"
+            element={<CustomerView />}
+          />
 
           {/* booking  */}
           {(userType === "6" ||
@@ -279,22 +282,29 @@ const App = () => {
 
               <Route path="/holiday-list" element={<HolidayMaster />} />
               <Route path="/holiday-create" element={<CreateHoliday />} />
-             
+
               <Route path="/holiday-edit/:id" element={<EditHoliday />} />
 
               <Route path="/clients" element={<ClientsMaster />} />
               <Route path="/clients-create" element={<ClientsCreateMaster />} />
               <Route path="/clients-edit/:id" element={<ClientsEditMaster />} />
 
-
               <Route path="/blogs" element={<BlogsMaster />} />
               <Route path="/blogs-create" element={<BlogsCreateMaster />} />
               <Route path="/blogs-edit/:id" element={<BlogsEditMaster />} />
 
-
-              <Route path="/right-sidebar-content" element={<RightSidebarList />} />
-              <Route path="/add-right-sidebar-content" element={<CreateRightSidebar />} />
-              <Route path="/right-sidebar-content-edit/:id" element={<EditRightSidebar />} />
+              <Route
+                path="/right-sidebar-content"
+                element={<RightSidebarList />}
+              />
+              <Route
+                path="/add-right-sidebar-content"
+                element={<CreateRightSidebar />}
+              />
+              <Route
+                path="/right-sidebar-content-edit/:id"
+                element={<EditRightSidebar />}
+              />
             </>
           )}
           {(userType === "6" ||
@@ -436,7 +446,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
-      {/* </ValidationWrapper> */}
+      </ValidationWrapper>
     </>
   );
 };
