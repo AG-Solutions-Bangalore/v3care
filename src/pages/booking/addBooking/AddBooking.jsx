@@ -791,21 +791,30 @@ const AddBooking = () => {
                   startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                 />
               </div>
-              <div className="form-group">
-                <Input
-                  label="Time Slot"
-                  fullWidth
-                  required
-                  type="time"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  autoComplete="Name"
+      
+              <FormControl fullWidth>
+                <InputLabel id="order_time-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Time Slot<span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="order_time-label"
+                  id="order_time"
                   name="order_time"
                   value={booking.order_time}
                   onChange={(e) => onInputChange(e)}
-                />
-              </div>
+                  label="Time Slot *"
+                  required
+                >
+                  {timeslot.map((data) => (
+                    <MenuItem key={data.value} value={data?.time_slot}>
+                      {data?.time_slot}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <div>
                 <Fields
                   types="number"

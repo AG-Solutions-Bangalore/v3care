@@ -1,34 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
-  Autocomplete,
-  Button,
-  InputAdornment,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  Person,
-  PhoneIphone,
-  Email,
   CurrencyRupee,
-  PinDrop,
-  Place,
-  Assignment,
+  Email,
   MiscellaneousServices,
-  WhatsApp,
+  PinDrop,
+  Place
 } from "@mui/icons-material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography
+} from "@mui/material";
 import styles from "../booking/addBooking/AddBooking.module.css";
 
+import { Input } from "@material-tailwind/react";
 import HomeIcon from "@mui/icons-material/Home";
 import axios from "axios";
-import { Input } from "@material-tailwind/react";
-import Fields from "../../components/addBooking/TextField";
-import {BASE_URL} from "../../base/BaseUrl";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";
+import logo from "../../../public/img/v3logo.png";
+import { BASE_URL } from "../../base/BaseUrl";
+import Fields from "../../components/addBooking/TextField";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 
@@ -318,7 +313,12 @@ const BookNow = () => {
       () => handleScriptLoad(setQuery, autoCompleteRef)
     );
   }, []);
-
+  const [timeslot, setTimeSlot] = useState([]);
+  useEffect(() => {
+    fetch(BASE_URL + "/api/panel-fetch-timeslot-out")
+      .then((response) => response.json())
+      .then((data) => setTimeSlot(data.timeslot));
+  }, []);
   const onSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("addIdniv");
@@ -546,7 +546,7 @@ const BookNow = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <Input
+                  {/* <Input
                     label="Time Slot"
                     fullWidth
                     required
@@ -558,7 +558,33 @@ const BookNow = () => {
                     name="order_time"
                     value={booking.order_time}
                     onChange={(e) => onInputChange(e)}
-                  />
+                  /> */}
+                  <div>
+                    <FormControl fullWidth>
+                      <InputLabel id="order_time-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Time Slot<span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <Select
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="order_time-label"
+                        id="order_time"
+                        name="order_time"
+                        key={booking.order_time}
+                        value={booking.order_time}
+                        onChange={(e) => onInputChange(e)}
+                        label="Time Slot *"
+                        required
+                      >
+                        {timeslot?.map((data) => (
+                          <MenuItem key={data.value} value={data?.time_slot}>
+                            {data?.time_slot}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
                 </div>
 
                 <div>

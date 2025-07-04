@@ -27,6 +27,10 @@ import {
   DialogTitle,
   TextField,
   Button,
+  Select as SelectMui,
+  FormControl,
+  InputLabel,
+  MenuItem,
 } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
@@ -106,7 +110,8 @@ const WorkInProgress = () => {
         ...response.data?.booking,
         order_comm: response.data?.booking?.order_comm ?? 0,
         order_person_name: response.data?.booking?.order_person_name ?? "",
-        order_person_contact_no: response.data?.booking?.order_person_contact_no ?? 0,
+        order_person_contact_no:
+          response.data?.booking?.order_person_contact_no ?? 0,
       };
       setBooking(bookingData);
       setOrderRef(response.data?.booking.order_ref);
@@ -118,7 +123,12 @@ const WorkInProgress = () => {
   useEffect(() => {
     fetchBookingData();
   }, []);
-
+  const [timeslot, setTimeSlot] = useState([]);
+  useEffect(() => {
+    fetch(BASE_URL + "/api/panel-fetch-timeslot-out")
+      .then((response) => response.json())
+      .then((data) => setTimeSlot(data.timeslot));
+  }, []);
   const columns = [
     {
       name: "order_followup_date",
@@ -395,40 +405,46 @@ const WorkInProgress = () => {
             <CardBody>
               {/* <form id="addIdniv"> */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
-                      <div className="form-group">
-                        <Input
-                        
-                          label="Person Name"
-                          name="order_person_name"
-                          value={booking.order_person_name}
-                          onChange={(e) => onInputChange(e)}
-                      
-                        />
-                      </div>
-                      <div className="form-group">
-                        <Input
-                        
-                          label="Person Contact No"
-                          name="order_person_contact_no"
-                          value={booking.order_person_contact_no}
-                          onChange={(e) => onInputChange(e)}
-                        minLength={10}
-                        maxLength={10}
-                        onKeyDown={(e) => {
-                        
-                          if (
-                            ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
-                          ) {
-                            return;
-                          }
-                         
-                          if (!/[0-9]/.test(e.key)) {
-                            e.preventDefault();
-                          }
-                        }}
-                        />
-                      </div>
-                    </div>
+                <div className="form-group">
+                  <Input
+                    label="Person Name"
+                    name="order_person_name"
+                    value={booking.order_person_name}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div className="form-group">
+                  <Input
+                    label="Person Contact No"
+                    name="order_person_contact_no"
+                    value={booking.order_person_contact_no}
+                    onChange={(e) => onInputChange(e)}
+                    minLength={10}
+                    maxLength={10}
+                    onKeyDown={(e) => {
+                      if (
+                        [
+                          "Backspace",
+                          "Delete",
+                          "Tab",
+                          "Escape",
+                          "Enter",
+                          "ArrowLeft",
+                          "ArrowRight",
+                          "Home",
+                          "End",
+                        ].includes(e.key)
+                      ) {
+                        return;
+                      }
+
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                </div>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                   <div className="form-group">
@@ -447,16 +463,31 @@ const WorkInProgress = () => {
                 </div>
 
                 <div>
-                  <div className="form-group">
-                    <Input
-                      fullWidth
-                      required
-                      label="Time Slot"
-                      type="time"
-                      name="order_time"
-                      value={booking.order_time}
-                      onChange={(e) => onInputChange(e)}
-                    />
+                  <div>
+                    <FormControl fullWidth>
+                      <InputLabel id="order_time-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Time Slot<span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <SelectMui
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="order_time-label"
+                        id="order_time"
+                        name="order_time"
+                        key={booking.order_time}
+                        value={booking.order_time}
+                        onChange={(e) => onInputChange(e)}
+                        label="Time Slot *"
+                        required
+                      >
+                        {timeslot?.map((data) => (
+                          <MenuItem key={data.value} value={data?.time_slot}>
+                            {data?.time_slot}
+                          </MenuItem>
+                        ))}
+                      </SelectMui>
+                    </FormControl>
                   </div>
                 </div>
                 <div className="form-group relative">
