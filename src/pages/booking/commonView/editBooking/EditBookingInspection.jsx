@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {BASE_URL} from "../../../../base/BaseUrl";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import axios from "axios";
 import moment from "moment";
 // import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
@@ -179,7 +179,6 @@ const EditBookingInspection = () => {
         ...response.data?.booking,
         order_comm: response.data?.booking?.order_comm ?? 0,
         order_amount: response.data?.booking?.order_amount ?? 0,
-       
       };
       setBooking(bookingData);
       setOrderRef(response.data?.booking.order_ref);
@@ -208,6 +207,12 @@ const EditBookingInspection = () => {
   useEffect(() => {
     fetchBookingData();
     fetchpaymentData();
+  }, []);
+  const [timeslot, setTimeSlot] = useState([]);
+  useEffect(() => {
+    fetch(BASE_URL + "/api/panel-fetch-timeslot-out")
+      .then((response) => response.json())
+      .then((data) => setTimeSlot(data.timeslot));
   }, []);
   // Handle form submission
   const onSubmit = (e) => {
@@ -243,7 +248,7 @@ const EditBookingInspection = () => {
       .then((res) => {
         if (res.data.code == "200") {
           toast.success(res.data?.msg || "Booking Updated Successfully");
-          navigate(-1)
+          navigate(-1);
         } else {
           toast.error(res.data?.msg || "Network Error");
         }
@@ -509,40 +514,46 @@ const EditBookingInspection = () => {
                 {/* here booking assign table  */}
                 <CardBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
-                                        <div className="form-group">
-                                          <Input
-                                          
-                                            label="Person Name"
-                                            name="order_person_name"
-                                            value={booking.order_person_name}
-                                            onChange={(e) => onInputChange(e)}
-                                        
-                                          />
-                                        </div>
-                                        <div className="form-group">
-                                          <Input
-                                          
-                                            label="Person Contact No"
-                                            name="order_person_contact_no"
-                                            value={booking.order_person_contact_no}
-                                            onChange={(e) => onInputChange(e)}
-                                          minLength={10}
-                                          maxLength={10}
-                                          onKeyDown={(e) => {
-                                          
-                                            if (
-                                              ["Backspace", "Delete", "Tab", "Escape", "Enter", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)
-                                            ) {
-                                              return;
-                                            }
-                                           
-                                            if (!/[0-9]/.test(e.key)) {
-                                              e.preventDefault();
-                                            }
-                                          }}
-                                          />
-                                        </div>
-                                      </div>
+                    <div className="form-group">
+                      <Input
+                        label="Person Name"
+                        name="order_person_name"
+                        value={booking.order_person_name}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <Input
+                        label="Person Contact No"
+                        name="order_person_contact_no"
+                        value={booking.order_person_contact_no}
+                        onChange={(e) => onInputChange(e)}
+                        minLength={10}
+                        maxLength={10}
+                        onKeyDown={(e) => {
+                          if (
+                            [
+                              "Backspace",
+                              "Delete",
+                              "Tab",
+                              "Escape",
+                              "Enter",
+                              "ArrowLeft",
+                              "ArrowRight",
+                              "Home",
+                              "End",
+                            ].includes(e.key)
+                          ) {
+                            return;
+                          }
+
+                          if (!/[0-9]/.test(e.key)) {
+                            e.preventDefault();
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <FormControl fullWidth>
                       <InputLabel id="service-select-label">
@@ -616,58 +627,74 @@ const EditBookingInspection = () => {
                     </div>
 
                     <div>
-                      <div className="form-group">
-                        <Input
-                          fullWidth
-                          required
-                          label="Time Slot"
-                          type="time"
-                          name="order_time"
-                          value={booking.order_time}
-                          onChange={(e) => onInputChange(e)}
-                        />
+                      <div>
+                        <FormControl fullWidth>
+                          <InputLabel id="order_time-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Time Slot<span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <Select
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="order_time-label"
+                            id="order_time"
+                            name="order_time"
+                            key={booking.order_time}
+                            value={booking.order_time}
+                            onChange={(e) => onInputChange(e)}
+                            label="Time Slot *"
+                            required
+                          >
+                            {timeslot?.map((data) => (
+                              <MenuItem
+                                key={data.value}
+                                value={data?.time_slot}
+                              >
+                                {data?.time_slot}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </div>
                     </div>
 
                     {booking?.order_vendor_id !== null && (
- <>
-                    <div className="form-group relative">
-                        <Input
-                          fullWidth
-                          required={booking.order_vendor_id}
-                          label="Commission (%)"
-                          name="order_comm_percentage"
-                          value={booking.order_comm_percentage}
-                          onChange={(e) => onInputChange(e)}
-                        />
-                        <span
-                          className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
-                          onClick={() => {
-                            setBooking((prev) => ({
-                              ...prev,
-                              order_comm: autoCommissionCalc,
-                            }));
-                          }}
-                        >
-                          (₹{autoCommissionCalc})
-                        </span>
-                      </div>
-                    <div>
-                      <div className="form-group">
-                        <Input
-                          fullWidth
-                          required={booking.order_vendor_id}
-                          label="Commission Amount"
-                          name="order_comm"
-                          value={booking.order_comm}
-                          onChange={(e) => onInputChange(e)}
-                        />
-                      </div>
-                    </div>
- </> )}
-
-
-
+                      <>
+                        <div className="form-group relative">
+                          <Input
+                            fullWidth
+                            required={booking.order_vendor_id}
+                            label="Commission (%)"
+                            name="order_comm_percentage"
+                            value={booking.order_comm_percentage}
+                            onChange={(e) => onInputChange(e)}
+                          />
+                          <span
+                            className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                            onClick={() => {
+                              setBooking((prev) => ({
+                                ...prev,
+                                order_comm: autoCommissionCalc,
+                              }));
+                            }}
+                          >
+                            (₹{autoCommissionCalc})
+                          </span>
+                        </div>
+                        <div>
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              required={booking.order_vendor_id}
+                              label="Commission Amount"
+                              name="order_comm"
+                              value={booking.order_comm}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     <div>
                       <div className="form-group">
@@ -723,7 +750,7 @@ const EditBookingInspection = () => {
                       <FormControl fullWidth>
                         <InputLabel id="service-select-label">
                           <span className="text-sm relative bottom-[6px]">
-                            Payment 
+                            Payment
                           </span>
                         </InputLabel>
                         <Select
@@ -734,7 +761,6 @@ const EditBookingInspection = () => {
                           value={booking.order_payment_type}
                           onChange={(e) => onInputChange(e)}
                           label="Payment Mode *"
-                          
                         >
                           {paymentmode.map((data) => (
                             <MenuItem

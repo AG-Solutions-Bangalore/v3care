@@ -142,8 +142,15 @@ const EditRightSidebar = () => {
 
         const data = response.data.servicedetails;
         setFormData({
-          service_id: data.service_id.split(",").map(Number),
-          service_sub_id: data.service_sub_id.split(",").map(Number),
+          // service_id: data.service_id.split(",").map(Number),
+          // service_sub_id: data.service_sub_id.split(",").map(Number),
+          service_id: data.service_id
+            ? data.service_id.split(",").map(Number)
+            : [],
+          service_sub_id: data.service_sub_id
+            ? data.service_sub_id.split(",").map(Number)
+            : [],
+
           serviceDetails_name: data.serviceDetails_name,
           serviceDetails: data.serviceDetails,
           serviceDetails_image: null,
@@ -547,7 +554,7 @@ const EditRightSidebar = () => {
                 {/* Sub Service Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Sub Service <span className="text-red-500">*</span>
+                    Sub Service
                   </label>
                   <Select
                     isMulti
@@ -558,7 +565,6 @@ const EditRightSidebar = () => {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     placeholder="Select Sub Service..."
-                    required
                     menuPlacement="top"
                     closeMenuOnSelect={false}
                   />

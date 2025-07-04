@@ -121,8 +121,7 @@ const CreateRightSidebar = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, serviceDetails_image: file }));
-      
-    
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
@@ -134,14 +133,18 @@ const CreateRightSidebar = () => {
   const handleServiceChange = (selectedOptions) => {
     setFormData((prev) => ({
       ...prev,
-      service_id: selectedOptions ? selectedOptions.map(option => option.value) : [],
+      service_id: selectedOptions
+        ? selectedOptions.map((option) => option.value)
+        : [],
     }));
   };
 
   const handleSubServiceChange = (selectedOptions) => {
     setFormData((prev) => ({
       ...prev,
-      service_sub_id: selectedOptions ? selectedOptions.map(option => option.value) : [],
+      service_sub_id: selectedOptions
+        ? selectedOptions.map((option) => option.value)
+        : [],
     }));
   };
 
@@ -174,7 +177,7 @@ const CreateRightSidebar = () => {
 
       if (response.data.code === 200) {
         toast.success(response.data.msg);
-        navigate(-1); 
+        navigate(-1);
       } else {
         toast.error(response.data.msg || "Failed to create service details");
       }
@@ -187,22 +190,21 @@ const CreateRightSidebar = () => {
     }
   };
 
-
-  const serviceOptions = services.map(service => ({
+  const serviceOptions = services.map((service) => ({
     value: service.id,
     label: service.service,
   }));
 
-  const subServiceOptions = subServices.map(service => ({
+  const subServiceOptions = subServices.map((service) => ({
     value: service.id,
     label: service.service_sub,
   }));
 
-  const selectedServices = serviceOptions.filter(option => 
+  const selectedServices = serviceOptions.filter((option) =>
     formData.service_id.includes(option.value)
   );
 
-  const selectedSubServices = subServiceOptions.filter(option => 
+  const selectedSubServices = subServiceOptions.filter((option) =>
     formData.service_sub_id.includes(option.value)
   );
 
@@ -212,17 +214,16 @@ const CreateRightSidebar = () => {
       <PageHeader title={"Create Service Details"} />
 
       <div className="w-full mt-5 mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
-
         <div className="flex flex-col lg:flex-row">
           {/* Preview Section (40% on large screens, full width on mobile) */}
           <div className="w-full lg:w-2/5 p-6 border-b lg:border-b-0 lg:border-r border-gray-200">
             <h2 className="text-xl font-semibold mb-4">Preview</h2>
-            
+
             <div className="border rounded-lg p-4 bg-gray-50 h-fit">
               {previewImage ? (
-                <img 
-                  src={previewImage} 
-                  alt="Service preview" 
+                <img
+                  src={previewImage}
+                  alt="Service preview"
                   className="w-full h-48 object-cover rounded-lg mb-4"
                 />
               ) : (
@@ -230,52 +231,52 @@ const CreateRightSidebar = () => {
                   <span className="text-gray-500">Image preview</span>
                 </div>
               )}
-              
+
               {formData.serviceDetails_name ? (
-  <h3 className="text-lg font-semibold mb-2 break-words whitespace-normal">
-    {formData.serviceDetails_name}
-  </h3>
-) : (
-  <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
-)}
-              
+                <h3 className="text-lg font-semibold mb-2 break-words whitespace-normal">
+                  {formData.serviceDetails_name}
+                </h3>
+              ) : (
+                <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
+              )}
+
               {formData.serviceDetails ? (
-  <div className="overflow-hidden">
-    {showFullText ? (
-      <p className="text-gray-700 text-sm whitespace-pre-line break-words">
-        {formData.serviceDetails}
-      </p>
-    ) : (
-      <p className="text-gray-700  text-sm whitespace-pre-line break-words">
-        {formData.serviceDetails.split(' ').slice(0, 50).join(' ')}
-        {formData.serviceDetails.split(' ').length > 50 && '...'}
-      </p>
-    )}
-    {formData.serviceDetails.split(' ').length > 50 && (
-      <span
-        className="text-blue-600 underline cursor-pointer hover:text-blue-800 mt-1 inline-block"
-        onClick={() => setShowFullText(prev => !prev)}
-      >
-        {showFullText ? 'Read less' : 'Read more'}
-      </span>
-    )}
-  </div>
-) : (
-  <>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
-  </>
-)}
+                <div className="overflow-hidden">
+                  {showFullText ? (
+                    <p className="text-gray-700 text-sm whitespace-pre-line break-words">
+                      {formData.serviceDetails}
+                    </p>
+                  ) : (
+                    <p className="text-gray-700  text-sm whitespace-pre-line break-words">
+                      {formData.serviceDetails
+                        .split(" ")
+                        .slice(0, 50)
+                        .join(" ")}
+                      {formData.serviceDetails.split(" ").length > 50 && "..."}
+                    </p>
+                  )}
+                  {formData.serviceDetails.split(" ").length > 50 && (
+                    <span
+                      className="text-blue-600 underline cursor-pointer hover:text-blue-800 mt-1 inline-block"
+                      onClick={() => setShowFullText((prev) => !prev)}
+                    >
+                      {showFullText ? "Read less" : "Read more"}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
+                </>
+              )}
             </div>
           </div>
 
-         
           <div className="w-full lg:w-3/5 p-6">
             <form onSubmit={handleSubmit}>
               <div className="space-y-6">
-               
-
                 {/* Service Details Name */}
                 <div>
                   <Input
@@ -324,8 +325,8 @@ const CreateRightSidebar = () => {
                     Upload an image for this service (JPEG, PNG, etc.)
                   </p>
                 </div>
- {/* Service Dropdown */}
- <div>
+                {/* Service Dropdown */}
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Service <span className="text-red-500">*</span>
                   </label>
@@ -347,7 +348,7 @@ const CreateRightSidebar = () => {
                 {/* Sub Service Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Sub Service <span className="text-red-500">*</span>
+                    Sub Service 
                   </label>
                   <Select
                     isMulti
@@ -358,7 +359,6 @@ const CreateRightSidebar = () => {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     placeholder="Select Sub Service..."
-                    required
                     menuPlacement="top"
                     closeMenuOnSelect={false}
                   />
