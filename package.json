@@ -30,7 +30,9 @@
     "react-router-dom": "6.17.0",
     "react-select": "^5.9.0",
     "react-to-print": "^2.15.1",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "react-quill": "^2.0.0",
+    "react-draft-wysiwyg": "^1.15.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

@@ -21,7 +21,8 @@ import {
   Select as MuiSelect,
   Switch,
 } from "@mui/material";
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 const customStyles = {
   control: (provided) => ({
     ...provided,
@@ -441,8 +442,16 @@ const EditRightSidebar = () => {
                 ) : (
                   <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
                 )}
-
-                {formData.serviceDetails ? (
+{formData.serviceDetails ? (
+  <div className="ql-editor" dangerouslySetInnerHTML={{ __html: formData.serviceDetails }} />
+) : (
+  <>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
+  </>
+)}
+                {/* {formData.serviceDetails ? (
                   <div className="overflow-hidden">
                     {showFullText ? (
                       <p className="text-gray-700 text-sm whitespace-pre-line break-words">
@@ -473,7 +482,7 @@ const EditRightSidebar = () => {
                     <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
                     <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
                   </>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -495,7 +504,7 @@ const EditRightSidebar = () => {
                 </div>
 
                 {/* Service Details Description */}
-                <div>
+                {/* <div>
                   <Textarea
                     label="Service Details"
                     name="serviceDetails"
@@ -504,8 +513,39 @@ const EditRightSidebar = () => {
                     required
                     rows={6}
                   />
-                </div>
-
+                </div> */}
+ <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+  Service Details <span className="text-red-500">*</span>
+  </label>
+  <ReactQuill
+    theme="snow"
+    value={formData.serviceDetails}
+    
+    onChange={(value) => 
+      setFormData(prev => ({
+        ...prev,
+        serviceDetails: value
+      }))
+    }
+    modules={{
+      toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ],
+    }}
+    formats={[
+      'header',
+      'bold', 'italic', 'underline', 'strike', 'blockquote',
+      'list', 'bullet',
+      'link', 'image'
+    ]}
+    className="h-64 mb-12"
+  />
+</div>
                 {/* Image Upload */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
