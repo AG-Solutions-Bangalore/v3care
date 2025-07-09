@@ -4,11 +4,7 @@ import MasterFilter from "../../../components/MasterFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  BASE_URL,
-  BLOGS_IMAGE,
-  NO_IMAGE_URL,
-} from "../../../base/BaseUrl";
+import { BASE_URL, BLOGS_IMAGE, NO_IMAGE_URL } from "../../../base/BaseUrl";
 import MUIDataTable from "mui-datatables";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -73,7 +69,7 @@ const BlogsMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/blogs-edit/${id}`);
   };
-  
+
   const columns = [
     {
       name: "id",
@@ -99,7 +95,14 @@ const BlogsMaster = () => {
         },
       },
     },
-
+    {
+      name: "blogs_sorting",
+      label: "Sorting",
+      options: {
+        filter: true,
+        sort: true,
+      },
+    },
     {
       name: "blogs_image",
       label: "IMAGE",
@@ -114,8 +117,6 @@ const BlogsMaster = () => {
             <img
               src={imageUrl}
               alt="blogs"
-      
-            
               style={{ width: "40px", height: "40px", objectFit: "cover" }}
             />
           );
@@ -131,7 +132,6 @@ const BlogsMaster = () => {
         sort: true,
       },
     },
-   
 
     {
       name: "blogs_status",
@@ -158,7 +158,7 @@ const BlogsMaster = () => {
       setPage(currentPage);
       navigate(`/blogs?page=${currentPage + 1}`);
     },
-    
+
     setRowProps: (rowData) => {
       return {
         style: {
@@ -210,22 +210,21 @@ const BlogsMaster = () => {
   };
   return (
     <Layout>
-    <MasterFilter />
-    {loading ? (
-      <LoaderComponent />
-    ) : (
-      <div className="mt-1">
-        <MUIDataTable
-          title="Blogs List"
-          data={blogsData ? blogsData : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
-    )}
-  </Layout>
-  )
-}
+      <MasterFilter />
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <div className="mt-1">
+          <MUIDataTable
+            title="Blogs List"
+            data={blogsData ? blogsData : []}
+            columns={columns}
+            options={options}
+          />
+        </div>
+      )}
+    </Layout>
+  );
+};
 
-
-export default BlogsMaster
+export default BlogsMaster;

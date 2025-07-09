@@ -18,16 +18,21 @@ const BlogsCreateMaster = () => {
     blogs_description: "",
     blogs_created_date: "",
     blogs_image: "",
+    blogs_sorting: "",
+    blogs_meta_title: "",
+    blogs_meta_description: "",
+    blogs_slug: "",
   });
-  
+
   const [headingError, setHeadingError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  
+
   UseEscapeKey();
   const navigate = useNavigate();
   const storedPageNo = localStorage.getItem("page-no");
-  const pageNo = storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
+  const pageNo =
+    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -37,31 +42,59 @@ const BlogsCreateMaster = () => {
     navigate(`/blogs?page=${pageNo}`);
   };
 
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/--+/g, "-")
+      .substring(0, 50);
+  };
+
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    
+
+    // Validate blogs_heading for slashes
     if (name === "blogs_heading") {
-   
-      if (value.includes('/') || value.includes('\\')) {
+      if (value.includes("/") || value.includes("\\")) {
         setHeadingError("Blog heading cannot contain slashes ( / or \\ )");
         return;
       } else {
         setHeadingError("");
       }
+
+      const slug = generateSlug(value);
+      setBlog((prevBlog) => ({
+        ...prevBlog,
+        blogs_heading: value,
+        blogs_slug: slug,
+      }));
+      return;
     }
-    
-    setBlog({
-      ...blog,
+
+    // Allow only digits in blogs_sorting
+    if (name === "blogs_sorting") {
+      const onlyDigits = value.replace(/\D/g, "");
+      setBlog((prevBlog) => ({
+        ...prevBlog,
+        [name]: onlyDigits,
+      }));
+      return;
+    }
+
+    // Default input handler
+    setBlog((prevBlog) => ({
+      ...prevBlog,
       [name]: value,
-    });
+    }));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -82,7 +115,6 @@ const BlogsCreateMaster = () => {
     setLoading(true);
     e.preventDefault();
 
-    
     if (headingError) {
       setLoading(false);
       return;
@@ -91,8 +123,16 @@ const BlogsCreateMaster = () => {
     const data = new FormData();
     data.append("blogs_heading", blog.blogs_heading);
     data.append("blogs_description", blog.blogs_description);
-    data.append("blogs_created_date", blog.blogs_created_date || new Date().toISOString().split('T')[0]);
-    
+
+    data.append("blogs_sorting", blog.blogs_sorting);
+    data.append("blogs_meta_title", blog.blogs_meta_title);
+    data.append("blogs_meta_description", blog.blogs_meta_description);
+    data.append("blogs_slug", blog.blogs_slug);
+    data.append(
+      "blogs_created_date",
+      blog.blogs_created_date || new Date().toISOString().split("T")[0]
+    );
+
     if (selectedFile) {
       data.append("blogs_image", selectedFile);
     }
@@ -142,114 +182,112 @@ const BlogsCreateMaster = () => {
             onSubmit={onSubmit}
             className="p-4"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8">
               {/* Left Column - Form Fields */}
-              <div>
-                <div className="space-y-6">
-                  <div>
-                    <Input
-                      label="Blog Heading"
-                      type="text"
-                      name="blogs_heading"
-                      value={blog.blogs_heading}
-                      onChange={onInputChange}
-                      required
-                      labelProps={{
-                        className: "!text-gray-600",
-                      }}
-                      error={!!headingError}
-                    />
-                    {headingError && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {headingError}
-                      </p>
-                    )}
-                  </div>
+              <div className="space-y-6">
+                <div>
+                  <Input
+                    label="Blog Heading"
+                    type="text"
+                    name="blogs_heading"
+                    value={blog.blogs_heading}
+                    onChange={onInputChange}
+                    required
+                    maxLength={250}
+                    labelProps={{ className: "!text-gray-600" }}
+                    error={!!headingError}
+                  />
+                  {headingError && (
+                    <p className="mt-1 text-sm text-red-500">{headingError}</p>
+                  )}
+                </div>
 
-                  {/* <div>
-                    <Textarea
-                      label="Blog Description"
-                      name="blogs_description"
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Blog Image <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    required
+                    accept="image/*"
+                    name="blogs_image"
+                    onChange={handleImageChange}
+                    className="block w-full text-sm text-gray-500 border p-1 rounded-md
+          file:mr-4 file:py-2 file:px-4
+          file:rounded-md file:border-0
+          file:text-sm file:font-semibold
+          file:bg-blue-50 file:text-blue-700
+          hover:file:bg-blue-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Blog Description <span className="text-red-500">*</span>
+                  </label>
+                  <div className="border border-gray-300 rounded-md">
+                    <ReactQuill
+                      theme="snow"
                       value={blog.blogs_description}
-                      onChange={onInputChange}
-                      required
-                      labelProps={{
-                        className: "!text-gray-600",
+                      onChange={(value) =>
+                        setBlog({ ...blog, blogs_description: value })
+                      }
+                      className="custom-quill-editor"
+                      modules={{
+                        toolbar: [
+                          [{ header: [1, 2, false] }],
+                          [
+                            "bold",
+                            "italic",
+                            "underline",
+                            "strike",
+                            "blockquote",
+                          ],
+                          [{ list: "ordered" }, { list: "bullet" }],
+                          ["link", "image"],
+                          ["clean"],
+                        ],
                       }}
-                    />
-                  </div> */}
-
-                  <div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Blog Description <span className="text-red-500">*</span>
-  </label>
-  <ReactQuill
-    theme="snow"
-    value={blog.blogs_description}
-    onChange={(value) => 
-      setBlog({
-        ...blog,
-        blogs_description: value
-      })
-    }
-    modules={{
-      toolbar: [
-        [{ 'header': [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image'],
-        ['clean']
-      ],
-    }}
-    formats={[
-      'header',
-      'bold', 'italic', 'underline', 'strike', 'blockquote',
-      'list', 'bullet',
-      'link', 'image'
-    ]}
-    className="h-64 mb-12"
-  />
-</div>
-                  <div>
-                    <Input
-                      label="Created Date"
-                      type="date"
-                      name="blogs_created_date"
-                      value={blog.blogs_created_date}
-                      onChange={onInputChange}
-                      required
-                      labelProps={{
-                        className: "!text-gray-600",
-                      }}
+                      formats={[
+                        "header",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                        "blockquote",
+                        "list",
+                        "bullet",
+                        "link",
+                        "image",
+                      ]}
                     />
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Blog Image <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      required
-                      accept="image/*"
-                      name="blogs_image"
-                      onChange={handleImageChange}
-                      className="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-md file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-blue-50 file:text-blue-700
-                        hover:file:bg-blue-100"
-                    />
-                   
-                  </div>
+                </div>
+                <div>
+                  <Input
+                    label="Meta Title"
+                    name="blogs_meta_title"
+                    value={blog.blogs_meta_title}
+                    onChange={onInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Created Date"
+                    type="date"
+                    name="blogs_created_date"
+                    value={blog.blogs_created_date}
+                    onChange={onInputChange}
+                    required
+                    labelProps={{ className: "!text-gray-600" }}
+                  />
                 </div>
               </div>
 
-              {/* Right Column - Image Preview */}
-              <div className="flex flex-col items-center">
-                <div className="w-full max-w-xs p-4 border border-gray-200 rounded-lg">
+              {/* Right Column - Image Preview + Additional Info */}
+              <div className="space-y-6">
+                <div className="w-full p-4 border border-gray-200 rounded-lg">
                   <h3 className="text-lg font-medium text-center mb-4">
                     Blog Image Preview
                   </h3>
@@ -274,6 +312,34 @@ const BlogsCreateMaster = () => {
                       <p className="text-xs text-red-400">Image is required</p>
                     </div>
                   )}
+                </div>
+
+                <div className="space-y-5">
+                  <Input
+                    label="Sorted"
+                    name="blogs_sorting"
+                    value={blog.blogs_sorting}
+                    onChange={onInputChange}
+                    maxLength={10}
+                    required
+                  />
+
+                  <Input
+                    label="Slug"
+                    name="blogs_slug"
+                    value={blog.blogs_slug}
+                    onChange={onInputChange}
+                    readOnly
+                    required
+                  />
+
+                  <Textarea
+                    label="Meta Description"
+                    name="blogs_meta_description"
+                    value={blog.blogs_meta_description}
+                    onChange={onInputChange}
+                    required
+                  />
                 </div>
               </div>
             </div>

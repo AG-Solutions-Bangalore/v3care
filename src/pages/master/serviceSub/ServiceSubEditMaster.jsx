@@ -36,6 +36,7 @@ const ServiceSubEditMaster = () => {
     service_sub: "",
     service_sub_status: "",
     service_sub_image: "",
+    service_sub_slug: "",
   });
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -85,12 +86,28 @@ const ServiceSubEditMaster = () => {
     fetchServiceOptions();
   }, []);
 
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/--+/g, "-")
+      .substring(0, 50);
+  };
+
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    setService({
+
+    let updated = {
       ...services,
       [name]: value,
-    });
+    };
+    if (name == "service_sub") {
+      updated.service_sub_slug = generateSlug(value);
+    }
+
+    setService(updated);
   };
   const handleBack = (e) => {
     e.preventDefault();
@@ -105,6 +122,7 @@ const ServiceSubEditMaster = () => {
     data.append("service_sub", services.service_sub);
     data.append("service_sub_image", selectedFile);
     data.append("service_sub_status", services.service_sub_status);
+    data.append("service_sub_slug", services.service_sub_slug);
 
     const form = document.getElementById("addIndiv");
     if (form.checkValidity()) {
@@ -188,9 +206,18 @@ const ServiceSubEditMaster = () => {
                     name="service_sub"
                     value={services.service_sub}
                     onChange={onInputChange}
+                    maxLength={250}
                     required
-                    
-                    
+                  />
+                </div>
+                <div className="mb-6">
+                  <Input
+                    label="Service Slug"
+                    type="text"
+                    name="service_sub_slug"
+                    value={services.service_sub_slug}
+                    readOnly
+                    required
                   />
                 </div>
                 <div className="mb-6">
