@@ -10,6 +10,8 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import MasterFilter from "../../../components/MasterFilter";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const customStyles = {
   control: (provided) => ({
@@ -207,7 +209,7 @@ const CreateRightSidebar = () => {
   const selectedSubServices = subServiceOptions.filter((option) =>
     formData.service_sub_id.includes(option.value)
   );
-
+ 
   return (
     <Layout>
       <MasterFilter />
@@ -239,11 +241,24 @@ const CreateRightSidebar = () => {
               ) : (
                 <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
               )}
+{formData.serviceDetails ? (
+  <div className="ql-editor" dangerouslySetInnerHTML={{ __html: formData.serviceDetails }} />
+) : (
+  <>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
+    <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
+  </>
+)}
 
-              {formData.serviceDetails ? (
+
+              {/* {formData.serviceDetails ? (
                 <div className="overflow-hidden">
                   {showFullText ? (
-                    <p className="text-gray-700 text-sm whitespace-pre-line break-words">
+                    <p className="text-gray-700 text-sm whitespace-pre-line break-words"
+                    
+                    
+                    >
                       {formData.serviceDetails}
                     </p>
                   ) : (
@@ -270,7 +285,7 @@ const CreateRightSidebar = () => {
                   <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
                   <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
                 </>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -301,7 +316,37 @@ const CreateRightSidebar = () => {
                     rows={6}
                   />
                 </div>
-
+   <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+  Service Details <span className="text-red-500">*</span>
+  </label>
+  <ReactQuill
+    theme="snow"
+    value={formData.serviceDetails}
+    onChange={(value) => 
+      setFormData({
+        ...formData,
+        serviceDetails: value
+      })
+    }
+    modules={{
+      toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ],
+    }}
+    formats={[
+      'header',
+      'bold', 'italic', 'underline', 'strike', 'blockquote',
+      'list', 'bullet',
+      'link', 'image'
+    ]}
+    className="h-64 mb-12"
+  />
+</div>
                 {/* Image Upload */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

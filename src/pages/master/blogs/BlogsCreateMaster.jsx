@@ -9,6 +9,8 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const BlogsCreateMaster = () => {
   const [blog, setBlog] = useState({
@@ -164,7 +166,7 @@ const BlogsCreateMaster = () => {
                     )}
                   </div>
 
-                  <div>
+                  {/* <div>
                     <Textarea
                       label="Blog Description"
                       name="blogs_description"
@@ -175,8 +177,39 @@ const BlogsCreateMaster = () => {
                         className: "!text-gray-600",
                       }}
                     />
-                  </div>
+                  </div> */}
 
+                  <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Blog Description <span className="text-red-500">*</span>
+  </label>
+  <ReactQuill
+    theme="snow"
+    value={blog.blogs_description}
+    onChange={(value) => 
+      setBlog({
+        ...blog,
+        blogs_description: value
+      })
+    }
+    modules={{
+      toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ],
+    }}
+    formats={[
+      'header',
+      'bold', 'italic', 'underline', 'strike', 'blockquote',
+      'list', 'bullet',
+      'link', 'image'
+    ]}
+    className="h-64 mb-12"
+  />
+</div>
                   <div>
                     <Input
                       label="Created Date"

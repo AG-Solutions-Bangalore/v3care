@@ -10,6 +10,8 @@ import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Switch } from "@mui/material";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const BlogsEditMaster = () => {
     const { id } = useParams();
@@ -94,7 +96,7 @@ const BlogsEditMaster = () => {
         [name]: value,
       });
     };
-  
+   
     const handleStatusChange = (e) => {
       setBlog({
         ...blog,
@@ -211,7 +213,7 @@ const BlogsEditMaster = () => {
                       )}
                     </div>
   
-                    <div>
+                    {/* <div>
                       <Textarea
                         label="Blog Description"
                         name="blogs_description"
@@ -222,22 +224,41 @@ const BlogsEditMaster = () => {
                           className: "!text-gray-600",
                         }}
                       />
-                    </div>
-  
-                    <div>
-                      <Input
-                        label="Created Date"
-                        type="date"
-                        name="blogs_created_date"
-                        value={blog.blogs_created_date}
-                        onChange={onInputChange}
-                        required
-                        labelProps={{
-                          className: "!text-gray-600",
-                        }}
-                      />
-                    </div>
-  
+                    </div> */}
+  <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Blog Description <span className="text-red-500">*</span>
+  </label>
+  <ReactQuill
+    theme="snow"
+    value={blog.blogs_description}
+   
+    onChange={(value) => 
+      setBlog(prev => ({
+        ...prev,
+        blogs_description: value
+      }))
+    }
+    modules={{
+      toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+      ],
+    }}
+    formats={[
+      'header',
+      'bold', 'italic', 'underline', 'strike', 'blockquote',
+      'list', 'bullet',
+      'link', 'image'
+    ]}
+    className="h-64 mb-12"
+  />
+</div>
+                  
+         
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Blog Image
@@ -258,6 +279,19 @@ const BlogsEditMaster = () => {
                       <p className="mt-1 text-sm text-gray-500">
                         Upload a new image to replace the existing one
                       </p>
+                    </div>
+                    <div >
+                      <Input
+                        label="Created Date"
+                        type="date"
+                        name="blogs_created_date"
+                        value={blog.blogs_created_date}
+                        onChange={onInputChange}
+                        required
+                        labelProps={{
+                          className: "!text-gray-600",
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
