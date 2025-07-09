@@ -49,7 +49,7 @@ const BlogsCreateMaster = () => {
       .replace(/[^a-z0-9 -]/g, "")
       .replace(/\s+/g, "-")
       .replace(/--+/g, "-")
-      .substring(0, 50);
+      .substring(0, 250);
   };
 
   const onInputChange = (e) => {
@@ -184,7 +184,7 @@ const BlogsCreateMaster = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-8">
               {/* Left Column - Form Fields */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div>
                   <Input
                     label="Blog Heading"
@@ -201,7 +201,55 @@ const BlogsCreateMaster = () => {
                     <p className="mt-1 text-sm text-red-500">{headingError}</p>
                   )}
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <Input
+                    label="Sorted"
+                    name="blogs_sorting"
+                    value={blog.blogs_sorting}
+                    onChange={onInputChange}
+                    maxLength={10}
+                    required
+                  />
+                  <div>
+                    <Input
+                      label="Created Date"
+                      type="date"
+                      name="blogs_created_date"
+                      value={blog.blogs_created_date}
+                      onChange={onInputChange}
+                      required
+                      labelProps={{ className: "!text-gray-600" }}
+                    />
+                  </div>
+                </div>
+                <Input
+                  label="Slug"
+                  name="blogs_slug"
+                  value={blog.blogs_slug}
+                  onChange={onInputChange}
+                  readOnly
+                  required
+                />
+                <div>
+                  <Input
+                    label="Meta Title"
+                    name="blogs_meta_title"
+                    value={blog.blogs_meta_title}
+                    onChange={onInputChange}
+                    required
+                  />
+                </div>
+                <Textarea
+                  label="Meta Description"
+                  name="blogs_meta_description"
+                  value={blog.blogs_meta_description}
+                  onChange={onInputChange}
+                  required
+                />
+              </div>
 
+              {/* Right Column - Image Preview + Additional Info */}
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Blog Image <span className="text-red-500">*</span>
@@ -221,73 +269,7 @@ const BlogsCreateMaster = () => {
           hover:file:bg-blue-100"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Blog Description <span className="text-red-500">*</span>
-                  </label>
-                  <div className="border border-gray-300 rounded-md">
-                    <ReactQuill
-                      theme="snow"
-                      value={blog.blogs_description}
-                      onChange={(value) =>
-                        setBlog({ ...blog, blogs_description: value })
-                      }
-                      className="custom-quill-editor"
-                      modules={{
-                        toolbar: [
-                          [{ header: [1, 2, false] }],
-                          [
-                            "bold",
-                            "italic",
-                            "underline",
-                            "strike",
-                            "blockquote",
-                          ],
-                          [{ list: "ordered" }, { list: "bullet" }],
-                          ["link", "image"],
-                          ["clean"],
-                        ],
-                      }}
-                      formats={[
-                        "header",
-                        "bold",
-                        "italic",
-                        "underline",
-                        "strike",
-                        "blockquote",
-                        "list",
-                        "bullet",
-                        "link",
-                        "image",
-                      ]}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Input
-                    label="Meta Title"
-                    name="blogs_meta_title"
-                    value={blog.blogs_meta_title}
-                    onChange={onInputChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <Input
-                    label="Created Date"
-                    type="date"
-                    name="blogs_created_date"
-                    value={blog.blogs_created_date}
-                    onChange={onInputChange}
-                    required
-                    labelProps={{ className: "!text-gray-600" }}
-                  />
-                </div>
-              </div>
-
-              {/* Right Column - Image Preview + Additional Info */}
-              <div className="space-y-6">
-                <div className="w-full p-4 border border-gray-200 rounded-lg">
+                <div className="w-full p-4 border border-gray-200 rounded-lg mt-2">
                   <h3 className="text-lg font-medium text-center mb-4">
                     Blog Image Preview
                   </h3>
@@ -313,34 +295,44 @@ const BlogsCreateMaster = () => {
                     </div>
                   )}
                 </div>
-
-                <div className="space-y-5">
-                  <Input
-                    label="Sorted"
-                    name="blogs_sorting"
-                    value={blog.blogs_sorting}
-                    onChange={onInputChange}
-                    maxLength={10}
-                    required
-                  />
-
-                  <Input
-                    label="Slug"
-                    name="blogs_slug"
-                    value={blog.blogs_slug}
-                    onChange={onInputChange}
-                    readOnly
-                    required
-                  />
-
-                  <Textarea
-                    label="Meta Description"
-                    name="blogs_meta_description"
-                    value={blog.blogs_meta_description}
-                    onChange={onInputChange}
-                    required
-                  />
-                </div>
+              </div>
+            </div>
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Blog Description <span className="text-red-500">*</span>
+              </label>
+              <div className="border border-gray-300 rounded-md h-64 overflow-hidden">
+                {" "}
+                {/* Fixed height */}
+                <ReactQuill
+                  theme="snow"
+                  value={blog.blogs_description}
+                  onChange={(value) =>
+                    setBlog({ ...blog, blogs_description: value })
+                  }
+                  className="h-full"
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      ["bold", "italic", "underline", "strike", "blockquote"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      ["link", "image"],
+                      ["clean"],
+                    ],
+                  }}
+                  formats={[
+                    "header",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "blockquote",
+                    "list",
+                    "bullet",
+                    "link",
+                    "image",
+                  ]}
+                />
               </div>
             </div>
 

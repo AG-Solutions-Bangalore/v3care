@@ -1,4 +1,4 @@
-// testing 
+// testing
 const BASE_URL = "https://agscare.site/crmapi/public";
 const SUPER_SERVICE_IMAGE_URL =
   "https://agscare.site/crmapi/storage/app/public/service_super";
@@ -25,7 +25,7 @@ const RIGHTSIDEBAR_IMAGE =
 const CLIENTS_IMAGE = "https://agscare.site/crmapi/storage/app/public/clients";
 const BLOGS_IMAGE = "https://agscare.site/crmapi/storage/app/public/blog";
 
-// actual url 
+// actual url
 // const BASE_URL = "https://v3care.com/crmapi/public";
 // const SUPER_SERVICE_IMAGE_URL =
 //   "https://v3care.com/crmapi/storage/app/public/service_super";

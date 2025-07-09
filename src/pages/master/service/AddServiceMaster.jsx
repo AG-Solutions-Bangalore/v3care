@@ -127,7 +127,7 @@ const AddServiceMaster = () => {
       .replace(/[^a-z0-9 -]/g, '')
       .replace(/\s+/g, '-')
       .replace(/--+/g, '-')
-      .substring(0, 50);
+      .substring(0, 250);
   };
 
   const onInputChange = (e) => {

@@ -1,6 +1,9 @@
 import { Card, Input, Textarea } from "@material-tailwind/react";
+import { Switch } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL, BLOGS_IMAGE } from "../../../base/BaseUrl";
@@ -9,9 +12,6 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Switch } from "@mui/material";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 const BlogsEditMaster = () => {
   const { id } = useParams();
@@ -26,10 +26,8 @@ const BlogsEditMaster = () => {
     blogs_meta_description: "",
     blogs_slug: "",
   });
-  console.log(blog.blogs_slug, "blogs_slug");
   const [headingError, setHeadingError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const [initialImage, setInitialImage] = useState(null);
   const fileInputRef = useRef(null);
 
   UseEscapeKey();
@@ -42,46 +40,42 @@ const BlogsEditMaster = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-blog-by-id/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = response.data.blogs;
-        setBlog({
-          blogs_heading: data.blogs_heading,
-          blogs_description: data.blogs_description,
-          blogs_created_date: data.blogs_created_date,
-          blogs_image: data.blogs_image,
-          blogs_status: data.blogs_status || "Active",
-          blogs_sorting: data.blogs_sorting,
-          blogs_meta_title: data.blogs_meta_title,
-          blogs_meta_description: data.blogs_meta_description,
-          blogs_slug: data.blogs_slug,
-        });
-
-        if (data.blogs_image) {
-          setImagePreview(
-            `${BLOGS_IMAGE}/${data.blogs_image}?t=${new Date().getTime()}`
-          );
-          setInitialImage(
-            `${BLOGS_IMAGE}/${data.blogs_image}?t=${new Date().getTime()}`
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching blog", error);
-        toast.error("Failed to load blog data");
-      }
-    };
-
     if (id) {
+      const fetchBlog = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `${BASE_URL}/api/panel-fetch-blog-by-id/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = response?.data?.blogs;
+          setBlog({
+            blogs_heading: data.blogs_heading || "",
+            blogs_description: data.blogs_description || "",
+            blogs_created_date: data.blogs_created_date || "",
+            blogs_image: data.blogs_image || "",
+            blogs_status: data.blogs_status || "Active",
+            blogs_sorting: data.blogs_sorting || "",
+            blogs_meta_title: data.blogs_meta_title || "",
+            blogs_meta_description: data.blogs_meta_description || "",
+            blogs_slug: data.blogs_slug || "",
+          });
+
+          if (data?.blogs_image) {
+            setImagePreview(
+              `${BLOGS_IMAGE}/${data.blogs_image}?t=${new Date().getTime()}`
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching blog", error);
+          toast.error("Failed to load blog data");
+        }
+      };
       fetchBlog();
     }
   }, [id]);
@@ -98,14 +92,13 @@ const BlogsEditMaster = () => {
       .replace(/[^a-z0-9 -]/g, "")
       .replace(/\s+/g, "-")
       .replace(/--+/g, "-")
-      .substring(0, 50);
+      .substring(0, 250);
   };
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Validate blogs_heading for slashes
-    if (name === "blogs_heading") {
+    if (name == "blogs_heading") {
       if (value.includes("/") || value.includes("\\")) {
         setHeadingError("Blog heading cannot contain slashes ( / or \\ )");
         return;
@@ -114,6 +107,7 @@ const BlogsEditMaster = () => {
       }
 
       const slug = generateSlug(value);
+      console.log(slug, "slug");
       setBlog((prevBlog) => ({
         ...prevBlog,
         blogs_heading: value,
@@ -122,8 +116,7 @@ const BlogsEditMaster = () => {
       return;
     }
 
-    // Allow only digits in blogs_sorting
-    if (name === "blogs_sorting") {
+    if (name == "blogs_sorting") {
       const onlyDigits = value.replace(/\D/g, "");
       setBlog((prevBlog) => ({
         ...prevBlog,
@@ -156,14 +149,6 @@ const BlogsEditMaster = () => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    setSelectedFile(null);
-    setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
@@ -237,7 +222,7 @@ const BlogsEditMaster = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-8 gap-x-8">
               {/* Left Column - Form Fields */}
               <div>
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <div>
                     <Input
                       label="Blog Heading"
@@ -258,74 +243,37 @@ const BlogsEditMaster = () => {
                       </p>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Blog Image
-                    </label>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      name="blogs_image"
-                      onChange={handleImageChange}
-                      className="block w-full text-sm text-gray-500 border p-1 rounded-md
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-md file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100"
-                    />
-                    <p className="mt-1 text-sm text-gray-500">
-                      Upload a new image to replace the existing one
-                    </p>
-                  </div>
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Blog Description <span className="text-red-500">*</span>
-                    </label>
-                    <div className="h-48 overflow-y-auto border border-gray-300 rounded-md">
-                      <ReactQuill
-                        theme="snow"
-                        value={blog.blogs_description}
-                        onChange={(value) =>
-                          setBlog({
-                            ...blog,
-                            blogs_description: value,
-                          })
-                        }
-                        className="h-full"
-                        modules={{
-                          toolbar: [
-                            [{ header: [1, 2, false] }],
-                            [
-                              "bold",
-                              "italic",
-                              "underline",
-                              "strike",
-                              "blockquote",
-                            ],
-                            [{ list: "ordered" }, { list: "bullet" }],
-                            ["link", "image"],
-                            ["clean"],
-                          ],
-                        }}
-                        formats={[
-                          "header",
-                          "bold",
-                          "italic",
-                          "underline",
-                          "strike",
-                          "blockquote",
-                          "list",
-                          "bullet",
-                          "link",
-                          "image",
-                        ]}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <Input
+                      label="Sorted"
+                      name="blogs_sorting"
+                      value={blog.blogs_sorting}
+                      onChange={onInputChange}
+                      maxLength={10}
+                      required
+                    />
+                    <div>
+                      <Input
+                        label="Created Date"
+                        type="date"
+                        name="blogs_created_date"
+                        value={blog.blogs_created_date}
+                        onChange={onInputChange}
+                        required
+                        labelProps={{ className: "!text-gray-600" }}
                       />
                     </div>
                   </div>
 
+                  <Input
+                    label="Slug"
+                    name="blogs_slug"
+                    value={blog.blogs_slug}
+                    maxLength={250}
+                    readOnly
+                    required
+                  />
                   <div>
                     <Input
                       label="Meta Title"
@@ -335,25 +283,41 @@ const BlogsEditMaster = () => {
                       required
                     />
                   </div>
-
-                  <div>
-                    <Input
-                      label="Created Date"
-                      type="date"
-                      name="blogs_created_date"
-                      value={blog.blogs_created_date}
-                      onChange={onInputChange}
-                      required
-                      labelProps={{ className: "!text-gray-600" }}
-                    />
-                  </div>
+                  <Textarea
+                    label="Meta Description"
+                    name="blogs_meta_description"
+                    value={blog.blogs_meta_description}
+                    onChange={onInputChange}
+                    required
+                  />
                 </div>
               </div>
 
               {/* Right Column - Image Preview */}
-              <div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Blog Image
+                  </label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    name="blogs_image"
+                    onChange={handleImageChange}
+                    className="block w-full text-sm text-gray-500 border p-1 rounded-md
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-md file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-blue-50 file:text-blue-700
+                          hover:file:bg-blue-100"
+                  />
+                  <p className="mt-1 text-sm text-gray-500">
+                    Upload a new image to replace the existing one
+                  </p>
+                </div>
                 <div className="flex flex-col items-center">
-                  <div className="w-full max-w-xs p-4 border border-gray-200 rounded-lg">
+                  <div className="w-full px-4 border border-gray-200 rounded-lg">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-lg font-medium">Image Preview</h3>
                       <div className="flex items-center">
@@ -498,36 +462,49 @@ const BlogsEditMaster = () => {
                     </div>
                   </div>
                 </div>
-                <div className="space-y-5 mt-6">
-                  <Input
-                    label="Sorted"
-                    name="blogs_sorting"
-                    value={blog.blogs_sorting}
-                    onChange={onInputChange}
-                    maxLength={10}
-                    required
-                  />
-
-                  <Input
-                    label="Slug"
-                    name="blogs_slug"
-                    value={blog.blogs_slug}
-                    onChange={onInputChange}
-                    readOnly
-                    required
-                  />
-
-                  <Textarea
-                    label="Meta Description"
-                    name="blogs_meta_description"
-                    value={blog.blogs_meta_description}
-                    onChange={onInputChange}
-                    required
-                  />
-                </div>
               </div>
             </div>
-
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Blog Description <span className="text-red-500">*</span>
+              </label>
+              <div className="border border-gray-300 rounded-md h-64 overflow-hidden">
+                {" "}
+                {/* Fixed height */}
+                <ReactQuill
+                  theme="snow"
+                  value={blog.blogs_description}
+                  onChange={(value) =>
+                    setBlog((prev) => ({
+                      ...prev,
+                      blogs_description: value,
+                    }))
+                  }
+                  className="h-full"
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      ["bold", "italic", "underline", "strike", "blockquote"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      ["link", "image"],
+                      ["clean"],
+                    ],
+                  }}
+                  formats={[
+                    "header",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "blockquote",
+                    "list",
+                    "bullet",
+                    "link",
+                    "image",
+                  ]}
+                />
+              </div>
+            </div>
             <div className="flex justify-center space-x-4 mt-8">
               <ButtonConfigColor
                 type="submit"

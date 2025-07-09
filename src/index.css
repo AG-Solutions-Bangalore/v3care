@@ -44,7 +44,7 @@
   scrollbar-color: #001f3f transparent;
 }
 
-.custom-quill-editor .ql-container {
+/* .custom-quill-editor .ql-container {
   border: none !important;
   min-height: 12rem;
   max-height: 20rem;
@@ -53,4 +53,4 @@
 
 .custom-quill-editor .ql-editor {
   min-height: 12rem;
-}
+} */

@@ -1,33 +1,25 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
+import { Card, Input } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select
+} from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Card, Input } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   BASE_URL,
   NO_IMAGE_URL,
   SERVICE_SUB_IMAGE_URL,
 } from "../../../base/BaseUrl";
-import axios from "axios";
-import { FaArrowLeft } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { MdArrowBack, MdSend } from "react-icons/md";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-const statusOptions = [
-  { value: "Active", label: "Active" },
-  { value: "Inactive", label: "Inactive" },
-];
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ServiceSubEditMaster = () => {
   const { id } = useParams();
@@ -93,7 +85,7 @@ const ServiceSubEditMaster = () => {
       .replace(/[^a-z0-9 -]/g, "")
       .replace(/\s+/g, "-")
       .replace(/--+/g, "-")
-      .substring(0, 50);
+      .substring(0, 250);
   };
 
   const onInputChange = (e) => {
