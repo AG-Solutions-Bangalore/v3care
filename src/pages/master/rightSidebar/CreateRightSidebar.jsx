@@ -57,6 +57,7 @@ const CreateRightSidebar = () => {
     service_sub_id: [],
     serviceDetails_name: "",
     serviceDetails: "",
+    serviceDetails_sort: "",
     serviceDetails_image: null,
   });
 
@@ -116,6 +117,12 @@ const CreateRightSidebar = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "serviceDetails_sort") {
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -159,6 +166,7 @@ const CreateRightSidebar = () => {
     data.append("service_id", formData.service_id.join(","));
     data.append("service_sub_id", formData.service_sub_id.join(","));
     data.append("serviceDetails_name", formData.serviceDetails_name);
+    data.append("serviceDetails_sort", formData.serviceDetails_sort);
     data.append("serviceDetails", formData.serviceDetails);
     if (formData.serviceDetails_image) {
       data.append("serviceDetails_image", formData.serviceDetails_image);
@@ -209,7 +217,7 @@ const CreateRightSidebar = () => {
   const selectedSubServices = subServiceOptions.filter((option) =>
     formData.service_sub_id.includes(option.value)
   );
- 
+
   return (
     <Layout>
       <MasterFilter />
@@ -241,51 +249,18 @@ const CreateRightSidebar = () => {
               ) : (
                 <div className="h-6 bg-gray-200 rounded mb-2 w-3/4"></div>
               )}
-{formData.serviceDetails ? (
-  <div className="ql-editor" dangerouslySetInnerHTML={{ __html: formData.serviceDetails }} />
-) : (
-  <>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
-    <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
-  </>
-)}
-
-
-              {/* {formData.serviceDetails ? (
-                <div className="overflow-hidden">
-                  {showFullText ? (
-                    <p className="text-gray-700 text-sm whitespace-pre-line break-words"
-                    
-                    
-                    >
-                      {formData.serviceDetails}
-                    </p>
-                  ) : (
-                    <p className="text-gray-700  text-sm whitespace-pre-line break-words">
-                      {formData.serviceDetails
-                        .split(" ")
-                        .slice(0, 50)
-                        .join(" ")}
-                      {formData.serviceDetails.split(" ").length > 50 && "..."}
-                    </p>
-                  )}
-                  {formData.serviceDetails.split(" ").length > 50 && (
-                    <span
-                      className="text-blue-600 underline cursor-pointer hover:text-blue-800 mt-1 inline-block"
-                      onClick={() => setShowFullText((prev) => !prev)}
-                    >
-                      {showFullText ? "Read less" : "Read more"}
-                    </span>
-                  )}
-                </div>
+              {formData.serviceDetails ? (
+                <div
+                  className="ql-editor"
+                  dangerouslySetInnerHTML={{ __html: formData.serviceDetails }}
+                />
               ) : (
                 <>
                   <div className="h-4 bg-gray-200 rounded mb-2 w-full"></div>
                   <div className="h-4 bg-gray-200 rounded mb-2 w-5/6"></div>
                   <div className="h-4 bg-gray-200 rounded mb-2 w-4/6"></div>
                 </>
-              )} */}
+              )}
             </div>
           </div>
 
@@ -305,48 +280,44 @@ const CreateRightSidebar = () => {
                   />
                 </div>
 
-                {/* Service Details Description */}
-                <div>
-                  <Textarea
-                    label="Service Details"
-                    name="serviceDetails"
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Service Details <span className="text-red-500">*</span>
+                  </label>
+                  <ReactQuill
+                    theme="snow"
                     value={formData.serviceDetails}
-                    onChange={handleInputChange}
-                    required
-                    rows={6}
+                    onChange={(value) =>
+                      setFormData({
+                        ...formData,
+                        serviceDetails: value,
+                      })
+                    }
+                    modules={{
+                      toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ["bold", "italic", "underline", "strike", "blockquote"],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        ["link", "image"],
+                        ["clean"],
+                      ],
+                    }}
+                    formats={[
+                      "header",
+                      "bold",
+                      "italic",
+                      "underline",
+                      "strike",
+                      "blockquote",
+                      "list",
+                      "bullet",
+                      "link",
+                      "image",
+                    ]}
+                    className="h-64 mb-12"
                   />
                 </div>
-   <div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-  Service Details <span className="text-red-500">*</span>
-  </label>
-  <ReactQuill
-    theme="snow"
-    value={formData.serviceDetails}
-    onChange={(value) => 
-      setFormData({
-        ...formData,
-        serviceDetails: value
-      })
-    }
-    modules={{
-      toolbar: [
-        [{ 'header': [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image'],
-        ['clean']
-      ],
-    }}
-    formats={[
-      'header',
-      'bold', 'italic', 'underline', 'strike', 'blockquote',
-      'list', 'bullet',
-      'link', 'image'
-    ]}
-    className="h-64 mb-12"
-  />
-</div>
                 {/* Image Upload */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -393,7 +364,7 @@ const CreateRightSidebar = () => {
                 {/* Sub Service Dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Sub Service 
+                    Sub Service
                   </label>
                   <Select
                     isMulti
@@ -406,6 +377,17 @@ const CreateRightSidebar = () => {
                     placeholder="Select Sub Service..."
                     menuPlacement="top"
                     closeMenuOnSelect={false}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Service Sort"
+                    type="text"
+                    name="serviceDetails_sort"
+                    value={formData.serviceDetails_sort}
+                    onChange={handleInputChange}
+                    required
+                    maxLength={10}
                   />
                 </div>
                 {/* Buttons */}

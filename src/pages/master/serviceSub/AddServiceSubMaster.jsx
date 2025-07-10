@@ -18,6 +18,7 @@ const AddServiceSubMaster = () => {
     service_id: "",
     service_sub: "",
     service_sub_image: "",
+    service_sub_slug: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -54,18 +55,28 @@ const AddServiceSubMaster = () => {
     fetchServiceSUbData();
     setLoading(false);
   }, []);
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9 -]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/--+/g, "-")
+      .substring(0, 250);
+  };
 
   const onInputChange = (e) => {
-    setServices({
+    const { name, value } = e.target;
+
+    let updated = {
       ...services,
-      [e.target.name]: e.target.value,
-    });
-  };
-  const onServiceChange = (value) => {
-    setServices((prev) => ({
-      ...prev,
-      service_id: value,
-    }));
+      [name]: value,
+    };
+    if (name == "service_sub") {
+      updated.service_sub_slug = generateSlug(value);
+    }
+
+    setServices(updated);
   };
 
   const onSubmit = (e) => {
@@ -74,6 +85,7 @@ const AddServiceSubMaster = () => {
     const data = new FormData();
     data.append("service_id", services?.service_id);
     data.append("service_sub", services.service_sub);
+    data.append("service_sub_slug", services.service_sub_slug);
     data.append("service_sub_image", selectedFile);
 
     axios({
@@ -91,6 +103,7 @@ const AddServiceSubMaster = () => {
           service_id: "",
           service_sub: "",
           service_sub_image: "",
+          service_sub_slug: "",
         });
         navigate(-1);
       } else {
@@ -108,24 +121,6 @@ const AddServiceSubMaster = () => {
       <div className="w-full mt-2 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Service Select Field */}
-            {/* <Select
-                label="Service"
-                name="service_id"
-                required
-                className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
-                onChange={onServiceChange}
-              >
-                {serdata.map((ser) => (
-                  <SelectOption
-                    key={ser.id}
-                    value={ser.id.toString()}
-                    selected={services.service_id === ser.id}
-                  >
-                    {ser.service}
-                  </SelectOption>
-                ))}
-              </Select> */}
             <FormControl>
               <InputLabel id="service-select-label">
                 <span className="text-sm relative bottom-[6px]">
@@ -159,7 +154,18 @@ const AddServiceSubMaster = () => {
                 value={services.service_sub}
                 onChange={onInputChange}
                 required
-                maxLength={180}
+                maxLength={250}
+                className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+              />
+            </div>
+            <div className="form-group">
+              <Input
+                label="Service Slug"
+                type="text"
+                name="service_sub_slug"
+                value={services.service_sub_slug}
+                required
+                readOnly
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
