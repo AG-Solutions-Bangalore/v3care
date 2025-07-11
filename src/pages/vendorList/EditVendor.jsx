@@ -202,7 +202,11 @@ const EditVendor = () => {
       setIsButtonDisabled(true);
 
       const formData = new FormData();
-      Object.keys(vendor).forEach((key) => formData.append(key, vendor[key]));
+      // Object.keys(vendor).forEach((key) => formData.append(key, vendor[key]));
+Object.keys(vendor).forEach((key) => {
+  const value = vendor[key] ?? "";
+  formData.append(key, value);
+});
 
       if (selectedFile1) formData.append("vendor_images", selectedFile1);
       if (selectedFile2) formData.append("vendor_aadhar_front", selectedFile2);
@@ -760,7 +764,6 @@ const EditVendor = () => {
                 type="edit"
                 buttontype="submit"
                 label="Update"
-                disabled={isButtonDisabled}
                 loading={loading}
               />
 

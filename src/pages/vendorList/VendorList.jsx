@@ -99,6 +99,8 @@ const VendorList = () => {
           toast.error("Mobile No Duplicate entry");
         } else if (res.data.code == "403") {
           toast.error("Email Duplicate Entry");
+        } else {
+          toast.error(res.data.msg || "Duplicate Entry");
         }
       }
     } catch (error) {
