@@ -202,7 +202,7 @@ const ServiceEditMaster = () => {
   };
 
   const addFaqRow = () => {
-    if (services.faq_data.length < 5) {
+    if (services.faq_data.length < 20) {
       setService((prev) => ({
         ...prev,
         faq_data: [
@@ -793,9 +793,9 @@ const ServiceEditMaster = () => {
                     <button
                       type="button"
                       onClick={addFaqRow}
-                      disabled={services.faq_data.length === 5}
+                      disabled={services.faq_data.length === 20}
                       className={`mt-4 px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                        services.faq_data.length === 5
+                        services.faq_data.length === 20
                           ? "bg-gray-400 text-white cursor-not-allowed"
                           : "bg-blue-500 text-white hover:bg-blue-600"
                       }`}
