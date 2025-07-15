@@ -21,6 +21,11 @@ import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
+const statusOptions = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+];
+
 const ServiceSubEditMaster = () => {
   const { id } = useParams();
   const [services, setService] = useState({
