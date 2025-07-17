@@ -375,7 +375,7 @@ const TodayBooking = () => {
           return (
             <div className="w-48 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
-                <tbody className="flex flex-wrap h-[40px] border border-black w-48">
+                <tbody className="flex flex-wrap h-[40px]  w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
                       {activeAssignments

@@ -83,7 +83,7 @@ const ViewBooking = () => {
     fetchBookingData();
   }, [id]);
 
-  const notifyUpdate = async () => {
+  const notifyUpdate = async (e) => {
     e.preventDefault();
     let vendor_service =
       booking.order_custom_price <= "1"
@@ -211,28 +211,24 @@ const ViewBooking = () => {
                 <strong>Slot Time:</strong> {booking.order_time}
               </Typography>
               <Typography className="text-black">
-                <strong>Service:</strong>{" "}
-                {booking.order_service}
+                <strong>Service:</strong> {booking.order_service}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
               </Typography>
             </div>
             <div className="space-y-2">
-           
               {booking.order_service == "Custom" && (
                 <Typography className="text-black">
-                <strong>Custom:</strong>{" "}
-                {booking.order_custom }
-              </Typography>
+                  <strong>Custom:</strong> {booking.order_custom}
+                </Typography>
               )}
               {booking.order_service !== "Custom" && (
                 <Typography className="text-black">
-                <strong>Sub Service:</strong>{" "}
-                {booking.order_service_sub }
-              </Typography>
+                  <strong>Sub Service:</strong> {booking.order_service_sub}
+                </Typography>
               )}
-              
+
               <Typography className="text-black">
                 <strong>Booking Amount:</strong> {booking?.order_amount}
               </Typography>
@@ -248,9 +244,9 @@ const ViewBooking = () => {
               </Typography>
               {/* add condition  */}
               {booking.order_vendor_id !== null && (
-              <Typography className="text-black">
-                <strong>Vendor:</strong> {vendor.vendor_company}
-              </Typography>
+                <Typography className="text-black">
+                  <strong>Vendor:</strong> {vendor.vendor_company}
+                </Typography>
               )}
             </div>
           </div>
