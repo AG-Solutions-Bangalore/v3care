@@ -1,27 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { BiSort } from "react-icons/bi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   BASE_URL,
   NO_IMAGE_URL,
-  SERVICE_IMAGE_URL,
   SUPER_SERVICE_IMAGE_URL,
 } from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import MUIDataTable from "mui-datatables";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const SuperServiceMaster = () => {
   const [serviceData, setServiceData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const {  userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -43,28 +46,28 @@ const SuperServiceMaster = () => {
     }
   }, [location]);
   UseEscapeKey();
+  const fetchServiceData = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-super-service-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setServiceData(response.data?.servicesuper);
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchServiceData = async () => {
-      try {
-        setLoading(true);
-
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-super-service-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setServiceData(response.data?.servicesuper);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchServiceData();
   }, []);
 
@@ -81,6 +84,42 @@ const SuperServiceMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/super-service-view/${id}`);
   };
+
+  const handleOpenDialog = ({ e, id }) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setSelectedService({ id });
+    setIsDialogOpen(true);
+  };
+  const handleUpdateSort = async ({ id, newSortNumber }) => {
+    try {
+      console.log("Update sort:", id, newSortNumber);
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-super-service-sort/${id}`,
+        { newSortNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status == 200) {
+        fetchServiceData();
+        toast.success(res.data?.msg || "Sort order updated successfully");
+      } else {
+        toast.error(res.data?.msg || "Error updating sort order");
+      }
+    } catch (error) {
+      console.error("Sort update error:", error);
+      toast.error(
+        error?.response?.data?.msg ||
+          "Something went wrong while updating sort order"
+      );
+    }
+  };
+
   const columns = [
     {
       name: "id",
@@ -90,7 +129,7 @@ const SuperServiceMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <>
+            <div className="flex space-x-2">
               {userType !== "4" && (
                 <div
                   onClick={(e) => handleEdit(e, id)}
@@ -101,7 +140,14 @@ const SuperServiceMaster = () => {
                   </SquarePen>
                 </div>
               )}
-            </>
+              <div
+                onClick={(e) => handleOpenDialog({ e, id })}
+                className="flex items-center space-x-2"
+                title="Edit Super Service Order"
+              >
+                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+              </div>
+            </div>
           );
         },
       },
@@ -239,6 +285,12 @@ const SuperServiceMaster = () => {
           />
         </div>
       )}
+      <UpdateSuperServiceSort
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleUpdateSort}
+        data={selectedService}
+      />
     </Layout>
   );
 };

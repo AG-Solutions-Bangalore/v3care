@@ -22,10 +22,14 @@ import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import MasterFilter from "../../../components/MasterFilter";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import { BiSort } from "react-icons/bi";
 
 const RightSidebarList = () => {
   const [rightSidebarListData, setRightSidebarListData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const location = useLocation();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -48,27 +52,27 @@ const RightSidebarList = () => {
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
-  useEffect(() => {
-    const fetchrightSidebarListData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service-details-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const fetchrightSidebarListData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-service-details-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        setRightSidebarListData(response.data?.servicedetails);
-      } catch (error) {
-        console.error("Error fetching right sidebar list data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setRightSidebarListData(response.data?.servicedetails);
+    } catch (error) {
+      console.error("Error fetching right sidebar list data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchrightSidebarListData();
   }, []);
 
@@ -93,13 +97,22 @@ const RightSidebarList = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <div
-              onClick={(e) => handleEdit(e, id)}
-              className="flex items-center space-x-2"
-            >
-              <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                <title>Edit Right Sidebar</title>
-              </SquarePen>
+            <div className="flex space-x-2">
+              <div
+                onClick={(e) => handleEdit(e, id)}
+                className="flex items-center space-x-2"
+              >
+                <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                  <title>Edit Right Sidebar</title>
+                </SquarePen>
+              </div>
+              <div
+                onClick={(e) => handleOpenDialog({ e, id })}
+                className="flex items-center space-x-2"
+                title="Edit  Right sidebar Order"
+              >
+                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+              </div>
             </div>
           );
         },
@@ -167,6 +180,41 @@ const RightSidebarList = () => {
       },
     },
   ];
+
+  const handleOpenDialog = ({ e, id }) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setSelectedService({ id });
+    setIsDialogOpen(true);
+  };
+  const handleUpdateSort = async ({ id, newSortNumber }) => {
+    try {
+      console.log("Update sort:", id, newSortNumber);
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-service-details-sort/${id}`,
+        { newSortNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status == 200) {
+        fetchrightSidebarListData();
+        toast.success(res.data?.msg || "Sort order updated successfully");
+      } else {
+        toast.error(res.data?.msg || "Error updating sort order");
+      }
+    } catch (error) {
+      console.error("Sort update error:", error);
+      toast.error(
+        error?.response?.data?.msg ||
+          "Something went wrong while updating sort order"
+      );
+    }
+  };
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -259,6 +307,12 @@ const RightSidebarList = () => {
           />
         </div>
       )}
+      <UpdateSuperServiceSort
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleUpdateSort}
+        data={selectedService}
+      />
     </Layout>
   );
 };
