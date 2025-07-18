@@ -256,10 +256,10 @@ const AddVendor = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(test, "test");
-if (!test || test.length === 0) {
-    toast.error("Please select at least one service.");
-    return;
-  }
+    if (!test || test.length === 0) {
+      toast.error("Please select at least one service.");
+      return;
+    }
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
@@ -347,28 +347,43 @@ if (!test || test.length === 0) {
   // };
   const CheckPincode = async (e, selectedValue) => {
     const pincode = e.target.value;
+
     if (pincode.length === 6) {
       setLoadingPin(true);
       setPinError("");
 
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch(
-          "https://api.v3care.in/api/external/pin/" + pincode
+          `${BASE_URL}/api/panel-send-vendor-pincode/${pincode}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        if (!res.ok) {
-          throw new Error("Failed to fetch pincode info");
-        }
 
         const response = await res.json();
 
         const tempUsers = [...users1];
-        tempUsers[selectedValue].vendor_branch_city = response.city;
-        tempUsers[selectedValue].vendor_branch_district = response.district;
-        tempUsers[selectedValue].vendor_branch_state = response.state;
+        tempUsers[selectedValue].vendor_branch_city = response?.city || "";
+        tempUsers[selectedValue].vendor_branch_district =
+          response?.district || "";
+        tempUsers[selectedValue].vendor_branch_state = response?.state || "";
         setUsers1(tempUsers);
-
-        if (response.areas !== null) {
-          setLocation(response.areas);
+        console.log(response, "response");
+        if (response?.areas !== null) {
+          setLocation(response?.areas || []);
+        } else {
+          toast.error(response.msg || "unable to fetch");
+        }
+        if (response.code == 400) {
+          setPinError(
+            response.msg || "Unable to fetch location. Please try again."
+          );
+          toast.error(response.msg || "unable to fetch");
         }
       } catch (error) {
         console.error("Error fetching pincode:", error);
@@ -378,6 +393,7 @@ if (!test || test.length === 0) {
       }
     }
   };
+
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
@@ -736,8 +752,8 @@ if (!test || test.length === 0) {
                   name="vendor_branch_location"
                   required
                   onChange={(e) => onChange1(e, index)}
-                  value={user.vendor_branch_location}
-                  options={location.map((loc) => ({ value: loc, label: loc }))}
+                  value={user?.vendor_branch_location}
+                  options={location?.map((loc) => ({ value: loc, label: loc }))}
                 />
 
                 <CustomInput
