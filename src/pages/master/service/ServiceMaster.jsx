@@ -23,11 +23,15 @@ import {
   Select as SelectMaterial,
   TextField,
 } from "@mui/material";
+import { BiSort } from "react-icons/bi";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
 const ServiceMaster = () => {
   const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const location = useLocation();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -50,33 +54,33 @@ const ServiceMaster = () => {
     }
   }, [location]);
   UseEscapeKey();
-  useEffect(() => {
-    const fetchServiceData = async () => {
-      try {
-        setLoading(true);
+  const fetchServiceData = async () => {
+    try {
+      setLoading(true);
 
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setServiceData(response.data?.service);
-        setFilteredData(response.data?.service || []);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
+      if (!isPanelUp) {
+        navigate("/maintenance");
+        return;
       }
-    };
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-service-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setServiceData(response.data?.service);
+      setFilteredData(response.data?.service || []);
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchServiceData();
   }, []);
 
@@ -103,7 +107,12 @@ const ServiceMaster = () => {
       );
     }
   };
-
+  const handleOpenDialog = ({ e, id }) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setSelectedService({ id });
+    setIsDialogOpen(true);
+  };
   const columns = [
     ...(userType === "6" || userType === "8"
       ? [
@@ -122,6 +131,13 @@ const ServiceMaster = () => {
                     <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
                       <title>Edit Service</title>
                     </SquarePen>
+                    <div
+                      onClick={(e) => handleOpenDialog({ e, id })}
+                      className="flex items-center space-x-2"
+                      title="Edit  Service Order"
+                    >
+                      <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+                    </div>
                   </div>
                 );
               },
@@ -159,7 +175,7 @@ const ServiceMaster = () => {
         sort: true,
       },
     },
-   
+
     {
       name: "service_show_website",
       label: "Service Show Website",
@@ -331,6 +347,34 @@ const ServiceMaster = () => {
       );
     },
   };
+  const handleUpdateSort = async ({ id, newSortNumber }) => {
+    try {
+      console.log("Update sort:", id, newSortNumber);
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-service-sort/${id}`,
+        { newSortNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status == 200) {
+        fetchServiceData();
+        toast.success(res.data?.msg || "Sort order updated successfully");
+      } else {
+        toast.error(res.data?.msg || "Error updating sort order");
+      }
+    } catch (error) {
+      console.error("Sort update error:", error);
+      toast.error(
+        error?.response?.data?.msg ||
+          "Something went wrong while updating sort order"
+      );
+    }
+  };
   return (
     <Layout>
       <MasterFilter />
@@ -346,6 +390,12 @@ const ServiceMaster = () => {
           />
         </div>
       )}
+      <UpdateSuperServiceSort
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleUpdateSort}
+        data={selectedService}
+      />
     </Layout>
   );
 };
