@@ -596,9 +596,9 @@ const AllBooking = () => {
     print: false,
 
     onRowClick: (rowData, rowMeta, e) => {
-      const id = allBookingData[rowMeta.dataIndex].id;
+      const id = filteredBookingData[rowMeta.dataIndex].id;
 
-      handleView(e, id)();
+      handleView(e, id);
     },
     count: allBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
