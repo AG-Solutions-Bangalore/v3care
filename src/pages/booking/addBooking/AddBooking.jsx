@@ -66,11 +66,14 @@ const AddBooking = () => {
   UseEscapeKey();
   const [query, setQuery] = useState("");
   const [query1, setQuery1] = useState("");
+  const [localityBook, setLocalityBook] = useState("");
+  const [localitySubBook, setLocalitySubBook] = useState("");
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
   var yyyy = today.getFullYear();
-
+  console.log('lcocality',localityBook)
+  console.log('sublcocality',localitySubBook)
   today = mm + "/" + dd + "/" + yyyy;
   var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
@@ -93,6 +96,8 @@ const AddBooking = () => {
     order_custom_price: "",
     order_discount: "",
     order_amount: "",
+    order_locality: "",
+    order_sub_locality: "",
 
     order_flat: "",
     order_building: "",
@@ -371,19 +376,30 @@ const AddBooking = () => {
     const query = addressObject.formatted_address;
     const url = addressObject.url;
     updateQuery(query);
-
-    var addressComponents = addressObject.address_components;
-    var city = addressComponents.find((component) =>
-      component.types.includes("locality")
-    );
-
-    const latLng = {
-      lat: addressObject?.geometry?.location?.lat(),
-      lng: addressObject?.geometry?.location?.lng(),
-    };
-
+    let subLocality = '';
+    let locality = '';
+  
+    console.log("adddress",addressObject.address_components)
+    addressObject.address_components.forEach(component => {
+      if (component.types.includes('sublocality_level_1')) {
+        subLocality = component.short_name;
+      }
+      if (component.types.includes('locality')) {
+        locality = component.short_name;
+      }
+    });
+    
+  
+    
+    // const latLng = {
+    //   lat: addressObject?.geometry?.location?.lat(),
+    //   lng: addressObject?.geometry?.location?.lng(),
+    // };
+    setLocalitySubBook(subLocality)
+    setLocalityBook(locality)
     setQuery1(url);
-    setSelectedLocation(latLng);
+    // setSelectedLocation(latLng);
+
   };
 
   useEffect(() => {
@@ -425,6 +441,8 @@ const AddBooking = () => {
       order_km: booking.order_km,
       order_time: booking.order_time,
       order_remarks: booking.order_remarks,
+      order_sub_locality: localitySubBook,
+      order_locality: localityBook,
       order_comment: booking.order_comment,
       branch_id:
         userType == 6 || userType == 8
