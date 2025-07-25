@@ -11,6 +11,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import { BiSort } from "react-icons/bi";
 
 const BlogsMaster = () => {
   const [blogsData, setBlogsData] = useState(null);
@@ -22,6 +24,9 @@ const BlogsMaster = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState(null);
+
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -37,28 +42,29 @@ const BlogsMaster = () => {
     }
   }, [location]);
   UseEscapeKey();
+
+  const fetchClientData = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-blog-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBlogsData(response.data?.blogs);
+    } catch (error) {
+      console.error("Error fetching blogs data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchClientData = async () => {
-      try {
-        setLoading(true);
-
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-blog-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setBlogsData(response.data?.blogs);
-      } catch (error) {
-        console.error("Error fetching blogs data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchClientData();
   }, []);
 
@@ -69,7 +75,12 @@ const BlogsMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/blogs-edit/${id}`);
   };
-
+  const handleOpenDialog = ({ e, id }) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setSelectedBlog({ id });
+    setIsDialogOpen(true);
+  };
   const columns = [
     {
       name: "id",
@@ -79,7 +90,7 @@ const BlogsMaster = () => {
         sort: false,
         customBodyRender: (id) => {
           return (
-            <>
+            <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <div
                   onClick={(e) => handleEdit(e, id)}
@@ -90,7 +101,15 @@ const BlogsMaster = () => {
                   </SquarePen>
                 </div>
               )}
-            </>
+
+              <div
+                onClick={(e) => handleOpenDialog({ e, id })}
+                className="flex items-center space-x-2"
+                title="Edit  Blog Order"
+              >
+                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+              </div>
+            </div>
           );
         },
       },
@@ -208,6 +227,33 @@ const BlogsMaster = () => {
       );
     },
   };
+  const handleUpdateSort = async ({ id, newSortNumber }) => {
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-blog-sort/${id}`,
+        { newSortNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status == 200) {
+        fetchClientData();
+        toast.success(res.data?.msg || "Sort order updated successfully");
+      } else {
+        toast.error(res.data?.msg || "Error updating sort order");
+      }
+    } catch (error) {
+      console.error("Sort update error:", error);
+      toast.error(
+        error?.response?.data?.msg ||
+          "Something went wrong while updating sort order"
+      );
+    }
+  };
   return (
     <Layout>
       <MasterFilter />
@@ -223,6 +269,12 @@ const BlogsMaster = () => {
           />
         </div>
       )}
+      <UpdateSuperServiceSort
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleUpdateSort}
+        data={selectedBlog}
+      />
     </Layout>
   );
 };

@@ -124,13 +124,12 @@ const ServiceMaster = () => {
               sort: false,
               customBodyRender: (id) => {
                 return (
-                  <div
-                    onClick={(e) => handleEdit(e, id)}
-                    className="flex items-center space-x-2"
-                  >
-                    <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
-                      <title>Edit Service</title>
-                    </SquarePen>
+                  <div className="flex items-center space-x-2">
+                    <div onClick={(e) => handleEdit(e, id)}>
+                      <SquarePen className="h-5 w-5 cursor-pointer hover:text-blue-700">
+                        <title>Edit Service</title>
+                      </SquarePen>
+                    </div>
                     <div
                       onClick={(e) => handleOpenDialog({ e, id })}
                       className="flex items-center space-x-2"
