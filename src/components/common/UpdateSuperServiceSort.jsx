@@ -21,10 +21,15 @@ const UpdateSuperServiceSort = ({ open, onClose, onSubmit, data }) => {
     if (!newSortNumber) return;
     onSubmit({ id: data.id, newSortNumber });
     onClose();
+    setNewSortNumber("");
+  };
+  const handleClose = () => {
+    setNewSortNumber("");
+    onClose();
   };
 
   return (
-    <Dialog open={open} handler={onClose}>
+    <Dialog open={open} handler={handleClose}>
       <DialogHeader>Update Sort Order</DialogHeader>
       <DialogBody>
         <div className="space-y-4">
