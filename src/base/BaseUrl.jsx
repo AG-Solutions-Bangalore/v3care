@@ -26,6 +26,7 @@
 // const BLOGS_IMAGE = "https://agscare.site/crmapi/storage/app/public/blog";
 
 // actual url
+
 const BASE_URL = "https://v3care.com/crmapi/public";
 const SUPER_SERVICE_IMAGE_URL =
   "https://v3care.com/crmapi/storage/app/public/service_super";
