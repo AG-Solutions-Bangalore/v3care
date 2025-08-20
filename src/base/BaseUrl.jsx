@@ -42,7 +42,7 @@
 // };
 
 // actual url
-const BASE_URL = "https://v3care.com/crmapi/public";
+const BASE_URL = "https://v3care.in/crmapi/public";
 const SUPER_SERVICE_IMAGE_URL =
   "https://v3care.in/crmapi/storage/app/public/service_super";
 const SERVICE_IMAGE_URL =
