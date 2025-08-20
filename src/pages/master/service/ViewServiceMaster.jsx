@@ -12,6 +12,10 @@ import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonCon
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import Layout from "../../../layout/Layout";
+import { BiSort } from "react-icons/bi";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import { toast } from "react-toastify";
+
 const getServiceLabel = (val) => {
   switch (val) {
     case 1:
@@ -67,15 +71,16 @@ const ViewServiceMaster = () => {
   const [error, setError] = useState(null);
   const containerRef = useRef();
   const { id } = useParams();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedSubService, setSelectedSubService] = useState(null);
 
-  useEffect(() => {
+
     const fetchBookingData = async () => {
       try {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-service-view-by-id/${id}`,
-
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -91,34 +96,72 @@ const ViewServiceMaster = () => {
         setLoading(false);
       }
     };
-
+    useEffect(() => {
     fetchBookingData();
   }, [id]);
+
+  const handleOpenDialog = (e, subServiceId) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setSelectedSubService({ id: subServiceId });
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateSubServiceSort = async ({ id, newSortNumber }) => {
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-service-sub-sort/${id}`,
+        { newSortNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.data.code === 200) {
+
+        await fetchBookingData()
+        toast.success(res.data?.msg || "Sort order updated successfully");
+      } else {
+        toast.error(res.data?.msg || "Error updating sort order");
+      }
+    } catch (error) {
+      console.error("Sort update error:", error);
+      toast.error(
+        error?.response?.data?.msg ||
+          "Something went wrong while updating sort order"
+      );
+    } finally {
+      setIsDialogOpen(false);
+    }
+  };
 
   const handlePrintPdf = useReactToPrint({
     content: () => containerRef.current,
     documentTitle: "Service_Report",
     pageStyle: `
-            @page {
-              size: A4 portrait;
-              margin: 5mm;
-            }
-            @media print {
-              body {
-                border: 0px solid #000;
-                font-size: 12px; 
-                margin: 0mm;
-                padding: 0mm;
-                min-height: 100vh;
-              }
-              table {
-                font-size: 11px;
-              }
-              .print-hide {
-                display: none;
-              }
-            }
-          `,
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+      }
+      @media print {
+        body {
+          border: 0px solid #000;
+          font-size: 12px; 
+          margin: 0mm;
+          padding: 0mm;
+          min-height: 100vh;
+        }
+        table {
+          font-size: 11px;
+        }
+        .print-hide {
+          display: none;
+        }
+      }
+    `,
   });
 
   if (loading) {
@@ -183,7 +226,7 @@ const ViewServiceMaster = () => {
               </span>
             </div>
             {/* Main Service Block */}
-            <div className="border border-gray-300 rounded-md bg-white p-4 grid grid-cols-3 gap-4 items-center">
+            <div className="border border-gray-300 rounded-md bg-white p-4 grid  grid-rows-3 md:grid-cols-3 gap-4 items-center">
               {/* Service Image */}
               <div className="flex justify-center">
                 <img
@@ -207,8 +250,14 @@ const ViewServiceMaster = () => {
                         <th className="border-b border-r border-gray-400 bg-gray-100 text-gray-900 font-bold text-center py-2">
                           Service Sub
                         </th>
-                        <th className="border-b border-gray-400 bg-gray-100 text-gray-900 font-bold text-center py-2">
+                        <th className="border-b border-r border-gray-400 bg-gray-100 text-gray-900 font-bold text-center py-2">
+                          Sort
+                        </th>
+                        <th className="border-b border-r border-gray-400 bg-gray-100 text-gray-900 font-bold text-center py-2">
                           Status
+                        </th>
+                        <th className="border-b border-gray-400 bg-gray-100 text-gray-900 font-bold text-center py-2">
+                          Action
                         </th>
                       </tr>
                     </thead>
@@ -229,18 +278,30 @@ const ViewServiceMaster = () => {
                               />
                             </td>
 
-                            <td className="border-b border-r border-gray-400 bg-white  text-black font-medium p-2">
+                            <td className="border-b border-r border-gray-400 bg-white text-black font-medium p-2">
                               {item.service_sub}
                             </td>
-                            <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
+                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
+                              {item.service_sub_sort}
+                            </td>
+                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
                               {item.service_sub_status}
+                            </td>
+                            <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
+                              <div
+                                onClick={(e) => handleOpenDialog(e, item.id)}
+                                className="flex items-center justify-center"
+                                title="Edit Service Sub Order"
+                              >
+                                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+                              </div>
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
                           <td
-                            colSpan={3}
+                            colSpan={5}
                             className="text-center text-gray-500 py-3 border-b border-gray-300"
                           >
                             No service sub data
@@ -255,6 +316,13 @@ const ViewServiceMaster = () => {
           </div>
         </div>
       </div>
+
+      <UpdateSuperServiceSort
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={handleUpdateSubServiceSort}
+        data={selectedSubService}
+      />
     </Layout>
   );
 };
