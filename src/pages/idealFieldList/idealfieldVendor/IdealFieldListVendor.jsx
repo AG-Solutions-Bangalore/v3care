@@ -8,9 +8,19 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
-  Button
+  Button,
 } from "@material-tailwind/react";
-import { FaCalendarAlt, FaUserCheck, FaUserClock, FaUsers, FaMapMarkerAlt, FaPhone, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaUserCheck,
+  FaUserClock,
+  FaUsers,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaTimes,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import axios from "axios";
 import { BASE_URL } from "../../../base/BaseUrl";
 import Layout from "../../../layout/Layout";
@@ -18,23 +28,25 @@ import IdealFieldListFilter from "../../../components/IdealFieldListFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-
 const IdealFieldListVendor = () => {
   UseEscapeKey();
   const today = new Date();
   const [idealData, setIdealData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(today.getDate()).padStart(2, "0")}`
   );
   const [loading, setLoading] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [activeTab, setActiveTab] = useState("all");
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [orderData, setOrderData] = useState([]);
-  
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
@@ -53,9 +65,22 @@ const IdealFieldListVendor = () => {
           }
         );
 
-        const sortedData = response.data?.stock.sort((a, b) =>
-          a.branch_name.localeCompare(b.branch_name)
-        );
+        // const sortedData = response.data?.stock.sort((a, b) =>
+        //   a.branch_name.localeCompare(b.branch_name)
+        // );
+        // setIdealData(sortedData);
+        const rawData = Array.isArray(response?.data?.stock)
+          ? response.data.stock
+          : [];
+
+        const filteredData = rawData.filter((item) => item?.branch_name);
+
+        const sortedData = filteredData.sort((a, b) => {
+          const nameA = a?.branch_name || "";
+          const nameB = b?.branch_name || "";
+          return nameA.localeCompare(nameB);
+        });
+
         setIdealData(sortedData);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
@@ -66,11 +91,15 @@ const IdealFieldListVendor = () => {
     fetchIdealData();
   }, [selectedDate]);
 
-  const uniqueBranches = Array.from(new Set(idealData.map(item => item.branch_name)));
-
+  const uniqueBranches = Array.from(
+    new Set(idealData.map((item) => item.branch_name))
+  );
+  console.log(uniqueBranches, "uniqueBranches");
   const filteredData = idealData
-    .filter(data => selectedBranch === "ALL" || data.branch_name === selectedBranch)
-    .filter(data => {
+    .filter(
+      (data) => selectedBranch === "ALL" || data.branch_name === selectedBranch
+    )
+    .filter((data) => {
       if (activeTab === "all") return true;
       if (activeTab === "assigned") return data.o_id !== "0";
       if (activeTab === "unassigned") return data.o_id === "0";
@@ -78,14 +107,14 @@ const IdealFieldListVendor = () => {
     });
 
   const getCardStyle = (o_id) => {
-    return o_id !== "0" 
+    return o_id !== "0"
       ? {
           bg: "bg-green-100",
           border: "border-green-100",
           accent: "bg-green-200",
           textPrimary: "text-black/70",
           textSecondary: "text-black/80",
-          shadow: "shadow-green-50"
+          shadow: "shadow-green-50",
         }
       : {
           bg: "bg-red-100",
@@ -93,7 +122,7 @@ const IdealFieldListVendor = () => {
           accent: "bg-red-200",
           textPrimary: "text-black/70",
           textSecondary: "text-black/80",
-          shadow: "shadow-red-50"
+          shadow: "shadow-red-50",
         };
   };
 
@@ -101,35 +130,34 @@ const IdealFieldListVendor = () => {
     setSelectedUser(data);
     setIsModalOpen(true);
     setOrderData([]);
-    
-    
+
     const now = new Date();
     setCurrentMonth(now.getMonth());
     setCurrentYear(now.getFullYear());
-    
-   
+
     fetchMonthData(now.getMonth(), now.getFullYear(), data.vendor_id);
   };
 
   const fetchMonthData = async (month, year, userId) => {
-    console.log("userid",userId)
+    console.log("userid", userId);
     try {
       setModalLoading(true);
       const token = localStorage.getItem("token");
-      
 
       const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
-      
+
       const fromDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-      const toDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay.getDate()).padStart(2, "0")}`;
-      
+      const toDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+        lastDay.getDate()
+      ).padStart(2, "0")}`;
+
       const response = await axios.post(
         `${BASE_URL}/api/panel-fetch-vendor-ideal-field-details`,
         {
           from_date: fromDate,
           to_date: toDate,
-          user_id: userId
+          user_id: userId,
         },
         {
           headers: {
@@ -149,12 +177,12 @@ const IdealFieldListVendor = () => {
   const handlePrevMonth = () => {
     let newMonth = currentMonth - 1;
     let newYear = currentYear;
-    
+
     if (newMonth < 0) {
       newMonth = 11;
       newYear = currentYear - 1;
     }
-    
+
     setCurrentMonth(newMonth);
     setCurrentYear(newYear);
     fetchMonthData(newMonth, newYear, selectedUser.vendor_id);
@@ -163,12 +191,12 @@ const IdealFieldListVendor = () => {
   const handleNextMonth = () => {
     let newMonth = currentMonth + 1;
     let newYear = currentYear;
-    
+
     if (newMonth > 11) {
       newMonth = 0;
       newYear = currentYear + 1;
     }
-    
+
     setCurrentMonth(newMonth);
     setCurrentYear(newYear);
     fetchMonthData(newMonth, newYear, selectedUser.vendor_id);
@@ -181,50 +209,65 @@ const IdealFieldListVendor = () => {
   };
 
   const renderCustomCalendar = () => {
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-    
 
-    const serviceDates = orderData.map(order => order.order_service_date);
-    
+    const serviceDates = orderData.map((order) => order.order_service_date);
 
     const serviceCount = serviceDates.length;
     const nonServiceCount = daysInMonth - serviceCount;
-    
 
     const days = [];
-    
-   
+
     for (let i = 0; i < firstDayOfMonth; i++) {
       days.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
     }
-    
-   
+
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
       const hasService = serviceDates.includes(dateStr);
-      
+
       days.push(
-        <div 
+        <div
           key={`day-${day}`}
           className={`h-10 w-10 flex items-center justify-center rounded-full text-sm
-            ${hasService ? 'bg-green-100 text-green-800 border border-green-300' : 'text-gray-600'}`}
+            ${
+              hasService
+                ? "bg-green-100 text-green-800 border border-green-300"
+                : "text-gray-600"
+            }`}
         >
           {day}
         </div>
       );
     }
-    
-    // comaparision of the date 
+
+    // comaparision of the date
     const now = new Date();
     const currentMonthNow = now.getMonth();
     const currentYearNow = now.getFullYear();
-    const isCurrentMonth = currentYear === currentYearNow && currentMonth === currentMonthNow;
+    const isCurrentMonth =
+      currentYear === currentYearNow && currentMonth === currentMonthNow;
 
     return (
       <div className="space-y-4">
-
         <div className="flex items-center justify-between">
           <Button
             variant="text"
@@ -234,11 +277,11 @@ const IdealFieldListVendor = () => {
           >
             <FaChevronLeft size={14} />
           </Button>
-          
+
           <Typography variant="h6" className="font-medium">
             {monthNames[currentMonth]} {currentYear}
           </Typography>
-          
+
           <Button
             variant="text"
             size="sm"
@@ -249,20 +292,15 @@ const IdealFieldListVendor = () => {
             <FaChevronRight size={14} />
           </Button>
         </div>
-        
-      
+
         <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div key={day}>{day}</div>
           ))}
         </div>
-        
-     
-        <div className="grid grid-cols-7 gap-1 mb-4">
-          {days}
-        </div>
-        
-       
+
+        <div className="grid grid-cols-7 gap-1 mb-4">{days}</div>
+
         {/* <div className="flex items-center justify-center gap-4 mt-4">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -287,16 +325,18 @@ const IdealFieldListVendor = () => {
     const isAssigned = data.o_id !== "0";
 
     return (
-      <div 
-        key={data.mobile} 
+      <div
+        key={data.mobile}
         className={`${cardStyle.bg} ${cardStyle.border} border rounded-lg p-2 ${cardStyle.shadow} shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 relative overflow-hidden cursor-pointer`}
         onClick={() => handleCardClick(data)}
       >
         <div className="absolute top-1 right-1 p-1 bg-white rounded-full shadow-md">
           <FaCalendarAlt className={`text-blue-800 text-[10px]`} />
         </div>
-        
-        <div className={`text-sm font-medium ${cardStyle.textPrimary} mb-1 truncate`}>
+
+        <div
+          className={`text-sm font-medium ${cardStyle.textPrimary} mb-1 truncate`}
+        >
           {firstName}
         </div>
 
@@ -307,8 +347,12 @@ const IdealFieldListVendor = () => {
           </div>
         </div>
 
-        <div className={`text-xs font-medium ${isAssigned ? 'text-green-700' : 'text-orange-700'}`}>
-          {isAssigned ? '' : ''}
+        <div
+          className={`text-xs font-medium ${
+            isAssigned ? "text-green-700" : "text-orange-700"
+          }`}
+        >
+          {isAssigned ? "" : ""}
         </div>
       </div>
     );
@@ -317,7 +361,7 @@ const IdealFieldListVendor = () => {
   return (
     <Layout>
       <IdealFieldListFilter />
-      
+
       {loading ? (
         <LoaderComponent />
       ) : (
@@ -325,7 +369,10 @@ const IdealFieldListVendor = () => {
           <Card className="p-3 bg-gray-300 border border-gray-100 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="space-y-1">
-                <Typography variant="small" className="text-gray-700 font-medium text-xs">
+                <Typography
+                  variant="small"
+                  className="text-gray-700 font-medium text-xs"
+                >
                   📅 Date
                 </Typography>
                 <input
@@ -336,9 +383,12 @@ const IdealFieldListVendor = () => {
                   className="!text-xs rounded-md px-2 bg-white border-gray-200 focus:border-blue-400 h-8 w-full"
                 />
               </div>
-              
+
               <div className="space-y-1">
-                <Typography variant="small" className="text-gray-700 font-medium text-xs">
+                <Typography
+                  variant="small"
+                  className="text-gray-700 font-medium text-xs"
+                >
                   🏢 Branch
                 </Typography>
                 <select
@@ -354,17 +404,20 @@ const IdealFieldListVendor = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="space-y-1">
-                <Typography variant="small" className="text-gray-700 font-medium text-xs">
+                <Typography
+                  variant="small"
+                  className="text-gray-700 font-medium text-xs"
+                >
                   📊 Status
                 </Typography>
                 <div className="flex bg-white rounded-md border border-gray-200 h-8">
                   <button
                     onClick={() => setActiveTab("all")}
                     className={`flex-1 text-xs px-2 py-1 rounded-l-md flex items-center justify-center gap-1 transition-colors ${
-                      activeTab === "all" 
-                        ? "bg-blue-500/80 text-white" 
+                      activeTab === "all"
+                        ? "bg-blue-500/80 text-white"
                         : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -374,8 +427,8 @@ const IdealFieldListVendor = () => {
                   <button
                     onClick={() => setActiveTab("assigned")}
                     className={`flex-1 text-xs px-2 py-1 flex items-center justify-center gap-1 transition-colors ${
-                      activeTab === "assigned" 
-                        ? "bg-green-500 text-white" 
+                      activeTab === "assigned"
+                        ? "bg-green-500 text-white"
                         : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -385,8 +438,8 @@ const IdealFieldListVendor = () => {
                   <button
                     onClick={() => setActiveTab("unassigned")}
                     className={`flex-1 text-xs px-2 py-1 rounded-r-md flex items-center justify-center gap-1 transition-colors ${
-                      activeTab === "unassigned" 
-                        ? "bg-red-500 text-white" 
+                      activeTab === "unassigned"
+                        ? "bg-red-500 text-white"
                         : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
@@ -416,7 +469,10 @@ const IdealFieldListVendor = () => {
               <Typography variant="small" className="text-gray-600 font-medium">
                 No data found for selected filters
               </Typography>
-              <Typography variant="small" className="text-gray-500 text-xs mt-1">
+              <Typography
+                variant="small"
+                className="text-gray-500 text-xs mt-1"
+              >
                 Try adjusting your filters or selecting a different date
               </Typography>
             </Card>
@@ -428,7 +484,12 @@ const IdealFieldListVendor = () => {
         </div>
       )}
 
-      <Dialog open={isModalOpen} handler={closeModal} size="xs" className="bg-white">
+      <Dialog
+        open={isModalOpen}
+        handler={closeModal}
+        size="xs"
+        className="bg-white"
+      >
         <DialogHeader className="flex items-center justify-between p-3 border-b">
           <div className="flex items-center gap-2">
             <Typography variant="h6" color="blue-gray">
@@ -437,20 +498,29 @@ const IdealFieldListVendor = () => {
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
               <Typography variant="small" className="text-xs">
-              {new Set(orderData.map(order => order.order_service_date)).size}
+                {
+                  new Set(orderData.map((order) => order.order_service_date))
+                    .size
+                }
               </Typography>
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-gray-300"></div>
               <Typography variant="small" className="text-xs">
-              {new Date(currentYear, currentMonth + 1, 0).getDate() - new Set(orderData.map(order => order.order_service_date)).size}
+                {new Date(currentYear, currentMonth + 1, 0).getDate() -
+                  new Set(orderData.map((order) => order.order_service_date))
+                    .size}
               </Typography>
             </div>
-            <Typography variant="small" color="gray" className="font-normal text-xs">
-             |  {selectedUser?.branch_name} 
+            <Typography
+              variant="small"
+              color="gray"
+              className="font-normal text-xs"
+            >
+              | {selectedUser?.branch_name}
             </Typography>
           </div>
-          
+
           <Button
             variant="text"
             color="blue-gray"
@@ -460,7 +530,7 @@ const IdealFieldListVendor = () => {
             <FaTimes size={14} />
           </Button>
         </DialogHeader>
-        
+
         <DialogBody className="p-4">
           {modalLoading ? (
             <div className="flex justify-center items-center h-80">
@@ -471,15 +541,13 @@ const IdealFieldListVendor = () => {
               <div className="flex justify-center">
                 {renderCustomCalendar()}
               </div>
-              
+
               {orderData.length === 0 && (
                 <div className="flex justify-center items-center ">
                   <div className="p-1 rounded-lg text-center bg-gray-50 border border-gray-100">
-
                     <span className="text-red-900 text-xs font-medium">
                       No jobs found for selected month
                     </span>
-                   
                   </div>
                 </div>
               )}
