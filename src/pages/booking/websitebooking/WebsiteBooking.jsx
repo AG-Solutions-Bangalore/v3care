@@ -1,80 +1,84 @@
+import axios from "axios";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
 import { CiSquarePlus } from "react-icons/ci";
 import { useLocation, useNavigate } from "react-router-dom";
-import AssignDetailsModal from "../../../components/AssignDetailsModal";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
+import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-const GroupBookingView = ({ groupbooking, setActiveTab }) => {
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+
+const WebsiteBooking = () => {
+  const [websiteBookingData, setWebsiteBookingData] = useState(null);
+
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [uniqueDates, setUniqueDates] = useState([]);
-  const [uniqueDate, setUniqueDate] = useState([]);
   const location = useLocation();
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   useEffect(() => {
-    if (!groupbooking || !Array.isArray(groupbooking)) return;
-
-    const dates = [
-      ...new Set(
-        groupbooking?.map((item) =>
-          Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-        )
-      ),
-    ].sort(
-      (a, b) =>
-        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
-    );
-
-    const serviceDates = [
-      ...new Set(
-        groupbooking?.map((item) =>
-          Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-        )
-      ),
-    ].sort(
-      (a, b) =>
-        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
-    );
-
-    const formattedDates = dates.map((date) =>
-      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
-    );
-
-    const formattedServiceDates = serviceDates.map((date) =>
-      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
-    );
-
-    setUniqueDates(formattedDates);
-    setUniqueDate(formattedServiceDates);
-  }, [groupbooking]);
-
+    if (pageParam) {
+      setPage(parseInt(pageParam) - 1);
+    } else {
+      const storedPageNo = localStorage.getItem("page-no");
+      if (storedPageNo) {
+        setPage(parseInt(storedPageNo) - 1);
+        navigate(`/website?page=${storedPageNo}`);
+      } else {
+        localStorage.setItem("page-no", 1);
+        setPage(0);
+      }
+    }
+  }, [location]);
   UseEscapeKey();
 
+  useEffect(() => {
+    const fetchWebsiteData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-booking-website-list`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setWebsiteBookingData(response.data?.booking);
+      } catch (error) {
+        console.error("Error fetching dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWebsiteData();
+    // setLoading(false);
+  }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
+    // localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
-
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
+    // localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
-    setActiveTab("bookingDetails");
   };
-
   const columns = [
     {
       name: "id",
@@ -87,6 +91,10 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
+                  // onClick={(e) => {
+                  //   e.stopPropagation(); // Prevent row click event
+                  //   navigate(`/edit-booking/${id}`);
+                  // }}
                   onClick={(e) => handleEdit(e, id)}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
@@ -100,16 +108,18 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
     //1
     {
       name: "order_ref",
-      label: "Order/Branch",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[2];
+          const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
               <span>{branchName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -123,8 +133,8 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
         filter: true,
         display: "exclude",
         searchable: true,
-        sort: true,
         viewColumns: false,
+        sort: true,
       },
     },
     //3
@@ -134,9 +144,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //4
@@ -146,9 +156,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: true,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //5
@@ -171,7 +181,6 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       },
     },
     //6
-
     {
       name: "order_date",
       label: "Booking Date",
@@ -181,21 +190,11 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
         display: "exclude",
         viewColumns: false,
         searchable: true,
-
-        filterOptions: {
-          names: [...uniqueDates]
-            .map((date) => Moment(date, "DD-MM-YYYY"))
-            .sort((a, b) => b.valueOf() - a.valueOf())
-            .map((date) => date.format("YYYY-MM-DD"))
-            .reverse(),
-
-          fullWidth: true,
-          renderValue: (value) =>
-            Moment(value, "YYYY-MM-DD").format("DD-MMM-YYYY"),
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
-
     //7
     {
       name: "order_service_date",
@@ -204,18 +203,10 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
         filter: true,
         sort: false,
         display: "exclude",
-        searchable: true,
         viewColumns: false,
-
-        filterOptions: {
-          names: [...uniqueDate]
-            .map((date) => Moment(date, "DD-MM-YYYY"))
-            .sort((a, b) => b.valueOf() - a.valueOf())
-            .map((date) => date.format("YYYY-MM-DD"))
-            .reverse(),
-          fullWidth: true,
-          renderValue: (value) =>
-            Moment(value, "YYYY-MM-DD").format("DD-MMM-YYYY"),
+        searchable: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
@@ -244,10 +235,10 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       label: "Service",
       options: {
         filter: false,
+        viewColumns: false,
         display: "exclude",
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //10
@@ -257,9 +248,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //11
@@ -383,9 +374,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
           }
 
           return (
-            <div className="w-40 overflow-x-auto">
+            <div className="w-48 overflow-x-auto">
               <table className="min-w-full table-auto border-collapse text-sm">
-                <tbody className="flex flex-wrap h-[40px] border-1 border-black w-48">
+                <tbody className="flex flex-wrap h-[40px]  w-48">
                   <tr>
                     <td className="text-xs px-[2px] leading-[12px]">
                       {activeAssignments
@@ -407,9 +398,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: true,
-        viewColumns: false,
       },
     },
     //18
@@ -419,9 +410,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: true,
-        viewColumns: false,
       },
     },
     //19
@@ -450,9 +441,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //21
@@ -462,9 +453,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       options: {
         filter: true,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     //22
@@ -498,6 +489,18 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
         sort: false,
       },
     },
+    //24
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
 
   const options = {
@@ -508,53 +511,90 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
     download: false,
     print: false,
 
-    count: groupbooking?.length || 0,
+    count: websiteBookingData?.length || 0,
+    rowsPerPage: rowsPerPage,
+    page: page,
+    onChangePage: (currentPage) => {
+      setPage(currentPage);
+      navigate(`/website?page=${currentPage + 1}`);
+    },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = groupbooking[rowMeta.dataIndex].id;
+      const id = websiteBookingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
+
     setRowProps: (rowData) => {
       const orderStatus = rowData[21];
       let backgroundColor = "";
-      if (orderStatus === "Confirmed") {
+      if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
-      } else if (orderStatus === "Completed") {
+      } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light
-      } else if (orderStatus === "Inspection") {
+      } else if (orderStatus == "Inspection") {
         backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "RNR") {
+      } else if (orderStatus == "RNR") {
         backgroundColor = "#B9CCF4"; // light blue
-      } else if (orderStatus === "Pending") {
+      } else if (orderStatus == "Pending") {
         backgroundColor = "#fff"; // white
-      } else if (orderStatus === "Cancel") {
+      } else if (orderStatus == "Cancel") {
         backgroundColor = "#F76E6E"; // light  red
-      } else if (orderStatus === "On the way") {
+      } else if (orderStatus == "On the way") {
         backgroundColor = "#fff3cd"; // light  yellow
-      } else if (orderStatus === "In Progress") {
+      } else if (orderStatus == "In Progress") {
         backgroundColor = "#A7FCA7"; // light  green
-      } else if (orderStatus === "Vendor") {
-        backgroundColor = "#F38121"; // light  orange
+      } else if (orderStatus == "Vendor") {
+        backgroundColor = "#F38121"; // light  ornage
       }
 
       return {
         style: {
           backgroundColor: backgroundColor,
           borderBottom: "5px solid #f1f7f9",
-          cursor: "pointer",
+          cursor: "pointer", // Add pointer cursor to indicate clickable rows
         },
       };
+    },
+    customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+      return (
+        <div className="flex justify-end items-center p-4">
+          <span className="mx-4">
+            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            {Math.ceil(count / rowsPerPage)}
+          </span>
+          <IoIosArrowBack
+            onClick={page === 0 ? null : () => changePage(page - 1)}
+            className={`w-6 h-6 cursor-pointer ${
+              page === 0 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+          <IoIosArrowForward
+            onClick={
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? null
+                : () => changePage(page + 1)
+            }
+            className={`w-6 h-6 cursor-pointer ${
+              page >= Math.ceil(count / rowsPerPage) - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-blue-600"
+            }  hover:text-red-600`}
+          />
+        </div>
+      );
     },
   };
 
   return (
-    <>
+    <Layout>
+      <BookingFilter />
+
       {loading ? (
         <LoaderComponent />
       ) : (
-        <div className="w-full overflow-x-auto">
+        <div className="mt-1">
           <MUIDataTable
-            title={"Group Booking"}
-            data={groupbooking || []}
+            title={"Website Booking List"}
+            data={websiteBookingData ? websiteBookingData : []}
             columns={columns}
             options={options}
           />
@@ -565,8 +605,8 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
       />
-    </>
+    </Layout>
   );
 };
 
-export default GroupBookingView;
+export default WebsiteBooking;

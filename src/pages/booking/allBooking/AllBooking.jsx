@@ -122,11 +122,9 @@ const AllBooking = () => {
             Moment(a, "YYYY-MM-DD").valueOf()
         );
 
-        // Convert back to DD-MM-YYYY format after sorting
         const formattedDates = dates.map((date) =>
           Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
         );
-        // Convert back to DD-MM-YYYY format after sorting
         const formattedDate = date.map((date) =>
           Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
         );
@@ -187,16 +185,18 @@ const AllBooking = () => {
     //1
     {
       name: "order_ref",
-      label: "Order/Branch",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[2];
+          const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
               <span>{branchName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -577,6 +577,18 @@ const AllBooking = () => {
     {
       name: "order_address",
       label: "Address",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //24
+    {
+      name: "order_booking_time",
+      label: "Book Time",
       options: {
         filter: true,
         display: "exclude",

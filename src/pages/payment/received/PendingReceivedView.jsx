@@ -1,29 +1,22 @@
-import React, { useContext } from "react";
-import Layout from "../../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
-import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
-  Input,
-  Select,
-  Option,
-  Button,
+  Typography
 } from "@material-tailwind/react";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { ArrowLeft } from "lucide-react";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const PendingReceivedView = () => {
   const { id } = useParams();
 
@@ -32,12 +25,9 @@ const PendingReceivedView = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   UseEscapeKey();
-  // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
   const navigate = useNavigate();
-  // no need check at once and remove it
   const [vendor, setVendor] = useState({});
-  // new design
   const { userType } = useContext(ContextPanel);
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -55,11 +45,8 @@ const PendingReceivedView = () => {
         },
       });
       setBooking(response.data?.booking);
-      console.log("set booking", response.data?.booking);
       setBookingAssign(response.data.bookingAssign);
-      console.log("setbooking assign", response.data?.bookingAssign);
       setVendor(response.data.vendor);
-      console.log("vendor data", response.data?.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {

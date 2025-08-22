@@ -93,7 +93,6 @@ const SuperServiceMaster = () => {
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
-      console.log("Update sort:", id, newSortNumber);
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-super-service-sort/${id}`,
         { newSortNumber },
@@ -203,8 +202,6 @@ const SuperServiceMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

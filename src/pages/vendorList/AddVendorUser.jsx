@@ -108,7 +108,6 @@ const AddVendorUser = () => {
                 />
               </div>
 
-              {/* Mobile No */}
               <div className="form-group">
                 <Input
                   fullWidth
@@ -116,7 +115,6 @@ const AddVendorUser = () => {
                   id="mobile"
                   label="Mobile No"
                   maxLength={10}
-                  // inputProps={{ maxLength: 10, minLength: 10 }}
                   name="mobile"
                   value={vendor.mobile}
                   onChange={onInputChange}

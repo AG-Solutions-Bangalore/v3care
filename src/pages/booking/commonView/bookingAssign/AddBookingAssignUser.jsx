@@ -25,7 +25,6 @@ const AddBookingAssignUser = () => {
   const navigate = useNavigate();
   UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // Validation function
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
@@ -60,7 +59,7 @@ const AddBookingAssignUser = () => {
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
       toast.error("Fill all required");
-      setLoading(false); // Corrected this
+      setLoading(false); 
       return;
     }
 

@@ -101,6 +101,20 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         "masteradmins",
       ],
     },
+    // {
+    //   to: "/amc-booking?page=1",
+    //   icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
+    //   text: "AMC Booking",
+    //   title: "AMC Booking",
+    //   roles: [
+    //     "user",
+    //     "viewer",
+    //     "admin",
+    //     "superadmin",
+    //     "operationteam",
+    //     "masteradmins",
+    //   ],
+    // },
     {
       to: "/customer?page=1",
       icon: <User className="w-5 h-5 text-inherit" />,
@@ -215,10 +229,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
     8: "masteradmins",
   };
 
-  // const getFilteredMenuItems = () => {
-  //   const role = roleMap[userType];
-  //   return role ? menuItems.filter((item) => item.roles.includes(role)) : [];
-  // };
   const getFilteredMenuItems = () => {
     const role = roleMap[userType];
 
@@ -452,7 +462,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="group absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm border-l-2 border-r-2 border-red-900 overflow-hidden">
           <div className="flex flex-col items-center gap-2 text-white relative">
             <div className="text-sm font-medium opacity-80">
-              Updated : 21-08-2025
+              Updated : 22-08-2025
             </div>
           </div>
         </div>

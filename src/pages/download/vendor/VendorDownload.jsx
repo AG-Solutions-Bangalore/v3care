@@ -5,7 +5,7 @@ import { MenuItem, TextField } from "@mui/material";
 import { FiDownload } from "react-icons/fi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 
@@ -49,9 +49,6 @@ const VendorDownload = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-
-      // Success notification could be added here
-      console.log(`${fileName} downloaded successfully.`);
     } catch (err) {
       console.error(`Error downloading ${fileName}:`, err);
       // Error notification could be added here
@@ -100,7 +97,7 @@ const VendorDownload = () => {
               ))}
             </TextField>
 
-            <div >
+            <div>
               <ButtonConfigColor
                 type="download"
                 label="Download Report"

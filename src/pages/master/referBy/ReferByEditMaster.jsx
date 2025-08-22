@@ -46,12 +46,6 @@ const ReferByEditMaster = () => {
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  // const onInputChange = (e) => {
-  //   setReferBy({
-  //     ...referBy,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "refer_by_contact_no") {

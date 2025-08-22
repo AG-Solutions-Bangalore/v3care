@@ -13,7 +13,6 @@ import UseEscapeKey from "../../../../utils/UseEscapeKey";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 const BookingAssign = () => {
-  // api - panel-fetch-booking-assign-list+ id
   const { id } = useParams();
   const [bookingAssignData, setBookingAssignData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -137,8 +136,6 @@ const BookingAssign = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

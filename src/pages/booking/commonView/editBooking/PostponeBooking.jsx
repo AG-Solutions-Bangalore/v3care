@@ -349,7 +349,6 @@ const PostponeBooking = () => {
   const autoCommissionCalc =
     Math.round((booking.order_amount * booking.order_comm_percentage) / 100) ||
     0;
-  console.log(booking.order_time, "booking.order_time");
   return (
     <Layout>
       <BookingFilter />

@@ -1,42 +1,33 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { BASE_URL } from "../../../../base/BaseUrl";
-import axios from "axios";
-import moment from "moment";
-// import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
-import {
-  FaHome,
-  FaClipboardList,
-  FaInfoCircle,
-  FaCommentDots,
-} from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
   Input,
-  Option,
-  Button,
   Spinner,
+  Typography
 } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import axios from "axios";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import {
+  FaHome,
+  FaInfoCircle
+} from "react-icons/fa"; 
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import BookingFilter from "../../../../components/BookingFilter";
+import Layout from "../../../../layout/Layout";
 
-import MUIDataTable from "mui-datatables";
-import { MdEdit } from "react-icons/md";
 import {
   Dialog,
   DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
+  DialogContent
 } from "@mui/material";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import MUIDataTable from "mui-datatables";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../../components/common/LoaderComponent";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 const status = [
   {
     value: "Pending",

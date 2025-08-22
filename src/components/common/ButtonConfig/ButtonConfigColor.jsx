@@ -1,4 +1,3 @@
-//-----------------------------AFter print
 import React from "react";
 import { BiLogOut } from "react-icons/bi";
 import {
@@ -46,7 +45,6 @@ const ButtonConfigColor = ({
     }
   };
 
-  // Define icons based on the type
   const getIcon = () => {
     if (loading) return <FiLoader className="animate-spin text-lg" />;
     switch (type) {

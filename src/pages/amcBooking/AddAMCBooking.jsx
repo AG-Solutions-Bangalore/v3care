@@ -13,22 +13,36 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import Layout from "../../../layout/Layout";
-import styles from "./AddBooking.module.css";
+import styles from "../booking/addBooking/AddBooking.module.css";
 
 import { Input } from "@material-tailwind/react";
 import HomeIcon from "@mui/icons-material/Home";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../../base/BaseUrl";
-import Fields from "../../../components/addBooking/TextField";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-
-// const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+import Fields from "../../components/addBooking/TextField";
+// import Fields from "../../../components/addBooking/TextField";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import UseEscapeKey from "../../utils/UseEscapeKey";
+import Layout from "../../layout/Layout";
+import { BASE_URL } from "../../base/BaseUrl";
 const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
+const ordertype = [
+  {
+    value: "Quarterly",
+    label: "Quarterly",
+  },
+  {
+    value: "Half-yearly",
+    label: "Half-Yearly",
+  },
+  {
+    value: "Yearly",
+    label: "Yearly",
+  },
+];
+
 const whatsapp = [
   {
     value: "Yes",
@@ -61,7 +75,7 @@ const loadScript = (url, callback) => {
   document.getElementsByTagName("head")[0].appendChild(script);
 };
 
-const AddBooking = () => {
+const AddAMCBooking = () => {
   const autoCompleteRef = useRef(null);
   UseEscapeKey();
   const [query, setQuery] = useState("");
@@ -113,6 +127,9 @@ const AddBooking = () => {
     order_address: "",
     order_url: "",
     order_send_whatsapp: "",
+    order_type: "",
+    order_from_date: "",
+    order_to_date: "",
   });
 
   useEffect(() => {
@@ -156,7 +173,6 @@ const AddBooking = () => {
 
   useEffect(() => {
     if (!booking.order_service) return; // Exit if undefined or null
-
 
     const theLoginToken = localStorage.getItem("token");
 
@@ -373,24 +389,21 @@ const AddBooking = () => {
     const query = addressObject.formatted_address;
     const url = addressObject.url;
     updateQuery(query);
-    let subLocality = '';
-    let locality = '';
-  
-    addressObject.address_components.forEach(component => {
-      if (component.types.includes('sublocality_level_1')) {
+    let subLocality = "";
+    let locality = "";
+
+    addressObject.address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
         subLocality = component.short_name;
       }
-      if (component.types.includes('locality')) {
+      if (component.types.includes("locality")) {
         locality = component.short_name;
       }
     });
-    
-  
-    
-    setLocalitySubBook(subLocality)
-    setLocalityBook(locality)
-    setQuery1(url);
 
+    setLocalitySubBook(subLocality);
+    setLocalityBook(locality);
+    setQuery1(url);
   };
 
   useEffect(() => {
@@ -443,6 +456,9 @@ const AddBooking = () => {
       order_address: query,
       order_url: query1,
       order_send_whatsapp: booking.order_send_whatsapp,
+      order_type: booking.order_type,
+      order_from_date: booking.order_from_date,
+      order_to_date: booking.order_to_date,
     };
 
     var url = new URL(window.location.href);
@@ -453,7 +469,7 @@ const AddBooking = () => {
 
     if (v) {
       axios({
-        url: BASE_URL + "/api/panel-create-booking",
+        url: BASE_URL + "/api/panel-create-amcbooking",
         method: "POST",
         data,
         headers: {
@@ -462,7 +478,7 @@ const AddBooking = () => {
       }).then((res) => {
         if (res.data.code == "200") {
           toast.success(res.data?.msg || "Booking Create Successfully");
-          navigate("/today");
+          navigate("/amc-booking");
         } else {
           toast.error(res.data?.msg || "Duplicate Entry");
         }
@@ -472,24 +488,12 @@ const AddBooking = () => {
 
   return (
     <Layout>
-      <PageHeader title={"Add Booking"} />
+      <PageHeader title={"Add AMC Booking"} />
 
       <div className={styles["sub-container"]}>
         <form id="addIdniv" onSubmit={onSubmit}>
           <div className={styles["form-container"]}>
             <div>
-              {/* <div className="form-group">
-                <Fields
-                  title="Refer By"
-                  type="dropdown"
-                  name="order_refer_by"
-                  autoComplete="Name"
-                  value={booking.order_refer_by}
-                  onChange={(e) => onInputChange(e)}
-                  options={referby}
-                />
-              </div> */}
-
               <FormControl fullWidth>
                 <InputLabel id="order_refer_by-label">
                   <span className="text-sm relative bottom-[6px]">
@@ -572,17 +576,6 @@ const AddBooking = () => {
               </div>
               {userType == 6 || userType == 8 ? (
                 <div>
-                  {/* <Fields
-                    required="required"
-                    title="Branch"
-                    type="branchDropdown"
-                    autoComplete="Name"
-                    name="branch_id"
-                    value={booking.branch_id}
-                    onChange={(e) => onInputChange(e)}
-                    options={branch}
-                  /> */}
-
                   <FormControl fullWidth>
                     <InputLabel id="order_refer_by-label">
                       <span className="text-sm relative bottom-[6px]">
@@ -611,17 +604,6 @@ const AddBooking = () => {
                 ""
               )}
               <div>
-                {/* <Fields
-                  title="Service"
-                  type="serviceDropdown"
-                  autoComplete="Name"
-                  name="order_service"
-                  value={booking.order_service}
-                  onChange={(e) => {
-                    onInputChange(e), HalfA(e);
-                  }}
-                  options={serdata}
-                /> */}
                 <FormControl fullWidth>
                   <InputLabel id="order_service-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -653,17 +635,6 @@ const AddBooking = () => {
                 ""
               ) : serdatasub.length > 0 ? (
                 <div>
-                  {/* <Fields
-                    title="Service Sub"
-                    type="subServiceDropdown"
-                    autoComplete="Name"
-                    name="order_service_sub"
-                    value={booking.order_service_sub}
-                    onChange={(e) => {
-                      onInputChange(e), HalfB(e);
-                    }}
-                    options={serdatasub}
-                  /> */}
                   <FormControl fullWidth>
                     <InputLabel id="order_service_sub-label">
                       <span className="text-sm relative bottom-[6px]">
@@ -697,18 +668,6 @@ const AddBooking = () => {
                 ""
               ) : (
                 <div>
-                  {/* <Fields
-                    required="required"
-                    title="Price For"
-                    type="priceforDropdown"
-                    autoComplete="Name"
-                    name="order_service_price_for"
-                    value={booking.order_service_price_for}
-                    onChange={(e) => {
-                      onInputChange(e), HalfC(e);
-                    }}
-                    options={pricedata}
-                  /> */}
                   <FormControl fullWidth>
                     <InputLabel id="order_service_price_for-label">
                       <span className="text-sm relative bottom-[6px]">
@@ -798,7 +757,7 @@ const AddBooking = () => {
                   startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                 />
               </div>
-      
+
               <FormControl fullWidth>
                 <InputLabel id="order_time-label">
                   <span className="text-sm relative bottom-[6px]">
@@ -833,6 +792,38 @@ const AddBooking = () => {
                   value={booking.order_km}
                   onChange={(e) => onInputChange(e)}
                   startIcon={<PinDrop sx={{ color: "orange" }} />}
+                />
+              </div>
+              <div>
+                <Fields
+                  required="required"
+                  title="Type"
+                  type="whatsappDropdown"
+                  autoComplete="Name"
+                  name="order_type"
+                  value={booking.order_type}
+                  onChange={(e) => onInputChange(e)}
+                  options={ordertype}
+                />
+              </div>
+              <div>
+                <Input
+                  label="From Date"
+                  required
+                  type="date"
+                  name="order_from_date"
+                  value={booking.order_from_date}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
+              <div>
+                <Input
+                  label="To Date"
+                  required
+                  type="date"
+                  name="order_to_date"
+                  value={booking.order_to_date}
+                  onChange={(e) => onInputChange(e)}
                 />
               </div>
             </div>
@@ -936,4 +927,4 @@ const AddBooking = () => {
   );
 };
 
-export default AddBooking;
+export default AddAMCBooking;

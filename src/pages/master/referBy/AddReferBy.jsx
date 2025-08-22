@@ -24,12 +24,7 @@ const AddReferBy = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // const onInputChange = (e) => {
-  //   setReferBy({
-  //     ...referby,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
+
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "refer_by_contact_no") {

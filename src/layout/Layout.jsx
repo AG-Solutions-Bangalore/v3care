@@ -21,7 +21,6 @@ const Layout = ({ children }) => {
     localStorage.setItem("sidebarCollapsed", JSON.stringify(newState));
   };
 
-  // xl:ml-80
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 ">
       <SideNav

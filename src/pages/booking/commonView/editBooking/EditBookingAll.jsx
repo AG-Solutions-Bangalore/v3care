@@ -12,13 +12,11 @@ import {
   Textarea,
   Typography,
 } from "@material-tailwind/react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
-import { BASE_URL } from "../../../../base/BaseUrl";
-// import SelectOption from "@material-tailwind/react/components/Select/SelectOption";
-import { Dialog, DialogActions, DialogContent } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import MUIDataTable from "mui-datatables";
+import { FaHome, FaInfoCircle } from "react-icons/fa"; 
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../../components/common/LoaderComponent";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
@@ -81,9 +79,7 @@ const EditBookingAll = () => {
     order_vendor_id: "",
     order_amount: 0,
   });
-  console.log("order_vendor_id", booking?.order_vendor_id);
   const [paymentmode, setPaymentMode] = useState([]);
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
@@ -114,12 +110,9 @@ const EditBookingAll = () => {
     },
   ]);
 
-  // console.log(booking.order_followup_date);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
 
-  // Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (

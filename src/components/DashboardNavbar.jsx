@@ -36,7 +36,6 @@ const DashboardNavbar = ({
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch((e) => {
-        console.log(`Error attempting to enable fullscreen: ${e.message}`);
       });
       setIsFullscreen(true);
     } else {

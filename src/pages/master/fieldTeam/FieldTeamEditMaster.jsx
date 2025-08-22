@@ -73,7 +73,6 @@ const FieldTeamEditMaster = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(value);
 
     if (name === "mobile" || name == "user_aadhar_no") {
       const digitsOnly = value.replace(/\D/g, "");

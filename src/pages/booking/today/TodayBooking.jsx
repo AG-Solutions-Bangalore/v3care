@@ -92,10 +92,6 @@ const TodayBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  // onClick={(e) => {
-                  //   e.stopPropagation(); // Prevent row click event
-                  //   navigate(`/edit-booking/${id}`);
-                  // }}
                   onClick={(e) => handleEdit(e, id)}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
@@ -109,16 +105,18 @@ const TodayBooking = () => {
     //1
     {
       name: "order_ref",
-      label: "Order/Branch",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[2];
+          const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
               <span>{branchName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -488,6 +486,18 @@ const TodayBooking = () => {
         sort: false,
       },
     },
+    //24
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
 
   const options = {
@@ -512,7 +522,6 @@ const TodayBooking = () => {
 
     setRowProps: (rowData) => {
       const orderStatus = rowData[21];
-      console.log(orderStatus, "orderStatus");
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink

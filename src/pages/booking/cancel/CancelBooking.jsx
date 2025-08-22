@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import MUIDataTable from "mui-datatables";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import Moment from "moment";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -42,10 +42,6 @@ const CancelBooking = () => {
   useEffect(() => {
     const fetchCancelData = async () => {
       try {
-        // if (!isPanelUp) {
-        //   navigate("/maintenance");
-        //   return;
-        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -65,7 +61,6 @@ const CancelBooking = () => {
       }
     };
     fetchCancelData();
-    // setLoading(false);
   }, []);
   const handleView = (e, id) => {
     e.preventDefault();
@@ -98,17 +93,20 @@ const CancelBooking = () => {
     },
     {
       name: "order_branch",
-      label: "Order/Branch",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
+        customBodyRender: (order_ref, tableMeta) => {
           const brancName = tableMeta.rowData[1];
           const orderRef = tableMeta.rowData[0];
+          const bookTime = tableMeta.rowData[14];
+
           return (
-            <div className=" flex flex-col w-32">
+            <div className="flex flex-col w-32">
               <span>{orderRef}</span>
               <span>{brancName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -269,27 +267,19 @@ const CancelBooking = () => {
         sort: false,
       },
     },
-    // {
-    //   name: "id",
-    //   label: "Action",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (id) => {
-    //       return (
-    //         <div
-    //           onClick={() => navigate(`/view-booking/${id}`)}
-    //           className="flex items-center space-x-2"
-    //         >
-    //           <MdOutlineRemoveRedEye
-    //             title="Booking Info"
-    //             className="h-5 w-5 cursor-pointer"
-    //           />
-    //         </div>
-    //       );
-    //     },
-    //   },
-    // },
+    //14
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+
   ];
   const options = {
     selectableRows: "none",

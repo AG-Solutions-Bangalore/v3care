@@ -34,12 +34,9 @@ const PendingPaymentView = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   const { userType } = useContext(ContextPanel);
-  // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
-  // no need check at once and remove it
   const [vendor, setVendor] = useState({});
   const [paymentModes, setPaymentModes] = useState([]);
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =

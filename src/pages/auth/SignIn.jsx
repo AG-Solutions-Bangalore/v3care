@@ -36,27 +36,20 @@ const SignIn = () => {
   };
   const handleSumbit = async (e) => {
     e.preventDefault();
-    // if (!email || !password) {
-    //   toast.warning("Please enter a Email & Password");
-    //   return;
-    // }
     if (!validate()) return;
 
     setLoading(true);
 
-    //create a formData object and append state values
     const formData = new FormData();
     formData.append("username", email);
     formData.append("password", password);
 
     try {
-      // Send POST request to login API with form data
       const res = await axios.post(`${BASE_URL}/api/panel-login`, formData);
 
       if (res.data.code == 200) {
         const token = res.data.UserInfo?.token;
         if (token) {
-          // Store the token in localStorage
           localStorage.setItem("token", token);
           localStorage.setItem("id", res.data.UserInfo.user.user_type);
           localStorage.setItem("name", res.data.UserInfo.user.name);
@@ -87,9 +80,7 @@ const SignIn = () => {
   };
   return (
     <>
-      {/* min-h-screen to h-screen  */}
       <section className="flex flex-col lg:flex-row h-screen">
-        {/* Left Section for Carousel // h-full -add */}
         <div className="hidden lg:block lg:w-1/2 h-full">
           <Carousel autoplay loop>
             <img
@@ -149,7 +140,6 @@ const SignIn = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     size="lg"
                     placeholder="Enter User Name"
-                    // className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                     className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                     labelProps={{
                       className: "hidden",
@@ -157,9 +147,7 @@ const SignIn = () => {
                     maxLength={50}
                     error={!!emailError}
 
-                    // labelProps={{
-                    //   className: "before:content-none after:content-none",
-                    // }}
+                    
                   />
                   {emailError && (
                     <p className="text-red-600 text-sm mt-1">{emailError}</p>
@@ -176,19 +164,6 @@ const SignIn = () => {
                     </Typography>
                   </div>
 
-                  {/* <Input
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  size="lg"
-                  placeholder="********"
-                  className="!border-t-blue-gray-200 focus:!border-t-gray-900"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                /> */}
                   <div className="relative w-full">
                     <Input
                       id="password"
@@ -199,10 +174,6 @@ const SignIn = () => {
                       size="lg"
                       maxLength={16}
                       placeholder="********"
-                      // className="!border-t-blue-gray-200 focus:!border-t-gray-900 pr-10"
-                      // labelProps={{
-                      //   className: "before:content-none after:content-none",
-                      // }}
                       className="!border  !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
                       labelProps={{
                         className: "hidden",

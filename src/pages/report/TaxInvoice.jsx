@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FileText, Globe, Loader2, Mail, Phone, Printer } from "lucide-react";
 import html2pdf from "html2pdf.js";
-import ReactToPrint from "react-to-print";
-import moment from "moment";
-import { FaRegFileWord } from "react-icons/fa";
+import { Printer } from "lucide-react";
+import { useRef } from "react";
 import { FaRegFilePdf } from "react-icons/fa";
-import logo from "../../../public/v3.png";
+import ReactToPrint from "react-to-print";
 import stamplogo from "../../../public/stamplogo.png";
-import Layout from "../../layout/Layout";
+import logo from "../../../public/v3.png";
 import RepoortFilter from "../../components/ReportFilter";
+import Layout from "../../layout/Layout";
 const TaxInvoice = () => {
   const containerRef = useRef();
 

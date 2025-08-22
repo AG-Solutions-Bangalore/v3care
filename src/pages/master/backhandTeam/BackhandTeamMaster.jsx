@@ -100,11 +100,6 @@ const BackhandTeamMaster = () => {
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
-                // <SquarePen
-                //   onClick={(e) => handleEdit(e, id)}
-                //   title="Booking Info"
-                //   className="h-5 w-5 cursor-pointer hover:text-blue-700"
-                // />
                 <SquarePen
                   onClick={(e) => handleEdit(e, id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
@@ -162,7 +157,6 @@ const BackhandTeamMaster = () => {
 
           if (value == "6") {
             bgColor = "bg-teal-600";
-            //from-lime-500 to-green-400
             label = "Super Admin";
           } else if (value == "5") {
             bgColor = "bg-blue-500";

@@ -1,9 +1,9 @@
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import {BASE_URL} from "../../base/BaseUrl";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
@@ -106,8 +106,6 @@ const VendorUserList = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

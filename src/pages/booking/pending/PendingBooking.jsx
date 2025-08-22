@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { BASE_URL } from "../../../base/BaseUrl";
 import { CiSquarePlus } from "react-icons/ci";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
@@ -61,7 +61,6 @@ const PendingBooking = () => {
       }
     };
     fetchPendingData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -87,20 +86,11 @@ const PendingBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  // onClick={(e) => {
-                  //   e.stopPropagation(); // Prevent row click event
-                  //   navigate(`/edit-booking/${id}`);
-                  // }}
                   onClick={(e) => handleEdit(e, id)}
                   title="Edit Boking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
             </div>
           );
         },
@@ -129,18 +119,21 @@ const PendingBooking = () => {
       },
     },
     {
-      name: "order_branch",
-      label: "Order/Branch",
+      name: "order_ref",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
+        customBodyRender: (order_ref, tableMeta) => {
           const brancName = tableMeta.rowData[2];
           const orderRef = tableMeta.rowData[1];
+          const bookTime = tableMeta.rowData[15];
+
           return (
-            <div className=" flex flex-col w-32">
+            <div className="flex flex-col w-32">
               <span>{orderRef}</span>
               <span>{brancName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -298,6 +291,18 @@ const PendingBooking = () => {
       label: "Status",
       options: {
         filter: true,
+        sort: false,
+      },
+    },
+    //15
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },

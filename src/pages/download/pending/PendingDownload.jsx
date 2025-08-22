@@ -58,8 +58,6 @@ const PendingDownload = () => {
       link.click();
       link.remove();
 
-      // Success notification could be added here
-      console.log(`${fileName} downloaded successfully.`);
     } catch (err) {
       console.error(`Error downloading ${fileName}:`, err);
       // Error notification could be added here
