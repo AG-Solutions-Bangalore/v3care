@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const UseEscapeKey = () => {
   const navigate = useNavigate();

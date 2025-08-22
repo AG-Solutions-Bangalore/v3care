@@ -18,8 +18,6 @@ const ReceivedsCommission = () => {
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
 
-  // commission-received
-  // received-commission-view
   const location = useLocation();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -273,8 +271,6 @@ const ReceivedsCommission = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     count: receivedCommData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,

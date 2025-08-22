@@ -1,7 +1,7 @@
 import axios from "axios";
 import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 
 import {
@@ -21,10 +21,9 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import GroupBookingView from "./GroupBookingView";
-import AllBooking from "../allBooking/AllBooking";
 const ViewBooking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,12 +31,9 @@ const ViewBooking = () => {
   UseEscapeKey();
   const { userType } = useContext(ContextPanel);
   const [open, setOpen] = useState(false);
-  // no need check at once and remove it
   const [bookingAssign, setBookingAssign] = useState({});
-  // no need check at once and remove it
   const [vendor, setVendor] = useState({});
   const [groupbooking, setGroupBooking] = useState({});
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [followup, setFollowUp] = useState([]);
   const [followups, setFollowUps] = useState({
@@ -314,9 +310,7 @@ const ViewBooking = () => {
       toast.error("Order Follow-up Description is required");
       return;
     }
-    // setIsButtonDisabled(true);
     const data = {
-      // order_ref: orderref,
       order_ref: booking?.order_ref,
       order_followup_date: followups.order_followup_date,
       order_followup_description: followups.order_followup_description,

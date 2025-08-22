@@ -13,7 +13,6 @@ const DevToolsBlocker = () => {
       const heightThreshold =
         window.outerHeight - window.innerHeight > threshold;
 
-      // Run debugger detection only if NOT in the 813–815 range
       let debuggerDetected = false;
       if (!widthInRange) {
         const start = performance.now();

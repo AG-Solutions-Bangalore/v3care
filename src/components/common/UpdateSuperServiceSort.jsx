@@ -1,12 +1,12 @@
 import {
+  Button,
   Dialog,
-  DialogHeader,
   DialogBody,
   DialogFooter,
+  DialogHeader,
   Input,
-  Button,
 } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const UpdateSuperServiceSort = ({ open, onClose, onSubmit, data }) => {
   const [newSortNumber, setNewSortNumber] = useState("");

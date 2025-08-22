@@ -18,7 +18,6 @@ const Fields = (props) => {
         <>
           <Input
             label={props.title}
-            // required={props.required === true || props.required === "true"}
             multiline={props.multiline === true || props.multiline === "true"}
             name={props.name}
             type={props.types}
@@ -34,7 +33,6 @@ const Fields = (props) => {
         <>
           <Input
             label={props.title}
-            // required={props.required === true || props.required === "true"}
             name={props.name}
             type="file"
             autoComplete={props.autoComplete}

@@ -24,7 +24,6 @@ const AddBookingVendor = () => {
   const navigate = useNavigate();
   UseEscapeKey();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // Validation function
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
@@ -54,12 +53,12 @@ const AddBookingVendor = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading when submitting
+    setLoading(true); 
 
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
       toast.error("Fill all required");
-      setLoading(false); // Stop loading if validation fails
+      setLoading(false); 
       return;
     }
 

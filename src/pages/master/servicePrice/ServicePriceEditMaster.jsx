@@ -44,7 +44,6 @@ const ServicePriceEditMaster = () => {
       service_holiday_amount: "",
     },
   ]);
-  console.log(servicesupdatestatus, "servicesupdatestatus");
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loadingstatus, setLoadingStatus] = useState(false);
@@ -64,7 +63,6 @@ const ServicePriceEditMaster = () => {
       ["service_price_rate", "service_price_amount"].includes(fieldName) &&
       !/^\d*$/.test(value)
     ) {
-      console.log("Invalid input. Only digits are allowed.");
       return;
     }
 

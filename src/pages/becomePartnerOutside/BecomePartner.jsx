@@ -59,7 +59,6 @@ const BecomePartner = () => {
 
   const handleChange = (event) => {
     setTest(event.target.value);
-    console.log("check", event.target.value);
   };
 
   const [vendor_ser_count, setSerCount] = useState(1);
@@ -182,7 +181,6 @@ const BecomePartner = () => {
     data.append("vendor_branch_no_count", vendor_branc_count);
     data.append("vendor_service", test);
 
-    // Function to append user data to FormData
     const appendUserData = (users, prefix) => {
       users.forEach((user, index) => {
         Object.keys(user).forEach((key) => {
@@ -212,7 +210,6 @@ const BecomePartner = () => {
 
       if (response.data.code == "200") {
         toast.success("Data Inserted Successfully");
-        // Reset the vendor form
         setVendor({
           vendor_short: "",
           branch_id: "",

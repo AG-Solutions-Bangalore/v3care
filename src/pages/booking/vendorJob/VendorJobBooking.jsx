@@ -42,10 +42,6 @@ const VendorJobBooking = () => {
   useEffect(() => {
     const fetchVendorData = async () => {
       try {
-        // if (!isPanelUp) {
-        //   navigate("/maintenance");
-        //   return;
-        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -91,7 +87,6 @@ const VendorJobBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-             
                   onClick={(e) => handleEdit(e, id)}
                   title="Edit Boking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
@@ -133,17 +128,20 @@ const VendorJobBooking = () => {
     },
     {
       name: "order_branch",
-      label: "Order/Branch",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
+        customBodyRender: (order_ref, tableMeta) => {
           const brancName = tableMeta.rowData[2];
           const orderRef = tableMeta.rowData[1];
+          const bookTime = tableMeta.rowData[15];
+
           return (
-            <div className=" flex flex-col w-32">
+            <div className="flex flex-col w-32">
               <span>{orderRef}</span>
               <span>{brancName}</span>
+              <span>{bookTime}</span>
             </div>
           );
         },
@@ -305,6 +303,18 @@ const VendorJobBooking = () => {
       label: "Status",
       options: {
         filter: true,
+        sort: false,
+      },
+    },
+    //15
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },

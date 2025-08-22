@@ -104,10 +104,21 @@ const TomorrowBooking = () => {
     },
     {
       name: "order_ref",
-      label: "ID",
+      label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
+        customBodyRender: (order_ref, tableMeta) => {
+          const branchName = tableMeta.rowData[2];
+          const bookTime = tableMeta.rowData[24];
+          return (
+            <div className="flex flex-col w-32">
+              <span>{order_ref}</span>
+              <span>{branchName}</span>
+              <span>{bookTime}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -115,6 +126,9 @@ const TomorrowBooking = () => {
       label: "Branch",
       options: {
         filter: true,
+        display: "exclude",
+        searchable: true,
+        viewColumns: false,
         sort: true,
       },
     },
@@ -207,6 +221,17 @@ const TomorrowBooking = () => {
       label: "Status",
       options: {
         filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },

@@ -318,9 +318,7 @@ const EditRightSidebar = () => {
             <div className="border rounded-lg p-4 bg-gray-50 h-fit relative">
               {formData.serviceDetails_status === "Inactive" && (
                 <div className="absolute inset-0 bg-gray-200 bg-opacity-70  flex items-center justify-center z-10 rounded-lg">
-                  {/* <div className="bg-white p-3 rounded-lg shadow-lg transform rotate-[-15deg] opacity-90 border-2 border-red-500">
-                    <span className="text-red-600 font-bold text-lg">DISABLED</span>
-                  </div> */}
+      
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     version="1.0"

@@ -88,6 +88,13 @@ const BookingFilter = () => {
       hoverColor: "hover:bg-green-50",
       textColor: "text-green-900",
     },
+    {
+      label: "Website Booking",
+      path: "/website",
+      color: "from-pink-500 to-teal-400",
+      hoverColor: "hover:bg-pink-50",
+      textColor: "text-pink-900",
+    },
   ];
 
   return (
@@ -105,7 +112,9 @@ const BookingFilter = () => {
           >
             {button.label}
             {location.pathname !== button.path && (
-              <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color} group-hover:w-full transition-all duration-300`}></span>
+              <span
+                className={`absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r ${button.color} group-hover:w-full transition-all duration-300`}
+              ></span>
             )}
           </button>
         ))}

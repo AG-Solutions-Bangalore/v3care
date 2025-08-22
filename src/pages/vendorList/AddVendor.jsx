@@ -1,39 +1,33 @@
-import Layout from "../../layout/Layout";
-import axios from "axios";
-import styles from "./AddVendor.module.css";
-import { Person, PhoneIphone, Email, PinDrop } from "@mui/icons-material";
+import { Textarea } from "@material-tailwind/react";
+import { Email, Person, PhoneIphone, PinDrop } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import HouseIcon from "@mui/icons-material/House";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
-import React, { useState, useEffect } from "react";
 import {
-  TextField,
   Autocomplete,
+  Box,
   Checkbox,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useRef } from "react";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CustomInput from "../../components/addVendor/CustomInput";
-import Dropdown from "../../components/addVendor/Dropdown";
-import { BASE_URL } from "../../base/BaseUrl";
-import { Box, Button, Typography } from "@mui/material";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../base/BaseUrl";
+import CustomInput from "../../components/addVendor/CustomInput";
+import Dropdown from "../../components/addVendor/Dropdown";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
-import { Textarea } from "@material-tailwind/react";
-// import { createTheme, ThemeProvider } from "@mui/material/styles";
-// const theme = createTheme();
-
-// theme.typography.h3 = {
-//   fontSize: "1px",
-// };
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
+import styles from "./AddVendor.module.css";
 
 const training = [
   {
@@ -143,7 +137,6 @@ const AddVendor = () => {
 
   const handleChange = (newValue) => {
     setTest(newValue);
-    console.log("check", newValue);
   };
 
   const [vendor_ser_count, setSerCount] = useState(1);
@@ -255,7 +248,6 @@ const AddVendor = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(test, "test");
     if (!test || test.length === 0) {
       toast.error("Please select at least one service.");
       return;
@@ -327,24 +319,6 @@ const AddVendor = () => {
     }
   };
 
-  // const CheckPincode = (test, selectedValue) => {
-  //   const pincode = test.target.value;
-  //   if (pincode.length == "6") {
-  //     fetch("https://api.v3care.in/api/external/pin/" + pincode)
-  //       .then((response) => response.json())
-  //       .then((response) => {
-  //         const tempUsers = [...users1];
-
-  //         tempUsers[selectedValue].vendor_branch_city = response.city;
-  //         tempUsers[selectedValue].vendor_branch_district = response.district;
-  //         tempUsers[selectedValue].vendor_branch_state = response.state;
-  //         setUsers1(tempUsers);
-  //         if (response.areas != null) {
-  //           setLocation(response.areas);
-  //         }
-  //       });
-  //   }
-  // };
   const CheckPincode = async (e, selectedValue) => {
     const pincode = e.target.value;
 
@@ -373,7 +347,6 @@ const AddVendor = () => {
           response?.district || "";
         tempUsers[selectedValue].vendor_branch_state = response?.state || "";
         setUsers1(tempUsers);
-        console.log(response, "response");
         if (response?.areas !== null) {
           setLocation(response?.areas || []);
         } else {
@@ -680,9 +653,6 @@ const AddVendor = () => {
                     required
                     value={user.vendor_branch_pincode}
                     maxLength={6}
-                    // onChange={(e) => {
-                    //   onChange1(e, index), CheckPincode(e, index);
-                    // }}
                     onChange={(e) => {
                       const digitsOnly = e.target.value.replace(/\D/g, "");
                       e.target.value = digitsOnly;

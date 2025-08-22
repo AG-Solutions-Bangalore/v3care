@@ -107,7 +107,6 @@ const BlogsEditMaster = () => {
       }
 
       const slug = generateSlug(value);
-      console.log(slug, "slug");
       setBlog((prevBlog) => ({
         ...prevBlog,
         blogs_heading: value,

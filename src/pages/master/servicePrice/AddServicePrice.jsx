@@ -129,8 +129,6 @@ const AddServicePrice = () => {
     data.append("service_weekend_amount", services.service_weekend_amount);
     data.append("service_holiday_amount", services.service_holiday_amount);
     data.append("branch_id", services.branch_id);
-    // panel-create-service
-    // Submit logic goes here
     axios({
       url: BASE_URL + "/api/panel-create-service-price",
       method: "POST",
@@ -289,7 +287,6 @@ const AddServicePrice = () => {
                 required
                 maxLength={16}
 
-                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
             <div className="form-group">
@@ -302,7 +299,6 @@ const AddServicePrice = () => {
                 required
                 maxLength={16}
 
-                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
           </div>

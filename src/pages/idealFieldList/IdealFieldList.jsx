@@ -64,10 +64,6 @@ const IdealFieldList = () => {
           }
         );
 
-        // const sortedData = response.data?.stock?.sort((a, b) =>
-        //   a.branch_name.localeCompare(b.branch_name)
-        // );
-        // setIdealData(sortedData);
         const rawData = Array.isArray(response?.data?.stock)
           ? response.data.stock
           : [];

@@ -70,22 +70,6 @@ const AddOperationTeam = () => {
       .then((data) => setBranch(data.branch));
   }, []);
 
-  // const onInputChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   if (name === "branch_id") {
-  //     setTeam((prevTeam) => ({
-  //       ...prevTeam,
-  //       branch_id: value,
-  //       view_branch_id: value,
-  //     }));
-  //   } else {
-  //     setTeam((prevTeam) => ({
-  //       ...prevTeam,
-  //       [name]: value,
-  //     }));
-  //   }
-  // };
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "mobile" || name == "user_aadhar_no") {

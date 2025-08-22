@@ -134,6 +134,13 @@ const MasterFilter = () => {
             hoverColor: "hover:bg-yellow-50",
             textColor: "text-black-900",
           },
+          {
+            label: "Email Alert",
+            path: "/email-alert",
+            color: "from-blue-500 to-gray-400",
+            hoverColor: "hover:bg-blue-50",
+            textColor: "text-black-900",
+          },
         ]
       : []),
   ];

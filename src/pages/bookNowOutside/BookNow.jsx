@@ -354,11 +354,9 @@ const BookNow = () => {
       );
 
       if (response.data.code == "200") {
-        console.log("Data Inserted Successfully");
         toast.success("Order created Successfully");
         navigate("/");
       } else {
-        console.log("Duplicate Entry");
         toast.error("Duplicate Entry");
       }
     } catch (error) {

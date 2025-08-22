@@ -79,7 +79,6 @@ const NotificationList = () => {
         customBodyRender: (id, tableMeta) => {
           const tableNot =
             notificationData[tableMeta.rowIndex].notification_status;
-          console.log("table not ", tableNot);
 
           return tableNot == "Active" ? (
             <div className="flex items-center space-x-2">
@@ -98,17 +97,6 @@ const NotificationList = () => {
         },
       },
     },
-    // {
-    //   name: "slNo",
-    //   label: "SL No",
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       return tableMeta.rowIndex + 1;
-    //     },
-    //   },
-    // },
     {
       name: "notification_image",
       label: "Image",

@@ -34,33 +34,7 @@ const ForgetPassword = () => {
 
     return valid;
   };
-  // const onResetPassword = (e) => {
-  //   e.preventDefault();
-
-  //   if (email !== "" && username !== "") {
-  //     setLoading(true); // Start loading
-
-  //     axios(
-  //       `${BASE_URL}/api/panel-send-password?username=${username}&email=${email}`,
-  //       {
-  //         method: "POST",
-  //       }
-  //     )
-  //       .then((response) => response.json())
-  //       .then((response) => {
-  //         toast.success("New Password Sent to your Email");
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //         toast.error(error.response.data.msg, "Email Not sent.");
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   } else {
-  //     toast.warning("Please enter a Username & Email");
-  //   }
-  // };
+  
   const onResetPassword = async (e) => {
     e.preventDefault();
     if (!validate()) return;

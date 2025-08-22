@@ -76,12 +76,7 @@ const RightSidebarList = () => {
     fetchrightSidebarListData();
   }, []);
 
-  // const handleViewCustomerInfo = (e, orderCustomer,orderMobile) => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   localStorage.setItem("page-no", pageParam);
-  //   navigate(`/customer-view/${encodeURIComponent(orderCustomer)}/${orderMobile}`);
-  // };
+
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -189,7 +184,6 @@ const RightSidebarList = () => {
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
-      console.log("Update sort:", id, newSortNumber);
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-service-details-sort/${id}`,
         { newSortNumber },
@@ -218,8 +212,6 @@ const RightSidebarList = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -240,11 +232,6 @@ const RightSidebarList = () => {
         },
       };
     },
-    // onRowClick: (rowData, rowMeta, e) => {
-    //   const orderCustomer = rightSidebarListData[rowMeta.dataIndex].order_customer;
-    //   const orderMobile = rightSidebarListData[rowMeta.dataIndex].order_customer_mobile;
-    //   handleViewCustomerInfo(e, orderCustomer,orderMobile);
-    // },
     customToolbar: () => {
       return (
         <>

@@ -118,6 +118,11 @@ import ClientsEditMaster from "./pages/master/clients/ClientsEditMaster";
 import BlogsMaster from "./pages/master/blogs/BlogsMaster";
 import BlogsEditMaster from "./pages/master/blogs/BlogsEditMaster";
 import BlogsCreateMaster from "./pages/master/blogs/BlogsCreateMaster";
+import WebsiteBooking from "./pages/booking/websitebooking/WebsiteBooking";
+import EmailAlert from "./pages/master/emailAlert/EmailAlert";
+import AMCBookingList from "./pages/amcBooking/AMCBookingList";
+import AddAMCBooking from "./pages/amcBooking/AddAMCBooking";
+import ViewAMCBooking from "./pages/amcBooking/ViewAMCBooking";
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -125,8 +130,8 @@ const App = () => {
     <>
       <ValidationWrapper>
         <ToastContainer />
-        <DisableRightClick />
-        <DevToolsBlocker />
+        {/* <DisableRightClick />
+        <DevToolsBlocker /> */}
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/register" element={<SIgnUp />} />
@@ -150,6 +155,7 @@ const App = () => {
             userType === "7" ||
             userType === "8") && (
             <>
+              <Route path="/view-amc-booking/:id" element={<ViewAMCBooking />} />
               <Route path="/view-booking/:id" element={<ViewBooking />} />
               <Route path="/booking-assign/:id" element={<BookingAssign />} />
               <Route
@@ -184,12 +190,15 @@ const App = () => {
                 element={<PostponeBooking />}
               />
               <Route path="/add-booking" element={<AddBooking />} />
+              <Route path="/add-amcbooking" element={<AddAMCBooking />} />
               <Route path="/cancel" element={<CancelBooking />} />
               <Route path="/completed" element={<CompletedBooking />} />
               <Route path="/confirmed" element={<ConfirmedBooking />} />
               <Route path="/inspection" element={<InspectionBooking />} />
               <Route path="/pending" element={<PendingBooking />} />
               <Route path="/rnr" element={<RnrList />} />
+              <Route path="/website" element={<WebsiteBooking />} />
+              <Route path="/amc-booking" element={<AMCBookingList />} />
               <Route path="/today" element={<TodayBooking />} />
               <Route path="/yesterday" element={<YesterdayBooking />} />
               <Route path="/tomorrow" element={<TomorrowBooking />} />
@@ -293,6 +302,7 @@ const App = () => {
               <Route path="/blogs-create" element={<BlogsCreateMaster />} />
               <Route path="/blogs-edit/:id" element={<BlogsEditMaster />} />
 
+              <Route path="/email-alert" element={<EmailAlert />} />
               <Route
                 path="/right-sidebar-content"
                 element={<RightSidebarList />}

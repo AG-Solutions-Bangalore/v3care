@@ -65,10 +65,6 @@ const IdealFieldListVendor = () => {
           }
         );
 
-        // const sortedData = response.data?.stock.sort((a, b) =>
-        //   a.branch_name.localeCompare(b.branch_name)
-        // );
-        // setIdealData(sortedData);
         const rawData = Array.isArray(response?.data?.stock)
           ? response.data.stock
           : [];
@@ -94,7 +90,6 @@ const IdealFieldListVendor = () => {
   const uniqueBranches = Array.from(
     new Set(idealData.map((item) => item.branch_name))
   );
-  console.log(uniqueBranches, "uniqueBranches");
   const filteredData = idealData
     .filter(
       (data) => selectedBranch === "ALL" || data.branch_name === selectedBranch
@@ -139,7 +134,6 @@ const IdealFieldListVendor = () => {
   };
 
   const fetchMonthData = async (month, year, userId) => {
-    console.log("userid", userId);
     try {
       setModalLoading(true);
       const token = localStorage.getItem("token");

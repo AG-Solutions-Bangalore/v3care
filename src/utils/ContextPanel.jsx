@@ -43,7 +43,6 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // console.log("Current Route:", location.pathname);
 
     if (error) {
       localStorage.clear();
@@ -68,7 +67,6 @@ const AppProvider = ({ children }) => {
     return () => clearInterval(intervalId);
   }, []);
   useEffect(() => {
-    // console.log("Current Route:", location.pathname);
   }, [location.pathname]);
 
   return (

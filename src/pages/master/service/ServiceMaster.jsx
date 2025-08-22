@@ -348,7 +348,6 @@ const ServiceMaster = () => {
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
-      console.log("Update sort:", id, newSortNumber);
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-service-sort/${id}`,
         { newSortNumber },
