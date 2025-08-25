@@ -55,7 +55,6 @@ const BlogsCreateMaster = () => {
   const onInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Validate blogs_heading for slashes
     if (name === "blogs_heading") {
       if (value.includes("/") || value.includes("\\")) {
         setHeadingError("Blog heading cannot contain slashes ( / or \\ )");
@@ -72,8 +71,6 @@ const BlogsCreateMaster = () => {
       }));
       return;
     }
-
-    // Allow only digits in blogs_sorting
     if (name === "blogs_sorting") {
       const onlyDigits = value.replace(/\D/g, "");
       setBlog((prevBlog) => ({
@@ -83,7 +80,6 @@ const BlogsCreateMaster = () => {
       return;
     }
 
-    // Default input handler
     setBlog((prevBlog) => ({
       ...prevBlog,
       [name]: value,

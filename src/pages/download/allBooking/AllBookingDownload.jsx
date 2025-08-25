@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import DownloadFilter from "../../../components/DownloadFilter";
 import { MenuItem, TextField } from "@mui/material";
-import { FiDownload } from "react-icons/fi";
-import { AiOutlineInfoCircle } from "react-icons/ai";
-import {BASE_URL} from "../../../base/BaseUrl";
 import Moment from "moment";
+import { useEffect, useState } from "react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../layout/Layout";
 
 const AllBookingDownload = () => {
-  // Get today's date and first day of month in proper format
   const today = new Date();
   const todayFormatted = today.toISOString().split("T")[0];
   const firstDayOfMonth = Moment().startOf("month").format("YYYY-MM-DD");
@@ -58,7 +55,6 @@ const AllBookingDownload = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Store filter values in localStorage
     localStorage.setItem(
       "booking_date_from",
       downloadBooking.booking_date_from
@@ -66,7 +62,6 @@ const AllBookingDownload = () => {
     localStorage.setItem("booking_date_to", downloadBooking.booking_date_to);
     localStorage.setItem("branch_id", downloadBooking.branch_id);
 
-    // Store branch name if a branch is selected
     const selectedBranch = branch.find(
       (b) => b.id.toString() === downloadBooking.branch_id
     );
@@ -75,8 +70,6 @@ const AllBookingDownload = () => {
     } else {
       localStorage.removeItem("branch_name");
     }
-
-    // Navigate to the view page
     navigate("/view-allBooking");
   };
 

@@ -1,26 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { useNavigate, useParams } from "react-router-dom";
-import { FaBuilding } from "react-icons/fa";
-import { Button, Card, Input } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Card, Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { ContextPanel } from "../../../utils/ContextPanel";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { MdArrowBack, MdSend } from "react-icons/md";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+const status = [
+  { value: "Active", label: "Active" },
+  { value: "Inactive", label: "Inactive" },
+];
 
 const ReferByEditMaster = () => {
   const [referBy, setReferBy] = useState({
@@ -30,10 +25,6 @@ const ReferByEditMaster = () => {
     refer_by_contact_no: "",
   });
 
-  const [status, setStatus] = useState([
-    { value: "Active", label: "Active" },
-    { value: "Inactive", label: "Inactive" },
-  ]);
   UseEscapeKey();
   const { id } = useParams();
   const [loading, setLoading] = useState(false);

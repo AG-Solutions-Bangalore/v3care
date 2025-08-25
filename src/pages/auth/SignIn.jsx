@@ -1,12 +1,12 @@
 import { Carousel, Input, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { useState } from "react";
+import { FaEyeSlash } from "react-icons/fa";
+import { IoEye } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { IoEye } from "react-icons/io5";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");

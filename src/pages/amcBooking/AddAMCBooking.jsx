@@ -21,7 +21,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Fields from "../../components/addBooking/TextField";
-// import Fields from "../../../components/addBooking/TextField";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import UseEscapeKey from "../../utils/UseEscapeKey";
@@ -87,7 +86,6 @@ const AddAMCBooking = () => {
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
   var yyyy = today.getFullYear();
   today = mm + "/" + dd + "/" + yyyy;
-  var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
 
   const [currentYear, setCurrentYear] = useState("");
@@ -461,11 +459,8 @@ const AddAMCBooking = () => {
       order_to_date: booking.order_to_date,
     };
 
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
-
-    var v = document.getElementById("addIdniv").checkValidity();
-    var v = document.getElementById("addIdniv").reportValidity();
+    const elem = document.getElementById("addIdniv");
+    const v = elem.checkValidity() && elem.reportValidity();
 
     if (v) {
       axios({

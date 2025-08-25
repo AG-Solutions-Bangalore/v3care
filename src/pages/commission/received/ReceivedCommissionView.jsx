@@ -1,29 +1,22 @@
-import React, { useContext } from "react";
-import Layout from "../../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
-import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
-  Input,
-  Select,
-  Option,
-  Button,
+  Typography
 } from "@material-tailwind/react";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { ArrowLeft } from "lucide-react";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReceivedCommissionView = () => {
   const { id } = useParams();
@@ -34,11 +27,7 @@ const ReceivedCommissionView = () => {
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
 
-  // no need check at once and remove it
-  const [bookingAssign, setBookingAssign] = useState({});
-  // no need check at once and remove it
   const [vendor, setVendor] = useState({});
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -55,7 +44,6 @@ const ReceivedCommissionView = () => {
         },
       });
       setBooking(response.data?.booking);
-      setBookingAssign(response.data.bookingAssign);
       setVendor(response.data.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
@@ -70,12 +58,12 @@ const ReceivedCommissionView = () => {
 
   const updateData = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true); 
 
     try {
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-comm-status/${id}`,
-        {}, // Empty object since no request body is required
+        {}, 
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

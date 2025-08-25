@@ -43,7 +43,6 @@ const FieldTeamEditMaster = () => {
     user_pancard_no: "",
     user_pancard: "",
     view_branch_id: "",
-    //new
     user_job_skills: "",
     user_designation: null,
     user_training: "",
@@ -57,15 +56,6 @@ const FieldTeamEditMaster = () => {
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   UseEscapeKey();
-
-  const validateOnlyDigits = (inputtxt) => {
-    var phoneno = /^\d+$/;
-    if (inputtxt.match(phoneno) || inputtxt.length == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -132,7 +122,6 @@ const FieldTeamEditMaster = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    // Check required fields
     if (!team.name || !team.mobile) {
       toast.error("Fill all required fields");
       return;
@@ -154,7 +143,6 @@ const FieldTeamEditMaster = () => {
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
       data.append("view_branch_id", team.view_branch_id);
-      //new
       data.append("user_designation", team.user_designation);
       data.append("user_job_skills", team.user_job_skills);
       data.append("user_training", team.user_training);

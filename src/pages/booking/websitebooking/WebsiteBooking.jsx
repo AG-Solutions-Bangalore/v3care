@@ -65,18 +65,15 @@ const WebsiteBooking = () => {
       }
     };
     fetchWebsiteData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    // localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    // localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
   const columns = [
@@ -91,10 +88,6 @@ const WebsiteBooking = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  // onClick={(e) => {
-                  //   e.stopPropagation(); // Prevent row click event
-                  //   navigate(`/edit-booking/${id}`);
-                  // }}
                   onClick={(e) => handleEdit(e, id)}
                   title="edit booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
@@ -550,7 +543,7 @@ const WebsiteBooking = () => {
         style: {
           backgroundColor: backgroundColor,
           borderBottom: "5px solid #f1f7f9",
-          cursor: "pointer", // Add pointer cursor to indicate clickable rows
+          cursor: "pointer",
         },
       };
     },

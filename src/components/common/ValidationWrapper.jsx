@@ -1,14 +1,14 @@
 ﻿import axios from "axios";
 import CryptoJS from "crypto-js";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
 const secretKey = import.meta.env.VITE_SECRET_KEY;
 const validationKey = import.meta.env.VITE_SECRET_VALIDATION;
 
 const ValidationWrapper = ({ children }) => {
-  const [status, setStatus] = useState("pending");
+  const [, setStatus] = useState("pending");
   const navigate = useNavigate();
   const hasValidated = useRef(false);
 
@@ -53,7 +53,6 @@ const ValidationWrapper = ({ children }) => {
 
     validateEnvironment();
   }, [navigate]);
-
 
   return children;
 };

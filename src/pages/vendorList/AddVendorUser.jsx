@@ -1,16 +1,14 @@
-import React, { useState } from "react";
-import { Button, TextField } from "@mui/material";
-import { MdSend } from "react-icons/md";
+import { useState } from "react";
 
-import Layout from "../../layout/Layout";
-import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "@material-tailwind/react";
-import { toast } from "react-toastify";
-import {BASE_URL} from "../../base/BaseUrl";
 import axios from "axios";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddVendorUser = () => {
   const { id } = useParams();
@@ -24,7 +22,6 @@ const AddVendorUser = () => {
     vendor_id: id,
   });
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   UseEscapeKey();
   const onInputChange = (e) => {
     setVendor({
@@ -41,7 +38,7 @@ const AddVendorUser = () => {
     if (!form.checkValidity()) {
       toast.error("Fill all required fields");
       setLoading(false);
-      return; // Stop execution if the form is invalid
+      return; 
     }
 
     const data = {
@@ -146,7 +143,6 @@ const AddVendorUser = () => {
                 type="submit"
                 buttontype="submit"
                 label="Submit"
-                disabled={isButtonDisabled}
                 loading={loading}
                 onClick={onSubmit}
               />

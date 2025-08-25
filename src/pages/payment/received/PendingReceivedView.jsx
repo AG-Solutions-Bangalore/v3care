@@ -9,7 +9,7 @@ import {
   CardBody,
   Typography
 } from "@material-tailwind/react";
-import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
@@ -25,9 +25,7 @@ const PendingReceivedView = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   UseEscapeKey();
-  const [bookingAssign, setBookingAssign] = useState({});
   const navigate = useNavigate();
-  const [vendor, setVendor] = useState({});
   const { userType } = useContext(ContextPanel);
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -45,8 +43,6 @@ const PendingReceivedView = () => {
         },
       });
       setBooking(response.data?.booking);
-      setBookingAssign(response.data.bookingAssign);
-      setVendor(response.data.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {
@@ -60,7 +56,7 @@ const PendingReceivedView = () => {
 
   const updateData = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true); 
     setIsButtonDisabled(true);
     try {
       const res = await axios.put(
@@ -83,7 +79,7 @@ const PendingReceivedView = () => {
       console.error("Error updating received status:", error);
       toast.error("Error updating received status");
     } finally {
-      setLoading(false); // Stop loading in all cases
+      setLoading(false); 
       setIsButtonDisabled(false);
     }
   };
@@ -95,7 +91,6 @@ const PendingReceivedView = () => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {" "}
-            {/* Adjust to 3 columns */}
             <div className="space-y-2">
               <Typography className="text-black">
                 <strong>ID:</strong> {booking.order_ref} ({booking.order_status}
@@ -169,7 +164,6 @@ const PendingReceivedView = () => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {" "}
-            {/* Adjust to 3 columns */}
             <div className="space-y-2">
               <Typography className="text-black">
                 <strong>Remarks:</strong> {booking.order_remarks}
@@ -234,7 +228,6 @@ const PendingReceivedView = () => {
           <div className="flex-grow">
             <div className="mb-2">
               <div className="flex justify-start space-x-4 ">
-                {/* Home Deep Cleaning Button */}
                 <button
                   onClick={() => setActiveTab("bookingDetails")}
                   className={`flex items-center gap-2 px-4 py-2 font-semibold rounded-lg border-b-4 ${

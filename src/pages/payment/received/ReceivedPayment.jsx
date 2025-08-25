@@ -313,7 +313,7 @@ const ReceivedPayment = () => {
       const id = receivedData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

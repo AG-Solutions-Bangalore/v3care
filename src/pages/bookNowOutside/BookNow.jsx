@@ -293,18 +293,18 @@ const BookNow = () => {
     const url = addressObject.url;
     updateQuery(query);
 
-    var addressComponents = addressObject.address_components;
-    var city = addressComponents.find((component) =>
-      component.types.includes("locality")
-    );
+    // var addressComponents = addressObject.address_components;
+    // var city = addressComponents.find((component) =>
+    //   component.types.includes("locality")
+    // );
 
-    const latLng = {
-      lat: addressObject?.geometry?.location?.lat(),
-      lng: addressObject?.geometry?.location?.lng(),
-    };
+    // const latLng = {
+    //   lat: addressObject?.geometry?.location?.lat(),
+    //   lng: addressObject?.geometry?.location?.lng(),
+    // };
 
     setQuery1(url);
-    setSelectedLocation(latLng);
+    // setSelectedLocation(latLng);
   };
 
   useEffect(() => {
@@ -329,7 +329,7 @@ const BookNow = () => {
     }
 
     setIsButtonDisabled(true);
-    setLoading(true); // Start loading
+    setLoading(true); 
 
     const formData = new FormData();
 

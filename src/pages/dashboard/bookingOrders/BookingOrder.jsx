@@ -59,7 +59,7 @@ const BookingOrder = ({ datas, loading, fetchData }) => {
                 color="blue-gray"
                 className="font-medium"
               >
-                Tomorrow's Booking Orders
+                Tomorrow&apos;s Booking Orders{" "}
               </Typography>
             </div>
 

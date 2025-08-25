@@ -1,4 +1,5 @@
 import axios from "axios";
+import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,13 +7,11 @@ import { BASE_URL } from "../../base/BaseUrl";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import Layout from "../../layout/Layout";
 import UseEscapeKey from "../../utils/UseEscapeKey";
-import Moment from "moment";
 
 const WebEnquiry = () => {
   const [webenquirydata, setWEbEnquiryData] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  //
   const location = useLocation();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -122,7 +121,7 @@ const WebEnquiry = () => {
       setPage(currentPage);
       navigate(`/web-enquiry?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

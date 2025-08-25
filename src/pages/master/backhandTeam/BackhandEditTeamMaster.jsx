@@ -52,7 +52,6 @@ const BackhandEditTeamMaster = () => {
     user_aadhar: "",
     user_pancard_no: "",
     user_pancard: "",
-    //new
     user_job_skills: null,
     user_designation: "",
     user_training: "",
@@ -138,7 +137,7 @@ const BackhandEditTeamMaster = () => {
     if (
       branch.length &&
       viewBranchIds.length &&
-      ViewBranchId.length === 0 // ✅ don't re-set if already filled
+      ViewBranchId.length === 0 
     ) {
       const selectedBranchObjects = branch.filter((b) =>
         viewBranchIds.includes(b.id)
@@ -162,7 +161,6 @@ const BackhandEditTeamMaster = () => {
 
     const form = document.getElementById("addIndiv");
 
-    // Check if form is valid
     if (!form.checkValidity()) {
       toast.error("Fill all required fields");
       setLoading(false);
@@ -187,8 +185,6 @@ const BackhandEditTeamMaster = () => {
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
       data.append("view_branch_id", selectedServiceValues);
-
-      //new
       data.append("user_designation", team.user_designation);
       data.append("user_job_skills", team.user_job_skills);
       data.append("user_training", team.user_training);

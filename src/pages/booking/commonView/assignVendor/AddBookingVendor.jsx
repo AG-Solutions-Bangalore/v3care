@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../../layout/Layout";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Input } from "@material-tailwind/react";
-import { MdArrowBack, MdSend } from "react-icons/md";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { toast } from "react-toastify";
-import {BASE_URL} from "../../../../base/BaseUrl";
+import { Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import BookingFilter from "../../../../components/BookingFilter";
-import UseEscapeKey from "../../../../utils/UseEscapeKey";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../../layout/Layout";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const AddBookingVendor = () => {
   const { id } = useParams();
 
@@ -53,12 +52,12 @@ const AddBookingVendor = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
       toast.error("Fill all required");
-      setLoading(false); 
+      setLoading(false);
       return;
     }
 
@@ -85,16 +84,21 @@ const AddBookingVendor = () => {
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg || "Booking User Created Successfully");
+        toast.success(
+          response.data?.msg || "Booking User Created Successfully"
+        );
         navigate(`/assign-vendor/${id}`);
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
-      toast.error("An error occurred while processing your request");
+      toast.error(
+        error.response.data.message ||
+          "An error occurred while processing your request"
+      );
     } finally {
       setLoading(false);
-      setIsButtonDisabled(false); 
+      setIsButtonDisabled(false);
     }
   };
 

@@ -33,7 +33,7 @@
   .file-input label {
     font-weight: bold;
   }
-  /* // */
+
   .fileupload {
     width: 100%;
     padding: 9px 15px 15px 15px;
@@ -57,9 +57,6 @@
     font-size: 16px;
     color: rgba(0, 0, 0, 0.6);
   }
-  
-  /* // */
-  
   .adornment-input {
     display: flex;
     align-items: center;

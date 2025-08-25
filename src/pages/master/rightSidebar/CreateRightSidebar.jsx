@@ -1,17 +1,17 @@
-import { Input, Textarea } from "@material-tailwind/react";
+import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import MasterFilter from "../../../components/MasterFilter";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 const customStyles = {
   control: (provided) => ({
@@ -66,12 +66,10 @@ const CreateRightSidebar = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [showFullText, setShowFullText] = useState(false);
   const navigate = useNavigate();
 
   UseEscapeKey();
 
-  // Fetch  services
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -93,7 +91,6 @@ const CreateRightSidebar = () => {
     fetchServices();
   }, []);
 
-  // Fetch sub services
   useEffect(() => {
     const fetchSubServices = async () => {
       try {

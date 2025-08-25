@@ -72,12 +72,6 @@ const EmailAlert = () => {
   useEffect(() => {
     fetchrightSidebarListData();
   }, []);
-  const handleEdit = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/email-alert-edit/${id}`);
-  };
   const handleToggleStatus = async (id, field, currentStatus) => {
     const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
     setEmailAlertListData((prev) =>
@@ -260,7 +254,7 @@ const EmailAlert = () => {
       setPage(currentPage);
       navigate(`/email-alert?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

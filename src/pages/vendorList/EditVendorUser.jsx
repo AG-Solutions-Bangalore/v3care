@@ -1,15 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-import { MdSend } from "react-icons/md";
-
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../base/BaseUrl";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../utils/ContextPanel";
 import UseEscapeKey from "../../utils/UseEscapeKey";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 const status = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
@@ -28,7 +26,6 @@ const EditVendorUser = () => {
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     const fetchEditVendorUserData = async () => {
@@ -65,7 +62,6 @@ const EditVendorUser = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setIsButtonDisabled(true);
     let data = {
       name: vendor.name,
       mobile: vendor.mobile,

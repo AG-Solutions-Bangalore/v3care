@@ -1,11 +1,9 @@
 import {
-  Button,
   Dialog,
   DialogBody,
   DialogFooter,
-  DialogHeader,
+  DialogHeader
 } from "@material-tailwind/react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonConfigColor from "./common/ButtonConfig/ButtonConfigColor";
 

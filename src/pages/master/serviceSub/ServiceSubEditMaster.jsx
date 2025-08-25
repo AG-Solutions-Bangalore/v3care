@@ -140,7 +140,7 @@ const ServiceSubEditMaster = () => {
 
           navigate(`/service-sub?page=${pageNo}`);
         } else {
-          toast.error(response.data?.msg || "duplicate entry");
+          toast.error(res.data?.msg || "duplicate entry");
         }
       } catch (error) {
         console.error("Error updating service:", error);

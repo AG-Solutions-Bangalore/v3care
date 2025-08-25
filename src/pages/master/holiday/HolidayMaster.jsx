@@ -18,7 +18,6 @@ const HolidayMaster = () => {
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
-  //
   const location = useLocation();
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
@@ -137,7 +136,7 @@ const HolidayMaster = () => {
       setPage(currentPage);
       navigate(`/holiday?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import Layout from "../../../layout/Layout";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { Download, FileText, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 import moment from "moment";
-import { Button } from "@material-tailwind/react";
+import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../layout/Layout";
 
 const ViewAllBooking = () => {
   const [bookingData, setBookingData] = useState(null);
@@ -105,8 +104,6 @@ const ViewAllBooking = () => {
       </Layout>
     );
   }
-
-  // Calculate the pending amount
   const pendingAmount =
     bookingData.booking_total_amount -
     (bookingData.booking_total_v3_receied_amount +

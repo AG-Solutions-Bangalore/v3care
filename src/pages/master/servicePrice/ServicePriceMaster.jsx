@@ -1,5 +1,4 @@
 import axios from "axios";
-import { View } from "lucide-react";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -15,7 +14,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ServicePriceMaster = () => {
   const [servicePriceData, setServicePriceData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -60,11 +59,6 @@ const ServicePriceMaster = () => {
     };
     fetchServicePriceData();
   }, []);
-  const handleEdit = (e, id) => {
-    e.preventDefault();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/service-price-edit/${id}`);
-  };
   const handleViewServiceInfo = (e, service_id, service_sub_id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -106,7 +100,7 @@ const ServicePriceMaster = () => {
       navigate(`/service-price?page=${currentPage + 1}`);
     },
 
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

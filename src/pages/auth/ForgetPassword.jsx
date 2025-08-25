@@ -1,10 +1,10 @@
-import { Input, Button, Typography } from "@material-tailwind/react";
+import { Input, Typography } from "@material-tailwind/react";
+import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../../base/BaseUrl";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
-import axios from "axios";
 
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");

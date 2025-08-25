@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import PaymentFilter from "../../../components/PaymentFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import PaymentFilter from "../../../components/PaymentFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
 
 import Moment from "moment";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingPayment = () => {
   const [pendingData, setPendingData] = useState(null);
@@ -313,7 +312,7 @@ const PendingPayment = () => {
       const id = pendingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

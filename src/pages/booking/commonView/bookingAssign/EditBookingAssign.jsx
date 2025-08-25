@@ -1,19 +1,16 @@
-import React, { useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { useState } from "react";
-import { MdUpdate } from "react-icons/md";
-import { Button, TextField } from "@mui/material";
-import {BASE_URL} from "../../../../base/BaseUrl";
-import axios from "axios";
-import { ContextPanel } from "../../../../utils/ContextPanel";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../../utils/UseEscapeKey";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import BookingFilter from "../../../../components/BookingFilter";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../../layout/Layout";
+import { ContextPanel } from "../../../../utils/ContextPanel";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const EditBookingAssign = () => {
   const { id } = useParams();
 
@@ -25,7 +22,6 @@ const EditBookingAssign = () => {
     order_assign_status: "",
   });
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [assignUserP, setAssignUserP] = useState([]);
   UseEscapeKey();
   const [loading, setLoading] = useState(false);
@@ -90,7 +86,6 @@ const EditBookingAssign = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic
     let data = {
       order_user_id: bookingUser.order_user_id,
       order_start_time: bookingUser.order_start_time,
@@ -202,7 +197,6 @@ const EditBookingAssign = () => {
                 type="edit"
                 buttontype="submit"
                 label="Update"
-                disabled={isButtonDisabled}
                 loading={loading}
               />
 

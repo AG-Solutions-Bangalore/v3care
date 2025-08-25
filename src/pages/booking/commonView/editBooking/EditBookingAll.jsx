@@ -12,9 +12,17 @@ import {
   Textarea,
   Typography,
 } from "@material-tailwind/react";
-import { Dialog, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { FaHome, FaInfoCircle } from "react-icons/fa"; 
+import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
@@ -67,8 +75,6 @@ const EditBookingAll = () => {
   var yyyy = today.getFullYear();
 
   today = mm + "/" + dd + "/" + yyyy;
-  var midate = "04/04/2022";
-  var todayback = yyyy + "-" + mm + "-" + dd;
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
     order_status: "",
@@ -85,9 +91,6 @@ const EditBookingAll = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   const [followup, setFollowUp] = useState([]);
-  const storedPageNo = localStorage.getItem("page-no");
-  const pageNo =
-    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const [followups, setFollowUps] = useState({
     order_followup_date: moment().format("YYYY-MM-DD"),
     order_followup_description: "",
@@ -282,10 +285,10 @@ const EditBookingAll = () => {
     print: false,
     search: false,
     filter: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
+          borderBottom: "10px solid #f1f7f9",
         },
       };
     },
@@ -409,7 +412,6 @@ const EditBookingAll = () => {
           <div>
             <div className="mt-5">
               <MUIDataTable
-                // title={"Followup"}
                 data={followup ? followup : []}
                 columns={columns}
                 options={options}
@@ -619,7 +621,7 @@ const EditBookingAll = () => {
                                 booking.order_status
                               )}
                             >
-                              {branch.map((data, key) => (
+                              {branch.map((data) => (
                                 <MenuItem key={data.id} value={data.id}>
                                   {data.branch_name}
                                 </MenuItem>
@@ -650,7 +652,6 @@ const EditBookingAll = () => {
                       </div>
 
                       <div>
-                    
                         <FormControl fullWidth>
                           <InputLabel id="order_time-label">
                             <span className="text-sm relative bottom-[6px]">

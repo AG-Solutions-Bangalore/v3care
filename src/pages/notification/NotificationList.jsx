@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { ContextPanel } from "../../utils/ContextPanel";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL, NO_IMAGE_URL, NOTIFICATION_IMAGE} from "../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import MUIDataTable from "mui-datatables";
+import { RefreshCw } from "lucide-react";
 import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import { RefreshCw, SquarePen } from "lucide-react";
+import { BASE_URL, NO_IMAGE_URL, NOTIFICATION_IMAGE } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import Layout from "../../layout/Layout";
+import { ContextPanel } from "../../utils/ContextPanel";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const NotificationList = () => {
   const [notificationData, setNotificationData] = useState(null);
@@ -154,7 +153,7 @@ const NotificationList = () => {
     viewColumns: true,
     download: false,
     print: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

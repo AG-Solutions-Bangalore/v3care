@@ -1,30 +1,24 @@
-import React, { useContext, useState } from "react";
 import {
   Card,
   CardBody,
-  Typography,
-  CardHeader,
-  Input,
   CardFooter,
-  Button,
+  Input
 } from "@material-tailwind/react";
-import Layout from "../../layout/Layout";
-import { useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../utils/ContextPanel";
-import { toast } from "react-toastify";
 import axios from "axios";
-import { BASE_URL } from "../../base/BaseUrl";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { useState } from "react";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -48,7 +42,6 @@ const ChangePassword = () => {
       return;
     }
 
-    setLoading(true);
 
     const formData = new FormData();
     formData.append("username", localStorage.getItem("username"));
@@ -76,7 +69,6 @@ const ChangePassword = () => {
       toast.error("An err occured during Forget Passoword");
     }
 
-    setLoading(false);
   };
   return (
     <Layout>
@@ -85,15 +77,6 @@ const ChangePassword = () => {
       <div className="mt-2 mb-8 flex flex-col gap-12">
         <Card>
           <CardBody className="flex flex-row gap-4">
-            {/* <Input
-              type="password"
-              label="Old Password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              size="lg"
-              color="blue"
-              required
-            /> */}
             <div className="relative w-full">
               <Input
                 id="password"
@@ -140,24 +123,7 @@ const ChangePassword = () => {
                 )}
               </button>
             </div>
-            {/* <Input
-              type="password"
-              label="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              size="lg"
-              color="blue"
-              required
-            /> */}
-            {/* <Input
-              type="password"
-              label="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              size="lg"
-              color="blue"
-              required
-            /> */}
+           
 
             <div className="relative w-full">
               <Input

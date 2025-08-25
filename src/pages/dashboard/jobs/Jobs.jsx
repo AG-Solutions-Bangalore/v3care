@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  FaSearchLocation,
+  FaCalendarAlt,
   FaCheckCircle,
+  FaFlag,
+  FaSearchLocation,
+  FaSpinner,
   FaTools,
   FaTruck,
-  FaSpinner,
-  FaFlag,
-  FaCalendarAlt,
 } from "react-icons/fa";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { toast } from "react-toastify";
-import { MdOutlineWorkOutline } from "react-icons/md";
 import { FiLoader } from "react-icons/fi";
+import { MdOutlineWorkOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const JobCard = ({ title, value, icon: Icon, status, loading }) => {
@@ -143,7 +140,9 @@ const Jobs = ({ datas, loading, userType }) => {
             <FaCalendarAlt className="text-red-600 text-lg" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Today's Jobs </h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              Today&apos;s Jobs
+            </h2>
           </div>
         </div>
       </div>

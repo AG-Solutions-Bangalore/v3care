@@ -1,27 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { Input } from "@material-tailwind/react";
 import {
-  Autocomplete,
-  Button,
   Checkbox,
   FormControl,
-  InputAdornment,
   InputLabel,
   ListItemText,
   MenuItem,
-  Select,
-  TextField,
-  Typography,
+  Select
 } from "@mui/material";
-import styles from "../booking/addBooking/AddBooking.module.css";
 import axios from "axios";
-import { Input } from "@material-tailwind/react";
-import Fields from "../../components/addBooking/TextField";
-import {BASE_URL} from "../../base/BaseUrl";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../public/img/v3logo.png";
 import { toast } from "react-toastify";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import logo from "../../../public/img/v3logo.png";
+import { BASE_URL } from "../../base/BaseUrl";
+import Fields from "../../components/addBooking/TextField";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import styles from "../booking/addBooking/AddBooking.module.css";
 
 const BecomePartner = () => {
   const navigate = useNavigate();
@@ -71,7 +66,7 @@ const BecomePartner = () => {
 
   const useTemplate = { vendor_service: "" };
 
-  const [users, setUsers] = useState([useTemplate]);
+  const [users] = useState([useTemplate]);
 
   const useTemplate1 = {
     vendor_branch_flat: "",
@@ -87,7 +82,7 @@ const BecomePartner = () => {
   const [users1, setUsers1] = useState([useTemplate1]);
   const useTemplate2 = { vendor_area: "" };
 
-  const [users2, setUsers2] = useState([useTemplate2]);
+  const [users2] = useState([useTemplate2]);
 
   const [location, setLocation] = useState([]);
 
@@ -193,8 +188,6 @@ const BecomePartner = () => {
     appendUserData(users1, "vendor_branch_data");
     appendUserData(users2, "vendor_area_data");
 
-    const url = new URL(window.location.href);
-    const id = url.searchParams.get("id");
 
     try {
       const response = await axios.post(
@@ -278,9 +271,6 @@ const BecomePartner = () => {
     }
   };
 
-  const handleBackButton = () => {
-    navigate("/");
-  };
 
   return (
     <div className="bg-gray-200 ">

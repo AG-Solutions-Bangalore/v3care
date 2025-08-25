@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import {
   FaHome,
   FaInfoCircle
-} from "react-icons/fa"; 
+} from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../../base/BaseUrl";
@@ -98,8 +98,6 @@ const EditBookingInspection = () => {
   var yyyy = today.getFullYear();
 
   today = mm + "/" + dd + "/" + yyyy;
-  var midate = "04/04/2022";
-  var todayback = yyyy + "-" + mm + "-" + dd;
   const navigate = useNavigate();
   const [booking, setBooking] = useState({
     order_status: "",
@@ -130,13 +128,9 @@ const EditBookingInspection = () => {
     }));
   };
   const [paymentmode, setPaymentMode] = useState([]);
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
-
-  // Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (
@@ -205,7 +199,6 @@ const EditBookingInspection = () => {
       .then((response) => response.json())
       .then((data) => setTimeSlot(data.timeslot));
   }, []);
-  // Handle form submission
   const onSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -285,10 +278,10 @@ const EditBookingInspection = () => {
     print: false,
     search: false,
     filter: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
+          borderBottom: "10px solid #f1f7f9", 
         },
       };
     },
@@ -558,7 +551,6 @@ const EditBookingInspection = () => {
                         id="service-select"
                         name="order_status"
                         value={booking.order_status}
-                        // defaultValue={booking.order_status}
                         onChange={(e) => onInputChange(e)}
                         label="Booking Status *"
                         required

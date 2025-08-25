@@ -1,32 +1,32 @@
-import Layout from "../../layout/Layout";
-import React, { useRef, useState, useEffect, useContext } from "react";
-import { FaFileDownload, FaPrint } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
-import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
-import { BASE_URL, VENDOR_ADAHAR_BACK_URL, VENDOR_ADAHAR_FRONT_URL, VENDOR_GST_URL, VENDOR_IMAGE_URL } from "../../base/BaseUrl";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import { Card, CardBody } from "@material-tailwind/react";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { useContext, useEffect, useRef, useState } from "react";
+import { FaFileDownload } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
+import {
+  BASE_URL,
+  VENDOR_ADAHAR_BACK_URL,
+  VENDOR_ADAHAR_FRONT_URL,
+  VENDOR_GST_URL,
+  VENDOR_IMAGE_URL,
+} from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import { ContextPanel } from "../../utils/ContextPanel";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const ViewVendor = () => {
   const componentRef = useRef();
   const { id } = useParams();
   UseEscapeKey();
-  // Custom state for vendor data
   const [vendor, setVendor] = useState({});
   const [vendorArea, setVendorArea] = useState([]);
   const [vendorService, setVendorService] = useState([]);
   const [vendorBranch, setVendorBranch] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
-  const storedPageNo = localStorage.getItem("page-no");
-  const pageNo =
-    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const navigate = useNavigate();
   useEffect(() => {
     const fetchVendorViewData = async () => {
@@ -104,8 +104,7 @@ const ViewVendor = () => {
               <button
                 onClick={() =>
                   window.open(
-                    `${VENDOR_ADAHAR_FRONT_URL}/` +
-                    vendor?.vendor_aadhar_front,
+                    `${VENDOR_ADAHAR_FRONT_URL}/` + vendor?.vendor_aadhar_front,
                     "_blank"
                   )
                 }
@@ -119,8 +118,7 @@ const ViewVendor = () => {
               <button
                 onClick={() =>
                   window.open(
-                    `${VENDOR_ADAHAR_BACK_URL}/` +
-                    vendor?.vendor_aadhar_back,
+                    `${VENDOR_ADAHAR_BACK_URL}/` + vendor?.vendor_aadhar_back,
                     "_blank"
                   )
                 }
@@ -135,8 +133,7 @@ const ViewVendor = () => {
               <button
                 onClick={() =>
                   window.open(
-                    `${VENDOR_GST_URL}/` +
-                    vendor?.vendor_aadhar_gst,
+                    `${VENDOR_GST_URL}/` + vendor?.vendor_aadhar_gst,
                     "_blank"
                   )
                 }
@@ -144,15 +141,14 @@ const ViewVendor = () => {
               >
                 <div className="flex items-center">
                   <FaFileDownload className="mr-1" />
-                 GST
+                  GST
                 </div>
               </button>
 
               <button
                 onClick={() =>
                   window.open(
-                    `${VENDOR_IMAGE_URL}/` +
-                    vendor?.vendor_images,
+                    `${VENDOR_IMAGE_URL}/` + vendor?.vendor_images,
                     "_blank"
                   )
                 }
@@ -160,7 +156,7 @@ const ViewVendor = () => {
               >
                 <div className="flex items-center">
                   <FaFileDownload className="mr-1" />
-                Vendor
+                  Vendor
                 </div>
               </button>
             </div>

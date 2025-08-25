@@ -1,25 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import MUIDataTable from "mui-datatables";
-import { CiSquarePlus } from "react-icons/ci";
-import Moment from "moment";
-import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const YesterdayBooking = () => {
   const [yesterdayBookingData, setYesterdayBookingData] = useState(null);
 
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -44,8 +43,6 @@ const YesterdayBooking = () => {
   }, [location]);
   UseEscapeKey();
 
-  // Modal state management
-
   useEffect(() => {
     const fetchYesterdayData = async () => {
       try {
@@ -68,18 +65,15 @@ const YesterdayBooking = () => {
       }
     };
     fetchYesterdayData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    // localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking/${id}`);
   };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    // localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
   const columns = [
@@ -549,7 +543,7 @@ const YesterdayBooking = () => {
         style: {
           backgroundColor: backgroundColor,
           borderBottom: "5px solid #f1f7f9",
-          cursor: "pointer", // Add pointer cursor to indicate clickable rows
+          cursor: "pointer",
         },
       };
     },

@@ -1,6 +1,4 @@
-import { InputAdornment } from "@mui/material";
-import { Autocomplete, TextField } from "@mui/material";
-import React from "react";
+import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 
 const Dropdown = ({
   label,
@@ -11,10 +9,8 @@ const Dropdown = ({
   name,
   onChange,
 }) => {
-  // Find the selected option to display in the input
   const selectedOption =
     options.find((option) => option.value === value) || null;
-  const RequiredIndicator = () => <p sx={{ color: "red" }}>*</p>;
   return (
     <div>
       <Autocomplete

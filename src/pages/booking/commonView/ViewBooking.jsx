@@ -11,7 +11,7 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
-import { FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import { FaClipboardList, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
@@ -42,9 +42,6 @@ const ViewBooking = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const storedPageNo = localStorage.getItem("page-no");
-  const pageNo =
-    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   const onInputChange1 = (e) => {
     const { name, value } = e.target;
     setFollowUps((prev) => ({
@@ -148,10 +145,10 @@ const ViewBooking = () => {
     print: false,
     search: false,
     filter: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
+          borderBottom: "10px solid #f1f7f9",
         },
       };
     },
@@ -575,7 +572,7 @@ const ViewBooking = () => {
                 label="Order Follow up Date"
                 name="order_followup_date"
                 value={followups.order_followup_date}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange1}
                 type="date"
                 disabled
                 labelProps={{

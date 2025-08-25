@@ -1,15 +1,12 @@
+import { Input } from "@material-tailwind/react";
 import {
   Checkbox,
   FormControl,
-  InputAdornment,
   InputLabel,
   ListItemText,
   MenuItem,
-  Select,
-  TextField,
-  Typography,
+  Select
 } from "@mui/material";
-import { Input } from "@material-tailwind/react";
 
 const Fields = (props) => {
   return (
@@ -141,11 +138,11 @@ const Fields = (props) => {
               labelId="service-select-label"
               id="service-select"
               name={props.name}
-              value={props.value} // Ensure this is an array for multi-select
+              value={props.value}
               label={props.title}
               onChange={props.onchange}
-              multiple // Enables multi-select
-              renderValue={(selected) => selected.join(", ")} // Renders selected values
+              multiple 
+              renderValue={(selected) => selected.join(", ")} 
               {...props}
               required={props.required === true || props.required === "true"}
             >

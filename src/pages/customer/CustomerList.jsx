@@ -1,21 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../utils/ContextPanel";
 import axios from "axios";
+import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { IoIosArrowBack, IoIosArrowForward, IoMdPeople } from "react-icons/io";
-import { CiEdit } from "react-icons/ci";
-import { FiUserPlus, FiUsers } from "react-icons/fi";
-import { RiEditLine } from "react-icons/ri";
-import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import { SquarePen } from "lucide-react";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const CustomerList = () => {
      const [customerListData, setCustomerListData] = useState(null);
@@ -39,7 +30,6 @@ const CustomerList = () => {
           }
         }
       }, [location]);
-      const { isPanelUp, userType } = useContext(ContextPanel);
       const navigate = useNavigate();
       UseEscapeKey();
       useEffect(() => {
@@ -120,7 +110,7 @@ const CustomerList = () => {
           setPage(currentPage);
           navigate(`/customer?page=${currentPage + 1}`);
         },
-        setRowProps: (rowData) => {
+        setRowProps: () => {
           return {
             style: {
               borderBottom: "10px solid #f1f7f9",

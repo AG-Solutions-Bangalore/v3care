@@ -1,23 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MUIDataTable from "mui-datatables";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { BASE_URL } from "../../../base/BaseUrl";
 import axios from "axios";
 import Moment from "moment";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSquarePlus } from "react-icons/ci";
-import BookingFilter from "../../../components/BookingFilter";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
+import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const CancelBooking = () => {
   const [cancelBookData, setCancelBookData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -300,7 +295,7 @@ const CancelBooking = () => {
       const id = cancelBookData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

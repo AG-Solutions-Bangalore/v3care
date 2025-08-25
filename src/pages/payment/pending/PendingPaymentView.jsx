@@ -11,7 +11,8 @@ import {
   Textarea,
   Typography,
 } from "@material-tailwind/react";
-import { FaHome, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
@@ -19,7 +20,6 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const PendingPaymentView = () => {
   const { id } = useParams();
@@ -34,8 +34,6 @@ const PendingPaymentView = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   const { userType } = useContext(ContextPanel);
-  const [bookingAssign, setBookingAssign] = useState({});
-  const [vendor, setVendor] = useState({});
   const [paymentModes, setPaymentModes] = useState([]);
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const storedPageNo = localStorage.getItem("page-no");
@@ -52,8 +50,6 @@ const PendingPaymentView = () => {
         },
       });
       setBooking(response.data?.booking);
-      setBookingAssign(response.data.bookingAssign);
-      setVendor(response.data.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {
@@ -90,7 +86,7 @@ const PendingPaymentView = () => {
   };
   const updateData = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true); 
 
     try {
       const res = await axios.put(

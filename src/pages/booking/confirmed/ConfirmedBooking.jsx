@@ -1,26 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { CiSquarePlus } from "react-icons/ci";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import MUIDataTable from "mui-datatables";
-import Moment from "moment";
-import BookingFilter from "../../../components/BookingFilter";
 
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
-  const [assignmentData, setAssignmentData] = useState({});
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -67,7 +64,6 @@ const ConfirmedBooking = () => {
       }
     };
     fetchConfirmData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();

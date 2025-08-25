@@ -44,7 +44,6 @@ const AddBackhandTeam = () => {
     user_pancard: "",
     user_type: "5",
     remarks: "",
-    //new
     user_job_skills: null,
     user_designation: "",
     user_training: "",
@@ -115,7 +114,6 @@ const AddBackhandTeam = () => {
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
       data.append("view_branch_id", selectedServiceValues);
-      //new
       data.append("user_designation", team.user_designation);
       data.append("user_job_skills", team.user_job_skills);
       data.append("user_training", team.user_training);
@@ -135,7 +133,6 @@ const AddBackhandTeam = () => {
       if (response.data.code == "200") {
         toast.success(response.data?.msg || "Create successful!");
 
-        // Reset form fields
         setTeam({
           name: "",
           mobile: "",
@@ -149,7 +146,6 @@ const AddBackhandTeam = () => {
           remarks: "",
         });
 
-        // Navigate to the next page
         navigate("/backhand-team");
       } else {
         toast.error(response.data?.msg || "Duplicate Entry");
@@ -159,7 +155,6 @@ const AddBackhandTeam = () => {
       toast.error("Something went wrong. Please try again.");
       setLoading(false);
     } finally {
-      // Re-enable button after request completes
       setLoading(false);
       setIsButtonDisabled(false);
     }
@@ -172,7 +167,6 @@ const AddBackhandTeam = () => {
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
-            {/* Full Name Field */}
             <div>
               <Input
                 label="Full Name"
@@ -185,7 +179,6 @@ const AddBackhandTeam = () => {
                 className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
               />
             </div>
-            {/* Mobile No Field */}
             <div>
               <Input
                 label="Mobile No"
@@ -199,7 +192,7 @@ const AddBackhandTeam = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-            {/* Email Id Field */}
+            
             <div>
               <Input
                 label="Email Id"
@@ -211,7 +204,7 @@ const AddBackhandTeam = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-            {/* Branch Select Field (conditional) */}
+         
             {(userType == "6" || userType == "8") && (
               <>
                 <FormControl fullWidth>
@@ -291,7 +284,7 @@ const AddBackhandTeam = () => {
                 </Box>
               </>
             )}
-            {/* Aadhar No Field */}
+   
             <div>
               <Input
                 label="Aadhar No"
@@ -303,7 +296,7 @@ const AddBackhandTeam = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-            {/* Aadhar Photo Upload */}
+           
             <div>
               <Input
                 label="Aadhar Photo"
@@ -336,7 +329,6 @@ const AddBackhandTeam = () => {
                 )}
               </InputMask>
             </div>
-            {/* Pancard Photo Upload */}
             <div>
               <Input
                 label="PAN Photo"
@@ -377,7 +369,6 @@ const AddBackhandTeam = () => {
                 ))}
               </Select>
             </FormControl>{" "}
-            {/* Remarks Field */}
             <div>
               <Input
                 label="Trained By"
@@ -407,7 +398,6 @@ const AddBackhandTeam = () => {
                 className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
               />
             </div>
-            {/* Remarks Field */}
             <div className="col-span-2">
               <Textarea
                 label="Remarks"

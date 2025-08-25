@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-import Layout from "../../../layout/Layout";
-import DownloadFilter from "../../../components/DownloadFilter";
 import { MenuItem, TextField } from "@mui/material";
-import { FiDownload } from "react-icons/fi";
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
+import { useState } from "react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { BASE_URL } from "../../../base/BaseUrl";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../layout/Layout";
 
 const VendorDownload = () => {
   const [downloadVendor, setDownloadVendor] = useState({ vendor_status: "" });
@@ -41,7 +39,6 @@ const VendorDownload = () => {
         responseType: "blob",
       });
 
-      // Create download link
       const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -51,7 +48,6 @@ const VendorDownload = () => {
       link.remove();
     } catch (err) {
       console.error(`Error downloading ${fileName}:`, err);
-      // Error notification could be added here
     } finally {
       setIsLoading(false);
     }

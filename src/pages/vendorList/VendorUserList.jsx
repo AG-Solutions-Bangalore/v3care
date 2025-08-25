@@ -17,9 +17,6 @@ const VendorUserList = () => {
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("idVendor", id);
-  const storedPageNo = localStorage.getItem("page-no");
-  const pageNo =
-    storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
   useEffect(() => {
     const fetchUserVendorListData = async () => {

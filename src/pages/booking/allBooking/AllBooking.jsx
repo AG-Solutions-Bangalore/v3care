@@ -1,27 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import { TextField } from "@mui/material";
+import axios from "axios";
+import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import BookingFilter from "../../../components/BookingFilter";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { CiSquarePlus } from "react-icons/ci";
-import Moment from "moment";
-import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
-import { TextField } from "@mui/material";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import AssignDetailsModal from "../../../components/AssignDetailsModal";
-import GroupBookingView from "../commonView/GroupBookingView";
 
 const AllBooking = () => {
   const [allBookingData, setAllBookingData] = useState(null);
 
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [filteredBookingData, setFilteredBookingData] = useState([]);

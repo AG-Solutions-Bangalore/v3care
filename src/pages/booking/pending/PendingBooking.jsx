@@ -1,23 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { CiSquarePlus } from "react-icons/ci";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
-import BookingFilter from "../../../components/BookingFilter";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const {  userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -326,7 +324,7 @@ const PendingBooking = () => {
       const id = pendingBookData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

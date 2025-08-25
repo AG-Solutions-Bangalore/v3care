@@ -1,49 +1,42 @@
-import React from "react";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import BookingFilter from "../../../../components/BookingFilter";
+import Layout from "../../../../layout/Layout";
 
-import { FaHome, FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
 import {
   Card,
-  CardHeader,
   CardBody,
-  Typography,
+  CardHeader,
   Input,
-  Option,
-  Select,
   Textarea,
+  Typography
 } from "@material-tailwind/react";
 import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  TextField,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select as SelectMui,
 } from "@mui/material";
-import { BASE_URL } from "../../../../base/BaseUrl";
-import { toast } from "react-toastify";
 import MUIDataTable from "mui-datatables";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { FaHome, FaInfoCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 
 const PostponeBooking = () => {
   const { id } = useParams();
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
-  var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
 
   today = mm + "/" + dd + "/" + yyyy;
-  var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
   var d = document.getElementById("order_service_date");
   if (d) {
@@ -54,7 +47,6 @@ const PostponeBooking = () => {
   const navigate = useNavigate();
   const [booking, setBooking] = useState({});
 
-  const [loading, setLoading] = useState(false);
   const [followup, setFollowUp] = useState([]);
   const [orderref, setOrderRef] = useState([]);
   const [open, setOpen] = useState(false);
@@ -72,13 +64,9 @@ const PostponeBooking = () => {
     }));
   };
 
-  // new design
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
-
-  //   Input change handler
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (
@@ -159,10 +147,10 @@ const PostponeBooking = () => {
     print: false,
     search: false,
     filter: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9", // Adds a bottom border to rows
+          borderBottom: "10px solid #f1f7f9",
         },
       };
     },
@@ -176,12 +164,6 @@ const PostponeBooking = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    // const form = document.getElementById("addIdniv");
-
-    // if (!form.checkValidity()) {
-    //   toast.error("Fill all the filled");
-    //   return;
-    // }
     let data = {
       order_service_date: booking.order_service_date,
       order_time: booking.order_time,
@@ -543,7 +525,6 @@ const PostponeBooking = () => {
                     buttontype="submit"
                     label="Update"
                     disabled={isButtonDisabled}
-                    loading={loading}
                   />
 
                   <ButtonConfigColor
@@ -571,28 +552,21 @@ const PostponeBooking = () => {
                 + Follow up
               </Link>
             </CardHeader>
-            {/* here booking assign table  */}
             <CardBody>
-              {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                  <Spinner className="h-10 w-10" color="red" />
-                </div>
-              ) : (
+       
                 <div className="mt-5">
                   <MUIDataTable
-                    // title={"Followup"}
                     data={followup ? followup : []}
                     columns={columns}
                     options={options}
                   />
                 </div>
-              )}
+           
             </CardBody>
           </Card>
         </div>
       </div>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        {/* <DialogTitle>Follow Up</DialogTitle> */}
         <DialogContent>
           <div className="mb-5">
             <h1 className="font-bold text-xl"> Create Follow Up</h1>

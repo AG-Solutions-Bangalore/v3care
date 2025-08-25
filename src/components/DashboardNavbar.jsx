@@ -1,18 +1,18 @@
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { Bars3Icon, UserCircleIcon } from "@heroicons/react/24/solid";
 import {
-  Navbar,
-  Typography,
-  IconButton,
   Breadcrumbs,
+  IconButton,
   Menu,
   MenuHandler,
-  MenuList,
   MenuItem,
+  MenuList,
+  Navbar,
+  Typography,
 } from "@material-tailwind/react";
-import { UserCircleIcon, Bars3Icon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
+import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 import { HiArrowRightStartOnRectangle } from "react-icons/hi2";
-import { BsFullscreen, BsFullscreenExit } from "react-icons/bs"; // Added fullscreen icons
-import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Logout from "./Logout";
 import ButtonConfigColor from "./common/ButtonConfig/ButtonConfigColor";
 
@@ -22,7 +22,6 @@ const DashboardNavbar = ({
   isCollapsed,
   setIsCollapsed,
 }) => {
-  const { pathname } = useLocation();
   const navigate = useNavigate();
   const useType = localStorage.getItem("user_type_id");
   const headerUserType = localStorage.getItem("header_user_type");
@@ -35,8 +34,7 @@ const DashboardNavbar = ({
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((e) => {
-      });
+      document.documentElement.requestFullscreen().catch(() => {});
       setIsFullscreen(true);
     } else {
       if (document.exitFullscreen) {
@@ -60,7 +58,6 @@ const DashboardNavbar = ({
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
-  const pathSegments = pathname.split("/").filter((el) => el !== "");
   const fixedNavbar = true;
 
   return (
@@ -93,19 +90,11 @@ const DashboardNavbar = ({
           </Breadcrumbs>
         </div>
         <div className="flex items-center gap-2">
-          {/* Booking Button */}
           {(useType === "1" ||
             useType === "5" ||
             useType === "6" ||
             useType === "7" ||
             useType === "8") && (
-            // <button
-            //   className=" p-1 bg-white rounded-xl text-black shadow-xl hover:text-blue-700 animate-pulse"
-            //   onClick={() => navigate("/add-booking")}
-            // >
-            //   + Booking
-            // </button>
-
             <ButtonConfigColor
               type="create"
               label="Booking"
@@ -113,7 +102,6 @@ const DashboardNavbar = ({
             />
           )}
 
-          {/* Fullscreen Toggle */}
           <IconButton
             variant="text"
             color="white"
@@ -127,9 +115,13 @@ const DashboardNavbar = ({
             )}
           </IconButton>
           <div className="flex flex-col items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-center">
-  <span className="text-xs font-semibold leading-tight">{headerName}</span>
-  <span className="text-[10px] font-medium leading-tight">{headerUserType}</span>
-</div>
+            <span className="text-xs font-semibold leading-tight">
+              {headerName}
+            </span>
+            <span className="text-[10px] font-medium leading-tight">
+              {headerUserType}
+            </span>
+          </div>
 
           {/* Mobile Sidebar Toggle */}
           <IconButton

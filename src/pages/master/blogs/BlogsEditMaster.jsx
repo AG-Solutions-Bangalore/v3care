@@ -124,7 +124,6 @@ const BlogsEditMaster = () => {
       return;
     }
 
-    // Default input handler
     setBlog((prevBlog) => ({
       ...prevBlog,
       [name]: value,

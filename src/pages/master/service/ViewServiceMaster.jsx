@@ -1,7 +1,9 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BiSort } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "react-toastify";
 import {
   BASE_URL,
   NO_IMAGE_URL,
@@ -11,10 +13,8 @@ import {
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import Layout from "../../../layout/Layout";
-import { BiSort } from "react-icons/bi";
 import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
-import { toast } from "react-toastify";
+import Layout from "../../../layout/Layout";
 
 const getServiceLabel = (val) => {
   switch (val) {
@@ -74,29 +74,28 @@ const ViewServiceMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSubService, setSelectedSubService] = useState(null);
 
+  const fetchBookingData = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    const fetchBookingData = async () => {
-      try {
-        const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-service-view-by-id/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service-view-by-id/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setServiceData(response?.data?.service || {});
-        setServiceSubData(response?.data?.serviceSub || []);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-    useEffect(() => {
+      setServiceData(response?.data?.service || {});
+      setServiceSubData(response?.data?.serviceSub || []);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchBookingData();
   }, [id]);
 
@@ -121,8 +120,7 @@ const ViewServiceMaster = () => {
       );
 
       if (res.data.code === 200) {
-
-        await fetchBookingData()
+        await fetchBookingData();
         toast.success(res.data?.msg || "Sort order updated successfully");
       } else {
         toast.error(res.data?.msg || "Error updating sort order");
@@ -264,7 +262,7 @@ const ViewServiceMaster = () => {
 
                     <tbody>
                       {servicesubData.length > 0 ? (
-                        servicesubData.map((item, index) => (
+                        servicesubData.map((item) => (
                           <tr key={item.id} className="text-[12px]">
                             <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
                               <img

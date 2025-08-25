@@ -1,23 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { FaFileDownload } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL, USER_DOCUMENT } from "../../../base/BaseUrl";
-import {
-  FaUser,
-  FaMobile,
-  FaEnvelope,
-  FaIdCard,
-  FaCreditCard,
-  FaComments,
-  FaEdit,
-  FaArrowLeft,
-  FaFileDownload,
-} from "react-icons/fa";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
   const [fieldTeamViewData, setFieldTeamViewData] = useState(null);
@@ -128,29 +116,6 @@ const BackhandViewTeamMaster = ({ backhandId, onClose }) => {
                 <p className="text-gray-500">No data available</p>
               </div>
             )}
-
-            {/* <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
-              {userType !== "4" && (
-                <button
-                  onClick={() => navigate("/field-team-edit/" + backhandId)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
-                >
-                  <div className="flex items-center">
-                    <FaEdit className="mr-1.5" />
-                    Edit
-                  </div>
-                </button>
-              )}
-              <button
-                onClick={onClose}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-medium"
-              >
-                <div className="flex items-center">
-                  <FaArrowLeft className="mr-1.5" />
-                  Back
-                </div>
-              </button>
-            </div> */}
 
             <div className="flex justify-center space-x-4 my-2">
               {userType !== "4" && (

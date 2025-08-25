@@ -62,7 +62,7 @@ const TaxInvoice = () => {
       .set(options)
       .toPdf()
       .get("pdf")
-      .then((pdf) => {})
+      .then(() => {})
       .save();
   };
 
@@ -177,7 +177,6 @@ const TaxInvoice = () => {
                     </div>
                   </div>
                 </div>
-                {/* //second */}
                 <div className="grid grid-cols-2">
                   <div className="border-b border-black">
                     <div className=" text-[11px] ">
@@ -235,7 +234,6 @@ const TaxInvoice = () => {
                     </div>
                   </div>
                 </div>
-                {/* //third */}
 
                 <div className="grid grid-cols-2">
                   <div>
@@ -255,7 +253,6 @@ const TaxInvoice = () => {
 
                   <div className="text-[11px] border-l border-black"></div>
                 </div>
-                {/* //fourth */}
                 <div>
                   <table className="w-full border-t border-black text-[11px]">
                     <thead>
@@ -368,7 +365,6 @@ const TaxInvoice = () => {
                   </table>
                 </div>
 
-                {/* //fifth */}
                 <div className="text-[11px] mb-1">
                   <div className="flex justify-between">
                     <h2 className="items-start px-1">
@@ -381,7 +377,6 @@ const TaxInvoice = () => {
                     INR Nineteen Thousand One Hundred Sixteen Only
                   </h2>
                 </div>
-                {/* sixth */}
 
                 <table className="w-full border-y border-black text-[11px]">
                   <thead className="leading-tight">
@@ -472,7 +467,6 @@ const TaxInvoice = () => {
                   </tbody>
                 </table>
 
-                {/* //seven */}
                 <div className="text-[11px] px-1 ">
                   <p>
                     {" "}
@@ -481,21 +475,21 @@ const TaxInvoice = () => {
                       INR Two Thousand Nine Hundred Sixteen Only
                     </span>
                   </p>
-                  {/* exight */}
+
                   <div className="grid grid-cols-2">
                     <div className="flex item items-end">
                       <div>
                         {" "}
                         <p>
                           {" "}
-                          Company's PAN :{" "}
+                          Company&apos;s PAN :{" "}
                           <span className="font-bold ml-10">BVHPK7881A</span>
                         </p>
                         <p className="underline">Declaration</p>
                       </div>
                     </div>
                     <div className="mb-1">
-                      Company's Bank Details
+                      Company&apos;s Bank Details
                       <p>
                         {" "}
                         Bank Name:{" "}
@@ -513,7 +507,6 @@ const TaxInvoice = () => {
                     </div>
                   </div>
                 </div>
-                {/* //nine */}
                 <div className="grid grid-cols-2">
                   <div>
                     <div className="px-1 mb-1">

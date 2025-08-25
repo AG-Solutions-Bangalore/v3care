@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { FaFileDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../base/BaseUrl";
+import { BASE_URL, USER_DOCUMENT } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
@@ -140,7 +140,6 @@ const OperationViewTeamMaster = ({ operationId, onClose }) => {
               />
             </div>
           </div>
-          // </div>
         )}
       </div>
     </>

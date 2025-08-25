@@ -41,7 +41,6 @@ const OperationEditTeamMaster = () => {
     user_pancard_no: "",
     user_pancard: "",
     view_branch_id: "",
-    //new
     user_job_skills: null,
     user_designation: "",
     user_training: "",
@@ -133,8 +132,6 @@ const OperationEditTeamMaster = () => {
       data.append("user_pancard", selectedFile2);
       data.append("user_type", team.user_type);
       data.append("view_branch_id", team.view_branch_id);
-
-      //new
       data.append("user_designation", team.user_designation);
       data.append("user_job_skills", team.user_job_skills);
       data.append("user_training", team.user_training);

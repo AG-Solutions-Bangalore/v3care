@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
-  FaCalendarDay,
-  FaCalendarWeek,
-  FaCheckCircle,
-  FaHourglassHalf,
-  FaRupeeSign,
+  FaRupeeSign
 } from "react-icons/fa";
 import { FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
