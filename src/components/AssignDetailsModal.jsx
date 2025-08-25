@@ -1,10 +1,8 @@
-// components/AssignDetailsModal.js
-import React from "react";
 import {
   Dialog,
-  DialogHeader,
   DialogBody,
   DialogFooter,
+  DialogHeader,
 } from "@material-tailwind/react";
 
 const AssignDetailsModal = ({ open, handleOpen, assignDetails }) => {

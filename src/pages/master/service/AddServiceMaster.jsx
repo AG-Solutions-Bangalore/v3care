@@ -1,5 +1,12 @@
 import { Input, Textarea } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as SelectMaterial,
+} from "@mui/material";
 import axios from "axios";
+import { MinusCircleIcon, PlusCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -9,14 +16,6 @@ import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonCon
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select as SelectMaterial,
-} from "@mui/material";
-import { CircleMinus, MinusCircleIcon, PlusCircleIcon } from "lucide-react";
 
 const serviceShowWebsite = [
   {
@@ -96,7 +95,6 @@ const AddServiceMaster = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Validation function
   const validateOnlyDigits = (inputtxt) => /^\d*$/.test(inputtxt);
   
   useEffect(() => {

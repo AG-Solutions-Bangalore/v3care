@@ -1,20 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
-import MUIDataTable from "mui-datatables";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import FieldTeamViewMaster from "./FieldTeamViewMaster";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import axios from "axios";
 import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import FieldTeamViewMaster from "./FieldTeamViewMaster";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
@@ -173,7 +171,7 @@ const FieldTeamMaster = () => {
       const id = fieldTeamData[rowMeta.dataIndex].id;
       toogleViewServiceSub(true, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

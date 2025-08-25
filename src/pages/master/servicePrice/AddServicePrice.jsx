@@ -1,18 +1,16 @@
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { MdSend, MdArrowBack } from "react-icons/md"; // React Icons for styling
+import { useEffect, useState } from "react";
 
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
+import { Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
 import { toast } from "react-toastify";
-import { Button, Input } from "@material-tailwind/react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { useNavigate } from "react-router-dom";
 
 const AddServicePrice = () => {
   const [services, setServices] = useState({
@@ -26,13 +24,12 @@ const AddServicePrice = () => {
     service_holiday_amount: "",
   });
   UseEscapeKey();
+  const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [serdatasub, setSerDataSub] = useState([]);
   const [serdata, setSerData] = useState([]);
   const [branch, setBranch] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
-  const navigate = useNavigate();
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
@@ -78,7 +75,7 @@ const AddServicePrice = () => {
   }, []);
 
   useEffect(() => {
-    if (!services.service_id) return; // Exit if undefined or null
+    if (!services.service_id) return;
 
     const fetchServicepricedData = async () => {
       try {
@@ -234,7 +231,6 @@ const AddServicePrice = () => {
               </Select>
             </FormControl>
 
-            {/* Service Price For Field */}
             <div className="form-group">
               <Input
                 label="Service Price For"
@@ -244,11 +240,9 @@ const AddServicePrice = () => {
                 onChange={onInputChange}
                 required
                 maxLength={16}
-                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
 
-            {/* Service Rate Field */}
             <div className="form-group">
               <Input
                 label="Original Price"
@@ -258,12 +252,9 @@ const AddServicePrice = () => {
                 onChange={onInputChange}
                 required
                 maxLength={16}
-
-                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
 
-            {/* Service Amount Field */}
             <div className="form-group">
               <Input
                 label="Discount Price"
@@ -273,8 +264,6 @@ const AddServicePrice = () => {
                 onChange={onInputChange}
                 required
                 maxLength={16}
-
-                // className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
             </div>
             <div className="form-group">
@@ -286,7 +275,6 @@ const AddServicePrice = () => {
                 onChange={onInputChange}
                 required
                 maxLength={16}
-
               />
             </div>
             <div className="form-group">
@@ -298,7 +286,6 @@ const AddServicePrice = () => {
                 onChange={onInputChange}
                 required
                 maxLength={16}
-
               />
             </div>
           </div>

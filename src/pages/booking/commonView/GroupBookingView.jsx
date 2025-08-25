@@ -9,10 +9,9 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const GroupBookingView = ({ groupbooking, setActiveTab }) => {
-  const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const [loading] = useState(false);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState(null);
   const [uniqueDates, setUniqueDates] = useState([]);
   const [uniqueDate, setUniqueDate] = useState([]);
   const location = useLocation();

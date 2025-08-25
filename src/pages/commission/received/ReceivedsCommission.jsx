@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
 import CommissionFilter from "../../../components/CommissionFilter";
 import Layout from "../../../layout/Layout";
-import MUIDataTable from "mui-datatables";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 
 import Moment from "moment";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 const ReceivedsCommission = () => {
   const [receivedCommData, setReceivedCommData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -287,7 +286,7 @@ const ReceivedsCommission = () => {
 
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

@@ -39,12 +39,12 @@ const training = [
     label: "No",
   },
 ];
+const ALL_OPTION = { id: "all", service: "All" };
+
 const AddVendor = () => {
   UseEscapeKey();
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const initialVendorState = {
@@ -85,7 +85,6 @@ const AddVendor = () => {
     setSelectedFile2(null);
     setSelectedFile3(null);
     setSelectedFile4(null);
-    setSelectedServices([]);
     if (inputRef1.current) inputRef1.current.value = "";
     if (inputRef2.current) inputRef2.current.value = "";
     if (inputRef3.current) inputRef3.current.value = "";
@@ -120,7 +119,6 @@ const AddVendor = () => {
     vendor_ref_name_2: "",
     vendor_ref_mobile_1: "",
     vendor_ref_mobile_2: "",
-    //new
     vendor_job_skills: "",
     vendor_training: "",
     vendor_trained_bywhom: "",
@@ -134,10 +132,11 @@ const AddVendor = () => {
   const checkboxRef = React.useRef(null);
 
   const [test, setTest] = useState([]);
+  // console.log(test, "newValue");
 
-  const handleChange = (newValue) => {
-    setTest(newValue);
-  };
+  // const handleChange = (newValue) => {
+  //   setTest(newValue);
+  // };
 
   const [vendor_ser_count, setSerCount] = useState(1);
   const [vendor_branc_count, setBrancCount] = useState(1);
@@ -209,7 +208,6 @@ const AddVendor = () => {
     }
   };
 
-  // Fetch branches
   useEffect(() => {
     const requestOptions = {
       method: "GET",
@@ -229,7 +227,6 @@ const AddVendor = () => {
       });
   }, []);
 
-  // Fetch services
   useEffect(() => {
     const requestOptions = {
       method: "GET",
@@ -290,32 +287,35 @@ const AddVendor = () => {
         data.append(`vendor_branch_data[${index}][${key}]`, user[key]);
       });
     });
-    var v = document.getElementById("addIndiv").checkValidity();
-    var v = document.getElementById("addIndiv").reportValidity();
+    const elem = document.getElementById("addIdniv");
+    const v = elem.checkValidity() && elem.reportValidity();
     e.preventDefault();
-    if (v) {
-      axios({
-        url: BASE_URL + "/api/panel-create-vendors",
-        method: "POST",
-        data,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }).then((res) => {
-        if (res.data.code == "200") {
-          toast.success(res.data?.msg || "Vendor Created Succesfully");
-          navigate("/vendor-list");
-          resetForm();
-        } else {
-          if (res.data.code == "402") {
-            toast.error(res.data?.msg || "Mobile No Duplicate");
-          } else if (res.data.code == "403") {
-            toast.error(res.data?.msg || "Email Duplicate");
+    if (elem) {
+
+      if (v) {
+        axios({
+          url: BASE_URL + "/api/panel-create-vendors",
+          method: "POST",
+          data,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }).then((res) => {
+          if (res.data.code == "200") {
+            toast.success(res.data?.msg || "Vendor Created Succesfully");
+            navigate("/vendor-list");
+            resetForm();
           } else {
-            toast.error(res.data?.msg || "Network Issue");
+            if (res.data.code == "402") {
+              toast.error(res.data?.msg || "Mobile No Duplicate");
+            } else if (res.data.code == "403") {
+              toast.error(res.data?.msg || "Email Duplicate");
+            } else {
+              toast.error(res.data?.msg || "Network Issue");
+            }
           }
-        }
-      });
+        });
+      }
     }
   };
 
@@ -371,7 +371,7 @@ const AddVendor = () => {
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   return (
     <Layout>
-      <PageHeader title={"Create Vendor"} />
+      <PageHeader title="Create Vendor" />
 
       <Box
         sx={{
@@ -381,7 +381,7 @@ const AddVendor = () => {
           borderRadius: "10px",
         }}
       >
-        <form id="addIndiv">
+        <form id="addIdniv">
           <Typography variant="h6">Personal Details</Typography>
 
           <Box className={styles["form-container"]}>
@@ -407,7 +407,6 @@ const AddVendor = () => {
               icon={PhoneIphone}
               name="vendor_mobile"
               maxLength={10}
-              // inputProps={{ minLength: 10, maxLength: 10 }}
               required
               type="tel"
               value={vendor.vendor_mobile}
@@ -424,7 +423,6 @@ const AddVendor = () => {
             />
 
             <Dropdown
-              // label="Branch"
               options={branches.map((branch) => ({
                 value: branch.value,
                 label: branch.label,
@@ -446,7 +444,6 @@ const AddVendor = () => {
               name="vendor_aadhar_no"
               maxLength={12}
               required
-              // inputProps={{ maxLength: 12, minLength: 12 }}
               value={vendor.vendor_aadhar_no}
               onChange={(e) => onInputChange(e)}
             />
@@ -573,16 +570,12 @@ const AddVendor = () => {
               onChange={(e) => onInputChange(e)}
             />
           </Box>
-          <Typography
-            variant="h6"
-            // align="center"
-            sx={{ padding: "10px" }}
-          >
+          <Typography variant="h6" sx={{ padding: "10px" }}>
             Services Details
           </Typography>
 
           <Box>
-            <Autocomplete
+            {/* <Autocomplete
               multiple
               id="checkboxes-tags-demo"
               options={services}
@@ -630,15 +623,78 @@ const AddVendor = () => {
                   }}
                 />
               )}
+            /> */}
+
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={[ALL_OPTION, ...services]} // prepend All option
+              value={test}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.service}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              onChange={(event, newValue) => {
+                const isAllSelected = newValue.some((o) => o.id === "all");
+
+                if (isAllSelected) {
+                  if (test.length === services.length) {
+                    setTest([]);
+                  } else {
+                    setTest(services);
+                  }
+                } else {
+                  setTest(newValue);
+                }
+              }}
+              renderOption={(props, option) => {
+                const { key, ...optionProps } = props;
+
+                const isAll = option.id === "all";
+                const isSelected = isAll
+                  ? test.length === services.length // All is checked if all services selected
+                  : test.some((o) => o.id === option.id);
+
+                return (
+                  <li key={key} {...optionProps}>
+                    <Checkbox
+                      ref={checkboxRef}
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={isSelected}
+                    />
+                    {option.service}
+                  </li>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    <label
+                      style={{
+                        fontSize: 13,
+                        fontFamily: "sans-serif",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Choose services<span style={{ color: "red" }}>*</span>
+                    </label>
+                  }
+                  InputProps={{
+                    ...params.InputProps,
+                    style: { padding: "0px" },
+                  }}
+                  inputProps={{
+                    ...params.inputProps,
+                    style: { padding: "10px" },
+                  }}
+                />
+              )}
             />
           </Box>
 
-          {/* // */}
-          <Typography
-            variant="h6"
-            // align="center"
-            sx={{ padding: "10px" }}
-          >
+          <Typography variant="h6" sx={{ padding: "10px" }}>
             Address Details
           </Typography>
 
@@ -765,7 +821,6 @@ const AddVendor = () => {
               type="submit"
               buttontype="submit"
               label="Submit"
-              loading={loading}
               onClick={(e) => onSubmit(e)}
             />
 

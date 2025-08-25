@@ -1,29 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
+import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { BiSort } from "react-icons/bi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   BASE_URL,
   NO_IMAGE_URL,
   RIGHTSIDEBAR_IMAGE,
-  SERVICE_IMAGE_URL,
 } from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { IoIosArrowBack, IoIosArrowForward, IoMdPeople } from "react-icons/io";
-import { CiEdit } from "react-icons/ci";
-import { FiUserPlus, FiUsers } from "react-icons/fi";
-import { RiEditLine } from "react-icons/ri";
-import { toast } from "react-toastify";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import MasterFilter from "../../../components/MasterFilter";
 import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
-import { BiSort } from "react-icons/bi";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const RightSidebarList = () => {
   const [rightSidebarListData, setRightSidebarListData] = useState(null);
@@ -49,7 +43,7 @@ const RightSidebarList = () => {
       }
     }
   }, [location]);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   const fetchrightSidebarListData = async () => {
@@ -75,7 +69,6 @@ const RightSidebarList = () => {
   useEffect(() => {
     fetchrightSidebarListData();
   }, []);
-
 
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -224,7 +217,7 @@ const RightSidebarList = () => {
       setPage(currentPage);
       navigate(`/right-sidebar-content?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

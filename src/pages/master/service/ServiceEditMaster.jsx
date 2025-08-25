@@ -111,7 +111,6 @@ const ServiceEditMaster = () => {
     faq_data: [],
   });
 
-  // Dialog state
   const [openDialog, setOpenDialog] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState({ id: null, index: null });
   const [activeTab, setActiveTab] = useState("basic");
@@ -357,8 +356,6 @@ const ServiceEditMaster = () => {
       "service_show_website",
       services.service_show_website.join(",")
     );
-
-    // Append FAQ data
     services.faq_data.forEach((faq, index) => {
       data.append(`faq_data[${index}][id]`, faq.id || "");
       data.append(

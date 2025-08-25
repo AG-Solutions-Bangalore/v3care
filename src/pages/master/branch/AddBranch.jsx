@@ -1,4 +1,5 @@
 import { Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,6 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const AddBranch = () => {
   const [states, setStates] = useState([]);
@@ -39,7 +39,7 @@ const AddBranch = () => {
         setStates(response.data?.state || []);
       } catch (error) {
         console.error("Error fetching branch data", error);
-      } 
+      }
     };
     fetchStateData();
   }, []);
@@ -59,8 +59,6 @@ const AddBranch = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    // Start Loading
     setLoading(true);
     setIsButtonDisabled(true);
 
@@ -103,10 +101,10 @@ const AddBranch = () => {
         toast.error(response.data?.msg || "Duplicate entry");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(
+        error.response.data.message || "An error occurred. Please try again."
+      );
     }
-
-    // Stop Loading
     setLoading(false);
     setIsButtonDisabled(false);
   };
@@ -196,7 +194,6 @@ const AddBranch = () => {
               onClick={() => navigate(-1)}
             />
           </div>
-          {/* //edit  */}
         </form>
       </div>
     </Layout>

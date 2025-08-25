@@ -73,7 +73,6 @@ const AddBooking = () => {
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
   var yyyy = today.getFullYear();
   today = mm + "/" + dd + "/" + yyyy;
-  var midate = "04/04/2022";
   var todayback = yyyy + "-" + mm + "-" + dd;
 
   const [currentYear, setCurrentYear] = useState("");
@@ -156,7 +155,6 @@ const AddBooking = () => {
 
   useEffect(() => {
     if (!booking.order_service) return; // Exit if undefined or null
-
 
     const theLoginToken = localStorage.getItem("token");
 
@@ -373,24 +371,21 @@ const AddBooking = () => {
     const query = addressObject.formatted_address;
     const url = addressObject.url;
     updateQuery(query);
-    let subLocality = '';
-    let locality = '';
-  
-    addressObject.address_components.forEach(component => {
-      if (component.types.includes('sublocality_level_1')) {
+    let subLocality = "";
+    let locality = "";
+
+    addressObject.address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
         subLocality = component.short_name;
       }
-      if (component.types.includes('locality')) {
+      if (component.types.includes("locality")) {
         locality = component.short_name;
       }
     });
-    
-  
-    
-    setLocalitySubBook(subLocality)
-    setLocalityBook(locality)
-    setQuery1(url);
 
+    setLocalitySubBook(subLocality);
+    setLocalityBook(locality);
+    setQuery1(url);
   };
 
   useEffect(() => {
@@ -445,11 +440,8 @@ const AddBooking = () => {
       order_send_whatsapp: booking.order_send_whatsapp,
     };
 
-    var url = new URL(window.location.href);
-    var id = url.searchParams.get("id");
-
-    var v = document.getElementById("addIdniv").checkValidity();
-    var v = document.getElementById("addIdniv").reportValidity();
+    const elem = document.getElementById("addIdniv");
+    const v = elem.checkValidity() && elem.reportValidity();
 
     if (v) {
       axios({
@@ -798,7 +790,7 @@ const AddBooking = () => {
                   startIcon={<CurrencyRupee sx={{ color: "red" }} />}
                 />
               </div>
-      
+
               <FormControl fullWidth>
                 <InputLabel id="order_time-label">
                   <span className="text-sm relative bottom-[6px]">

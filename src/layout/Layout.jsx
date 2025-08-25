@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import Footer from "../components/Footer";
 import DashboardNavbar from "../components/DashboardNavbar";
 import SideNav from "../components/SideNav";
-import { useNavigate } from "react-router-dom";
 
 const Layout = ({ children }) => {
-  const navigate = useNavigate();
   const [openSideNav, setOpenSideNav] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const savedState = localStorage.getItem("sidebarCollapsed");

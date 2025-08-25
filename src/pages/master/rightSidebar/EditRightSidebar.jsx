@@ -1,6 +1,9 @@
-import { Input, Textarea } from "@material-tailwind/react";
+import { Input } from "@material-tailwind/react";
+import { Switch } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { toast } from "react-toastify";
@@ -11,18 +14,9 @@ import {
 } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import MasterFilter from "../../../components/MasterFilter";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select as MuiSelect,
-  Switch,
-} from "@mui/material";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 const customStyles = {
   control: (provided) => ({
     ...provided,
@@ -78,13 +72,11 @@ const EditRightSidebar = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [showFullText, setShowFullText] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
   const navigate = useNavigate();
 
   UseEscapeKey();
 
-  // Fetch services
   useEffect(() => {
     const fetchServices = async () => {
       try {
@@ -106,7 +98,6 @@ const EditRightSidebar = () => {
     fetchServices();
   }, []);
 
-  // Fetch sub services
   useEffect(() => {
     const fetchSubServices = async () => {
       try {
@@ -128,7 +119,6 @@ const EditRightSidebar = () => {
     fetchSubServices();
   }, []);
 
-  // Fetch service details by ID
   useEffect(() => {
     const fetchServiceDetails = async () => {
       try {
@@ -144,8 +134,6 @@ const EditRightSidebar = () => {
 
         const data = response.data.servicedetails;
         setFormData({
-          // service_id: data.service_id.split(",").map(Number),
-          // service_sub_id: data.service_sub_id.split(",").map(Number),
           service_id: data.service_id
             ? data.service_id.split(",").map(Number)
             : [],
@@ -318,7 +306,6 @@ const EditRightSidebar = () => {
             <div className="border rounded-lg p-4 bg-gray-50 h-fit relative">
               {formData.serviceDetails_status === "Inactive" && (
                 <div className="absolute inset-0 bg-gray-200 bg-opacity-70  flex items-center justify-center z-10 rounded-lg">
-      
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     version="1.0"

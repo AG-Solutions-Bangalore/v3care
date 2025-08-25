@@ -1,28 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ContextPanel } from "../../../utils/ContextPanel";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import {
-  FaUser,
-  FaMobile,
-  FaEnvelope,
-  FaIdCard,
-  FaCreditCard,
-  FaComments,
-  FaEdit,
-  FaArrowLeft,
-  FaFileDownload,
-} from "react-icons/fa";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { useContext, useEffect, useState } from "react";
+import { FaFileDownload } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL, USER_DOCUMENT } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const FieldTeamViewMaster = ({ fieldId, onClose }) => {
   const [fieldTeamViewData, setFieldTeamViewData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
 
@@ -73,15 +61,14 @@ const FieldTeamViewMaster = ({ fieldId, onClose }) => {
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-xl font-bold text-black">
-                Field Team Details 
+                Field Team Details
               </h1>
 
               <div className="flex gap-2">
                 <button
                   onClick={() =>
                     window.open(
-                      `${USER_DOCUMENT}/` +
-                        fieldTeamViewData?.user_aadhar,
+                      `${USER_DOCUMENT}/` + fieldTeamViewData?.user_aadhar,
                       "_blank"
                     )
                   }
@@ -96,8 +83,7 @@ const FieldTeamViewMaster = ({ fieldId, onClose }) => {
                 <button
                   onClick={() =>
                     window.open(
-                      `${USER_DOCUMENT}/` +
-                        fieldTeamViewData?.user_pancard,
+                      `${USER_DOCUMENT}/` + fieldTeamViewData?.user_pancard,
                       "_blank"
                     )
                   }

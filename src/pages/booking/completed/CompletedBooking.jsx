@@ -1,22 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import Moment from "moment";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import MUIDataTable from "mui-datatables";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import axios from "axios";
+import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../layout/Layout";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const CompletedBooking = () => {
   const [CompletedBookData, setCompletedBookData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -41,10 +37,6 @@ const CompletedBooking = () => {
   useEffect(() => {
     const fetchCompletedData = async () => {
       try {
-        // if (!isPanelUp) {
-        //   navigate("/maintenance");
-        //   return;
-        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -64,7 +56,6 @@ const CompletedBooking = () => {
       }
     };
     fetchCompletedData();
-    // setLoading(false);
   }, []);
   const handleView = (e, id) => {
     e.preventDefault();
@@ -390,7 +381,7 @@ const CompletedBooking = () => {
       const id = CompletedBookData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

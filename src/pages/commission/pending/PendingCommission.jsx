@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import CommissionFilter from "../../../components/CommissionFilter";
-import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {BASE_URL} from "../../../base/BaseUrl";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import CommissionFilter from "../../../components/CommissionFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
 
 import Moment from "moment";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const PendingCommission = () => {
   const [PendingCommissionData, setPendingCommissionData] = useState(null);
@@ -308,11 +307,12 @@ const PendingCommission = () => {
       navigate(`/commission-pending?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
+    // onRowClick: (rowMeta, e) => {
       const id = PendingCommissionData[rowMeta.dataIndex].id;
 
       handleView(e, id)();
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

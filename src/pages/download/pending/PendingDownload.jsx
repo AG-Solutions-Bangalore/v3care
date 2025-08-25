@@ -1,18 +1,15 @@
-import React, { useState } from "react";
-import Layout from "../../../layout/Layout";
-import DownloadFilter from "../../../components/DownloadFilter";
 import { TextField } from "@mui/material";
-import { FiDownload, FiEye } from "react-icons/fi";
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
 import Moment from "moment";
-import {BASE_URL} from "../../../base/BaseUrl";
+import { useState } from "react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../layout/Layout";
 
 const PendingDownload = () => {
-  // Get today's date and first day of month in proper format
   const today = new Date();
   const todayFormatted = today.toISOString().split("T")[0];
   const firstDayOfMonth = Moment().startOf("month").format("YYYY-MM-DD");
@@ -49,7 +46,7 @@ const PendingDownload = () => {
         responseType: "blob",
       });
 
-      // Create download link
+   
       const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -60,7 +57,6 @@ const PendingDownload = () => {
 
     } catch (err) {
       console.error(`Error downloading ${fileName}:`, err);
-      // Error notification could be added here
     } finally {
       setIsDownloading(false);
     }
@@ -78,14 +74,12 @@ const PendingDownload = () => {
     e.preventDefault();
     setIsViewing(true);
 
-    // Store filter values in localStorage
     localStorage.setItem(
       "booking_date_from",
       downloadReceived.booking_date_from
     );
     localStorage.setItem("booking_date_to", downloadReceived.booking_date_to);
 
-    // Navigate to the view page
     navigate("/view-pending-download");
   };
 

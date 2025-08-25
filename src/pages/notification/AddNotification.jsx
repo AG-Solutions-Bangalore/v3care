@@ -1,15 +1,13 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
-import { MdTitle, MdDescription, MdImage } from "react-icons/md";
-import { Button } from "@mui/material";
-import Layout from "../../layout/Layout";
 import axios from "axios";
-import { BASE_URL } from "../../base/BaseUrl";
+import { useState } from "react";
+import { MdDescription, MdImage, MdTitle } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddNotification = () => {
   const [notification, setNotification] = useState({

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import {
@@ -216,7 +216,7 @@ const ViewSuperServiceMaster = () => {
 
                     <tbody>
                       {servicesubData.length > 0 ? (
-                        servicesubData.map((item, index) => (
+                        servicesubData.map((item) => (
                           <tr key={item.id} className="text-[12px]">
                             <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
                               <img

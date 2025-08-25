@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
-import { useParams } from "react-router-dom";
+import { Divider } from "@mui/material";
 import axios from "axios";
+import moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useEffect, useState } from "react";
+import {
+  FiAlertCircle,
+  FiBook,
+  FiCalendar,
+  FiCheck,
+  FiCheckCircle,
+  FiClock,
+  FiHelpCircle,
+  FiLoader,
+  FiMapPin,
+  FiPhone,
+  FiSearch,
+  FiTrendingUp,
+  FiTruck,
+  FiUser,
+  FiXCircle
+} from "react-icons/fi";
+import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../base/BaseUrl";
 import LoaderComponent from "../../components/common/LoaderComponent";
-import MUIDataTable from "mui-datatables";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
-import { Chip, Tooltip, Divider } from "@mui/material";
-import moment from "moment";
-import { 
-  FiUser, 
-  FiPhone, 
-  FiMapPin, 
-  FiCalendar, 
-  FiClock,
-  FiDollarSign,
-  FiCheckCircle,
-  FiXCircle,
-  FiBook,
-  FiTrendingUp,
-    FiAlertCircle,
-      FiSearch,
-      FiCheck,
-      FiTruck,
-      FiLoader,
-      FiHelpCircle
-} from "react-icons/fi";
+import Layout from "../../layout/Layout";
 
 const CustomerView = () => {
   const { customer_name, customer_mobile } = useParams();

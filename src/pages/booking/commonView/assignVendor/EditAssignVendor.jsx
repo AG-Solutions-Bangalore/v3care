@@ -1,20 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Layout from "../../../../layout/Layout";
 import BookingFilter from "../../../../components/BookingFilter";
-import { useState } from "react";
-import { MdUpdate } from "react-icons/md";
-import { Button, TextField } from "@mui/material";
+import Layout from "../../../../layout/Layout";
 
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import {BASE_URL} from "../../../../base/BaseUrl";
-import axios from "axios";
-import { ContextPanel } from "../../../../utils/ContextPanel";
 import { Input } from "@material-tailwind/react";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import axios from "axios";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../../../utils/UseEscapeKey";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { ContextPanel } from "../../../../utils/ContextPanel";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const EditAssignVendor = () => {
   const { id } = useParams();
   UseEscapeKey();
@@ -26,7 +23,6 @@ const EditAssignVendor = () => {
     order_assign_status: "",
   });
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [assignUserP, setAssignUserP] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -206,21 +202,11 @@ const EditAssignVendor = () => {
             </div>
           </div>
 
-          {/* <div className="mt-6 text-center bg-blue-400  w-48 rounded-lg  ">
-            <button
-              className=" p-1 text-center   mb-2 text-white"
-              type="submit"
-            
-            >
-              Update
-            </button>
-          </div> */}
           <div className="flex justify-center space-x-4 my-2">
             <ButtonConfigColor
               type="edit"
               buttontype="submit"
               label="Update"
-              disabled={isButtonDisabled}
               loading={loading}
             />
 

@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import Layout from "../../layout/Layout";
-import Cards from "./cards/Cards";
-import Jobs from "./jobs/Jobs";
-import BookingOrder from "./bookingOrders/BookingOrder";
 import axios from "axios";
 import { BASE_URL } from "../../base/BaseUrl";
+import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../utils/ContextPanel";
+import BookingOrder from "./bookingOrders/BookingOrder";
+import Cards from "./cards/Cards";
+import Jobs from "./jobs/Jobs";
 import Revenue from "./revenue/Revenue";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const [loading, setLoading] = useState(false);

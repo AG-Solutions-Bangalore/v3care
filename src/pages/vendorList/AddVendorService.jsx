@@ -1,15 +1,13 @@
-import Layout from "../../layout/Layout";
-import React, { useState, useEffect } from "react";
-import { Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
-import { Input, FormControl, InputLabel } from "@mui/material";
+import { Checkbox, FormControl, Input, InputLabel, ListItemText, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import { FiEdit } from "react-icons/fi";
-import {BASE_URL} from "../../base/BaseUrl";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const AddVendorService = () => {
   const { id } = useParams();

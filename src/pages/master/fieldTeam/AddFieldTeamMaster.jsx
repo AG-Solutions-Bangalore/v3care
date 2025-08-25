@@ -36,7 +36,6 @@ const AddFieldTeamMaster = () => {
     remarks: "",
     view_branch_id: "",
 
-    //new
     user_job_skills: "",
     user_designation: null,
     user_training: "",
@@ -121,7 +120,6 @@ const AddFieldTeamMaster = () => {
     data.append("user_pancard_no", team.user_pancard_no);
     data.append("view_branch_id", team.view_branch_id);
     data.append("user_pancard", selectedFile2);
-    //new
     data.append("user_designation", team.user_designation);
     data.append("user_job_skills", team.user_job_skills);
     data.append("user_training", team.user_training);

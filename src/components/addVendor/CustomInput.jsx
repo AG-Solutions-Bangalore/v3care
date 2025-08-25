@@ -1,6 +1,6 @@
 import { Input } from "@material-tailwind/react";
 import { InputAdornment } from "@mui/material";
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 
 const CustomInput = forwardRef(
   ({ label, icon: Icon, required, type, maxLength, ...props }, ref) => {
@@ -25,7 +25,6 @@ const CustomInput = forwardRef(
           inputRef={ref}
           required={required}
           type={type}
-          // inputProps={inputProps}
           maxLength={maxLength}
           InputProps={{
             startAdornment: Icon ? (

@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
-  Typography,
-  CardHeader,
-  Input,
   CardFooter,
+  Input
 } from "@material-tailwind/react";
-import Layout from "../../layout/Layout";
-import { BASE_URL } from "../../base/BaseUrl";
 import axios from "axios";
-import { toast } from "react-toastify";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../base/BaseUrl";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("id");
@@ -44,7 +41,6 @@ const Profile = () => {
         setEmail(res.data.user?.email);
       })
       .catch(() => {
-        setLoader(false);
         toast.error("Failed to fetch profile data");
       });
   };

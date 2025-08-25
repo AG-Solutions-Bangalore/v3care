@@ -24,6 +24,7 @@ const AppProvider = ({ children }) => {
         setError(true);
       }
     } catch (error) {
+      console.error(error);
       setError(true);
     }
   };
@@ -42,7 +43,6 @@ const AppProvider = ({ children }) => {
   }, []);
   useEffect(() => {
     const token = localStorage.getItem("token");
-
 
     if (error) {
       localStorage.clear();
@@ -66,8 +66,7 @@ const AppProvider = ({ children }) => {
     const intervalId = setInterval(checkPanelStatus, 6000000);
     return () => clearInterval(intervalId);
   }, []);
-  useEffect(() => {
-  }, [location.pathname]);
+  useEffect(() => {}, [location.pathname]);
 
   return (
     <ContextPanel.Provider

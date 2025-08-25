@@ -22,7 +22,6 @@ const ClientsEditMaster = () => {
   
   const [clientNameError, setClientNameError] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const [initialImage, setInitialImage] = useState(null);
   const fileInputRef = useRef(null);
   
   UseEscapeKey();
@@ -33,7 +32,6 @@ const ClientsEditMaster = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Fetch client data by ID
   useEffect(() => {
     const fetchClient = async () => {
       try {
@@ -57,7 +55,6 @@ const ClientsEditMaster = () => {
 
         if (data.client_image) {
           setImagePreview(`${CLIENTS_IMAGE}/${data.client_image}?t=${new Date().getTime()}`);
-          setInitialImage(`${CLIENTS_IMAGE}/${data.client_image}?t=${new Date().getTime()}`);
         }
       } catch (error) {
         console.error("Error fetching client", error);

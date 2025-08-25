@@ -16,10 +16,8 @@ const ServiceControl = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  // Get token from localStorage
   const token = localStorage.getItem('token');
 
-  // Fetch price control data
   useEffect(() => {
     const fetchPriceControl = async () => {
       try {

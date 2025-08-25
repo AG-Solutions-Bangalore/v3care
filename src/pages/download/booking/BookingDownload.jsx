@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import Layout from "../../../layout/Layout";
-import DownloadFilter from "../../../components/DownloadFilter";
 import { MenuItem, TextField } from "@mui/material";
-import { FiDownload } from "react-icons/fi";
-import { AiOutlineInfoCircle } from "react-icons/ai";
-import {BASE_URL} from "../../../base/BaseUrl";
 import axios from "axios";
 import Moment from "moment";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import { useState } from "react";
+import { AiOutlineInfoCircle } from "react-icons/ai";
+import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../layout/Layout";
 
 const BookingDownload = () => {
-  // Get today's date and first day of month in proper format
   const today = new Date();
   const todayFormatted = today.toISOString().split("T")[0];
   const firstDayOfMonth = Moment().startOf("month").format("YYYY-MM-DD");
@@ -52,7 +49,6 @@ const BookingDownload = () => {
         responseType: "blob",
       });
 
-      // Create download link
       const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -60,11 +56,8 @@ const BookingDownload = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-
-      // Success notification could be added here
     } catch (err) {
       console.error(`Error downloading ${fileName}:`, err);
-      // Error notification could be added here
     } finally {
       setIsLoading(false);
     }

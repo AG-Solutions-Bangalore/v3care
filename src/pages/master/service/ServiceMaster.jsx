@@ -1,30 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import {
-  BASE_URL,
-  NO_IMAGE_URL,
-  SERVICE_IMAGE_URL,
-} from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import MUIDataTable from "mui-datatables";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { SquarePen } from "lucide-react";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
   FormControl,
   InputLabel,
   MenuItem,
   Select as SelectMaterial,
-  TextField,
 } from "@mui/material";
+import axios from "axios";
+import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
 import { BiSort } from "react-icons/bi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  BASE_URL,
+  NO_IMAGE_URL,
+  SERVICE_IMAGE_URL,
+} from "../../../base/BaseUrl";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { toast } from "react-toastify";
 const ServiceMaster = () => {
   const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -254,8 +253,6 @@ const ServiceMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -267,7 +264,7 @@ const ServiceMaster = () => {
       setPage(currentPage);
       navigate(`/service?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

@@ -1,23 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL, BLOGS_IMAGE, NO_IMAGE_URL } from "../../../base/BaseUrl";
-import MUIDataTable from "mui-datatables";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { SquarePen } from "lucide-react";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { BiSort } from "react-icons/bi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL, BLOGS_IMAGE, NO_IMAGE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
-import { BiSort } from "react-icons/bi";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { toast } from "react-toastify";
 
 const BlogsMaster = () => {
   const [blogsData, setBlogsData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -164,8 +165,6 @@ const BlogsMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -178,7 +177,7 @@ const BlogsMaster = () => {
       navigate(`/blogs?page=${currentPage + 1}`);
     },
 
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

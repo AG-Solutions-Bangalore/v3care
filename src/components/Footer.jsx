@@ -1,8 +1,6 @@
 import { Typography } from "@material-tailwind/react";
-import { HeartIcon } from "@heroicons/react/24/solid";
 
 export function Footer() {
-  const year = new Date().getFullYear();
   const brandName = "AG Solutions";
   const brandLink = "https://www.ag-solutions.in";
 
@@ -15,6 +13,7 @@ export function Footer() {
             href={brandLink}
             target="_blank"
             className="transition-colors hover:text-blue-500 font-bold"
+            rel="noreferrer"
           >
             {brandName}
           </a>{" "}

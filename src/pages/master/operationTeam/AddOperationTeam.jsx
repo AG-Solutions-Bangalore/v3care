@@ -1,7 +1,8 @@
 import { Input, Textarea } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import InputMask from "react-input-mask";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
@@ -10,7 +11,6 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import InputMask from "react-input-mask";
 const training = [
   {
     value: "Yes",
@@ -34,7 +34,6 @@ const AddOperationTeam = () => {
     user_type: "7",
     remarks: "",
     view_branch_id: "",
-    //new
     user_job_skills: null,
     user_designation: "",
     user_training: "",
@@ -42,9 +41,7 @@ const AddOperationTeam = () => {
     user_last_training: "",
     user_joinining_date: "",
   });
-  const [ViewBranchId, setViewBranchId] = useState([]);
 
-  const checkboxRef = React.useRef(null);
 
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -126,7 +123,6 @@ const AddOperationTeam = () => {
       data.append("user_pancard_no", team.user_pancard_no);
       data.append("user_pancard", selectedFile2);
       data.append("view_branch_id", team.view_branch_id);
-      //new
       data.append("user_designation", team.user_designation);
       data.append("user_job_skills", team.user_job_skills);
       data.append("user_training", team.user_training);

@@ -7,10 +7,10 @@ import {
   Switch,
 } from "@material-tailwind/react";
 import axios from "axios";
-import { Edit } from "lucide-react";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -20,7 +20,6 @@ import LoaderComponent from "../../components/common/LoaderComponent";
 import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../utils/ContextPanel";
 import UseEscapeKey from "../../utils/UseEscapeKey";
-import { CiSquarePlus } from "react-icons/ci";
 
 const AMCBookingList = () => {
   const [amcBookingData, setAmcBookingData] = useState(null);
@@ -73,11 +72,6 @@ const AMCBookingList = () => {
   useEffect(() => {
     fetchAMCBookingData();
   }, []);
-  const handleEdit = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    navigate(`/edit-amc-booking/${id}`);
-  };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();

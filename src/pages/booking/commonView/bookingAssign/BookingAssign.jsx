@@ -1,21 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { useParams } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Moment from "moment";
 import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../../utils/ContextPanel";
+import { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
-import {BASE_URL} from "../../../../base/BaseUrl";
-import UseEscapeKey from "../../../../utils/UseEscapeKey";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import BookingFilter from "../../../../components/BookingFilter";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../../layout/Layout";
+import { ContextPanel } from "../../../../utils/ContextPanel";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const BookingAssign = () => {
   const { id } = useParams();
   const [bookingAssignData, setBookingAssignData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   localStorage.setItem("assignBook", id);
@@ -27,7 +24,6 @@ const BookingAssign = () => {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-booking-assign-list/${id}`,
@@ -41,12 +37,9 @@ const BookingAssign = () => {
         setBookingAssignData(response.data?.bookingAssign);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchBookingAssignData();
-    setLoading(false);
   }, []);
 
   const columns = [
@@ -140,7 +133,7 @@ const BookingAssign = () => {
     viewColumns: true,
     download: false,
     print: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
@@ -151,19 +144,6 @@ const BookingAssign = () => {
   return (
     <Layout>
       <BookingFilter />
-      {/* <div className="flex flex-col md:flex-row justify-between items-center bg-white mt-5 p-2 rounded-lg space-y-4 md:space-y-0">
-        <h3 className="text-center md:text-left text-lg md:text-xl font-bold">
-          Booking User List
-        </h3>
-        {userType !== "4" && (
-          <Link
-            to={`/add-booking-user/${id}`}
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            + Add Booking User
-          </Link>
-        )}
-      </div> */}
 
       <PageHeader
         title={"Booking User List"}

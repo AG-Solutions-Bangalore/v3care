@@ -36,7 +36,7 @@ const VendorList = () => {
       }
     }
   }, [location]);
-  const { isPanelUp, userType } = useContext(ContextPanel);
+  const {  userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
@@ -67,7 +67,6 @@ const VendorList = () => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      // setLoading(true);
       const token = localStorage.getItem("token");
       const res = await axios({
         url: BASE_URL + "/api/panel-create-vendor-has-users/" + id,
@@ -237,7 +236,7 @@ const VendorList = () => {
       setPage(currentPage);
       navigate(`/vendor-list?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

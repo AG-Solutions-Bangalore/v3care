@@ -80,7 +80,6 @@ import BecomePartner from "./pages/becomePartnerOutside/BecomePartner";
 import EditBookingInspection from "./pages/booking/commonView/editBooking/EditBookingInspection";
 import AddBookingAssignUser from "./pages/booking/commonView/bookingAssign/AddBookingAssignUser";
 import AddBookingVendor from "./pages/booking/commonView/assignVendor/AddBookingVendor";
-import UseEscapeKey from "./utils/UseEscapeKey";
 import RnrList from "./pages/booking/rnr/RnrList";
 import { useContext } from "react";
 import { ContextPanel } from "./utils/ContextPanel";
@@ -130,8 +129,8 @@ const App = () => {
     <>
       <ValidationWrapper>
         <ToastContainer />
-        {/* <DisableRightClick />
-        <DevToolsBlocker /> */}
+        <DisableRightClick />
+        <DevToolsBlocker />
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/register" element={<SIgnUp />} />
@@ -155,7 +154,10 @@ const App = () => {
             userType === "7" ||
             userType === "8") && (
             <>
-              <Route path="/view-amc-booking/:id" element={<ViewAMCBooking />} />
+              <Route
+                path="/view-amc-booking/:id"
+                element={<ViewAMCBooking />}
+              />
               <Route path="/view-booking/:id" element={<ViewBooking />} />
               <Route path="/booking-assign/:id" element={<BookingAssign />} />
               <Route

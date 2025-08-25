@@ -1,19 +1,18 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   BuildingStorefrontIcon,
+  ChevronDownIcon,
   HomeIcon,
   XMarkIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
+import { User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { MdOutlineLibraryBooks, MdOutlinePayment } from "react-icons/md";
-import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
 import { CiViewList } from "react-icons/ci";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoDownloadOutline } from "react-icons/io5";
-import { User } from "lucide-react";
+import { MdOutlineLibraryBooks, MdOutlinePayment } from "react-icons/md";
+import { RiAdminLine, RiGitRepositoryCommitsLine } from "react-icons/ri";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const sidenavRef = useRef(null);
@@ -307,7 +306,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <ul className="mb-4 flex flex-col gap-1">
           {getFilteredMenuItems().map((item) => {
             const hasSubmenu = !!item.subMenu;
-            const isActive = pathname === item.to;
             const isParentMenuActive = hasSubmenu && isParentActive(item);
             const isMenuOpen = activeMenus[item.text];
 
@@ -371,7 +369,6 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
                     >
                       <ul className="pl-8 py-2 space-y-1">
                         {item.subMenu.map((subItem) => {
-                          const isSubItemActive = pathname === subItem.to;
                           return (
                             <li key={subItem.to}>
                               <NavLink
@@ -462,7 +459,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         <div className="group absolute transition-all duration-300 ease-in-out bottom-4 left-4 right-4 p-4 bg-white/10 rounded-lg backdrop-blur-sm border-l-2 border-r-2 border-red-900 overflow-hidden">
           <div className="flex flex-col items-center gap-2 text-white relative">
             <div className="text-sm font-medium opacity-80">
-              Updated : 22-08-2025
+              Updated : 25-08-2025
             </div>
           </div>
         </div>

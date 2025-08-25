@@ -1,24 +1,20 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FiPlus } from "react-icons/fi";
-import { useParams } from "react-router-dom";
-import Layout from "../../layout/Layout";
-import { BASE_URL } from "../../base/BaseUrl";
-import axios from "axios";
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Input, Textarea } from "@material-tailwind/react";
 import {
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  TextField,
+  Select
 } from "@mui/material";
-import { MdArrowBack, MdSend } from "react-icons/md";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import UseEscapeKey from "../../utils/UseEscapeKey";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -100,7 +96,6 @@ const EditVendor = () => {
   const [selectedFile2, setSelectedFile2] = useState(null);
   const [selectedFile3, setSelectedFile3] = useState(null);
   const [selectedFile4, setSelectedFile4] = useState(null);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [servicess, setServicess] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
@@ -199,10 +194,8 @@ const EditVendor = () => {
     if (!form.checkValidity()) {
       toast.error("Fill all required");
     } else {
-      setIsButtonDisabled(true);
 
       const formData = new FormData();
-      // Object.keys(vendor).forEach((key) => formData.append(key, vendor[key]));
 Object.keys(vendor).forEach((key) => {
   const value = vendor[key] ?? "";
   formData.append(key, value);

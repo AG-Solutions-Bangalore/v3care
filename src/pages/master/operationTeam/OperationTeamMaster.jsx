@@ -1,20 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import MasterFilter from "../../../components/MasterFilter";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import axios from "axios";
-import { BASE_URL } from "../../../base/BaseUrl";
-import { FaEdit } from "react-icons/fa";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { SquarePen } from "lucide-react";
 import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import MasterFilter from "../../../components/MasterFilter";
+import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import OperationViewTeamMaster from "./OperationViewTeamMaster";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { SquarePen } from "lucide-react";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const OperationTeamMaster = () => {
   const [operationData, setOperationData] = useState(null);
@@ -169,7 +167,7 @@ const OperationTeamMaster = () => {
       setPage(currentPage);
       navigate(`/operation-team?page=${currentPage + 1}`);
     },
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",

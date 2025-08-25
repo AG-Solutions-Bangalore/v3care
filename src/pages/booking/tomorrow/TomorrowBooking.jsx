@@ -1,18 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import Moment from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { CiSquarePlus } from "react-icons/ci";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../base/BaseUrl";
+import BookingFilter from "../../../components/BookingFilter";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../base/BaseUrl";
-import axios from "axios";
-import MUIDataTable from "mui-datatables";
-import Moment from "moment";
-import { CiSquarePlus } from "react-icons/ci";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import BookingFilter from "../../../components/BookingFilter";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { Spinner } from "@material-tailwind/react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const TomorrowBooking = () => {
   const [tomBookingData, setTomBookingData] = useState(null);
@@ -65,7 +63,6 @@ const TomorrowBooking = () => {
       }
     };
     fetchTomData();
-    // setLoading(false);
   }, []);
   const handleEdit = (e, id) => {
     e.preventDefault();
@@ -239,8 +236,6 @@ const TomorrowBooking = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
-    // rowsPerPage: 5,
-    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,

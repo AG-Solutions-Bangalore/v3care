@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  Card,
-  Input,
-  Typography,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
   Button,
+  Card,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  Typography
 } from "@material-tailwind/react";
+import axios from "axios";
 import {
   FaCalendarAlt,
-  FaUserCheck,
-  FaUserClock,
-  FaUsers,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaTimes,
   FaChevronLeft,
   FaChevronRight,
+  FaMapMarkerAlt,
+  FaTimes,
+  FaUserCheck,
+  FaUserClock,
+  FaUsers
 } from "react-icons/fa";
-import axios from "axios";
 import { BASE_URL } from "../../../base/BaseUrl";
-import Layout from "../../../layout/Layout";
 import IdealFieldListFilter from "../../../components/IdealFieldListFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const IdealFieldListVendor = () => {
@@ -138,7 +135,6 @@ const IdealFieldListVendor = () => {
       setModalLoading(true);
       const token = localStorage.getItem("token");
 
-      const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
 
       const fromDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
@@ -222,8 +218,6 @@ const IdealFieldListVendor = () => {
 
     const serviceDates = orderData.map((order) => order.order_service_date);
 
-    const serviceCount = serviceDates.length;
-    const nonServiceCount = daysInMonth - serviceCount;
 
     const days = [];
 
@@ -253,7 +247,6 @@ const IdealFieldListVendor = () => {
       );
     }
 
-    // comaparision of the date
     const now = new Date();
     const currentMonthNow = now.getMonth();
     const currentYearNow = now.getFullYear();
@@ -295,20 +288,6 @@ const IdealFieldListVendor = () => {
 
         <div className="grid grid-cols-7 gap-1 mb-4">{days}</div>
 
-        {/* <div className="flex items-center justify-center gap-4 mt-4">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <Typography variant="small" className="text-xs">
-              Service Days: {serviceCount}
-            </Typography>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-            <Typography variant="small" className="text-xs">
-              Non-Service Days: {nonServiceCount}
-            </Typography>
-          </div>
-        </div> */}
       </div>
     );
   };
@@ -371,7 +350,7 @@ const IdealFieldListVendor = () => {
                 </Typography>
                 <input
                   type="date"
-                  labelProps={{ className: "hidden" }}
+                  // labelProps={{ className: "hidden" }}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="!text-xs rounded-md px-2 bg-white border-gray-200 focus:border-blue-400 h-8 w-full"

@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
 import {
-  Card,
-  Input,
-  Typography,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
   Button,
+  Card,
+  Dialog,
+  DialogBody,
+  DialogHeader,
+  Typography
 } from "@material-tailwind/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
-  FaUserCheck,
-  FaUserClock,
-  FaUsers,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaTimes,
   FaChevronLeft,
   FaChevronRight,
+  FaMapMarkerAlt,
+  FaTimes,
+  FaUserCheck,
+  FaUserClock,
+  FaUsers
 } from "react-icons/fa";
-import axios from "axios";
 import { BASE_URL } from "../../base/BaseUrl";
-import IdealFieldListFilter from "../../components/IdealFieldListFilter";
-import UseEscapeKey from "../../utils/UseEscapeKey";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import IdealFieldListFilter from "../../components/IdealFieldListFilter";
+import Layout from "../../layout/Layout";
+import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const IdealFieldList = () => {
   UseEscapeKey();
@@ -138,7 +135,6 @@ const IdealFieldList = () => {
       setModalLoading(true);
       const token = localStorage.getItem("token");
 
-      const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
 
       const fromDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
@@ -222,8 +218,6 @@ const IdealFieldList = () => {
 
     const serviceDates = orderData.map((order) => order.order_service_date);
 
-    const serviceCount = serviceDates.length;
-    const nonServiceCount = daysInMonth - serviceCount;
 
     const days = [];
 
@@ -253,7 +247,6 @@ const IdealFieldList = () => {
       );
     }
 
-    // comaparision of the date
     const now = new Date();
     const currentMonthNow = now.getMonth();
     const currentYearNow = now.getFullYear();
@@ -371,7 +364,7 @@ const IdealFieldList = () => {
                 </Typography>
                 <input
                   type="date"
-                  labelProps={{ className: "hidden" }}
+                  // labelProps={{ className: "hidden" }}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="!text-xs rounded-md px-2 bg-white border-gray-200 focus:border-blue-400 h-8 w-full"

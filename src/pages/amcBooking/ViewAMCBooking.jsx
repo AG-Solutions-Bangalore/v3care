@@ -1,19 +1,25 @@
-import axios from "axios";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Layout from "../../layout/Layout";
-
 import { Card, CardBody, Typography } from "@material-tailwind/react";
-import { FaClipboardList, FaInfoCircle } from "react-icons/fa"; // Icons for the tabs
+import axios from "axios";
+import { default as moment, default as Moment } from "moment";
+import MUIDataTable from "mui-datatables";
+import { useContext, useEffect, useState } from "react";
+import { FaClipboardList, FaInfoCircle } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../base/BaseUrl";
 import BookingFilter from "../../components/BookingFilter";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import { CiSquarePlus } from "react-icons/ci";
+import { ContextPanel } from "../../utils/ContextPanel";
 const ViewAMCBooking = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState({});
+  const [order, setOrderUp] = useState([]);
+  const rowsPerPage = 10;
+  const navigate = useNavigate();
+  const { userType } = useContext(ContextPanel);
   UseEscapeKey();
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [loading, setLoading] = useState(false);
@@ -28,7 +34,8 @@ const ViewAMCBooking = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setBooking(response.data?.booking || []);
+      setBooking(response.data?.booking || {});
+      setOrderUp(response.data?.order || []);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {
@@ -49,8 +56,8 @@ const ViewAMCBooking = () => {
             {" "}
             <div className="space-y-2">
               <Typography className="text-black">
-                <strong>ID:</strong> {booking.order_ref} ({booking.order_status_amc}
-                )
+                <strong>ID:</strong> {booking.order_ref} (
+                {booking.order_status_amc})
               </Typography>
               <Typography className="text-black">
                 <strong>Name:</strong> {booking.order_customer}
@@ -156,6 +163,301 @@ const ViewAMCBooking = () => {
         return null;
     }
   };
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/edit-booking/${id}`);
+  };
+  const columns = [
+    {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id) => {
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
+                <CiSquarePlus
+                  onClick={(e) => handleEdit(e, id)}
+                  title="edit booking"
+                  className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
+                />
+              )}
+            </div>
+          );
+        },
+      },
+    },
+    //1
+    {
+      name: "order_ref",
+      label: "Order/BookTime",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (order_ref, tableMeta) => {
+          const bookTime = tableMeta.rowData[16];
+          return (
+            <div className="flex flex-col w-32">
+              <span>{order_ref}</span>
+              <span>{bookTime}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //2
+    {
+      name: "order_customer",
+      label: "Customer",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //3
+    {
+      name: "order_customer_mobile",
+      label: "Mobile",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //4
+    {
+      name: "order_date",
+      label: "Booking Date",
+      options: {
+        filter: true,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD MMM YYYY");
+        },
+      },
+    },
+    //5
+    {
+      name: "order_service_date",
+      label: "Service Date",
+      options: {
+        filter: true,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD MMM YYYY");
+        },
+      },
+    },
+    //6
+    {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[4];
+          const serviceDate = tableMeta.rowData[5];
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD MMM YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD MMM YYYY")}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //7
+    {
+      name: "order_amount",
+      label: "Price",
+      options: {
+        filter: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //8
+    {
+      name: "order_time",
+      label: "Time",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value) => {
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{value}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //9
+    {
+      name: "order_payment_amount",
+      label: "Amount",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: true,
+      },
+    },
+    //10
+    {
+      name: "order_payment_type",
+      label: "Type",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: true,
+      },
+    },
+    //11
+    {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
+              <span>{price}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //12
+    {
+      name: "updated_by",
+      label: "Confirm By",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //13
+    {
+      name: "order_status",
+      label: "Status",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //14
+    {
+      name: "confirm/status",
+      label: "Confirm By/Status",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[12];
+          const status = tableMeta.rowData[13];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //15
+    {
+      name: "order_address",
+      label: "Address",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //16
+    {
+      name: "order_booking_time",
+      label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+  ];
+
+  const options = {
+    selectableRows: "none",
+    elevation: 0,
+    responsive: "standard",
+    viewColumns: true,
+    download: false,
+    print: false,
+
+    count: order?.length || 0,
+    rowsPerPage: rowsPerPage,
+    setRowProps: (rowData) => {
+      const orderStatus = rowData[13];
+      let backgroundColor = "";
+      if (orderStatus == "Confirmed") {
+        backgroundColor = "#F7D5F1"; // light pink
+      } else if (orderStatus == "Completed") {
+        backgroundColor = "#F0A7FC"; // light
+      } else if (orderStatus == "Inspection") {
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus == "RNR") {
+        backgroundColor = "#B9CCF4"; // light blue
+      } else if (orderStatus == "Pending") {
+        backgroundColor = "#fff"; // white
+      } else if (orderStatus == "Cancel") {
+        backgroundColor = "#F76E6E"; // light  red
+      } else if (orderStatus == "On the way") {
+        backgroundColor = "#fff3cd"; // light  yellow
+      } else if (orderStatus == "In Progress") {
+        backgroundColor = "#A7FCA7"; // light  green
+      } else if (orderStatus == "Vendor") {
+        backgroundColor = "#F38121"; // light  ornage
+      }
+      return {
+        style: {
+          backgroundColor: backgroundColor,
+        },
+      };
+    },
+  };
 
   return (
     <Layout>
@@ -216,6 +518,12 @@ const ViewAMCBooking = () => {
               </div>
             </div>
           </div>
+          <MUIDataTable
+            title="Order"
+            data={order ? order : []}
+            columns={columns}
+            options={options}
+          />
         </>
       )}
     </Layout>

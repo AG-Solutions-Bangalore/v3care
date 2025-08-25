@@ -1,6 +1,6 @@
 import { Input } from "@material-tailwind/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";

@@ -1,21 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Layout from "../../../../layout/Layout";
-import BookingFilter from "../../../../components/BookingFilter";
-import { useParams } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Moment from "moment";
 import MUIDataTable from "mui-datatables";
-import { ContextPanel } from "../../../../utils/ContextPanel";
+import { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
-import {BASE_URL} from "../../../../base/BaseUrl";
-import UseEscapeKey from "../../../../utils/UseEscapeKey";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import BookingFilter from "../../../../components/BookingFilter";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import Layout from "../../../../layout/Layout";
+import { ContextPanel } from "../../../../utils/ContextPanel";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
 const AssignVendor = () => {
   const { id } = useParams();
   const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
@@ -27,7 +24,6 @@ const AssignVendor = () => {
           navigate("/maintenance");
           return;
         }
-        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `${BASE_URL}/api/panel-fetch-booking-assign-vendor-list/${id}`,
@@ -41,12 +37,9 @@ const AssignVendor = () => {
         setBookingVendorAssignData(response.data?.bookingAssign);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
     fetchAssignVendorData();
-    setLoading(false);
   }, []);
 
   const columns = [
@@ -140,7 +133,7 @@ const AssignVendor = () => {
     viewColumns: true,
     download: false,
     print: false,
-    setRowProps: (rowData) => {
+    setRowProps: () => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const UseEscapeKey = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Track the current location
+  const location = useLocation(); 
   const isNavigating = useRef(false);
 
   useEffect(() => {
@@ -11,13 +11,11 @@ const UseEscapeKey = () => {
       if (event.key === "Escape" && !isNavigating.current) {
         isNavigating.current = true;
 
-        // Navigate back
         navigate(-1);
 
-        // Use a timeout to reset the navigation state
         setTimeout(() => {
           isNavigating.current = false;
-        }, 0); // Set to 0 to allow immediate reset on next render
+        }, 0); 
       }
     };
 
@@ -26,9 +24,9 @@ const UseEscapeKey = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [navigate, location]); // Include location as a dependency
+  }, [navigate, location]); 
 
-  return null; // Since this hook doesn't render anything
+  return null; 
 };
 
 export default UseEscapeKey;
