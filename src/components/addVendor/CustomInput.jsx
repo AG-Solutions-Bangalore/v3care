@@ -3,7 +3,7 @@ import { InputAdornment } from "@mui/material";
 import React, { forwardRef } from "react";
 
 const CustomInput = forwardRef(
-  ({ label, icon: Icon, required, type, maxLength, ...props }, ref) => {
+  ({ label, icon: Icon, required, type, isImage,maxLength, ...props }, ref) => {
     return (
       <div>
         <Input
@@ -36,6 +36,7 @@ const CustomInput = forwardRef(
           }}
           {...props}
         />
+      {isImage ? <small>{isImage}</small> :""}    
       </div>
     );
   }

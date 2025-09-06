@@ -261,54 +261,56 @@ const ViewServiceMaster = () => {
                         </th>
                       </tr>
                     </thead>
+<tbody>
+  {servicesubData.length > 0 ? (
+    [...servicesubData] 
+      .sort((a, b) => a.service_sub_sort - b.service_sub_sort) 
+      .map((item) => (
+        <tr key={item.id} className="text-[12px]">
+          <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
+            <img
+              src={
+                item?.service_sub_image
+                  ? `${SERVICE_SUB_IMAGE_URL}/${item.service_sub_image}`
+                  : NO_IMAGE_URL
+              }
+              alt="Service"
+              className="w-10 h-10 object-cover rounded border mx-auto"
+            />
+          </td>
 
-                    <tbody>
-                      {servicesubData.length > 0 ? (
-                        servicesubData.map((item, index) => (
-                          <tr key={item.id} className="text-[12px]">
-                            <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
-                              <img
-                                src={
-                                  item?.service_sub_image
-                                    ? `${SERVICE_SUB_IMAGE_URL}/${item.service_sub_image}`
-                                    : NO_IMAGE_URL
-                                }
-                                alt="Service"
-                                className="w-10 h-10 object-cover rounded border mx-auto"
-                              />
-                            </td>
+          <td className="border-b border-r border-gray-400 bg-white text-black font-medium p-2">
+            {item.service_sub}
+          </td>
+          <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
+            {item.service_sub_sort}
+          </td>
+          <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
+            {item.service_sub_status}
+          </td>
+          <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
+            <div
+              onClick={(e) => handleOpenDialog(e, item.id)}
+              className="flex items-center justify-center"
+              title="Edit Service Sub Order"
+            >
+              <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+            </div>
+          </td>
+        </tr>
+      ))
+  ) : (
+    <tr>
+      <td
+        colSpan={5}
+        className="text-center text-gray-500 py-3 border-b border-gray-300"
+      >
+        No service sub data
+      </td>
+    </tr>
+  )}
+</tbody>
 
-                            <td className="border-b border-r border-gray-400 bg-white text-black font-medium p-2">
-                              {item.service_sub}
-                            </td>
-                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
-                              {item.service_sub_sort}
-                            </td>
-                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
-                              {item.service_sub_status}
-                            </td>
-                            <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
-                              <div
-                                onClick={(e) => handleOpenDialog(e, item.id)}
-                                className="flex items-center justify-center"
-                                title="Edit Service Sub Order"
-                              >
-                                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan={5}
-                            className="text-center text-gray-500 py-3 border-b border-gray-300"
-                          >
-                            No service sub data
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
                   </table>
                 </div>
               </div>

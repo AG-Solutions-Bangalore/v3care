@@ -22,18 +22,12 @@ import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
 import { BASE_URL } from "../../base/BaseUrl";
 import { Box, Button, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import { Textarea } from "@material-tailwind/react";
-// import { createTheme, ThemeProvider } from "@mui/material/styles";
-// const theme = createTheme();
-
-// theme.typography.h3 = {
-//   fontSize: "1px",
-// };
 
 const training = [
   {
@@ -45,13 +39,19 @@ const training = [
     label: "No",
   },
 ];
+
 const AddVendor = () => {
   UseEscapeKey();
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  
+  const location = useLocation();
+  const id = location.state?.id; 
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  
   const navigate = useNavigate();
   const initialVendorState = {
     vendor_short: "",
@@ -84,6 +84,7 @@ const AddVendor = () => {
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
   const inputRef4 = useRef(null);
+  
   const resetForm = () => {
     setVendor(initialVendorState);
     setUsers1([useTemplate1]);
@@ -97,11 +98,12 @@ const AddVendor = () => {
     if (inputRef3.current) inputRef3.current.value = "";
     if (inputRef4.current) inputRef4.current.value = "";
     setTest([]);
-    setLocation([]);
+  setLocations([]);
     setBrancCount(1);
     setSerCount(1);
     setAreaCount(1);
   };
+  
   const userType = localStorage.getItem("user_type_id");
   const [vendor, setVendor] = useState({
     vendor_short: "",
@@ -133,6 +135,7 @@ const AddVendor = () => {
     vendor_last_training_date: "",
     vendor_date_of_joining: "",
   });
+  
   const [selectedFile1, setSelectedFile1] = React.useState(null);
   const [selectedFile2, setSelectedFile2] = React.useState(null);
   const [selectedFile3, setSelectedFile3] = React.useState(null);
@@ -162,9 +165,10 @@ const AddVendor = () => {
   };
 
   const [users1, setUsers1] = useState([useTemplate1]);
-  const [location, setLocation] = useState([]);
+ const [locations, setLocations] = useState([]);
   const [loadingPin, setLoadingPin] = useState(false);
   const [pinError, setPinError] = useState("");
+  
   const onChange1 = (e, index) => {
     const updatedUsers = users1.map((user, i) =>
       index == i
@@ -182,6 +186,7 @@ const AddVendor = () => {
       return false;
     }
   };
+  
   const onInputChange = (e) => {
     if (
       e.target.name == "vendor_mobile" ||
@@ -253,6 +258,50 @@ const AddVendor = () => {
       .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
+  useEffect(() => {
+    if (!id) return; 
+    setIsEditMode(true);
+
+    const fetchVendorData = async () => {
+      setFetchLoading(true);
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-vendor-by-id/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const { vendor, vendorService, vendorbranch } = response.data;
+
+        // populate vendor base data
+        setVendor((prev) => ({
+          ...prev,
+          ...vendor,
+        }));
+
+        // populate services
+        if (vendorService?.length > 0) {
+          setTest(vendorService.map((s) => ({ service: s.vendor_service })));
+        }
+
+        // populate branches
+        if (vendorbranch?.length > 0) {
+          setUsers1(vendorbranch);
+        }
+      } catch (error) {
+        console.error("Error fetching vendor data:", error);
+        toast.error("Failed to fetch vendor details");
+      } finally {
+        setFetchLoading(false);
+      }
+    };
+
+    fetchVendorData();
+  }, [id]);
+
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(test, "test");
@@ -260,6 +309,7 @@ const AddVendor = () => {
       toast.error("Please select at least one service.");
       return;
     }
+    
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
@@ -273,10 +323,13 @@ const AddVendor = () => {
         ? vendor.branch_id
         : localStorage.getItem("branch_id")
     );
-    data.append("vendor_images", selectedFile1);
-    data.append("vendor_aadhar_front", selectedFile2);
-    data.append("vendor_aadhar_back", selectedFile3);
-    data.append("vendor_aadhar_gst", selectedFile4);
+    
+    // Only append files if they are selected (for edit mode)
+    if (selectedFile1) data.append("vendor_images", selectedFile1);
+    if (selectedFile2) data.append("vendor_aadhar_front", selectedFile2);
+    if (selectedFile3) data.append("vendor_aadhar_back", selectedFile3);
+    if (selectedFile4) data.append("vendor_aadhar_gst", selectedFile4);
+    
     data.append("vendor_area_no_count", vendor_area_count);
     data.append("vendor_service_no_count", vendor_ser_count);
     data.append("vendor_branch_no_count", vendor_branc_count);
@@ -289,8 +342,8 @@ const AddVendor = () => {
     data.append("vendor_last_training_date", vendor.vendor_last_training_date);
     data.append("vendor_date_of_joining", vendor.vendor_date_of_joining);
     data.append("vendor_job_skills", vendor.vendor_job_skills);
+    
     const selectedServiceValues = test.map((service) => service.service);
-
     data.append("vendor_service", selectedServiceValues);
 
     users1.forEach((user, index) => {
@@ -298,22 +351,30 @@ const AddVendor = () => {
         data.append(`vendor_branch_data[${index}][${key}]`, user[key]);
       });
     });
+    
     var v = document.getElementById("addIndiv").checkValidity();
     var v = document.getElementById("addIndiv").reportValidity();
     e.preventDefault();
+    
     if (v) {
+      setLoading(true);
+      
+      const url =`${BASE_URL}/api/panel-create-vendors`;
+        
+      const method = "POST";
+      
       axios({
-        url: BASE_URL + "/api/panel-create-vendors",
-        method: "POST",
+        url: url,
+        method: method,
         data,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }).then((res) => {
         if (res.data.code == "200") {
-          toast.success(res.data?.msg || "Vendor Created Succesfully");
+          toast.success(res.data?.msg || (isEditMode ? "Vendor Updated Successfully" : "Vendor Created Successfully"));
           navigate("/vendor-list");
-          resetForm();
+          if (!isEditMode) resetForm();
         } else {
           if (res.data.code == "402") {
             toast.error(res.data?.msg || "Mobile No Duplicate");
@@ -323,28 +384,15 @@ const AddVendor = () => {
             toast.error(res.data?.msg || "Network Issue");
           }
         }
+      }).catch((error) => {
+        console.error("Error submitting form:", error);
+        toast.error("An error occurred while submitting the form");
+      }).finally(() => {
+        setLoading(false);
       });
     }
   };
 
-  // const CheckPincode = (test, selectedValue) => {
-  //   const pincode = test.target.value;
-  //   if (pincode.length == "6") {
-  //     fetch("https://api.v3care.in/api/external/pin/" + pincode)
-  //       .then((response) => response.json())
-  //       .then((response) => {
-  //         const tempUsers = [...users1];
-
-  //         tempUsers[selectedValue].vendor_branch_city = response.city;
-  //         tempUsers[selectedValue].vendor_branch_district = response.district;
-  //         tempUsers[selectedValue].vendor_branch_state = response.state;
-  //         setUsers1(tempUsers);
-  //         if (response.areas != null) {
-  //           setLocation(response.areas);
-  //         }
-  //       });
-  //   }
-  // };
   const CheckPincode = async (e, selectedValue) => {
     const pincode = e.target.value;
 
@@ -375,7 +423,7 @@ const AddVendor = () => {
         setUsers1(tempUsers);
         console.log(response, "response");
         if (response?.areas !== null) {
-          setLocation(response?.areas || []);
+       setLocations(response?.areas || []);
         } else {
           toast.error(response.msg || "unable to fetch");
         }
@@ -396,9 +444,10 @@ const AddVendor = () => {
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
+  
   return (
     <Layout>
-      <PageHeader title={"Create Vendor"} />
+      <PageHeader title={isEditMode ? "Transfer Vendor" : "Create Vendor"} />
 
       <Box
         sx={{
@@ -434,7 +483,6 @@ const AddVendor = () => {
               icon={PhoneIphone}
               name="vendor_mobile"
               maxLength={10}
-              // inputProps={{ minLength: 10, maxLength: 10 }}
               required
               type="tel"
               value={vendor.vendor_mobile}
@@ -451,7 +499,6 @@ const AddVendor = () => {
             />
 
             <Dropdown
-              // label="Branch"
               options={branches.map((branch) => ({
                 value: branch.value,
                 label: branch.label,
@@ -473,7 +520,6 @@ const AddVendor = () => {
               name="vendor_aadhar_no"
               maxLength={12}
               required
-              // inputProps={{ maxLength: 12, minLength: 12 }}
               value={vendor.vendor_aadhar_no}
               onChange={(e) => onInputChange(e)}
             />
@@ -487,26 +533,31 @@ const AddVendor = () => {
             <CustomInput
               label="Photo"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_images"
               ref={inputRef1}
               onChange={(e) => setSelectedFile1(e.target.files[0])}
+              isImage={vendor.vendor_images}
+              
             />
+           
             <CustomInput
               label="Aadhar Card Front Side"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_aadhar_front"
               ref={inputRef2}
               onChange={(e) => setSelectedFile2(e.target.files[0])}
+              isImage={vendor.vendor_aadhar_front}
             />
             <CustomInput
               label="Aadhar Card Back Side"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_aadhar_back"
               ref={inputRef3}
               onChange={(e) => setSelectedFile3(e.target.files[0])}
+                  isImage={vendor.vendor_aadhar_back}
             />
             <CustomInput
               label="GST Certificate"
@@ -514,6 +565,7 @@ const AddVendor = () => {
               name="vendor_gst_certificate"
               ref={inputRef4}
               onChange={(e) => setSelectedFile4(e.target.files[0])}
+              isImage={vendor.vendor_gst_certificate}
             />
             <CustomInput
               label="Reference Name 1"
@@ -602,7 +654,6 @@ const AddVendor = () => {
           </Box>
           <Typography
             variant="h6"
-            // align="center"
             sx={{ padding: "10px" }}
           >
             Services Details
@@ -660,10 +711,8 @@ const AddVendor = () => {
             />
           </Box>
 
-          {/* // */}
           <Typography
             variant="h6"
-            // align="center"
             sx={{ padding: "10px" }}
           >
             Address Details
@@ -680,9 +729,6 @@ const AddVendor = () => {
                     required
                     value={user.vendor_branch_pincode}
                     maxLength={6}
-                    // onChange={(e) => {
-                    //   onChange1(e, index), CheckPincode(e, index);
-                    // }}
                     onChange={(e) => {
                       const digitsOnly = e.target.value.replace(/\D/g, "");
                       e.target.value = digitsOnly;
@@ -753,7 +799,7 @@ const AddVendor = () => {
                   required
                   onChange={(e) => onChange1(e, index)}
                   value={user?.vendor_branch_location}
-                  options={location?.map((loc) => ({ value: loc, label: loc }))}
+                 options={locations?.map((loc) => ({ value: loc, label: loc }))}
                 />
 
                 <CustomInput
@@ -782,19 +828,12 @@ const AddVendor = () => {
               </div>
             ))}
           </Box>
-          {/* <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={(e) => onSubmit(e)}
-            sx={{ mt: 3 }}
-          >
-            Submit */}
+          
           <div className="flex justify-center space-x-4 my-6">
             <ButtonConfigColor
               type="submit"
               buttontype="submit"
-              label="Submit"
+              label={"Submit"}
               loading={loading}
               onClick={(e) => onSubmit(e)}
             />

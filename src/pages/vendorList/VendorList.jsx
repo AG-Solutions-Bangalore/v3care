@@ -13,7 +13,7 @@ import { FiUserPlus, FiUsers } from "react-icons/fi";
 import { RiEditLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
-import { SquarePen } from "lucide-react";
+import { ArrowLeftRight, SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
 
@@ -132,6 +132,13 @@ const VendorList = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-user-list/${id}`);
   };
+  const handleTransfer = (e, id) => {
+   e.preventDefault();
+    e.stopPropagation();
+  localStorage.setItem("page-no", pageParam);
+  navigate("/add-vendor", { state: { id } });
+};
+
   const columns = [
     {
       name: "id",
@@ -173,6 +180,12 @@ const VendorList = () => {
                       />
                     </>
                   ) : null}
+                  <ArrowLeftRight
+                onClick={(e) => handleTransfer(e, id)}
+                className="h-5 w-5 cursor-pointer hover:text-green-700"
+              >
+                <title>Transfer Vendor</title>
+              </ArrowLeftRight>
                 </>
               )}
             </div>
@@ -283,7 +296,7 @@ const VendorList = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack

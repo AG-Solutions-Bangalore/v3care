@@ -321,7 +321,7 @@ const ServiceMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack
@@ -345,6 +345,10 @@ const ServiceMaster = () => {
         </div>
       );
     },
+    sortOrder: {
+    name: "service_sort",
+    direction: "asc", 
+  },
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
@@ -373,6 +377,7 @@ const ServiceMaster = () => {
           "Something went wrong while updating sort order"
       );
     }
+    
   };
   return (
     <Layout>
@@ -382,7 +387,7 @@ const ServiceMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Service List"
+            title="Service s List"
             data={filteredData ? filteredData : []}
             columns={columns}
             options={options}

@@ -12,7 +12,7 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import FieldTeamViewMaster from "./FieldTeamViewMaster";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { SquarePen } from "lucide-react";
+import { ArrowLeftRight, SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 
@@ -89,6 +89,12 @@ const FieldTeamMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/field-team-edit/${id}`);
   };
+  const handleTransfer = (e, id) => {
+  e.preventDefault();
+  localStorage.setItem("page-no", pageParam);
+  navigate("/add-field-team", { state: { id } });
+};
+
   const columns = [
     {
       name: "id",
@@ -100,19 +106,27 @@ const FieldTeamMaster = () => {
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
+                <>
                 <SquarePen
                   onClick={(e) => handleEdit(e, id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 >
                   <title>Edit Team</title>
                 </SquarePen>
-              )}
+         
+              <ArrowLeftRight
+                onClick={(e) => handleTransfer(e, id)}
+                className="h-5 w-5 cursor-pointer hover:text-green-700"
+              >
+                <title>Transfer Team</title>
+              </ArrowLeftRight>
+              </>
+                   )}
             </div>
           );
         },
       },
     },
-
     {
       name: "branch_name",
       label: "Branch",
@@ -198,7 +212,7 @@ const FieldTeamMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack

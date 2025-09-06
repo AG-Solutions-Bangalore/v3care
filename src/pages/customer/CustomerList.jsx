@@ -140,7 +140,7 @@ const CustomerList = () => {
           return (
             <div className="flex justify-end items-center p-4">
               <span className="mx-4">
-                <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+               <span className="text-red-600">Page {page + 1}</span> of{" "}
                 {Math.ceil(count / rowsPerPage)}
               </span>
               <IoIosArrowBack

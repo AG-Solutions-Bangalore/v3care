@@ -106,11 +106,7 @@ const EditVendor = () => {
   const [fetchloading, setFetchLoading] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("id");
-    if (!isLoggedIn) {
-      navigate("/home");
-      return;
-    }
+    
 
     const fetchVendorData = async () => {
       setFetchLoading(true);
