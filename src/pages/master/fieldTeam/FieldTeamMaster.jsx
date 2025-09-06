@@ -1,18 +1,20 @@
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../../../layout/Layout";
+import MasterFilter from "../../../components/MasterFilter";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SquarePen } from "lucide-react";
+import {BASE_URL} from "../../../base/BaseUrl";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 import MUIDataTable from "mui-datatables";
-import { useContext, useEffect, useState } from "react";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import FieldTeamViewMaster from "./FieldTeamViewMaster";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useLocation, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../base/BaseUrl";
+import { ArrowLeftRight, SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import MasterFilter from "../../../components/MasterFilter";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import FieldTeamViewMaster from "./FieldTeamViewMaster";
 
 const FieldTeamMaster = () => {
   const [fieldTeamData, setFieldTeamData] = useState(null);
@@ -87,6 +89,12 @@ const FieldTeamMaster = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/field-team-edit/${id}`);
   };
+  const handleTransfer = (e, id) => {
+  e.preventDefault();
+  localStorage.setItem("page-no", pageParam);
+  navigate("/add-field-team", { state: { id } });
+};
+
   const columns = [
     {
       name: "id",
@@ -98,19 +106,27 @@ const FieldTeamMaster = () => {
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
+                <>
                 <SquarePen
                   onClick={(e) => handleEdit(e, id)}
                   className="h-5 w-5 cursor-pointer hover:text-blue-700"
                 >
                   <title>Edit Team</title>
                 </SquarePen>
-              )}
+         
+              <ArrowLeftRight
+                onClick={(e) => handleTransfer(e, id)}
+                className="h-5 w-5 cursor-pointer hover:text-green-700"
+              >
+                <title>Transfer Team</title>
+              </ArrowLeftRight>
+              </>
+                   )}
             </div>
           );
         },
       },
     },
-
     {
       name: "branch_name",
       label: "Branch",
@@ -171,7 +187,7 @@ const FieldTeamMaster = () => {
       const id = fieldTeamData[rowMeta.dataIndex].id;
       toogleViewServiceSub(true, id)();
     },
-    setRowProps: () => {
+    setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
@@ -196,7 +212,7 @@ const FieldTeamMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack
