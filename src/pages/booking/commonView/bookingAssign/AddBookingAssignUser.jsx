@@ -1,17 +1,56 @@
-import { Input } from "@material-tailwind/react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { BASE_URL } from "../../../../base/BaseUrl";
-import BookingFilter from "../../../../components/BookingFilter";
-import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Layout from "../../../../layout/Layout";
+import BookingFilter from "../../../../components/BookingFilter";
+import axios from "axios";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import { toast } from "react-toastify";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+import { Input } from "@material-tailwind/react";
+import Select from "react-select";
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    minHeight: "38px",
+    height: "auto",
+    borderRadius: "0.375rem",
+    borderColor: "#e5e7eb",
+    paddingTop: "2px",
+    paddingBottom: "2px",
+    "&:hover": {
+      borderColor: "#9ca3af",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: "auto",
+    padding: "4px 8px",
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: "0px",
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: "38px",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#3b82f6" : "white",
+    color: state.isSelected ? "white" : "#1f2937",
+    "&:hover": {
+      backgroundColor: "#e5e7eb",
+    },
+  }),
+};
+
 const AddBookingAssignUser = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  UseEscapeKey();
 
   const [bookingUser, setBookingser] = useState({
     order_user_id: "",
@@ -20,44 +59,38 @@ const AddBookingAssignUser = () => {
     order_assign_remarks: "",
     order_id: id,
   });
-  const navigate = useNavigate();
-  UseEscapeKey();
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const onInputChange = (e) => {
-    setBookingser({
-      ...bookingUser,
-      [e.target.name]: e.target.value,
-    });
-  };
   const [assisgnUserP, setAssignUserP] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+ 
   useEffect(() => {
-    var theLoginToken = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+    fetch(`${BASE_URL}/api/panel-fetch-user-for-booking-assign/${id}`, {
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then((res) => res.json())
+      .then((data) => setAssignUserP(data.bookingAssignUser || []))
+      .catch(() => toast.error("Failed to load assignable users"));
+  }, [id]);
 
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + theLoginToken,
-      },
-    };
+ 
+  const userOptions = assisgnUserP.map((user) => ({
+    value: user.id,
+    label: user.name,
+  }));
 
-    fetch(
-      BASE_URL + "/api/panel-fetch-user-for-booking-assign/" + id,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((data) => setAssignUserP(data.bookingAssignUser));
-  }, []);
+  const selectedUser =
+    userOptions.find((opt) => opt.value === bookingUser.order_user_id) || null;
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const form = document.getElementById("addIndiv");
-    if (!form.checkValidity()) {
-      toast.error("Fill all required");
-      setLoading(false); 
+    if (!bookingUser.order_user_id) {
+      toast.error("Please select a user");
+      setLoading(false);
       return;
     }
 
@@ -71,17 +104,12 @@ const AddBookingAssignUser = () => {
       order_id: id,
     };
 
-    const token = localStorage.getItem("token");
-
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-booking-assign`,
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.code == "200") {
@@ -102,68 +130,43 @@ const AddBookingAssignUser = () => {
   return (
     <Layout>
       <BookingFilter />
-
       <PageHeader title={"Create Booking User"} />
+
       <div className="w-full mt-5 mx-auto p-8 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-            {/* Service Field */}
-            <div className="form-group">
-              <FormControl fullWidth>
-                <InputLabel id="service-select-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Assign User <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="service-select-label"
-                  id="service-select"
-                  name="order_user_id"
-                  value={bookingUser.order_user_id}
-                  onChange={(e) => onInputChange(e)}
-                  label="Assign User *"
-                  required
-                >
-                  {assisgnUserP.map((data) => (
-                    <MenuItem key={data.id} value={data.id}>
-                      {data.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Assign User Field */}
+            <div>
+              {/* <label className="block text-sm font-medium text-gray-700 mb-1">
+                Assign User <span className="text-red-500">*</span>
+              </label> */}
+              <Select
+                options={userOptions}
+                value={selectedUser}
+                onChange={(option) =>
+                  setBookingser({ ...bookingUser, order_user_id: option.value })
+                }
+                styles={customStyles}
+                placeholder="Select a user..."
+                isMulti={false}
+                required
+              />
             </div>
 
-            {/* Service Commission Field */}
-            <div className="form-group">
+            {/* Remarks Field */}
+            <div>
               <Input
                 label="Remark"
                 name="order_assign_remarks"
                 value={bookingUser.order_assign_remarks}
-                onChange={(e) => onInputChange(e)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none  transition-all duration-300 shadow-sm"
+                onChange={(e) =>
+                  setBookingser({ ...bookingUser, [e.target.name]: e.target.value })
+                }
               />
             </div>
           </div>
-          {/* 
-          <div className="flex justify-center space-x-4">
-            <Button type="submit" className="mr-2 mb-2 bg-black">
-              <div className="flex gap-1">
-                <MdSend className="w-4 h-4" />
-                <span>Submit</span>
-              </div>
-            </Button>
 
-            <Link to={`/booking-assign/${id}`}>
-              <Button className="mr-2 mb-2 bg-black">
-                <div className="flex gap-1">
-                  <MdArrowBack className="w-4 h-4" />
-                  <span>Back</span>
-                </div>
-              </Button>
-            </Link>
-          </div> */}
-
+          {/* Buttons */}
           <div className="flex justify-center space-x-4">
             <ButtonConfigColor
               type="submit"
@@ -172,9 +175,8 @@ const AddBookingAssignUser = () => {
               disabled={isButtonDisabled}
               loading={loading}
             />
-
             <ButtonConfigColor
-              type="back"
+              type="button"
               buttontype="button"
               label="Cancel"
               onClick={() => navigate(-1)}

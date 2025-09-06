@@ -1,9 +1,7 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { BiSort } from "react-icons/bi";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import { toast } from "react-toastify";
 import {
   BASE_URL,
   NO_IMAGE_URL,
@@ -13,8 +11,10 @@ import {
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
 import Layout from "../../../layout/Layout";
+import { BiSort } from "react-icons/bi";
+import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
+import { toast } from "react-toastify";
 
 const getServiceLabel = (val) => {
   switch (val) {
@@ -74,28 +74,29 @@ const ViewServiceMaster = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedSubService, setSelectedSubService] = useState(null);
 
-  const fetchBookingData = async () => {
-    try {
-      const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-service-view-by-id/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const fetchBookingData = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-      setServiceData(response?.data?.service || {});
-      setServiceSubData(response?.data?.serviceSub || []);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-service-view-by-id/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setServiceData(response?.data?.service || {});
+        setServiceSubData(response?.data?.serviceSub || []);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
     fetchBookingData();
   }, [id]);
 
@@ -120,7 +121,8 @@ const ViewServiceMaster = () => {
       );
 
       if (res.data.code === 200) {
-        await fetchBookingData();
+
+        await fetchBookingData()
         toast.success(res.data?.msg || "Sort order updated successfully");
       } else {
         toast.error(res.data?.msg || "Error updating sort order");
@@ -259,54 +261,56 @@ const ViewServiceMaster = () => {
                         </th>
                       </tr>
                     </thead>
+<tbody>
+  {servicesubData.length > 0 ? (
+    [...servicesubData] 
+      .sort((a, b) => a.service_sub_sort - b.service_sub_sort) 
+      .map((item) => (
+        <tr key={item.id} className="text-[12px]">
+          <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
+            <img
+              src={
+                item?.service_sub_image
+                  ? `${SERVICE_SUB_IMAGE_URL}/${item.service_sub_image}`
+                  : NO_IMAGE_URL
+              }
+              alt="Service"
+              className="w-10 h-10 object-cover rounded border mx-auto"
+            />
+          </td>
 
-                    <tbody>
-                      {servicesubData.length > 0 ? (
-                        servicesubData.map((item) => (
-                          <tr key={item.id} className="text-[12px]">
-                            <td className="border-b border-r border-gray-400 bg-white text-center align-middle">
-                              <img
-                                src={
-                                  item?.service_sub_image
-                                    ? `${SERVICE_SUB_IMAGE_URL}/${item.service_sub_image}`
-                                    : NO_IMAGE_URL
-                                }
-                                alt="Service"
-                                className="w-10 h-10 object-cover rounded border mx-auto"
-                              />
-                            </td>
+          <td className="border-b border-r border-gray-400 bg-white text-black font-medium p-2">
+            {item.service_sub}
+          </td>
+          <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
+            {item.service_sub_sort}
+          </td>
+          <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
+            {item.service_sub_status}
+          </td>
+          <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
+            <div
+              onClick={(e) => handleOpenDialog(e, item.id)}
+              className="flex items-center justify-center"
+              title="Edit Service Sub Order"
+            >
+              <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
+            </div>
+          </td>
+        </tr>
+      ))
+  ) : (
+    <tr>
+      <td
+        colSpan={5}
+        className="text-center text-gray-500 py-3 border-b border-gray-300"
+      >
+        No service sub data
+      </td>
+    </tr>
+  )}
+</tbody>
 
-                            <td className="border-b border-r border-gray-400 bg-white text-black font-medium p-2">
-                              {item.service_sub}
-                            </td>
-                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
-                              {item.service_sub_sort}
-                            </td>
-                            <td className="border-b border-r border-gray-400 bg-white text-center text-black font-medium py-2">
-                              {item.service_sub_status}
-                            </td>
-                            <td className="border-b border-gray-400 bg-white text-center text-black font-medium py-2">
-                              <div
-                                onClick={(e) => handleOpenDialog(e, item.id)}
-                                className="flex items-center justify-center"
-                                title="Edit Service Sub Order"
-                              >
-                                <BiSort className="h-5 w-5 cursor-pointer hover:text-blue-700" />
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan={5}
-                            className="text-center text-gray-500 py-3 border-b border-gray-300"
-                          >
-                            No service sub data
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
                   </table>
                 </div>
               </div>

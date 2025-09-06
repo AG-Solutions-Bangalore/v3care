@@ -24,7 +24,7 @@ const SuperServiceMaster = () => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const { userType } = useContext(ContextPanel);
+  const {  userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -93,6 +93,7 @@ const SuperServiceMaster = () => {
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
+      console.log("Update sort:", id, newSortNumber);
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-super-service-sort/${id}`,
         { newSortNumber },
@@ -202,6 +203,8 @@ const SuperServiceMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
+    // rowsPerPage: 5,
+    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -218,7 +221,7 @@ const SuperServiceMaster = () => {
 
       handleView(e, id)();
     },
-    setRowProps: () => {
+    setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
@@ -242,7 +245,7 @@ const SuperServiceMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack
@@ -266,6 +269,10 @@ const SuperServiceMaster = () => {
         </div>
       );
     },
+    sortOrder: {
+    name: "serviceSuper_sort",
+    direction: "asc", 
+  },
   };
   return (
     <Layout>
