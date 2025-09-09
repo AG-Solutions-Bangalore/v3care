@@ -271,7 +271,7 @@ const VendorList = () => {
     },
     onRowClick: (rowData, rowMeta, e) => {
       const id = vendorListData[rowMeta.dataIndex].id;
-      handleViewVendorInfo(e, id)();
+      handleViewVendorInfo(e, id);
     },
     customToolbar: () => {
       return (

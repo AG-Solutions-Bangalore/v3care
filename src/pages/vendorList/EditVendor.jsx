@@ -6,7 +6,7 @@ import {
   Select
 } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../base/BaseUrl";
@@ -15,6 +15,10 @@ import LoaderComponent from "../../components/common/LoaderComponent";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import Layout from "../../layout/Layout";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+
+
+
+
 const statusOptions = [
   { value: "Pending", label: "Pending" },
   { value: "Active", label: "Active" },
@@ -30,8 +34,13 @@ const training = [
     label: "No",
   },
 ];
+
+
+
 const EditVendor = () => {
   const navigate = useNavigate();
+
+  
   const { id } = useParams();
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
@@ -40,6 +49,8 @@ const EditVendor = () => {
   const [vendor, setVendor] = useState({
     vendor_short: "",
     vendor_company: "",
+    vendor_members: "",
+    vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
     vendor_aadhar_no: "",
@@ -83,6 +94,10 @@ const EditVendor = () => {
       vendor_branch_state: "",
       vendor_branch_pincode: "",
       vendor_branch_status: "",
+
+vendor_branch_url:"",
+vendor_branch_locality:"",
+vendor_branch_sub_locality:""
     },
   ]);
   const [users2, setUsers2] = useState([
@@ -164,6 +179,8 @@ const EditVendor = () => {
         name === "vendor_gst_no" ||
         name == "vendor_aadhar_no" ||
         name === "vendor_ref_mobile_1" ||
+        name === "vendor_years_experience" ||
+        name === "vendor_members" ||
         name === "vendor_ref_mobile_2") &&
       !validateOnlyDigits(value)
     ) {
@@ -185,7 +202,7 @@ const EditVendor = () => {
     );
     setUsers1(updatedUsers);
   };
-
+  
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -460,14 +477,43 @@ Object.keys(vendor).forEach((key) => {
                 />
               </div>
             </div>
-            <div className="my-3">
+
+
+
+            <div className="my-3 grid grid-cols-4 gap-4">
+            <div className=" col-span-1 md:col-span-3">
               <Textarea
                 label="Job Skills"
                 name="vendor_job_skills"
                 value={vendor.vendor_job_skills}
                 onChange={(e) => onInputChange(e)}
               />
+</div>
+<div className="flex flex-col   justify-between">
+<Input
+                 label="Members"
+                  type="text"
+                  name="vendor_members"
+                  value={vendor.vendor_members}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
+
+<Input
+                label="Vendor Experience (in Yrs)"
+                  type="text"
+                  name="vendor_years_experience"
+                  value={vendor.vendor_years_experience}
+                  onChange={onInputChange}
+                  className="w-full border border-gray-700 rounded-md p-2"
+                  required
+                />
             </div>
+            </div>
+
+
+
             <div className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
               <FormControl fullWidth>
                 <InputLabel id="vendor_training-label">
@@ -752,6 +798,25 @@ Object.keys(vendor).forEach((key) => {
                 </div>
               </div>
             ))}
+                      
+
+                      <div>
+  <h1 className="text-xl font-semibold mb-4">Location</h1>
+  {users1[0]?.vendor_branch_url && (
+    <div className="mb-4">
+      <a
+        href={users1[0]?.vendor_branch_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 underline"
+      >
+        View Location on Map
+      </a>
+     
+    </div>
+  ) }
+</div>
+
             <div className="flex justify-center space-x-4 my-2">
               <ButtonConfigColor
                 type="edit"
