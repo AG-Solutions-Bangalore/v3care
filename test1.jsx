@@ -27,7 +27,8 @@ import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonCon
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-
+// const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyB9fQG7AbrrZaqICDY_4E5Prkabmhc-MRo";
+const REACT_APP_GOOGLE_MAPS_KEY = "AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0";
 const whatsapp = [
   {
     value: "Yes",
@@ -41,7 +42,24 @@ const whatsapp = [
 
 let autoComplete;
 
+const loadScript = (url, callback) => {
+  let script = document.createElement("script");
+  script.type = "text/javascript";
 
+  if (script.readyState) {
+    script.onreadystatechange = function () {
+      if (script.readyState === "loaded" || script.readyState === "complete") {
+        script.onreadystatechange = null;
+        callback();
+      }
+    };
+  } else {
+    script.onload = () => callback();
+  }
+
+  script.src = url;
+  document.getElementsByTagName("head")[0].appendChild(script);
+};
 
 const AddBooking = () => {
   const autoCompleteRef = useRef(null);
@@ -371,14 +389,11 @@ const AddBooking = () => {
   };
 
   useEffect(() => {
-    if (window.google && window.google.maps && window.google.maps.places) {
-      handleScriptLoad(setQuery, autoCompleteRef);
-    } else {
-      console.error("Google Maps API not loaded!");
-    }
+    loadScript(
+      `https://maps.googleapis.com/maps/api/js?key=${REACT_APP_GOOGLE_MAPS_KEY}&libraries=places`,
+      () => handleScriptLoad(setQuery, autoCompleteRef)
+    );
   }, []);
-  
-  
 
   const onSubmit = (e) => {
     e.preventDefault();

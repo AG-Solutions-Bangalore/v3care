@@ -14,7 +14,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Input,
 } from "@mui/material";
 import { useRef } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -40,16 +39,9 @@ const training = [
     label: "No",
   },
 ];
-let autoComplete;
-
 
 const AddVendor = () => {
   UseEscapeKey();
-  const autoCompleteRef = useRef(null);
-    const [query, setQuery] = useState("");
-    const [query1, setQuery1] = useState("");
-    const [localityBook, setLocalityBook] = useState("");
-    const [localitySubBook, setLocalitySubBook] = useState("");
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -64,8 +56,6 @@ const AddVendor = () => {
   const initialVendorState = {
     vendor_short: "",
     vendor_company: "",
-    vendor_members: "",
-    vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
     vendor_aadhar_no: "",
@@ -120,8 +110,6 @@ const AddVendor = () => {
     branch_id:
       userType == 6 || userType == 8 ? "" : localStorage.getItem("branch_id"),
     vendor_company: "",
-    vendor_members: "",
-    vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
     vendor_aadhar_no: "",
@@ -174,10 +162,6 @@ const AddVendor = () => {
     vendor_branch_city: "",
     vendor_branch_district: "",
     vendor_branch_state: "",
-
-vendor_branch_url:"",
-vendor_branch_locality:"",
-vendor_branch_sub_locality:""
   };
 
   const [users1, setUsers1] = useState([useTemplate1]);
@@ -216,20 +200,6 @@ vendor_branch_sub_locality:""
         });
       }
     } else if (e.target.name == "vendor_ref_mobile_1") {
-      if (validateOnlyDigits(e.target.value)) {
-        setVendor({
-          ...vendor,
-          [e.target.name]: e.target.value,
-        });
-      }
-    } else if (e.target.name == "vendor_members"){
-      if (validateOnlyDigits(e.target.value)) {
-        setVendor({
-          ...vendor,
-          [e.target.name]: e.target.value,
-        });
-      }
-    }else if (e.target.name == "vendor_years_experience"){
       if (validateOnlyDigits(e.target.value)) {
         setVendor({
           ...vendor,
@@ -332,61 +302,6 @@ vendor_branch_sub_locality:""
     fetchVendorData();
   }, [id]);
 
-  const handleScriptLoad = (updateQuery, autoCompleteRef) => {
-   
-    autoComplete = new window.google.maps.places.Autocomplete(
-      autoCompleteRef.current,
-      {
-        componentRestrictions: { country: "IN" },
-      }
-    );
-    autoComplete.addListener("place_changed", () => {
-      handlePlaceSelect(updateQuery);
-    });
-  };
-  
-
-
-  const handlePlaceSelect = async (updateQuery) => {
-    const addressObject = await autoComplete.getPlace();
-    const query = addressObject.formatted_address;
-    const url = addressObject.url;
-    updateQuery(query);
-  
-    let subLocality = "";
-    let locality = "";
-    addressObject.address_components.forEach((component) => {
-      if (component.types.includes("sublocality_level_1")) {
-        subLocality = component.short_name;
-      }
-      if (component.types.includes("locality")) {
-        locality = component.short_name;
-      }
-    });
-  
-    
-    setUsers1((prevUsers) => {
-      const updatedUsers = [...prevUsers];
-      updatedUsers[0] = {
-        ...updatedUsers[0],
-        vendor_branch_url: url,
-        vendor_branch_locality: locality,
-        vendor_branch_sub_locality: subLocality,
-      };
-      return updatedUsers;
-    });
-  
-    setLocalitySubBook(subLocality);
-    setLocalityBook(locality);
-    setQuery1(url);
-  };
-  
-
-  useEffect(() => {
-    if (window.google && window.google.maps && window.google.maps.places) {
-      handleScriptLoad(setQuery, autoCompleteRef);
-    }
-  }, []);
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(test, "test");
@@ -398,8 +313,6 @@ vendor_branch_sub_locality:""
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
-    data.append("vendor_members", vendor.vendor_members);
-    data.append("vendor_years_experience", vendor.vendor_years_experience);
     data.append("vendor_mobile", vendor.vendor_mobile);
     data.append("vendor_email", vendor.vendor_email);
     data.append("vendor_aadhar_no", vendor.vendor_aadhar_no);
@@ -441,6 +354,7 @@ vendor_branch_sub_locality:""
     
     var v = document.getElementById("addIndiv").checkValidity();
     var v1 = document.getElementById("addIndiv").reportValidity();
+
     e.preventDefault();
     
     if (v && v1) {
@@ -696,27 +610,24 @@ vendor_branch_sub_locality:""
             />
            </div>
             <div className="flex flex-col   justify-between">
-            <CustomInput
-              label="Members"
-              icon={BusinessIcon}
-                type="tel"
-              name="vendor_members"
-              required
-              value={vendor.vendor_members}
+             <CustomInput
+              label="Reference Mobile No 1"
+              icon={PhoneIphone}
+              type="tel"
+              name="vendor_ref_mobile_1"
               maxLength={10}
+              value={vendor.vendor_ref_mobile_1}
               onChange={(e) => onInputChange(e)}
             />
-            <CustomInput
-              label="Vendor Experience (in Yrs)"
-              icon={BusinessIcon}
-                type="tel"
-              name="vendor_years_experience"
-              required
-              value={vendor.vendor_years_experience}
+             <CustomInput
+              label="Reference Mobile No 1"
+              icon={PhoneIphone}
+              type="tel"
+              name="vendor_ref_mobile_1"
               maxLength={10}
+              value={vendor.vendor_ref_mobile_1}
               onChange={(e) => onInputChange(e)}
             />
-            
             </div>
           </Box>
           <Box className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -940,25 +851,7 @@ vendor_branch_sub_locality:""
               </div>
             ))}
           </Box>
-          <div>
-          <Typography
-            variant="h6"
-            sx={{ padding: "10px" }}
-          >
-           Location
-          </Typography>
-           <CustomInput
-              label="Search Place.."
-                          
-                            ref={autoCompleteRef}
-                            
-                            required
-                            onChange={(event) => setQuery(event.target.value)}
-                            placeholder="Search Place"
-                            value={query}
-                          />
-                          </div>
-                          
+          
           <div className="flex justify-center space-x-4 my-6">
             <ButtonConfigColor
               type="submit"
