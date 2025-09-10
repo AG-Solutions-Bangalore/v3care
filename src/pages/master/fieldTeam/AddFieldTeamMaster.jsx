@@ -161,7 +161,7 @@ useEffect(() => {
     data.append("user_last_training", team.user_last_training);
     data.append("user_joinining_date", team.user_joinining_date);
     axios({
-      url: BASE_URL + "/api/panel-create-admin-userD",
+      url: BASE_URL + "/api/panel-create-admin-user",
       method: "POST",
       data,
       headers: {
