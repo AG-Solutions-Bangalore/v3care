@@ -15,6 +15,7 @@ import LoaderComponent from "../../components/common/LoaderComponent";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import Layout from "../../layout/Layout";
 import UseEscapeKey from "../../utils/UseEscapeKey";
+import CustomInput from "../../components/addVendor/CustomInput";
 
 
 
@@ -46,6 +47,32 @@ const EditVendor = () => {
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
+
+
+  const [showLocationInput, setShowLocationInput] = useState(false);
+  const [query, setQuery] = useState("");
+  const [localityBook, setLocalityBook] = useState("");
+  const [localitySubBook, setLocalitySubBook] = useState("");
+  const autoCompleteRef = useRef(null);
+  let autoComplete;
+
+ 
+
+  
+  const loadGoogleMapsScript = (callback) => {
+    if (window.google && window.google.maps && window.google.maps.places) {
+      callback();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAk4WgZpl2DuYxnfgYLCXEQKvVLK3hJ7S0&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = callback;
+    document.head.appendChild(script);
+  };
+
+
   const [vendor, setVendor] = useState({
     vendor_short: "",
     vendor_company: "",
@@ -202,7 +229,61 @@ vendor_branch_sub_locality:""
     );
     setUsers1(updatedUsers);
   };
+  const handleScriptLoad = (updateQuery, autoCompleteRef) => {
+    if (!autoCompleteRef.current) return;
   
+    autoComplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      {
+        componentRestrictions: { country: "IN" },
+      }
+    );
+    autoComplete.addListener("place_changed", () => {
+      handlePlaceSelect(updateQuery);
+    });
+  };
+  
+  
+  const handlePlaceSelect = async (updateQuery) => {
+    const addressObject = await autoComplete.getPlace();
+    const query = addressObject.formatted_address;
+    const url = addressObject.url;
+    updateQuery(query);
+  
+    let subLocality = "";
+    let locality = "";
+    addressObject.address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
+        subLocality = component.short_name;
+      }
+      if (component.types.includes("locality")) {
+        locality = component.short_name;
+      }
+    });
+  
+    setUsers1((prevUsers) => {
+      const updatedUsers = [...prevUsers];
+      updatedUsers[0] = {
+        ...updatedUsers[0],
+        vendor_branch_url: url,
+        vendor_branch_locality: locality,
+        vendor_branch_sub_locality: subLocality,
+      };
+      return updatedUsers;
+    });
+  
+    setLocalitySubBook(subLocality);
+    setLocalityBook(locality);
+  };
+  
+  useEffect(() => {
+    loadGoogleMapsScript(() => {
+      if (autoCompleteRef.current) {
+        handleScriptLoad(setQuery, autoCompleteRef);
+      }
+    });
+  }, [loadGoogleMapsScript]);
+    
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -800,10 +881,11 @@ Object.keys(vendor).forEach((key) => {
             ))}
                       
 
-                      <div>
+
+<div>
   <h1 className="text-xl font-semibold mb-4">Location</h1>
-  {users1[0]?.vendor_branch_url && (
-    <div className="mb-4">
+  {users1[0]?.vendor_branch_url && !showLocationInput && (
+    <div className="mb-4 flex items-center gap-2">
       <a
         href={users1[0]?.vendor_branch_url}
         target="_blank"
@@ -812,9 +894,33 @@ Object.keys(vendor).forEach((key) => {
       >
         View Location on Map
       </a>
-     
+      <ButtonConfigColor
+        type="edit"
+        label="Change Location"
+        onClick={() => setShowLocationInput(true)}
+      />
     </div>
-  ) }
+  )}
+  {showLocationInput && (
+    <div className="mb-4">
+      <CustomInput
+     label="Search Place..."
+  type="text"
+  ref={autoCompleteRef}
+  placeholder="Search Place..."
+  value={query}
+  onChange={(event) => setQuery(event.target.value)}
+  className="w-full border border-gray-700 rounded-md p-2"
+/>
+      <div className="mt-2">
+        <ButtonConfigColor
+          type="back"
+          label="Cancel"
+          onClick={() => setShowLocationInput(false)}
+        />
+      </div>
+    </div>
+  )}
 </div>
 
             <div className="flex justify-center space-x-4 my-2">

@@ -1,5 +1,5 @@
 import { Card, Input } from "@material-tailwind/react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select as MuiSelect} from "@mui/material";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,11 +11,48 @@ import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonCon
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import Select from 'react-select';
 
 const statusOptions = [
   { value: "Active", label: "Active" },
   { value: "Inactive", label: "Inactive" },
 ];
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    minHeight: "40px",
+    borderRadius: "0.375rem",
+    borderColor: "#e5e7eb",
+    "&:hover": {
+      borderColor: "#9ca3af",
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: "4px 8px",
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: "40px",
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? "#3b82f6" : "white",
+    color: state.isSelected ? "white" : "#1f2937",
+    "&:hover": {
+      backgroundColor: "#e5e7eb",
+    },
+  }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 1400, 
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    zIndex: 1400, 
+  }),
+};
 const ServicePriceEditMaster = () => {
   const location = useLocation();
   const { service_id, service_sub_id } = location.state || {};
@@ -30,6 +67,7 @@ const ServicePriceEditMaster = () => {
     service_sub_id: "",
     service_price_status: "",
   });
+  // console.log("checking sub service id",service_sub_id)
 
   const [services, setService] = useState([
     {
@@ -43,11 +81,26 @@ const ServicePriceEditMaster = () => {
       service_holiday_amount: "",
     },
   ]);
+  
+  const [bulkEditData, setBulkEditData] = useState({
+    service_price_for: "",
+    service_price_rate: "",
+    service_price_amount: "",
+    service_weekend_amount: "",
+    service_holiday_amount: "",
+    branches: []
+  });
+  
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [showBulkEdit, setShowBulkEdit] = useState(false);
+  const [bulkLoading, setBulkLoading] = useState(false);
+  
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loadingstatus, setLoadingStatus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
+  
   const onInputChangeStatus = (event) => {
     const { name, value } = event.target;
     setServiceUpdateStatus((prev) => ({
@@ -55,11 +108,12 @@ const ServicePriceEditMaster = () => {
       [name]: value,
     }));
   };
+  
   const onInputChange = (eventOrValue, rowId, fieldName) => {
     const value = eventOrValue?.target?.value ?? eventOrValue;
 
     if (
-      ["service_price_rate", "service_price_amount"].includes(fieldName) &&
+      ["service_price_rate", "service_price_amount", "service_weekend_amount", "service_holiday_amount"].includes(fieldName) &&
       !/^\d*$/.test(value)
     ) {
       return;
@@ -70,6 +124,20 @@ const ServicePriceEditMaster = () => {
     );
 
     setService(updatedData);
+  };
+  
+  const onBulkInputChange = (field, value) => {
+    setBulkEditData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+  
+  const onBulkBranchChange = (selectedOptions) => {
+    setBulkEditData(prev => ({
+      ...prev,
+      branches: selectedOptions
+    }));
   };
 
   useEffect(() => {
@@ -122,6 +190,13 @@ const ServicePriceEditMaster = () => {
             ];
 
         setService(mappedData);
+        
+    
+        const uniqueBranches = [...new Set(mappedData.map(item => item.branch_name))];
+        setBranchOptions(uniqueBranches.map(branch => ({
+          value: branch,
+          label: branch
+        })));
       } catch (error) {
         console.error("Error fetching service price:", error);
       } finally {
@@ -136,6 +211,7 @@ const ServicePriceEditMaster = () => {
     e.preventDefault();
     navigate(`/service-price?page=${pageNo}`);
   };
+  
   const onSubmit = async (e) => {
     setLoading(true);
 
@@ -175,6 +251,58 @@ const ServicePriceEditMaster = () => {
       }
     }
   };
+  
+  const onSubmitBulkEdit = async (e) => {
+    e.preventDefault();
+    setBulkLoading(true);
+    
+    try {
+   
+      const updateData = {};
+      if (bulkEditData.service_price_rate && bulkEditData.service_price_rate !== "0") 
+        updateData.service_price_rate = bulkEditData.service_price_rate;
+      if (bulkEditData.service_price_amount && bulkEditData.service_price_amount !== "0") 
+        updateData.service_price_amount = bulkEditData.service_price_amount;
+      if (bulkEditData.service_weekend_amount && bulkEditData.service_weekend_amount !== "0") 
+        updateData.service_weekend_amount = bulkEditData.service_weekend_amount;
+      if (bulkEditData.service_holiday_amount && bulkEditData.service_holiday_amount !== "0") 
+        updateData.service_holiday_amount = bulkEditData.service_holiday_amount;
+      
+     
+      const selectedBranches = bulkEditData.branches.map(b => b.value);
+      
+     
+      const updatedServices = services.map(item => {
+        if (item.service_price_for === bulkEditData.service_price_for && 
+            (selectedBranches.length === 0 || selectedBranches.includes(item.branch_name))) {
+          return {
+            ...item,
+            ...updateData
+          };
+        }
+        return item;
+      });
+      
+      setService(updatedServices);
+      setShowBulkEdit(false);
+      setBulkEditData({
+        service_price_for: "",
+        service_price_rate: "",
+        service_price_amount: "",
+        service_weekend_amount: "",
+        service_holiday_amount: "",
+        branches: []
+      });
+      
+      toast.success("Prices updated successfully. Click Update to save changes.");
+    } catch (error) {
+      console.error("Error in bulk edit:", error);
+      toast.error("Error updating prices");
+    } finally {
+      setBulkLoading(false);
+    }
+  };
+  
   const onSubmitStatus = async (e) => {
     setLoadingStatus(true);
     e.preventDefault();
@@ -219,7 +347,14 @@ const ServicePriceEditMaster = () => {
       return acc;
     }, {});
 
-  const branchOptions = ["All", ...Object.keys(groupedServices)];
+  const branchFilterOptions = ["All", ...Object.keys(groupedServices)];
+  
+  // Get unique service_price_for values for dropdown
+  const servicePriceForOptions = useMemo(() => {
+    const uniqueValues = [...new Set(services.map(item => item.service_price_for))];
+    return uniqueValues.map(value => ({ value, label: value }));
+  }, [services]);
+  
   const filteredGroupedServices = useMemo(() => {
     const filtered = {};
 
@@ -248,7 +383,7 @@ const ServicePriceEditMaster = () => {
                     Filter Branch
                   </span>
                 </InputLabel>
-                <Select
+                <MuiSelect
                   sx={{
                     height: "40px",
                     borderRadius: "5px",
@@ -262,12 +397,12 @@ const ServicePriceEditMaster = () => {
                   label="Filter Branch"
                   required
                 >
-                  {branchOptions.map((branch) => (
+                  {branchFilterOptions.map((branch) => (
                     <MenuItem key={branch} value={branch}>
                       {branch}
                     </MenuItem>
                   ))}
-                </Select>
+                </MuiSelect>
               </FormControl>{" "}
             </div>
           </div>
@@ -284,7 +419,7 @@ const ServicePriceEditMaster = () => {
                     <span className="text-red-700">*</span>
                   </span>
                 </InputLabel>
-                <Select
+                <MuiSelect
                   sx={{
                     height: "40px",
                     borderRadius: "5px",
@@ -303,7 +438,7 @@ const ServicePriceEditMaster = () => {
                       {data.label}
                     </MenuItem>
                   ))}
-                </Select>
+                </MuiSelect>
               </FormControl>{" "}
               <ButtonConfigColor
                 type="edit"
@@ -312,14 +447,122 @@ const ServicePriceEditMaster = () => {
                 label="Update Status"
                 loading={loadingstatus}
               />
+              <ButtonConfigColor
+            type="edit"
+            buttontype="button"
+            onClick={() => setShowBulkEdit(!showBulkEdit)}
+            label={showBulkEdit ? "Hide Bulk Edit" : "Show Bulk Edit"}
+          />
             </div>
           </div>
         }
       />
+      
+      {/* Bulk Edit Section */}
+      <div >
+       
+        
+        {showBulkEdit && (
+          <div className="p-2 bg-white mt-2 rounded-t-md ">
+           <div className="flex justify-between items-center mb-4">
+           <h3 className="text-lg font-semibold">Bulk Edit Prices</h3>
+           
+         </div>
+          <form onSubmit={onSubmitBulkEdit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <FormControl fullWidth>
+            
+                <Select
+                  value={servicePriceForOptions.find(opt => opt.value === bulkEditData.service_price_for) || null}
+                  onChange={(selected) => onBulkInputChange('service_price_for', selected.value)}
+                  options={servicePriceForOptions}
+                  isClearable
+                  className=""
+                  placeholder="Select Service Price For"
+                />
+              </FormControl>
+              
+              
+              <div className=" col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <Input
+                label="Original Price"
+                type="number"
+                value={bulkEditData.service_price_rate}
+                onChange={(e) => onBulkInputChange('service_price_rate', e.target.value)}
+                containerProps={{ className: "!min-w-0" }}
+              />
+              
+              <Input
+                label="Discount Price"
+                type="number"
+                value={bulkEditData.service_price_amount}
+                onChange={(e) => onBulkInputChange('service_price_amount', e.target.value)}
+                containerProps={{ className: "!min-w-0" }}
+              />
+        
+              <Input
+                label="Holiday Price"
+                type="number"
+                value={bulkEditData.service_holiday_amount}
+                onChange={(e) => onBulkInputChange('service_holiday_amount', e.target.value)}
+                containerProps={{ className: "!min-w-0" }}
+              />
+              
+              <Input
+                label="Weekend Price"
+                type="number"
+                value={bulkEditData.service_weekend_amount}
+                onChange={(e) => onBulkInputChange('service_weekend_amount', e.target.value)}
+                containerProps={{ className: "!min-w-0" }}
+              />
+              </div>
+              <div className="col-span-1 lg:col-span-3">
+              <FormControl fullWidth>
+  <Select
+    isMulti
+    value={bulkEditData.branches}
+    onChange={onBulkBranchChange}
+    options={
+      bulkEditData.service_price_for
+        ? branchOptions.filter(branch =>
+            services.some(item =>
+              item.service_price_for === bulkEditData.service_price_for &&
+              item.branch_name === branch.value
+            )
+          )
+        : branchOptions
+    }
+    placeholder="Select Branches"
+    styles={customStyles}
+    classNamePrefix="select"
+    isDisabled={!bulkEditData.service_price_for}
+    closeMenuOnSelect={false} 
+    hideSelectedOptions={false} 
+    controlShouldRenderValue={true} 
+  />
+</FormControl>
+</div>
+
+            </div>
+           
+            <div className="flex justify-end">
+              <ButtonConfigColor
+                type="edit"
+                buttontype="submit"
+                label="Update Prices"
+                loading={bulkLoading}
+                disabled={!bulkEditData.service_price_for}
+              />
+            </div>
+          </form>
+          </div>
+        )}
+      </div>
+
       {fetchloading ? (
         <LoaderComponent />
       ) : (
-        <Card className="p-4 sm:p-6 lg:px-8 mt-2">
+        <div className={`p-4 sm:p-6 lg:px-8  bg-white ${showBulkEdit ? "mt-0 rounded-b-md" : "mt-2 rounded-md"}`}>
           <div className="flex justify-between">
             <div className="flex flex-col md:flex-row md:items-center md:space-x-6 space-y-2 md:space-y-0">
               <h2 className="text-base">
@@ -454,7 +697,7 @@ const ServicePriceEditMaster = () => {
                           <InputLabel id={`status-select-${row.id}`}>
                             <span className="text-sm">Status</span>
                           </InputLabel>
-                          <Select
+                          <MuiSelect
                             labelId={`status-select-${row.id}`}
                             id={`status-${row.id}`}
                             name="service_price_status"
@@ -474,7 +717,7 @@ const ServicePriceEditMaster = () => {
                                 {data.label}
                               </MenuItem>
                             ))}
-                          </Select>
+                          </MuiSelect>
                         </FormControl>
                       </div>
                     </div>
@@ -483,7 +726,7 @@ const ServicePriceEditMaster = () => {
               )
             )}
           </form>
-        </Card>
+        </div>
       )}
     </Layout>
   );
