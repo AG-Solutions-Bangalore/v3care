@@ -75,7 +75,7 @@ const MasterFilter = () => {
           },
         ]
       : []),
-    ...(userType == "8"
+    ...(userType == "8" || userType == "7"
       ? [
           {
             label: "Right Sidebar",
@@ -111,7 +111,20 @@ const MasterFilter = () => {
           },
         ]
       : []),
-    ...(userType == "6" || userType == "8"
+    ...( userType == '7'
+      ? [
+          
+          {
+            label: "Blogs",
+            path: "/blogs",
+            color: "from-blue-500 to-yellow-400",
+            hoverColor: "hover:bg-yellow-50",
+            textColor: "text-black-900",
+          },
+         
+        ]
+      : []),
+    ...(userType == "6" || userType == "8" 
       ? [
           {
             label: "Holiday List",
