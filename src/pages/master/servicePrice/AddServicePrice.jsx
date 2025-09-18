@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { Input } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
@@ -19,7 +18,7 @@ const AddServicePrice = () => {
     service_price_for: "",
     service_price_rate: "",
     service_price_amount: "",
-    branch_id: "",
+    branch_id: [],
     service_weekend_amount: "",
     service_holiday_amount: "",
   });
@@ -30,6 +29,7 @@ const AddServicePrice = () => {
   const [serdata, setSerData] = useState([]);
   const [branch, setBranch] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
@@ -40,7 +40,6 @@ const AddServicePrice = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
         setBranch(response.data?.branch);
       } catch (error) {
         console.error("Error fetching branch data", error);
@@ -50,20 +49,17 @@ const AddServicePrice = () => {
     };
     fetchServicepriceData();
   }, []);
+
   useEffect(() => {
     const fetchServicepriceData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        const response = await axios.get(`${BASE_URL}/api/panel-fetch-service`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setSerData(response.data?.service);
       } catch (error) {
         console.error("Error fetching service data", error);
@@ -76,20 +72,18 @@ const AddServicePrice = () => {
 
   useEffect(() => {
     if (!services.service_id) return;
-
     const fetchServicepricedData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-service-sub/` + services.service_id,
+          `${BASE_URL}/api/panel-fetch-service-sub/${services.service_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-
         setSerDataSub(response.data?.servicesub);
       } catch (error) {
         console.error("Error fetching service sub data", error);
@@ -104,8 +98,16 @@ const AddServicePrice = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-
-    if (["service_price_rate", "service_price_amount"].includes(name)) {
+    if (name === "branch_id") {
+      if (value.includes("all")) {
+        setServices((prev) => ({
+          ...prev,
+          [name]: branch.map((item) => String(item.id)),
+        }));
+      } else {
+        setServices((prev) => ({ ...prev, [name]: value }));
+      }
+    } else if (["service_price_rate", "service_price_amount"].includes(name)) {
       if (validateOnlyDigits(value)) {
         setServices((prev) => ({ ...prev, [name]: value }));
       }
@@ -114,56 +116,70 @@ const AddServicePrice = () => {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setIsButtonDisabled(true);
-    const data = new FormData();
-    data.append("service_id", services.service_id);
-    data.append("service_sub_id", services.service_sub_id);
-    data.append("service_price_for", services.service_price_for);
-    data.append("service_price_rate", services.service_price_rate);
-    data.append("service_price_amount", services.service_price_amount);
-    data.append("service_weekend_amount", services.service_weekend_amount);
-    data.append("service_holiday_amount", services.service_holiday_amount);
-    data.append("branch_id", services.branch_id);
-    axios({
-      url: BASE_URL + "/api/panel-create-service-price",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
+  
+    const servicePriceData = services.branch_id.map((branchId) => ({
+      service_id: services.service_id,
+      service_sub_id: services.service_sub_id,
+      service_price_for: services.service_price_for,
+      service_price_rate: services.service_price_rate,
+      service_price_amount: services.service_price_amount,
+      service_weekend_amount: services.service_weekend_amount,
+      service_holiday_amount: services.service_holiday_amount,
+      branch_id: branchId,
+    }));
+  
+    const finalFormData = {
+      service_price_data: servicePriceData,
+    };
+  
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/api/panel-create-service-price-multi`,
+        finalFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
       if (res.data.code == "200") {
-        toast.success(res.data?.msg || "Service Price Create succesfull");
-
+        toast.success(res.data?.msg || "Service Price Create successful");
         setServices({
           service_id: "",
           service_sub_id: "",
           service_price_for: "",
           service_price_rate: "",
           service_price_amount: "",
+          branch_id: [],
+          service_weekend_amount: "",
+          service_holiday_amount: "",
         });
         navigate("/service-price");
       } else {
-        toast.error(res.data?.msg || "Duplicate Entery ");
+        toast.error(res.data?.msg || "Duplicate Entry");
       }
-    });
-    setIsButtonDisabled(false);
+    } catch (error) {
+      toast.error(error.response?.data?.msg || "An error occurred");
+    } finally {
+      setIsButtonDisabled(false);
+    }
   };
-
+  
   return (
     <Layout>
       <MasterFilter />
-
       <PageHeader title={"Create Service Price"} />
-
       <div className="w-full mt-5 p-4 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <FormControl fullWidth>
               <InputLabel id="branch-select-label">
-                <span className=" text-sm  bottom-[6px] relative  ">
+                <span className="text-sm bottom-[6px] relative">
                   Branch<span className="text-red-700">*</span>
                 </span>
               </InputLabel>
@@ -174,9 +190,11 @@ const AddServicePrice = () => {
                 name="branch_id"
                 value={services.branch_id}
                 label="Branch"
+                multiple
                 required
                 onChange={onInputChange}
               >
+                <MenuItem value="all">All</MenuItem>
                 {branch.map((item) => (
                   <MenuItem key={item.id} value={String(item.id)}>
                     {item.branch_name}
@@ -207,10 +225,9 @@ const AddServicePrice = () => {
                 ))}
               </Select>
             </FormControl>
-
             <FormControl fullWidth>
               <InputLabel id="service-sub-select-label">
-                <span className=" text-sm  bottom-[6px] relative  ">
+                <span className="text-sm bottom-[6px] relative">
                   Service Sub
                 </span>
               </InputLabel>
@@ -230,7 +247,6 @@ const AddServicePrice = () => {
                 ))}
               </Select>
             </FormControl>
-
             <div className="form-group">
               <Input
                 label="Service Price For"
@@ -239,10 +255,9 @@ const AddServicePrice = () => {
                 value={services.service_price_for}
                 onChange={onInputChange}
                 required
-                maxLength={16}
+                maxLength={200}
               />
             </div>
-
             <div className="form-group">
               <Input
                 label="Original Price"
@@ -254,7 +269,6 @@ const AddServicePrice = () => {
                 maxLength={16}
               />
             </div>
-
             <div className="form-group">
               <Input
                 label="Discount Price"
@@ -289,7 +303,6 @@ const AddServicePrice = () => {
               />
             </div>
           </div>
-
           <div className="flex justify-center space-x-4">
             <ButtonConfigColor
               type="submit"
@@ -298,7 +311,6 @@ const AddServicePrice = () => {
               disabled={isButtonDisabled}
               loading={loading}
             />
-
             <ButtonConfigColor
               type="back"
               buttontype="button"

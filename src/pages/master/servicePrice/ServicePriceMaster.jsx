@@ -110,7 +110,7 @@ const ServicePriceMaster = () => {
     onRowClick: (rowData, rowMeta, e) => {
       const service_id = servicePriceData[rowMeta.dataIndex].service_id;
       const service_sub_id = servicePriceData[rowMeta.dataIndex].service_sub_id;
-      handleViewServiceInfo(e, service_id, service_sub_id)();
+      handleViewServiceInfo(e, service_id, service_sub_id);
     },
     customToolbar: () => {
       return (
