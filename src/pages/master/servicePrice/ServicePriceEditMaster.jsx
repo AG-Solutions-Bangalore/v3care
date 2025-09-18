@@ -517,31 +517,60 @@ const ServicePriceEditMaster = () => {
               />
               </div>
               <div className="col-span-1 lg:col-span-3">
-              <FormControl fullWidth>
-  <Select
-    isMulti
-    value={bulkEditData.branches}
-    onChange={onBulkBranchChange}
-    options={
-      bulkEditData.service_price_for
-        ? branchOptions.filter(branch =>
-            services.some(item =>
-              item.service_price_for === bulkEditData.service_price_for &&
-              item.branch_name === branch.value
+  <FormControl fullWidth>
+    <Select
+      isMulti
+      value={bulkEditData.branches}
+      onChange={(selected) => {
+       
+        if (selected?.some((opt) => opt.value === "all")) {
+          const allOptions =
+            bulkEditData.service_price_for
+              ? branchOptions.filter((branch) =>
+                  services.some(
+                    (item) =>
+                      item.service_price_for === bulkEditData.service_price_for &&
+                      item.branch_name === branch.value
+                  )
+                )
+              : branchOptions;
+
+       
+          setBulkEditData((prev) => ({
+            ...prev,
+            branches: allOptions,
+          }));
+        } else {
+          
+          setBulkEditData((prev) => ({
+            ...prev,
+            branches: selected || [],
+          }));
+        }
+      }}
+      options={[
+        { value: "all", label: "All" }, 
+        ...(bulkEditData.service_price_for
+          ? branchOptions.filter((branch) =>
+              services.some(
+                (item) =>
+                  item.service_price_for === bulkEditData.service_price_for &&
+                  item.branch_name === branch.value
+              )
             )
-          )
-        : branchOptions
-    }
-    placeholder="Select Branches"
-    styles={customStyles}
-    classNamePrefix="select"
-    isDisabled={!bulkEditData.service_price_for}
-    closeMenuOnSelect={false} 
-    hideSelectedOptions={false} 
-    controlShouldRenderValue={true} 
-  />
-</FormControl>
+          : branchOptions),
+      ]}
+      placeholder="Select Branches"
+      styles={customStyles}
+      classNamePrefix="select"
+      isDisabled={!bulkEditData.service_price_for}
+      closeMenuOnSelect={false}
+      hideSelectedOptions={false}
+      controlShouldRenderValue={true}
+    />
+  </FormControl>
 </div>
+
 
             </div>
            
