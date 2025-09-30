@@ -123,53 +123,63 @@ const VendorList = () => {
     navigate(`/vendor-user-list/${id}`);
   };
   const columns = [
-    {
-      name: "id",
-      label: "ACTION",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (id, tableMeta) => {
-          const vendorStatus = vendorListData[tableMeta.rowIndex].vendor_status;
-          return (
-            <div className="flex items-center space-x-2">
-              {userType !== "4" && (
+   {
+  name: "id",
+  label: "ACTION",
+  options: {
+    filter: false,
+    sort: false,
+    customBodyRender: (id, tableMeta) => {
+      const row = vendorListData[tableMeta.rowIndex];
+      const vendorStatus = row.vendor_status;
+      const deviceId = row.device_id;
+
+      return (
+        <div className="flex items-center space-x-2">
+          {userType !== "4" && (
+            <>
+              {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
                 <>
-                  {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
-                    <>
-                      <SquarePen
-                        onClick={(e) => handleEdit(e, id)}
-                        className="h-5 w-5 cursor-pointer hover:text-blue-700"
-                      >
-                        <title>Edit Vendor</title>
-                      </SquarePen>
-                      <FiUsers
-                        onClick={(e) => handleViewVendor(e, id)}
-                        title="View Vendor User List"
-                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
-                      />
-                    </>
-                  ) : vendorStatus === "Pending" ? (
-                    <>
-                      <RiEditLine
-                        onClick={(e) => handleEditPendingVendor(e, id)}
-                        title="Edit Pending Vendor"
-                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
-                      />
-                      <FiUserPlus
-                        onClick={(e) => handleActivate(e, id)}
-                        title="Activate Vendor"
-                        className="h-5 w-5 cursor-pointer  hover:text-blue-700"
-                      />
-                    </>
-                  ) : null}
+                  <SquarePen
+                    onClick={(e) => handleEdit(e, id)}
+                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                  >
+                    <title>Edit Vendor</title>
+                  </SquarePen>
+                  <FiUsers
+                    onClick={(e) => handleViewVendor(e, id)}
+                    title="View Vendor User List"
+                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                  />
                 </>
-              )}
-            </div>
-          );
-        },
-      },
+              ) : vendorStatus === "Pending" ? (
+                <>
+                  <RiEditLine
+                    onClick={(e) => handleEditPendingVendor(e, id)}
+                    title="Edit Pending Vendor"
+                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                  />
+                  <FiUserPlus
+                    onClick={(e) => handleActivate(e, id)}
+                    title="Activate Vendor"
+                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                  />
+                </>
+              ) : null}
+            </>
+          )}
+
+          <img
+            src={deviceId ? "/img/mobile_active.svg" : "/img/mobile_inactive.svg"}
+            alt={deviceId ? "Mobile Active" : "Mobile Inactive"}
+            className="h-[20px] w-[20px]"
+          />
+        </div>
+      );
     },
+  },
+}
+,
 
     {
       name: "branch_name",
