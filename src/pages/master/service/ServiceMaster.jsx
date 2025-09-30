@@ -1,29 +1,30 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select as SelectMaterial,
-} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../../../layout/Layout";
+import MasterFilter from "../../../components/MasterFilter";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SquarePen } from "lucide-react";
-import MUIDataTable from "mui-datatables";
-import { useContext, useEffect, useState } from "react";
-import { BiSort } from "react-icons/bi";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
   BASE_URL,
   NO_IMAGE_URL,
   SERVICE_IMAGE_URL,
 } from "../../../base/BaseUrl";
+import { FaEdit } from "react-icons/fa";
+import MUIDataTable from "mui-datatables";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select as SelectMaterial,
+  TextField,
+} from "@mui/material";
+import { BiSort } from "react-icons/bi";
 import UpdateSuperServiceSort from "../../../components/common/UpdateSuperServiceSort";
-import MasterFilter from "../../../components/MasterFilter";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { toast } from "react-toastify";
 const ServiceMaster = () => {
   const [serviceData, setServiceData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -253,6 +254,8 @@ const ServiceMaster = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
+    // rowsPerPage: 5,
+    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -264,7 +267,7 @@ const ServiceMaster = () => {
       setPage(currentPage);
       navigate(`/service?page=${currentPage + 1}`);
     },
-    setRowProps: () => {
+    setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "5px solid #f1f7f9",
@@ -318,7 +321,7 @@ const ServiceMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack
@@ -342,9 +345,14 @@ const ServiceMaster = () => {
         </div>
       );
     },
+    sortOrder: {
+    name: "service_sort",
+    direction: "asc", 
+  },
   };
   const handleUpdateSort = async ({ id, newSortNumber }) => {
     try {
+      console.log("Update sort:", id, newSortNumber);
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-service-sort/${id}`,
         { newSortNumber },
@@ -369,6 +377,7 @@ const ServiceMaster = () => {
           "Something went wrong while updating sort order"
       );
     }
+    
   };
   return (
     <Layout>
@@ -378,7 +387,7 @@ const ServiceMaster = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Service List"
+            title="Service s List"
             data={filteredData ? filteredData : []}
             columns={columns}
             options={options}

@@ -3,7 +3,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import InputMask from "react-input-mask";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
@@ -11,6 +11,7 @@ import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import MasterFilter from "../../../components/MasterFilter";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const training = [
   {
@@ -23,6 +24,9 @@ const training = [
   },
 ];
 const AddFieldTeamMaster = () => {
+  const location = useLocation();
+const id = location.state?.id; 
+const [fetchLoading, setFetchLoading] = useState(false);
   const [team, setTeam] = useState({
     name: "",
     mobile: "",
@@ -36,6 +40,7 @@ const AddFieldTeamMaster = () => {
     remarks: "",
     view_branch_id: "",
 
+    //new
     user_job_skills: "",
     user_designation: null,
     user_training: "",
@@ -65,7 +70,35 @@ const AddFieldTeamMaster = () => {
       .then((response) => response.json())
       .then((data) => setBranch(data.branch));
   }, []);
+useEffect(() => {
+  if (!id) return; 
+  setFetchLoading(true);
+  axios({
+    url: `${BASE_URL}/api/panel-fetch-admin-user-by-id/${id}`,
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+    .then((res) => {
+      const rawData = res?.data?.adminUser || {};
+      const normalizedData = Object.fromEntries(
+        Object.entries(rawData).map(([key, value]) => {
+          if (value === null || value === "null") return [key, ""];
+          return [key, value];
+        })
+      );
 
+      setTeam((prev) => ({ ...prev, ...normalizedData }));
+    })
+    .catch((error) => {
+      console.error("Error fetching admin user data:", error);
+    })
+    .finally(() => {
+      setFetchLoading(false);
+    });
+}, [id]);
+ 
   const onInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "mobile" || name == "user_aadhar_no") {
@@ -120,6 +153,7 @@ const AddFieldTeamMaster = () => {
     data.append("user_pancard_no", team.user_pancard_no);
     data.append("view_branch_id", team.view_branch_id);
     data.append("user_pancard", selectedFile2);
+    //new
     data.append("user_designation", team.user_designation);
     data.append("user_job_skills", team.user_job_skills);
     data.append("user_training", team.user_training);
@@ -149,7 +183,8 @@ const AddFieldTeamMaster = () => {
           user_type: "1",
           remarks: "",
         });
-        navigate("/field-team");
+        // navigate("/field-team");
+        navigate(-1)
       } else {
         toast.error(res.data?.msg || "duplicate entry");
         setLoading(false);
@@ -162,8 +197,10 @@ const AddFieldTeamMaster = () => {
     <Layout>
       <MasterFilter />
 
-      <PageHeader title={"Create Field Team"} />
-
+   <PageHeader title={id ? "Transfer Field Team" : "Create Field Team"} />
+  {fetchLoading ? (
+        <LoaderComponent />
+      ) : (
       <div className="w-full p-4 mt-2 bg-white shadow-lg rounded-xl">
         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
@@ -252,6 +289,7 @@ const AddFieldTeamMaster = () => {
                 onChange={(e) => setSelectedFile1(e.target.files[0])}
                 className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
               />
+                <small className="text-gray-500">{team.user_aadhar}</small>
             </div>
             {/* Pancard No Field */}
             <div>
@@ -285,6 +323,7 @@ const AddFieldTeamMaster = () => {
                 name="user_pancard"
                 onChange={(e) => setSelectedFile2(e.target.files[0])}
               />
+                <small className="text-gray-500">{team.user_pancard}</small>
             </div>
             <FormControl fullWidth>
               <InputLabel id="user_training-label">
@@ -399,6 +438,7 @@ const AddFieldTeamMaster = () => {
           </div>
         </form>
       </div>
+         )}
     </Layout>
   );
 };

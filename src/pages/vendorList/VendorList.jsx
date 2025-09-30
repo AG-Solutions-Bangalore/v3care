@@ -1,18 +1,21 @@
-import axios from "axios";
-import { SquarePen } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../../layout/Layout";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
-import { useContext, useEffect, useState } from "react";
-import { FiUserPlus, FiUsers } from "react-icons/fi";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { RiEditLine } from "react-icons/ri";
-import { useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ContextPanel } from "../../utils/ContextPanel";
+import axios from "axios";
 import { BASE_URL } from "../../base/BaseUrl";
+import { FaEdit } from "react-icons/fa";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { IoIosArrowBack, IoIosArrowForward, IoMdPeople } from "react-icons/io";
+import { CiEdit } from "react-icons/ci";
+import { FiUserPlus, FiUsers } from "react-icons/fi";
+import { RiEditLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../utils/UseEscapeKey";
+import { ArrowLeftRight, SquarePen } from "lucide-react";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../components/common/LoaderComponent";
-import Layout from "../../layout/Layout";
-import { ContextPanel } from "../../utils/ContextPanel";
-import UseEscapeKey from "../../utils/UseEscapeKey";
 
 const VendorList = () => {
   const [vendorListData, setVendorListData] = useState(null);
@@ -36,12 +39,16 @@ const VendorList = () => {
       }
     }
   }, [location]);
-  const {  userType } = useContext(ContextPanel);
+  const { isPanelUp, userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   UseEscapeKey();
   useEffect(() => {
     const fetchVendorListData = async () => {
       try {
+        // if (!isPanelUp) {
+        //   navigate("/maintenance");
+        //   return;
+        // }
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -67,6 +74,7 @@ const VendorList = () => {
     e.preventDefault();
     e.stopPropagation();
     try {
+      // setLoading(true);
       const token = localStorage.getItem("token");
       const res = await axios({
         url: BASE_URL + "/api/panel-create-vendor-has-users/" + id,
@@ -82,6 +90,8 @@ const VendorList = () => {
             vendor.id === id ? { ...vendor, vendor_status: "Active" } : vendor
           )
         );
+        // navigate("/vendor-list");
+        // add loader status pending to active
       } else {
         if (res.data.code == "401") {
           toast.error("Company Name Duplicate Entry");
@@ -122,6 +132,13 @@ const VendorList = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/vendor-user-list/${id}`);
   };
+  const handleTransfer = (e, id) => {
+   e.preventDefault();
+    e.stopPropagation();
+  localStorage.setItem("page-no", pageParam);
+  navigate("/add-vendor", { state: { id } });
+};
+
   const columns = [
    {
   name: "id",
@@ -140,6 +157,7 @@ const VendorList = () => {
             <>
               {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
                 <>
+
                   <SquarePen
                     onClick={(e) => handleEdit(e, id)}
                     className="h-6 w-6 cursor-pointer hover:text-blue-700"
@@ -234,6 +252,8 @@ const VendorList = () => {
   const options = {
     selectableRows: "none",
     elevation: 0,
+    // rowsPerPage: 5,
+    // rowsPerPageOptions: [5, 10, 25],
     responsive: "standard",
     viewColumns: true,
     download: false,
@@ -246,7 +266,7 @@ const VendorList = () => {
       setPage(currentPage);
       navigate(`/vendor-list?page=${currentPage + 1}`);
     },
-    setRowProps: () => {
+    setRowProps: (rowData) => {
       return {
         style: {
           borderBottom: "10px solid #f1f7f9",
@@ -256,12 +276,18 @@ const VendorList = () => {
     },
     onRowClick: (rowData, rowMeta, e) => {
       const id = vendorListData[rowMeta.dataIndex].id;
-      handleViewVendorInfo(e, id)();
+      handleViewVendorInfo(e, id);
     },
     customToolbar: () => {
       return (
         <>
           {userType !== "4" && (
+            // <Link
+            //   to={`/add-vendor`}
+            //   className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
+            // >
+            //   + Vendor
+            // </Link>
             <ButtonConfigColor
               type="create"
               label="Vendor"
@@ -275,7 +301,7 @@ const VendorList = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+           <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack

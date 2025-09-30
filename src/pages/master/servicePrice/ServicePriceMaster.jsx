@@ -110,7 +110,7 @@ const ServicePriceMaster = () => {
     onRowClick: (rowData, rowMeta, e) => {
       const service_id = servicePriceData[rowMeta.dataIndex].service_id;
       const service_sub_id = servicePriceData[rowMeta.dataIndex].service_sub_id;
-      handleViewServiceInfo(e, service_id, service_sub_id)();
+      handleViewServiceInfo(e, service_id, service_sub_id);
     },
     customToolbar: () => {
       return (
@@ -129,7 +129,7 @@ const ServicePriceMaster = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-            <span className="text-red-600">{page + 1}</span>-{rowsPerPage} of{" "}
+            <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack

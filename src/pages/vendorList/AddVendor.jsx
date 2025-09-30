@@ -1,33 +1,34 @@
-import { Textarea } from "@material-tailwind/react";
-import { Email, Person, PhoneIphone, PinDrop } from "@mui/icons-material";
+import Layout from "../../layout/Layout";
+import axios from "axios";
+import styles from "./AddVendor.module.css";
+import { Person, PhoneIphone, Email, PinDrop } from "@mui/icons-material";
 import BusinessIcon from "@mui/icons-material/Business";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import HouseIcon from "@mui/icons-material/House";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
+import React, { useState, useEffect } from "react";
 import {
+  TextField,
   Autocomplete,
-  Box,
   Checkbox,
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
-  TextField,
-  Typography,
+  MenuItem,
+  Input,
 } from "@mui/material";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { BASE_URL } from "../../base/BaseUrl";
+import { useRef } from "react";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CustomInput from "../../components/addVendor/CustomInput";
 import Dropdown from "../../components/addVendor/Dropdown";
-import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../components/common/PageHeader/PageHeader";
-import Layout from "../../layout/Layout";
+import { BASE_URL } from "../../base/BaseUrl";
+import { Box, Typography } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import UseEscapeKey from "../../utils/UseEscapeKey";
-import styles from "./AddVendor.module.css";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { Textarea } from "@material-tailwind/react";
 
 const training = [
   {
@@ -39,17 +40,32 @@ const training = [
     label: "No",
   },
 ];
-const ALL_OPTION = { id: "all", service: "All" };
+let autoComplete;
+
 
 const AddVendor = () => {
   UseEscapeKey();
+  const autoCompleteRef = useRef(null);
+    const [query, setQuery] = useState("");
+    const [query1, setQuery1] = useState("");
+    const [localityBook, setLocalityBook] = useState("");
+    const [localitySubBook, setLocalitySubBook] = useState("");
   const [services, setServices] = useState([]);
   const [branches, setBranches] = useState([]);
-
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  const location = useLocation();
+  const id = location.state?.id; 
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  
   const navigate = useNavigate();
   const initialVendorState = {
     vendor_short: "",
     vendor_company: "",
+    vendor_members: "",
+    vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
     vendor_aadhar_no: "",
@@ -78,6 +94,7 @@ const AddVendor = () => {
   const inputRef2 = useRef(null);
   const inputRef3 = useRef(null);
   const inputRef4 = useRef(null);
+  
   const resetForm = () => {
     setVendor(initialVendorState);
     setUsers1([useTemplate1]);
@@ -85,22 +102,26 @@ const AddVendor = () => {
     setSelectedFile2(null);
     setSelectedFile3(null);
     setSelectedFile4(null);
+    setSelectedServices([]);
     if (inputRef1.current) inputRef1.current.value = "";
     if (inputRef2.current) inputRef2.current.value = "";
     if (inputRef3.current) inputRef3.current.value = "";
     if (inputRef4.current) inputRef4.current.value = "";
     setTest([]);
-    setLocation([]);
+  setLocations([]);
     setBrancCount(1);
     setSerCount(1);
     setAreaCount(1);
   };
+  
   const userType = localStorage.getItem("user_type_id");
   const [vendor, setVendor] = useState({
     vendor_short: "",
     branch_id:
       userType == 6 || userType == 8 ? "" : localStorage.getItem("branch_id"),
     vendor_company: "",
+    vendor_members: "",
+    vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
     vendor_aadhar_no: "",
@@ -119,12 +140,14 @@ const AddVendor = () => {
     vendor_ref_name_2: "",
     vendor_ref_mobile_1: "",
     vendor_ref_mobile_2: "",
+    //new
     vendor_job_skills: "",
     vendor_training: "",
     vendor_trained_bywhom: "",
     vendor_last_training_date: "",
     vendor_date_of_joining: "",
   });
+  
   const [selectedFile1, setSelectedFile1] = React.useState(null);
   const [selectedFile2, setSelectedFile2] = React.useState(null);
   const [selectedFile3, setSelectedFile3] = React.useState(null);
@@ -132,11 +155,11 @@ const AddVendor = () => {
   const checkboxRef = React.useRef(null);
 
   const [test, setTest] = useState([]);
-  // console.log(test, "newValue");
 
-  // const handleChange = (newValue) => {
-  //   setTest(newValue);
-  // };
+  const handleChange = (newValue) => {
+    setTest(newValue);
+    console.log("check", newValue);
+  };
 
   const [vendor_ser_count, setSerCount] = useState(1);
   const [vendor_branc_count, setBrancCount] = useState(1);
@@ -151,12 +174,17 @@ const AddVendor = () => {
     vendor_branch_city: "",
     vendor_branch_district: "",
     vendor_branch_state: "",
+
+vendor_branch_url:"",
+vendor_branch_locality:"",
+vendor_branch_sub_locality:""
   };
 
   const [users1, setUsers1] = useState([useTemplate1]);
-  const [location, setLocation] = useState([]);
+ const [locations, setLocations] = useState([]);
   const [loadingPin, setLoadingPin] = useState(false);
   const [pinError, setPinError] = useState("");
+  
   const onChange1 = (e, index) => {
     const updatedUsers = users1.map((user, i) =>
       index == i
@@ -174,6 +202,7 @@ const AddVendor = () => {
       return false;
     }
   };
+  
   const onInputChange = (e) => {
     if (
       e.target.name == "vendor_mobile" ||
@@ -187,6 +216,20 @@ const AddVendor = () => {
         });
       }
     } else if (e.target.name == "vendor_ref_mobile_1") {
+      if (validateOnlyDigits(e.target.value)) {
+        setVendor({
+          ...vendor,
+          [e.target.name]: e.target.value,
+        });
+      }
+    } else if (e.target.name == "vendor_members"){
+      if (validateOnlyDigits(e.target.value)) {
+        setVendor({
+          ...vendor,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }else if (e.target.name == "vendor_years_experience"){
       if (validateOnlyDigits(e.target.value)) {
         setVendor({
           ...vendor,
@@ -208,6 +251,7 @@ const AddVendor = () => {
     }
   };
 
+  // Fetch branches
   useEffect(() => {
     const requestOptions = {
       method: "GET",
@@ -227,6 +271,7 @@ const AddVendor = () => {
       });
   }, []);
 
+  // Fetch services
   useEffect(() => {
     const requestOptions = {
       method: "GET",
@@ -243,15 +288,118 @@ const AddVendor = () => {
       .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
+  useEffect(() => {
+    if (!id) return; 
+    setIsEditMode(true);
+
+    const fetchVendorData = async () => {
+      setFetchLoading(true);
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-vendor-by-id/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const { vendor, vendorService, vendorbranch } = response.data;
+
+        // populate vendor base data
+        setVendor((prev) => ({
+          ...prev,
+          ...vendor,
+        }));
+
+        // populate services
+        if (vendorService?.length > 0) {
+          setTest(vendorService.map((s) => ({ service: s.vendor_service })));
+        }
+
+        // populate branches
+        if (vendorbranch?.length > 0) {
+          setUsers1(vendorbranch);
+        }
+      } catch (error) {
+        console.error("Error fetching vendor data:", error);
+        toast.error("Failed to fetch vendor details");
+      } finally {
+        setFetchLoading(false);
+      }
+    };
+
+    fetchVendorData();
+  }, [id]);
+
+  const handleScriptLoad = (updateQuery, autoCompleteRef) => {
+   
+    autoComplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      {
+        componentRestrictions: { country: "IN" },
+      }
+    );
+    autoComplete.addListener("place_changed", () => {
+      handlePlaceSelect(updateQuery);
+    });
+  };
+  
+
+
+  const handlePlaceSelect = async (updateQuery) => {
+    const addressObject = await autoComplete.getPlace();
+    const query = addressObject.formatted_address;
+    const url = addressObject.url;
+    updateQuery(query);
+  
+    let subLocality = "";
+    let locality = "";
+    addressObject.address_components.forEach((component) => {
+      if (component.types.includes("sublocality_level_1")) {
+        subLocality = component.short_name;
+      }
+      if (component.types.includes("locality")) {
+        locality = component.short_name;
+      }
+    });
+  
+    
+    setUsers1((prevUsers) => {
+      const updatedUsers = [...prevUsers];
+      updatedUsers[0] = {
+        ...updatedUsers[0],
+        vendor_branch_url: url,
+        vendor_branch_locality: locality,
+        vendor_branch_sub_locality: subLocality,
+      };
+      return updatedUsers;
+    });
+  
+    setLocalitySubBook(subLocality);
+    setLocalityBook(locality);
+    setQuery1(url);
+  };
+  
+
+  useEffect(() => {
+    if (window.google && window.google.maps && window.google.maps.places) {
+      handleScriptLoad(setQuery, autoCompleteRef);
+    }
+  }, []);
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(test, "test");
     if (!test || test.length === 0) {
       toast.error("Please select at least one service.");
       return;
     }
+    
     const data = new FormData();
     data.append("vendor_short", vendor.vendor_short);
     data.append("vendor_company", vendor.vendor_company);
+    data.append("vendor_members", vendor.vendor_members);
+    data.append("vendor_years_experience", vendor.vendor_years_experience);
     data.append("vendor_mobile", vendor.vendor_mobile);
     data.append("vendor_email", vendor.vendor_email);
     data.append("vendor_aadhar_no", vendor.vendor_aadhar_no);
@@ -262,10 +410,13 @@ const AddVendor = () => {
         ? vendor.branch_id
         : localStorage.getItem("branch_id")
     );
-    data.append("vendor_images", selectedFile1);
-    data.append("vendor_aadhar_front", selectedFile2);
-    data.append("vendor_aadhar_back", selectedFile3);
-    data.append("vendor_aadhar_gst", selectedFile4);
+    
+    // Only append files if they are selected (for edit mode)
+    if (selectedFile1) data.append("vendor_images", selectedFile1);
+    if (selectedFile2) data.append("vendor_aadhar_front", selectedFile2);
+    if (selectedFile3) data.append("vendor_aadhar_back", selectedFile3);
+    if (selectedFile4) data.append("vendor_aadhar_gst", selectedFile4);
+    
     data.append("vendor_area_no_count", vendor_area_count);
     data.append("vendor_service_no_count", vendor_ser_count);
     data.append("vendor_branch_no_count", vendor_branc_count);
@@ -278,8 +429,8 @@ const AddVendor = () => {
     data.append("vendor_last_training_date", vendor.vendor_last_training_date);
     data.append("vendor_date_of_joining", vendor.vendor_date_of_joining);
     data.append("vendor_job_skills", vendor.vendor_job_skills);
+    
     const selectedServiceValues = test.map((service) => service.service);
-
     data.append("vendor_service", selectedServiceValues);
 
     users1.forEach((user, index) => {
@@ -287,35 +438,45 @@ const AddVendor = () => {
         data.append(`vendor_branch_data[${index}][${key}]`, user[key]);
       });
     });
-    const elem = document.getElementById("addIdniv");
-    const v = elem.checkValidity() && elem.reportValidity();
+    
+    var v = document.getElementById("addIndiv").checkValidity();
+    var v1 = document.getElementById("addIndiv").reportValidity();
     e.preventDefault();
-    if (elem) {
-
-      if (v) {
-        axios({
-          url: BASE_URL + "/api/panel-create-vendors",
-          method: "POST",
-          data,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }).then((res) => {
-          if (res.data.code == "200") {
-            toast.success(res.data?.msg || "Vendor Created Succesfully");
-            navigate("/vendor-list");
-            resetForm();
+    
+    if (v && v1) {
+      setLoading(true);
+      
+      const url =`${BASE_URL}/api/panel-create-vendors`;
+        
+      const method = "POST";
+      
+      axios({
+        url: url,
+        method: method,
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((res) => {
+        if (res.data.code == "200") {
+          toast.success(res.data?.msg || (isEditMode ? "Vendor Updated Successfully" : "Vendor Created Successfully"));
+          navigate("/vendor-list");
+          if (!isEditMode) resetForm();
+        } else {
+          if (res.data.code == "402") {
+            toast.error(res.data?.msg || "Mobile No Duplicate");
+          } else if (res.data.code == "403") {
+            toast.error(res.data?.msg || "Email Duplicate");
           } else {
-            if (res.data.code == "402") {
-              toast.error(res.data?.msg || "Mobile No Duplicate");
-            } else if (res.data.code == "403") {
-              toast.error(res.data?.msg || "Email Duplicate");
-            } else {
-              toast.error(res.data?.msg || "Network Issue");
-            }
+            toast.error(res.data?.msg || "Network Issue");
           }
-        });
-      }
+        }
+      }).catch((error) => {
+        console.error("Error submitting form:", error);
+        toast.error("An error occurred while submitting the form");
+      }).finally(() => {
+        setLoading(false);
+      });
     }
   };
 
@@ -347,8 +508,9 @@ const AddVendor = () => {
           response?.district || "";
         tempUsers[selectedValue].vendor_branch_state = response?.state || "";
         setUsers1(tempUsers);
+        console.log(response, "response");
         if (response?.areas !== null) {
-          setLocation(response?.areas || []);
+       setLocations(response?.areas || []);
         } else {
           toast.error(response.msg || "unable to fetch");
         }
@@ -369,9 +531,10 @@ const AddVendor = () => {
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
+  
   return (
     <Layout>
-      <PageHeader title="Create Vendor" />
+      <PageHeader title={isEditMode ? "Transfer Vendor" : "Create Vendor"} />
 
       <Box
         sx={{
@@ -381,7 +544,7 @@ const AddVendor = () => {
           borderRadius: "10px",
         }}
       >
-        <form id="addIdniv">
+        <form id="addIndiv">
           <Typography variant="h6">Personal Details</Typography>
 
           <Box className={styles["form-container"]}>
@@ -457,26 +620,31 @@ const AddVendor = () => {
             <CustomInput
               label="Photo"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_images"
               ref={inputRef1}
               onChange={(e) => setSelectedFile1(e.target.files[0])}
+              isImage={vendor.vendor_images}
+              
             />
+           
             <CustomInput
               label="Aadhar Card Front Side"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_aadhar_front"
               ref={inputRef2}
               onChange={(e) => setSelectedFile2(e.target.files[0])}
+              isImage={vendor.vendor_aadhar_front}
             />
             <CustomInput
               label="Aadhar Card Back Side"
               type="file"
-              required
+              required={!isEditMode}
               name="vendor_aadhar_back"
               ref={inputRef3}
               onChange={(e) => setSelectedFile3(e.target.files[0])}
+                  isImage={vendor.vendor_aadhar_back}
             />
             <CustomInput
               label="GST Certificate"
@@ -484,6 +652,7 @@ const AddVendor = () => {
               name="vendor_gst_certificate"
               ref={inputRef4}
               onChange={(e) => setSelectedFile4(e.target.files[0])}
+              isImage={vendor.vendor_gst_certificate}
             />
             <CustomInput
               label="Reference Name 1"
@@ -517,13 +686,38 @@ const AddVendor = () => {
               onChange={(e) => onInputChange(e)}
             />
           </Box>
-          <Box className="my-3">
-            <Textarea
+          <Box className="my-3 grid grid-cols-4 gap-4">
+           <div className=" col-span-1 md:col-span-3">
+           <Textarea
               label="Job Skills"
               name="vendor_job_skills"
               value={vendor.vendor_job_skills}
               onChange={(e) => onInputChange(e)}
             />
+           </div>
+            <div className="flex flex-col   justify-between">
+            <CustomInput
+              label="Members"
+              icon={BusinessIcon}
+                type="tel"
+              name="vendor_members"
+              required
+              value={vendor.vendor_members}
+              maxLength={10}
+              onChange={(e) => onInputChange(e)}
+            />
+            <CustomInput
+              label="Vendor Experience (in Yrs)"
+              icon={BusinessIcon}
+                type="tel"
+              name="vendor_years_experience"
+              required
+              value={vendor.vendor_years_experience}
+              maxLength={10}
+              onChange={(e) => onInputChange(e)}
+            />
+            
+            </div>
           </Box>
           <Box className="my-3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <FormControl fullWidth>
@@ -570,12 +764,15 @@ const AddVendor = () => {
               onChange={(e) => onInputChange(e)}
             />
           </Box>
-          <Typography variant="h6" sx={{ padding: "10px" }}>
+          <Typography
+            variant="h6"
+            sx={{ padding: "10px" }}
+          >
             Services Details
           </Typography>
 
           <Box>
-            {/* <Autocomplete
+            <Autocomplete
               multiple
               id="checkboxes-tags-demo"
               options={services}
@@ -623,78 +820,13 @@ const AddVendor = () => {
                   }}
                 />
               )}
-            /> */}
-
-            <Autocomplete
-              multiple
-              id="checkboxes-tags-demo"
-              options={[ALL_OPTION, ...services]} // prepend All option
-              value={test}
-              disableCloseOnSelect
-              getOptionLabel={(option) => option.service}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              onChange={(event, newValue) => {
-                const isAllSelected = newValue.some((o) => o.id === "all");
-
-                if (isAllSelected) {
-                  if (test.length === services.length) {
-                    setTest([]);
-                  } else {
-                    setTest(services);
-                  }
-                } else {
-                  setTest(newValue);
-                }
-              }}
-              renderOption={(props, option) => {
-                const { key, ...optionProps } = props;
-
-                const isAll = option.id === "all";
-                const isSelected = isAll
-                  ? test.length === services.length // All is checked if all services selected
-                  : test.some((o) => o.id === option.id);
-
-                return (
-                  <li key={key} {...optionProps}>
-                    <Checkbox
-                      ref={checkboxRef}
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={isSelected}
-                    />
-                    {option.service}
-                  </li>
-                );
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={
-                    <label
-                      style={{
-                        fontSize: 13,
-                        fontFamily: "sans-serif",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Choose services<span style={{ color: "red" }}>*</span>
-                    </label>
-                  }
-                  InputProps={{
-                    ...params.InputProps,
-                    style: { padding: "0px" },
-                  }}
-                  inputProps={{
-                    ...params.inputProps,
-                    style: { padding: "10px" },
-                  }}
-                />
-              )}
             />
           </Box>
 
-          <Typography variant="h6" sx={{ padding: "10px" }}>
+          <Typography
+            variant="h6"
+            sx={{ padding: "10px" }}
+          >
             Address Details
           </Typography>
 
@@ -779,7 +911,7 @@ const AddVendor = () => {
                   required
                   onChange={(e) => onChange1(e, index)}
                   value={user?.vendor_branch_location}
-                  options={location?.map((loc) => ({ value: loc, label: loc }))}
+                 options={locations?.map((loc) => ({ value: loc, label: loc }))}
                 />
 
                 <CustomInput
@@ -808,19 +940,31 @@ const AddVendor = () => {
               </div>
             ))}
           </Box>
-          {/* <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            onClick={(e) => onSubmit(e)}
-            sx={{ mt: 3 }}
+          <div>
+          <Typography
+            variant="h6"
+            sx={{ padding: "10px" }}
           >
-            Submit */}
+           Location
+          </Typography>
+           <CustomInput
+              label="Search Place.."
+                          
+                            ref={autoCompleteRef}
+                            
+                            required
+                            onChange={(event) => setQuery(event.target.value)}
+                            placeholder="Search Place"
+                            value={query}
+                          />
+                          </div>
+                          
           <div className="flex justify-center space-x-4 my-6">
             <ButtonConfigColor
               type="submit"
               buttontype="submit"
-              label="Submit"
+              label={"Submit"}
+              loading={loading}
               onClick={(e) => onSubmit(e)}
             />
 
