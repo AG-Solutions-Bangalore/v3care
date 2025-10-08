@@ -350,11 +350,15 @@ const ServicePriceEditMaster = () => {
   const branchFilterOptions = ["All", ...Object.keys(groupedServices)];
   
   // Get unique service_price_for values for dropdown
+  // const servicePriceForOptions = useMemo(() => {
+  //   const uniqueValues = [...new Set(services.map(item => item.service_price_for))];
+  //   return uniqueValues.map(value => ({ value, label: value }));
+  // }, [services]);
   const servicePriceForOptions = useMemo(() => {
-    const uniqueValues = [...new Set(services.map(item => item.service_price_for))];
+    const activeServices = services.filter(item => item.service_price_status === "Active");
+    const uniqueValues = [...new Set(activeServices.map(item => item.service_price_for))];
     return uniqueValues.map(value => ({ value, label: value }));
   }, [services]);
-  
   const filteredGroupedServices = useMemo(() => {
     const filtered = {};
 
