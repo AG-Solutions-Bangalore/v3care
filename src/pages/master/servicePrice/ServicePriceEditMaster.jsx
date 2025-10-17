@@ -83,7 +83,7 @@ const ServicePriceEditMaster = () => {
   ]);
   
   const [bulkEditData, setBulkEditData] = useState({
-    service_price_for: "",
+    service_price_for: [],
     service_price_rate: "",
     service_price_amount: "",
     service_weekend_amount: "",
@@ -257,24 +257,23 @@ const ServicePriceEditMaster = () => {
     setBulkLoading(true);
     
     try {
-   
       const updateData = {};
-      if (bulkEditData.service_price_rate && bulkEditData.service_price_rate !== "0") 
+      if (bulkEditData.service_price_rate !== "")
         updateData.service_price_rate = bulkEditData.service_price_rate;
-      if (bulkEditData.service_price_amount && bulkEditData.service_price_amount !== "0") 
+      if (bulkEditData.service_price_amount !== "")
         updateData.service_price_amount = bulkEditData.service_price_amount;
-      if (bulkEditData.service_weekend_amount && bulkEditData.service_weekend_amount !== "0") 
+      if (bulkEditData.service_weekend_amount !== "")
         updateData.service_weekend_amount = bulkEditData.service_weekend_amount;
-      if (bulkEditData.service_holiday_amount && bulkEditData.service_holiday_amount !== "0") 
+      if (bulkEditData.service_holiday_amount !== "")
         updateData.service_holiday_amount = bulkEditData.service_holiday_amount;
-      
-     
+  
       const selectedBranches = bulkEditData.branches.map(b => b.value);
-      
-     
+  
       const updatedServices = services.map(item => {
-        if (item.service_price_for === bulkEditData.service_price_for && 
-            (selectedBranches.length === 0 || selectedBranches.includes(item.branch_name))) {
+        if (
+          bulkEditData.service_price_for.includes(item.service_price_for) &&
+          (selectedBranches.length === 0 || selectedBranches.includes(item.branch_name))
+        ) {
           return {
             ...item,
             ...updateData
@@ -282,18 +281,18 @@ const ServicePriceEditMaster = () => {
         }
         return item;
       });
-      
+  
       setService(updatedServices);
       setShowBulkEdit(false);
       setBulkEditData({
-        service_price_for: "",
+        service_price_for: [],
         service_price_rate: "",
         service_price_amount: "",
         service_weekend_amount: "",
         service_holiday_amount: "",
         branches: []
       });
-      
+  
       toast.success("Prices updated successfully. Click Update to save changes.");
     } catch (error) {
       console.error("Error in bulk edit:", error);
@@ -302,6 +301,7 @@ const ServicePriceEditMaster = () => {
       setBulkLoading(false);
     }
   };
+  
   
   const onSubmitStatus = async (e) => {
     setLoadingStatus(true);
@@ -349,11 +349,6 @@ const ServicePriceEditMaster = () => {
 
   const branchFilterOptions = ["All", ...Object.keys(groupedServices)];
   
-  // Get unique service_price_for values for dropdown
-  // const servicePriceForOptions = useMemo(() => {
-  //   const uniqueValues = [...new Set(services.map(item => item.service_price_for))];
-  //   return uniqueValues.map(value => ({ value, label: value }));
-  // }, [services]);
   const servicePriceForOptions = useMemo(() => {
     const activeServices = services.filter(item => item.service_price_status === "Active");
     const uniqueValues = [...new Set(activeServices.map(item => item.service_price_for))];
@@ -474,7 +469,7 @@ const ServicePriceEditMaster = () => {
          </div>
           <form onSubmit={onSubmitBulkEdit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              <FormControl fullWidth>
+              {/* <FormControl fullWidth>
             
                 <Select
                   value={servicePriceForOptions.find(opt => opt.value === bulkEditData.service_price_for) || null}
@@ -484,8 +479,28 @@ const ServicePriceEditMaster = () => {
                   className=""
                   placeholder="Select Service Price For"
                 />
-              </FormControl>
-              
+              </FormControl> */}
+              <FormControl fullWidth>
+  <Select
+    isMulti
+    value={servicePriceForOptions.filter(opt =>
+      bulkEditData.service_price_for.includes(opt.value)
+    )}
+    onChange={(selected) => {
+      const selectedValues = selected ? selected.map(opt => opt.value) : [];
+      setBulkEditData(prev => ({
+        ...prev,
+        service_price_for: selectedValues
+      }));
+    }}
+    options={servicePriceForOptions}
+    placeholder="Select Service Price For"
+    styles={customStyles}
+    classNamePrefix="select"
+    closeMenuOnSelect={false}
+  />
+</FormControl>
+
               
               <div className=" col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               <Input
@@ -521,58 +536,57 @@ const ServicePriceEditMaster = () => {
               />
               </div>
               <div className="col-span-1 lg:col-span-3">
-  <FormControl fullWidth>
-    <Select
-      isMulti
-      value={bulkEditData.branches}
-      onChange={(selected) => {
+              <FormControl fullWidth>
+  <Select
+    isMulti
+    value={bulkEditData.branches}
+    onChange={(selected) => {
+      if (selected?.some((opt) => opt.value === "all")) {
        
-        if (selected?.some((opt) => opt.value === "all")) {
-          const allOptions =
-            bulkEditData.service_price_for
-              ? branchOptions.filter((branch) =>
-                  services.some(
-                    (item) =>
-                      item.service_price_for === bulkEditData.service_price_for &&
-                      item.branch_name === branch.value
-                  )
+        const allOptions =
+          bulkEditData.service_price_for.length > 0
+            ? branchOptions.filter((branch) =>
+                services.some(
+                  (item) =>
+                    bulkEditData.service_price_for.includes(item.service_price_for) &&
+                    item.branch_name === branch.value
                 )
-              : branchOptions;
-
-       
-          setBulkEditData((prev) => ({
-            ...prev,
-            branches: allOptions,
-          }));
-        } else {
-          
-          setBulkEditData((prev) => ({
-            ...prev,
-            branches: selected || [],
-          }));
-        }
-      }}
-      options={[
-        { value: "all", label: "All" }, 
-        ...(bulkEditData.service_price_for
-          ? branchOptions.filter((branch) =>
-              services.some(
-                (item) =>
-                  item.service_price_for === bulkEditData.service_price_for &&
-                  item.branch_name === branch.value
               )
+            : branchOptions;
+
+        setBulkEditData((prev) => ({
+          ...prev,
+          branches: allOptions,
+        }));
+      } else {
+        setBulkEditData((prev) => ({
+          ...prev,
+          branches: selected || [],
+        }));
+      }
+    }}
+    options={[
+      { value: "all", label: "All" },
+      ...(bulkEditData.service_price_for.length > 0
+        ? branchOptions.filter((branch) =>
+            services.some(
+              (item) =>
+                bulkEditData.service_price_for.includes(item.service_price_for) &&
+                item.branch_name === branch.value
             )
-          : branchOptions),
-      ]}
-      placeholder="Select Branches"
-      styles={customStyles}
-      classNamePrefix="select"
-      isDisabled={!bulkEditData.service_price_for}
-      closeMenuOnSelect={false}
-      hideSelectedOptions={false}
-      controlShouldRenderValue={true}
-    />
-  </FormControl>
+          )
+        : branchOptions),
+    ]}
+    placeholder="Select Branches"
+    styles={customStyles}
+    classNamePrefix="select"
+    isDisabled={!bulkEditData.service_price_for.length}
+    closeMenuOnSelect={false}
+    hideSelectedOptions={false}
+    controlShouldRenderValue={true}
+  />
+</FormControl>
+
 </div>
 
 
