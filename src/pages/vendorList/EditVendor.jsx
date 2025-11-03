@@ -48,7 +48,7 @@ const EditVendor = () => {
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
   UseEscapeKey();
 
-
+  const [branches, setBranches] = useState([]);
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [query, setQuery] = useState("");
   const [localityBook, setLocalityBook] = useState("");
@@ -80,6 +80,7 @@ const EditVendor = () => {
     vendor_years_experience: "",
     vendor_mobile: "",
     vendor_email: "",
+  
     vendor_aadhar_no: "",
     vendor_gst_no: "",
     vendor_images: "",
@@ -192,6 +193,24 @@ vendor_branch_sub_locality:""
     };
 
     fetchServices();
+  }, []);
+useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    };
+
+    fetch(BASE_URL + "/api/panel-fetch-branch", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        const mappedOptions = data.branch.map((item) => ({
+          value: item.id,
+          label: item.branch_name,
+        }));
+        setBranches(mappedOptions);
+      });
   }, []);
 
   const validateOnlyDigits = (inputtxt) => {
@@ -641,7 +660,7 @@ Object.keys(vendor).forEach((key) => {
               />
             </div>
             {/* Status */}
-
+<div className="flex flex-row items-center gap-4">
             <FormControl fullWidth >
               <InputLabel id="service-select-label">
                 <span className="text-sm relative bottom-[6px]">
@@ -665,6 +684,35 @@ Object.keys(vendor).forEach((key) => {
                 ))}
               </Select>
             </FormControl>
+            <FormControl fullWidth >
+              <InputLabel id="branch-id-label">
+                <span className="text-sm relative bottom-[6px]">
+                  Branch <span className="text-red-700">*</span>
+                </span>
+              </InputLabel>
+              <Select
+                sx={{ height: "40px", borderRadius: "5px" }}
+                labelId="branch-id-label"
+                id="branch-id-label"
+                name="branch_id"
+                value={vendor.branch_id}
+                onChange={(e) => {
+                  setVendor((prevVendor) => ({
+                    ...prevVendor,
+                    branch_id: e.target.value || "",
+                  }));
+                }}
+                label="Status *"
+                required
+              >
+                {branches.map((data) => (
+                  <MenuItem key={data.value} value={data.value}>
+                    {data.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            </div>
             {/* service details and adress details  */}
             <h1 className="text-xl font-semibold mb-4 mt-3">Service Details</h1>
             <hr className="border-gray-300 mb-4" />
