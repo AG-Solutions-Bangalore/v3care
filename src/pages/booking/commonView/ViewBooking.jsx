@@ -372,7 +372,7 @@ const ViewBooking = () => {
             {booking.order_status === "Confirmed" && userType !== "4" && (
               <ButtonConfigColor
                 type="create"
-                label="Notify All"
+                label="Notify All Vendor"
                 onClick={notifyUpdate}
               />
             )}
