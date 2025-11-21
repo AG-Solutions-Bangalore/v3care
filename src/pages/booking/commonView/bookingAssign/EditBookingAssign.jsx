@@ -134,7 +134,7 @@ const EditBookingAssign = () => {
           },
         }
       );
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(
           response.data?.msg || "Assign Booking Updated Successfully"
         );
