@@ -10,6 +10,7 @@ import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import { Input } from "@material-tailwind/react";
 import Select from "react-select";
+import { Autocomplete, Checkbox, TextField } from "@mui/material";
 
 const customStyles = {
   control: (provided) => ({
@@ -49,11 +50,12 @@ const customStyles = {
 
 const AddBookingAssignUser = () => {
   const { id } = useParams();
+  console.log(id, "id");
   const navigate = useNavigate();
   UseEscapeKey();
 
   const [bookingUser, setBookingser] = useState({
-    order_user_id: "",
+    order_user_data: [],
     order_start_time: "",
     order_end_time: "",
     order_assign_remarks: "",
@@ -64,7 +66,6 @@ const AddBookingAssignUser = () => {
   const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
- 
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetch(`${BASE_URL}/api/panel-fetch-user-for-booking-assign/${id}`, {
@@ -75,21 +76,22 @@ const AddBookingAssignUser = () => {
       .catch(() => toast.error("Failed to load assignable users"));
   }, [id]);
 
- 
   const userOptions = assisgnUserP.map((user) => ({
     value: user.id,
     label: user.name,
   }));
 
-  const selectedUser =
-    userOptions.find((opt) => opt.value === bookingUser.order_user_id) || null;
+  // const selectedUser =
+  //   userOptions.find((opt) => opt.value === bookingUser.order_user_data) ||
+  //   null;
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    if (!bookingUser.order_user_id) {
-      toast.error("Please select a user");
+    if (bookingUser.order_user_data.length === 0) {
+      toast.error("Please select at least one user");
+      setIsButtonDisabled(false);
       setLoading(false);
       return;
     }
@@ -97,7 +99,9 @@ const AddBookingAssignUser = () => {
     setIsButtonDisabled(true);
 
     const data = {
-      order_user_id: bookingUser.order_user_id,
+      order_user_data: bookingUser.order_user_data.map((id) => ({
+        order_user_id: id,
+      })),
       order_start_time: bookingUser.order_start_time,
       order_end_time: bookingUser.order_end_time,
       order_assign_remarks: bookingUser.order_assign_remarks,
@@ -107,13 +111,15 @@ const AddBookingAssignUser = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `${BASE_URL}/api/panel-create-booking-assign`,
+        `${BASE_URL}/api/panel-create-booking-assign-new`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg || "Booking User Created Successfully");
+        toast.success(
+          response.data?.msg || "Booking User Created Successfully"
+        );
         navigate(`/booking-assign/${id}`);
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
@@ -140,7 +146,7 @@ const AddBookingAssignUser = () => {
               {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                 Assign User <span className="text-red-500">*</span>
               </label> */}
-              <Select
+              {/* <Select
                 options={userOptions}
                 value={selectedUser}
                 onChange={(option) =>
@@ -150,6 +156,57 @@ const AddBookingAssignUser = () => {
                 placeholder="Select a user..."
                 isMulti={false}
                 required
+              /> */}
+              <Autocomplete
+                multiple
+                id="user-multi-select"
+                options={userOptions}
+                disableCloseOnSelect
+                size="small"
+                value={userOptions.filter((opt) =>
+                  bookingUser.order_user_data.includes(opt.value)
+                )}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) =>
+                  setBookingser((prev) => ({
+                    ...prev,
+                    order_user_data: newValue.map((val) => val.value),
+                  }))
+                }
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        padding: "6px",
+                        fontSize: 13,
+                      },
+                      "& .MuiChip-root": {
+                        height: 22,
+                        fontSize: 12,
+                      },
+                    }}
+                    label={
+                      <label
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 500,
+                          fontFamily: "sans-serif",
+                        }}
+                      >
+                        Select User <span style={{ color: "red" }}>*</span>
+                      </label>
+                    }
+                    placeholder="Select User..."
+                  />
+                )}
               />
             </div>
 
@@ -160,7 +217,10 @@ const AddBookingAssignUser = () => {
                 name="order_assign_remarks"
                 value={bookingUser.order_assign_remarks}
                 onChange={(e) =>
-                  setBookingser({ ...bookingUser, [e.target.name]: e.target.value })
+                  setBookingser({
+                    ...bookingUser,
+                    [e.target.name]: e.target.value,
+                  })
                 }
               />
             </div>

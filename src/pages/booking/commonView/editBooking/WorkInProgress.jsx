@@ -604,7 +604,7 @@ const WorkInProgress = () => {
               />
             </div>
             <div>
-              <Input
+              <Textarea
                 type="text"
                 fullWidth
                 label="Order Follow up"

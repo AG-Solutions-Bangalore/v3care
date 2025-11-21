@@ -9,6 +9,7 @@ import {
   CardBody,
   CardHeader,
   Input,
+  Textarea,
   Typography,
 } from "@material-tailwind/react";
 import { FaClipboardList, FaInfoCircle } from "react-icons/fa";
@@ -582,7 +583,7 @@ const ViewBooking = () => {
               />
             </div>
             <div>
-              <Input
+              <Textarea
                 type="text"
                 fullWidth
                 label="Order Follow up"

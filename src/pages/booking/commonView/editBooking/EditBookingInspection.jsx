@@ -3,6 +3,7 @@ import {
   CardBody,
   Input,
   Spinner,
+  Textarea,
   Typography
 } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -839,7 +840,7 @@ const EditBookingInspection = () => {
               />
             </div>
             <div>
-              <Input
+              <Textarea
                 type="text"
                 fullWidth
                 label="Order Follow up"

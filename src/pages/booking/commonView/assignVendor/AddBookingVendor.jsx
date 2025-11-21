@@ -10,45 +10,47 @@ import UseEscapeKey from "../../../../utils/UseEscapeKey";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import Select from "react-select";
+import { Autocomplete, Checkbox, TextField } from "@mui/material";
 
-const customStyles = {
-  control: (provided) => ({
-    ...provided,
-    minHeight: "40px",
-    borderRadius: "0.375rem",
-    borderColor: "#e5e7eb",
-    "&:hover": {
-      borderColor: "#9ca3af",
-    },
-  }),
-  valueContainer: (provided) => ({
-    ...provided,
-    padding: "4px 8px",
-  }),
-  indicatorsContainer: (provided) => ({
-    ...provided,
-    height: "40px",
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    backgroundColor: state.isSelected ? "#3b82f6" : "white",
-    color: state.isSelected ? "white" : "#1f2937",
-    "&:hover": {
-      backgroundColor: "#e5e7eb",
-    },
-  }),
-};
+// const customStyles = {
+//   control: (provided) => ({
+//     ...provided,
+//     minHeight: "40px",
+//     borderRadius: "0.375rem",
+//     borderColor: "#e5e7eb",
+//     "&:hover": {
+//       borderColor: "#9ca3af",
+//     },
+//   }),
+//   valueContainer: (provided) => ({
+//     ...provided,
+//     padding: "4px 8px",
+//   }),
+//   indicatorsContainer: (provided) => ({
+//     ...provided,
+//     height: "40px",
+//   }),
+//   option: (provided, state) => ({
+//     ...provided,
+//     backgroundColor: state.isSelected ? "#3b82f6" : "white",
+//     color: state.isSelected ? "white" : "#1f2937",
+//     "&:hover": {
+//       backgroundColor: "#e5e7eb",
+//     },
+//   }),
+// };
 
 const AddBookingVendor = () => {
   const { id } = useParams();
 
   const [bookingUser, setBookingser] = useState({
-    order_user_id: "",
+    order_user_data: [],
     order_start_time: "",
     order_end_time: "",
     order_assign_remarks: "",
     order_id: id,
   });
+  console.log(bookingUser, "bookingUser");
   const navigate = useNavigate();
   UseEscapeKey();
 
@@ -88,11 +90,18 @@ const AddBookingVendor = () => {
       setLoading(false);
       return;
     }
-
+    if (bookingUser.order_user_data.length === 0) {
+      toast.error("Please select at least one vendor");
+      setIsButtonDisabled(false);
+      setLoading(false);
+      return;
+    }
     setIsButtonDisabled(true);
 
     const data = {
-      order_user_id: bookingUser.order_user_id,
+      order_user_data: bookingUser.order_user_data.map((id) => ({
+        order_user_id: id,
+      })),
       order_start_time: bookingUser.order_start_time,
       order_end_time: bookingUser.order_end_time,
       order_assign_remarks: bookingUser.order_assign_remarks,
@@ -102,13 +111,15 @@ const AddBookingVendor = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/panel-create-booking-assign-vendor`,
+        `${BASE_URL}/api/panel-create-booking-assign-vendor-new`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg || "Booking Vendor Created Successfully");
+        toast.success(
+          response.data?.msg || "Booking Vendor Created Successfully"
+        );
         navigate(`/assign-vendor/${id}`);
       } else {
         toast.error(response.data?.msg || "Duplicate entry");
@@ -134,7 +145,7 @@ const AddBookingVendor = () => {
               {/* <label className="block text-sm font-medium text-gray-700 mb-1">
                 Assign Vendor <span className="text-red-700">*</span>
               </label> */}
-              <Select
+              {/* <Select
                 options={vendorOptions}
                 value={vendorOptions.find(
                   (opt) => opt.value === bookingUser.order_user_id
@@ -149,6 +160,57 @@ const AddBookingVendor = () => {
                 placeholder="Select Vendor..."
                 isClearable
                 required
+              /> */}
+              <Autocomplete
+                multiple
+                id="vendors-multi-select"
+                options={vendorOptions}
+                disableCloseOnSelect
+                size="small"
+                value={vendorOptions.filter((opt) =>
+                  bookingUser.order_user_data.includes(opt.value)
+                )}
+                getOptionLabel={(option) => option.label}
+                onChange={(event, newValue) =>
+                  setBookingser((prev) => ({
+                    ...prev,
+                    order_user_data: newValue.map((val) => val.value),
+                  }))
+                }
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox style={{ marginRight: 8 }} checked={selected} />
+                    {option.label}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    sx={{
+                      "& .MuiInputBase-input": {
+                        padding: "6px", 
+                        fontSize: 13,
+                      },
+                      "& .MuiChip-root": {
+                        height: 22, 
+                        fontSize: 12,
+                      },
+                    }}
+                    label={
+                      <label
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 500,
+                          fontFamily: "sans-serif",
+                        }}
+                      >
+                        Select Vendor <span style={{ color: "red" }}>*</span>
+                      </label>
+                    }
+                    placeholder="Select Vendor..."
+                  />
+                )}
               />
             </div>
 
