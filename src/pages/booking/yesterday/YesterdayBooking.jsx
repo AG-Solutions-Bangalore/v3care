@@ -13,10 +13,14 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { FaEye } from "react-icons/fa";
+import FollowupModal from "../../../components/common/FollowupModal";
+import { Eye, View } from "lucide-react";
 
 const YesterdayBooking = () => {
   const [yesterdayBookingData, setYesterdayBookingData] = useState(null);
-
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [selectedOrderRef, setSelectedOrderRef] = useState("");
   const [loading, setLoading] = useState(false);
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -80,6 +84,12 @@ const YesterdayBooking = () => {
     e.stopPropagation();
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, ref) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedOrderRef(ref);
+    setOpenFollowModal(true);
+  };
   const columns = [
     {
       name: "id",
@@ -89,6 +99,8 @@ const YesterdayBooking = () => {
         sort: false,
         customBodyRender: (id, tableMeta) => {
           const status = tableMeta.rowData[21];
+          const ref = tableMeta.rowData[1];
+
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -98,6 +110,10 @@ const YesterdayBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
+              <View
+                onClick={(e) => handleFollowModal(e, ref)}
+                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
+              />{" "}
             </div>
           );
         },
@@ -630,6 +646,11 @@ const YesterdayBooking = () => {
         open={openModal}
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
+      />
+      <FollowupModal
+        open={openFollowModal}
+        handleOpen={setOpenFollowModal}
+        orderRef={selectedOrderRef}
       />
     </Layout>
   );
