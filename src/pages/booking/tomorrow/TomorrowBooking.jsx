@@ -6,6 +6,7 @@ import { CiSquarePlus } from "react-icons/ci";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
+import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import BookingFilter from "../../../components/BookingFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
@@ -19,6 +20,8 @@ const TomorrowBooking = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
+  const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
@@ -64,11 +67,14 @@ const TomorrowBooking = () => {
     };
     fetchTomData();
   }, []);
-  const handleEdit = (e, id) => {
+  const handleAction = (e, id, status) => {
     e.preventDefault();
     e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/edit-booking/${id}`);
+    if (status === "Inspection") {
+      navigate(`/edit-booking-inspection/${id}`);
+    } else {
+      navigate(`/edit-booking/${id}`);
+    }
   };
 
   const handleView = (e, id) => {
@@ -84,13 +90,14 @@ const TomorrowBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const status = tableMeta.rowData[21];
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={(e) => handleEdit(e, id)}
-                  title="Edit Boking"
+                  onClick={(e) => handleAction(e, id, status)}
+                  title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
@@ -99,6 +106,7 @@ const TomorrowBooking = () => {
         },
       },
     },
+    //1
     {
       name: "order_ref",
       label: "Order/Branch/BookTime",
@@ -118,6 +126,7 @@ const TomorrowBooking = () => {
         },
       },
     },
+    //2
     {
       name: "branch_name",
       label: "Branch",
@@ -129,6 +138,7 @@ const TomorrowBooking = () => {
         sort: true,
       },
     },
+    //3
     {
       name: "order_customer",
       label: "Customer",
@@ -137,6 +147,7 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
+    //4
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -145,6 +156,7 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
+    //5
     {
       name: "order_date",
       label: "Booking Date",
@@ -156,6 +168,7 @@ const TomorrowBooking = () => {
         },
       },
     },
+    //6
     {
       name: "order_service_date",
       label: "Service Date",
@@ -167,6 +180,7 @@ const TomorrowBooking = () => {
         },
       },
     },
+    //7
     {
       name: "order_service",
       label: "Service",
@@ -179,6 +193,7 @@ const TomorrowBooking = () => {
         },
       },
     },
+    //8
     {
       name: "order_custom",
       label: "Custom",
@@ -189,6 +204,7 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
+    //9
     {
       name: "order_amount",
       label: "Price",
@@ -197,14 +213,87 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
+    //10
+    {
+      name: "order_assign",
+      label: "Order Assign",
+      options: {
+        filter: false,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+      },
+    },
+    //11
     {
       name: "order_no_assign",
       label: "No of Assign",
       options: {
         filter: false,
         sort: false,
+        customBodyRender: (value, tableMeta) => {
+          console.log(value, "value");
+          const orderAssign = tableMeta.rowData[10];
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
+          );
+          const count = activeAssignments.length;
+
+          if (count > 0) {
+            return (
+              <button
+                className="w-16 hover:bg-red-200 border border-gray-200 rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedAssignDetails(activeAssignments);
+                  setOpenModal(true);
+                }}
+              >
+                {count}
+              </button>
+            );
+          }
+          return <span>{count}</span>;
+        },
       },
     },
+    //12
+    {
+      name: "assignment_details",
+      label: "Assign Details",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          console.log(value, "value");
+          const orderAssign = tableMeta.rowData[10];
+          console.log(orderAssign, "orderAssign");
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
+          );
+
+          if (activeAssignments.length === 0) return <span>-</span>;
+
+          return (
+            <div className="w-48 overflow-x-auto">
+              <table className="min-w-full table-auto border-collapse text-sm">
+                <tbody className="flex flex-wrap h-[40px]  w-48">
+                  <tr>
+                    <td className="text-xs px-[2px] leading-[12px]">
+                      {activeAssignments
+                        .map((assign) => assign.user.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          );
+        },
+      },
+    },
+    //13
     {
       name: "updated_by",
       label: "Confirm By",
@@ -213,17 +302,66 @@ const TomorrowBooking = () => {
         sort: false,
       },
     },
+    //14
     {
       name: "order_status",
       label: "Status",
       options: {
         filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },
+    //15
+    {
+      name: "status/inspection status",
+      label: "Status/Inspection Status",
+      options: {
+        filter: false,
+        sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px",
+            maxWidth: "200px",
+            width: "180px",
+          },
+        }),
+        customBodyRender: (value, tableMeta) => {
+          const status = tableMeta.rowData[14];
+          const inspectionstatus = tableMeta.rowData[17];
+          return (
+            <div className=" flex flex-col ">
+              <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
+            </div>
+          );
+        },
+      },
+    },
+    //16
     {
       name: "order_booking_time",
       label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //17
+    {
+      name: "order_inspection_status",
+      label: "Inspection Status",
       options: {
         filter: true,
         display: "exclude",
@@ -328,6 +466,11 @@ const TomorrowBooking = () => {
           />
         </div>
       )}
+      <AssignDetailsModal
+        open={openModal}
+        handleOpen={setOpenModal}
+        assignDetails={selectedAssignDetails}
+      />
     </Layout>
   );
 };

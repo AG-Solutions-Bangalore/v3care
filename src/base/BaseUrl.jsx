@@ -1,21 +1,16 @@
-
-
 // actual url
 const BASE_URL = "https://v3care.in/crmapi/public";
 const SUPER_SERVICE_IMAGE_URL =
   "https://v3care.in/crmapi/storage/app/public/service_super";
-const SERVICE_IMAGE_URL =
-  "https://v3care.in/crmapi/storage/app/public/service";
+const SERVICE_IMAGE_URL = "https://v3care.in/crmapi/storage/app/public/service";
 const SERVICE_SUB_IMAGE_URL =
   "https://v3care.in/crmapi/storage/app/public/service_sub";
-const NO_IMAGE_URL =
-  "https://v3care.in/crmapi/storage/app/public/no_image.jpg";
+const NO_IMAGE_URL = "https://v3care.in/crmapi/storage/app/public/no_image.jpg";
 const VENDOR_ADAHAR_FRONT_URL =
   "https://v3care.in/crmapi/storage/app/public/vendor_aadhar";
 const VENDOR_ADAHAR_BACK_URL =
   "https://v3care.in/crmapi/storage/app/public/vendor_aadhar";
-const VENDOR_GST_URL =
-  "https://v3care.in/crmapi/storage/app/public/vendor_gst";
+const VENDOR_GST_URL = "https://v3care.in/crmapi/storage/app/public/vendor_gst";
 const VENDOR_IMAGE_URL =
   "https://v3care.in/crmapi/storage/app/public/vendor_images";
 const USER_DOCUMENT =

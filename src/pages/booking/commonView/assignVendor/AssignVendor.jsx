@@ -10,6 +10,8 @@ import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import Layout from "../../../../layout/Layout";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import AddBookingVendor from "../assignVendor/AddBookingVendor";
+import EditAssignVendorDialog from "./EditAssignVendor";
 const AssignVendor = () => {
   const { id } = useParams();
   const [bookingAssignVendorData, setBookingVendorAssignData] = useState(null);
@@ -17,28 +19,28 @@ const AssignVendor = () => {
   const navigate = useNavigate();
   UseEscapeKey();
   localStorage.setItem("vendorBook", id);
-  useEffect(() => {
-    const fetchAssignVendorData = async () => {
-      try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-assign-vendor-list/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const [openVendorDialog, setOpenVendorDialog] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [openEditVendor, setOpenEditVendor] = useState(false);
 
-        setBookingVendorAssignData(response.data?.bookingAssign);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } 
-    };
+  const fetchAssignVendorData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-booking-assign-vendor-list/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBookingVendorAssignData(response.data?.bookingAssign);
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    }
+  };
+  useEffect(() => {
     fetchAssignVendorData();
   }, []);
 
@@ -115,7 +117,11 @@ const AssignVendor = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <FaEdit
-                  onClick={() => navigate(`/edit-booking-vendor/${id}`)}
+                  // onClick={() => navigate(`/edit-booking-vendor/${id}`)}
+                  onClick={() => {
+                    setSelectedBookingId(id);
+                    setOpenEditVendor(true);
+                  }}
                   title="Edit Booking Asssign"
                   className="h-5 w-5 cursor-pointer"
                 />
@@ -151,7 +157,10 @@ const AssignVendor = () => {
             <ButtonConfigColor
               type="create"
               label="Add Booking Vendor"
-              onClick={() => navigate(`/add-booking-vendor/${id}`)}
+              // onClick={() => navigate(`/add-booking-vendor/${id}`)}
+              onClick={() => {
+                setOpenVendorDialog(true);
+              }}
             />
           )
         }
@@ -164,6 +173,21 @@ const AssignVendor = () => {
           options={options}
         />
       </div>
+      {openVendorDialog && (
+        <AddBookingVendor
+          open={openVendorDialog}
+          onClose={() => setOpenVendorDialog(false)}
+          onSuccess={fetchAssignVendorData}
+        />
+      )}
+      {openEditVendor && selectedBookingId && (
+        <EditAssignVendorDialog
+          open={openEditVendor}
+          onClose={() => setOpenEditVendor(false)}
+          bookingId={selectedBookingId}
+          onSuccess={fetchAssignVendorData}
+        />
+      )}
     </Layout>
   );
 };

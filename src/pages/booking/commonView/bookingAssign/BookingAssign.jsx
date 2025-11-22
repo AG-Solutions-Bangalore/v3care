@@ -10,38 +10,42 @@ import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import Layout from "../../../../layout/Layout";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import AddBookingAssignUser from "./AddBookingAssignUser";
+import EditBookingAssignDialog from "./EditBookingAssign";
 const BookingAssign = () => {
   const { id } = useParams();
   const [bookingAssignData, setBookingAssignData] = useState(null);
-  const { isPanelUp, userType } = useContext(ContextPanel);
-  const navigate = useNavigate();
+  const { userType } = useContext(ContextPanel);
   localStorage.setItem("assignBook", id);
-  UseEscapeKey();
-  useEffect(() => {
-    const fetchBookingAssignData = async () => {
-      try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-assign-list/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
 
-        setBookingAssignData(response.data?.bookingAssign);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      }
-    };
+  UseEscapeKey();
+  const fetchBookingAssignData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-booking-assign-list/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBookingAssignData(response.data?.bookingAssign);
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    }
+  };
+  useEffect(() => {
     fetchBookingAssignData();
   }, []);
-
+  const handleEditClick = (id) => {
+    setSelectedBookingId(id); // store the ID in state
+    setOpenEditDialog(true); // open the dialog
+  };
   const columns = [
     {
       name: "slNo",
@@ -115,7 +119,8 @@ const BookingAssign = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <FaEdit
-                  onClick={() => navigate(`/edit-booking-assign/${id}`)}
+                  // onClick={() => navigate(`/edit-booking-assign/${id}`)}
+                  onClick={() => handleEditClick(id)}
                   title="Edit Booking Asssign"
                   className="h-5 w-5 cursor-pointer"
                 />
@@ -151,7 +156,8 @@ const BookingAssign = () => {
           <ButtonConfigColor
             type="create"
             label="Add Booking User"
-            onClick={() => navigate(`/add-booking-user/${id}`)}
+            // onClick={() => navigate(`/add-booking-user/${id}`)}
+            onClick={() => setOpenDialog(true)}
           />
         }
       />
@@ -162,6 +168,21 @@ const BookingAssign = () => {
           options={options}
         />
       </div>
+      {openDialog && (
+        <AddBookingAssignUser
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onSuccess={() => fetchBookingAssignData()}
+        />
+      )}
+      {openEditDialog && selectedBookingId && (
+        <EditBookingAssignDialog
+          open={openEditDialog}
+          onClose={() => setOpenEditDialog(false)}
+          onSuccess={() => fetchBookingAssignData()}
+          bookingId={selectedBookingId}
+        />
+      )}
     </Layout>
   );
 };

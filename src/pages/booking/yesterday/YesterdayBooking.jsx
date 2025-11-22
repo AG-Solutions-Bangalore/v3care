@@ -66,10 +66,14 @@ const YesterdayBooking = () => {
     };
     fetchYesterdayData();
   }, []);
-  const handleEdit = (e, id) => {
+  const handleAction = (e, id, status) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/edit-booking/${id}`);
+    if (status === "Inspection") {
+      navigate(`/edit-booking-inspection/${id}`);
+    } else {
+      navigate(`/edit-booking/${id}`);
+    }
   };
   const handleView = (e, id) => {
     e.preventDefault();
@@ -83,13 +87,14 @@ const YesterdayBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const status = tableMeta.rowData[21];
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={(e) => handleEdit(e, id)}
-                  title="Edit Boking"
+                  onClick={(e) => handleAction(e, id, status)}
+                  title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
@@ -266,6 +271,7 @@ const YesterdayBooking = () => {
       options: {
         filter: false,
         sort: false,
+
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[9];
           const price = tableMeta.rowData[10];
@@ -454,18 +460,33 @@ const YesterdayBooking = () => {
     },
     //22
     {
-      name: "confirm/status",
-      label: "Confirm By/Status",
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
       options: {
         filter: false,
         sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px",
+            maxWidth: "200px",
+            width: "180px",
+          },
+        }),
         customBodyRender: (value, tableMeta) => {
           const confirmBy = tableMeta.rowData[20];
           const status = tableMeta.rowData[21];
+          const inspectionstatus = tableMeta.rowData[25];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
               <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
             </div>
           );
         },
@@ -483,9 +504,22 @@ const YesterdayBooking = () => {
         sort: false,
       },
     },
+    //24
     {
       name: "order_booking_time",
       label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //25
+    {
+      name: "order_inspection_status",
+      label: "Inspection Status",
       options: {
         filter: true,
         display: "exclude",
