@@ -9,9 +9,14 @@ import BookingFilter from "../../../components/BookingFilter";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ClipboardList, View } from "lucide-react";
+import FollowupModal from "../../../components/common/FollowupModal";
+import CommentPopover from "../../../components/common/CommentPopover";
 
 const CancelBooking = () => {
   const [cancelBookData, setCancelBookData] = useState(null);
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [followupdata, setFollowUpData] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,7 +68,43 @@ const CancelBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, orderfollowup) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFollowUpData(orderfollowup);
+    setOpenFollowModal(true);
+  };
   const columns = [
+    {
+      name: "id",
+      label: "Action",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id, tableMeta) => {
+          const orderfollowup = tableMeta.rowData[18];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
+
+          const booking = {
+            order_remarks: tableMeta.rowData[15],
+            order_comment: tableMeta.rowData[16],
+            order_postpone_reason: tableMeta.rowData[17],
+          };
+          return (
+            <div className="flex items-center space-x-2">
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
+            </div>
+          );
+        },
+      },
+    },
     {
       name: "order_ref",
       label: "ID",
@@ -274,7 +315,54 @@ const CancelBooking = () => {
         sort: false,
       },
     },
-
+    //15
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //16
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //17
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //18
+    {
+      name: "order_followup",
+      label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
   const options = {
     selectableRows: "none",
@@ -346,6 +434,13 @@ const CancelBooking = () => {
             options={options}
           />
         </div>
+      )}
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
       )}
     </Layout>
   );

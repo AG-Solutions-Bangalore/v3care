@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ClipboardList } from "lucide-react";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
@@ -7,6 +8,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
+import CommentPopover from "../../../components/common/CommentPopover";
+import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
@@ -21,6 +24,8 @@ const VendorJobBooking = () => {
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [followupdata, setFollowUpData] = useState("");
   const pageParam = searchParams.get("page");
   useEffect(() => {
     if (pageParam) {
@@ -72,6 +77,12 @@ const VendorJobBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, orderfollowup) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFollowUpData(orderfollowup);
+    setOpenFollowModal(true);
+  };
   const columns = [
     {
       name: "id",
@@ -79,7 +90,16 @@ const VendorJobBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const ref = tableMeta.rowData[1];
+          const orderfollowup = tableMeta.rowData[19];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
+
+          const booking = {
+            order_remarks: tableMeta.rowData[16],
+            order_comment: tableMeta.rowData[17],
+            order_postpone_reason: tableMeta.rowData[18],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -89,11 +109,14 @@ const VendorJobBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-              {/* <MdOutlineRemoveRedEye
-                onClick={() => navigate(`/view-booking/${id}`)}
-                title="Booking Info"
-                className="h-5 w-5 cursor-pointer"
-              /> */}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
@@ -315,6 +338,54 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
+    //16
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //17
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //18
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //19
+    {
+      name: "order_followup",
+      label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
   const options = {
     selectableRows: "none",
@@ -386,6 +457,13 @@ const VendorJobBooking = () => {
             options={options}
           />
         </div>
+      )}
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
       )}
     </Layout>
   );

@@ -332,7 +332,7 @@ const EditAssignVendorDialog = ({ open, onClose, bookingId, onSuccess }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit Booking Assign Vendor</DialogTitle>
+      <DialogTitle>Edit  Assign Vendor</DialogTitle>
       <DialogContent>
         <form id="editVendorForm" onSubmit={onSubmit} className="mt-4">
           <div className="grid grid-cols-1  gap-6">

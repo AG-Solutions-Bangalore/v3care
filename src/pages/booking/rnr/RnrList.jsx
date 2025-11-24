@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ClipboardList } from "lucide-react";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
@@ -7,12 +8,12 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
+import CommentPopover from "../../../components/common/CommentPopover";
+import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { View } from "lucide-react";
-import FollowupModal from "../../../components/common/FollowupModal";
 const RnrList = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ const RnrList = () => {
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
   const [openFollowModal, setOpenFollowModal] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState("");
+  const [followupdata, setFollowUpData] = useState("");
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -78,7 +79,7 @@ const RnrList = () => {
   const handleFollowModal = (e, ref) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedOrderRef(ref);
+    setFollowUpData(ref);
     setOpenFollowModal(true);
   };
   const columns = [
@@ -90,7 +91,14 @@ const RnrList = () => {
         sort: false,
         customBodyRender: (id, tableMeta) => {
           const ref = tableMeta.rowData[1];
+          const orderfollowup = tableMeta.rowData[18];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
+          const booking = {
+            order_remarks: tableMeta.rowData[15],
+            order_comment: tableMeta.rowData[16],
+            order_postpone_reason: tableMeta.rowData[17],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -105,15 +113,20 @@ const RnrList = () => {
                 title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
               /> */}
-              <View
-                onClick={(e) => handleFollowModal(e, ref)}
-                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
-              />{" "}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
       },
     },
+    //1
     {
       name: "order_ref",
       label: "ID",
@@ -126,6 +139,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //2
     {
       name: "branch_name",
       label: "Branch",
@@ -138,6 +152,7 @@ const RnrList = () => {
         sort: true,
       },
     },
+    //3
     {
       name: "order_branch",
       label: "Order/Branch",
@@ -156,6 +171,7 @@ const RnrList = () => {
         },
       },
     },
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -168,6 +184,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -180,6 +197,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -198,6 +216,7 @@ const RnrList = () => {
         },
       },
     },
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -213,6 +232,7 @@ const RnrList = () => {
         },
       },
     },
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -229,6 +249,7 @@ const RnrList = () => {
         },
       },
     },
+    //9
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -247,6 +268,7 @@ const RnrList = () => {
         },
       },
     },
+    //10
     {
       name: "order_service",
       label: "Service",
@@ -259,6 +281,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //11
     {
       name: "order_amount",
       label: "Price",
@@ -271,6 +294,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //12
     {
       name: "order_custom",
       label: "Custom",
@@ -281,6 +305,7 @@ const RnrList = () => {
         sort: false,
       },
     },
+    //13
     {
       name: "service_price",
       label: "Service/Price",
@@ -308,12 +333,60 @@ const RnrList = () => {
         },
       },
     },
-
+    //14
     {
       name: "order_status",
       label: "Status",
       options: {
         filter: true,
+        sort: false,
+      },
+    },
+    //15
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //16
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //17
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //18
+    {
+      name: "order_followup",
+      label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },
@@ -389,11 +462,13 @@ const RnrList = () => {
           />
         </div>
       )}
-      <FollowupModal
-        open={openFollowModal}
-        handleOpen={setOpenFollowModal}
-        orderRef={selectedOrderRef}
-      />
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
+      )}
     </Layout>
   );
 };

@@ -304,7 +304,7 @@ const AddBookingVendor = ({ open, onClose, onSuccess }) => {
 
       if (response.data.code == "200") {
         toast.success(
-          response.data?.msg || "Booking Vendor Created Successfully"
+          response.data?.msg || "Assign Vendor Created Successfully"
         );
         if (onSuccess) onSuccess(); // optional callback to refresh parent
         onClose();
@@ -321,7 +321,7 @@ const AddBookingVendor = ({ open, onClose, onSuccess }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Create Booking Vendor</DialogTitle>
+      <DialogTitle>Create Assign Vendor</DialogTitle>
       <DialogContent>
         <form
           id="addIndiv"
