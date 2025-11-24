@@ -11,11 +11,15 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { View } from "lucide-react";
+import FollowupModal from "../../../components/common/FollowupModal";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [selectedOrderRef, setSelectedOrderRef] = useState("");
   const [loading, setLoading] = useState(false);
-  const {  userType } = useContext(ContextPanel);
+  const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -72,6 +76,12 @@ const PendingBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, ref) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedOrderRef(ref);
+    setOpenFollowModal(true);
+  };
   const columns = [
     {
       name: "id",
@@ -79,7 +89,9 @@ const PendingBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const ref = tableMeta.rowData[1];
+
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -89,6 +101,10 @@ const PendingBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
+              <View
+                onClick={(e) => handleFollowModal(e, ref)}
+                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
+              />{" "}
             </div>
           );
         },
@@ -377,6 +393,11 @@ const PendingBooking = () => {
           />
         </div>
       )}
+      <FollowupModal
+        open={openFollowModal}
+        handleOpen={setOpenFollowModal}
+        orderRef={selectedOrderRef}
+      />
     </Layout>
   );
 };

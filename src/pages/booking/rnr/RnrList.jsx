@@ -11,6 +11,8 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { View } from "lucide-react";
+import FollowupModal from "../../../components/common/FollowupModal";
 const RnrList = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,6 +23,8 @@ const RnrList = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [selectedOrderRef, setSelectedOrderRef] = useState("");
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -71,6 +75,12 @@ const RnrList = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, ref) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedOrderRef(ref);
+    setOpenFollowModal(true);
+  };
   const columns = [
     {
       name: "id",
@@ -78,7 +88,9 @@ const RnrList = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const ref = tableMeta.rowData[1];
+
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -93,6 +105,10 @@ const RnrList = () => {
                 title="Booking Info"
                 className="h-5 w-5 cursor-pointer"
               /> */}
+              <View
+                onClick={(e) => handleFollowModal(e, ref)}
+                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
+              />{" "}
             </div>
           );
         },
@@ -373,6 +389,11 @@ const RnrList = () => {
           />
         </div>
       )}
+      <FollowupModal
+        open={openFollowModal}
+        handleOpen={setOpenFollowModal}
+        orderRef={selectedOrderRef}
+      />
     </Layout>
   );
 };

@@ -13,6 +13,8 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { View } from "lucide-react";
+import FollowupModal from "../../../components/common/FollowupModal";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -27,6 +29,8 @@ const TodayBooking = () => {
   const pageParam = searchParams.get("page");
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [selectedOrderRef, setSelectedOrderRef] = useState("");
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -66,15 +70,25 @@ const TodayBooking = () => {
     };
     fetchTodayData();
   }, []);
-  const handleEdit = (e, id) => {
+  const handleAction = (e, id, status) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/edit-booking/${id}`);
+    if (status === "Inspection") {
+      navigate(`/edit-booking-inspection/${id}`);
+    } else {
+      navigate(`/edit-booking/${id}`);
+    }
   };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
     navigate(`/view-booking/${id}`);
+  };
+  const handleFollowModal = (e, ref) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedOrderRef(ref);
+    setOpenFollowModal(true);
   };
   const columns = [
     {
@@ -83,16 +97,22 @@ const TodayBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const status = tableMeta.rowData[21];
+          const ref = tableMeta.rowData[1];
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={(e) => handleEdit(e, id)}
-                  title="edit booking"
+                  onClick={(e) => handleAction(e, id, status)}
+                  title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
+              <View
+                onClick={(e) => handleFollowModal(e, ref)}
+                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
+              />{" "}
             </div>
           );
         },
@@ -453,18 +473,33 @@ const TodayBooking = () => {
     },
     //22
     {
-      name: "confirm/status",
-      label: "Confirm By/Status",
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
       options: {
         filter: false,
         sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px", // minimum width
+            maxWidth: "200px", // optional maximum
+            width: "180px", // fixed width
+          },
+        }),
         customBodyRender: (value, tableMeta) => {
           const confirmBy = tableMeta.rowData[20];
           const status = tableMeta.rowData[21];
+          const inspectionstatus = tableMeta.rowData[25];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
               <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
             </div>
           );
         },
@@ -486,6 +521,18 @@ const TodayBooking = () => {
     {
       name: "order_booking_time",
       label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //25
+    {
+      name: "order_inspection_status",
+      label: "Inspection Status",
       options: {
         filter: true,
         display: "exclude",
@@ -597,6 +644,11 @@ const TodayBooking = () => {
         open={openModal}
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
+      />
+      <FollowupModal
+        open={openFollowModal}
+        handleOpen={setOpenFollowModal}
+        orderRef={selectedOrderRef}
       />
     </Layout>
   );

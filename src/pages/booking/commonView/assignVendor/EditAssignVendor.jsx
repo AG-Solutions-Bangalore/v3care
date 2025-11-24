@@ -1,20 +1,252 @@
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import BookingFilter from "../../../../components/BookingFilter";
-import Layout from "../../../../layout/Layout";
+// import { useContext, useEffect, useState } from "react";
+// import { useNavigate, useParams } from "react-router-dom";
+// import BookingFilter from "../../../../components/BookingFilter";
+// import Layout from "../../../../layout/Layout";
 
-import { Input } from "@material-tailwind/react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import axios from "axios";
+// import { Input } from "@material-tailwind/react";
+// import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import { BASE_URL } from "../../../../base/BaseUrl";
+// import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
+// import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+// import { ContextPanel } from "../../../../utils/ContextPanel";
+// import UseEscapeKey from "../../../../utils/UseEscapeKey";
+// const EditAssignVendor = () => {
+//   const { id } = useParams();
+//   UseEscapeKey();
+//   const [bookingUser, setBookingUser] = useState({
+//     order_user_id: "",
+//     order_start_time: "",
+//     order_end_time: "",
+//     order_assign_remarks: "",
+//     order_assign_status: "",
+//   });
+
+//   const [assignUserP, setAssignUserP] = useState([]);
+
+//   const [loading, setLoading] = useState(false);
+//   const { isPanelUp } = useContext(ContextPanel);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchTodayData = async () => {
+//       try {
+//         if (!isPanelUp) {
+//           navigate("/maintenance");
+//           return;
+//         }
+//         const token = localStorage.getItem("token");
+//         const response = await axios.get(
+//           `${BASE_URL}/api/panel-fetch-booking-assign-vendor-by-id/${id}`,
+//           {
+//             headers: {
+//               Authorization: `Bearer ${token}`,
+//             },
+//           }
+//         );
+
+//         setBookingUser(response.data?.bookingAssign);
+//         setAssignUserP(response.data?.bookingAssignUser);
+//       } catch (error) {
+//         console.error("Error fetching dashboard data", error);
+//       }
+//     };
+//     fetchTodayData();
+//   }, []);
+
+//   const status = [
+//     {
+//       value: "Pending",
+//       label: "Pending",
+//     },
+//     {
+//       value: "Confirmed",
+//       label: "Confirmed",
+//     },
+//     {
+//       value: "Finish",
+//       label: "Finish",
+//     },
+//     {
+//       value: "Cancel",
+//       label: "Cancel",
+//     },
+//   ];
+
+//   const onInputChange = (e) => {
+//     setBookingUser({
+//       ...bookingUser,
+//       [e.target.name]: e.target.value,
+//     });
+//   };
+
+//   const onSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     let data = {
+//       order_user_id: bookingUser.order_user_id,
+//       order_start_time: bookingUser.order_start_time,
+//       order_end_time: bookingUser.order_end_time,
+//       order_assign_remarks: bookingUser.order_assign_remarks,
+//       order_assign_status: bookingUser.order_assign_status,
+//     };
+
+//     try {
+//       const token = localStorage.getItem('token')
+//       const response = await axios.put(
+//         `${BASE_URL}/api/panel-update-booking-assign-vendor/${id}`,
+//         data,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       if (response.data.code == "200") {
+//         toast.success(response.data?.msg || "Assign Vendor Updated Successfully");
+//         navigate(-1);
+//       } else {
+//         toast.error(response.data?.msg || "Failed to update Assign Vendor");
+//       }
+//     } catch (error) {
+//       toast.error("An error occurred while updating");
+//       console.error("An error occurred while updating",error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <Layout>
+//       <BookingFilter />
+//       <PageHeader title={"Edit Booking Assign Vendor"} />
+
+//       <div className=" border border-gray-300 bg-white p-6 rounded-lg shadow-lg mt-2">
+//         <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
+//           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+//             {/* Assign User */}
+//             <div className="col-span-1">
+//               <div className="form-group">
+//                 <FormControl fullWidth>
+//                   <InputLabel id="service-select-label">
+//                     <span className="text-sm relative bottom-[6px]">
+//                       Assign Vendor <span className="text-red-700">*</span>
+//                     </span>
+//                   </InputLabel>
+//                   <Select
+//                     sx={{ height: "40px", borderRadius: "5px" }}
+//                     labelId="service-select-label"
+//                     id="service-select"
+//                     name="order_user_id"
+//                     value={bookingUser.order_user_id}
+//                     onChange={onInputChange}
+//                     label="Assign Vendor *"
+//                     required
+//                   >
+//                     {assignUserP.map((data) => (
+//                       <MenuItem key={data.id} value={data.id}>
+//                         {data.name}
+//                       </MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+//               </div>
+//             </div>
+
+//             {/* Status */}
+//             <div className="col-span-1">
+//               <div className="form-group">
+//                 <FormControl fullWidth>
+//                   <InputLabel id="service-select-label">
+//                     <span className="text-sm relative bottom-[6px]">
+//                       Status <span className="text-red-700">*</span>
+//                     </span>
+//                   </InputLabel>
+//                   <Select
+//                     sx={{ height: "40px", borderRadius: "5px" }}
+//                     labelId="service-select-label"
+//                     id="service-select"
+//                     name="order_assign_status"
+//                     value={bookingUser.order_assign_status}
+//                     onChange={onInputChange}
+//                     label="Status *"
+//                     required
+//                   >
+//                     {status.map((data) => (
+//                       <MenuItem key={data.value} value={data.value}>
+//                         {data.value}
+//                       </MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+//               </div>
+//             </div>
+
+//             {/* Remarks */}
+//             <div className="col-span-2">
+//               <div className="form-group">
+//                 <Input
+//                   id="remarks"
+//                   label="Remarks"
+//                   multiline
+//                   name="order_assign_remarks"
+//                   value={bookingUser.order_assign_remarks}
+//                   onChange={onInputChange}
+//                   fullWidth
+//                   className="bg-gray-100 rounded-md"
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex justify-center space-x-4 my-2">
+//             <ButtonConfigColor
+//               type="edit"
+//               buttontype="submit"
+//               label="Update"
+//               loading={loading}
+//             />
+
+//             <ButtonConfigColor
+//               type="back"
+//               buttontype="button"
+//               label="Cancel"
+//               onClick={() => navigate(-1)}
+//             />
+//           </div>
+//         </form>
+//       </div>
+//     </Layout>
+//   );
+// };
+
+// export default EditAssignVendor;
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { BASE_URL } from "../../../../base/BaseUrl";
-import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../../components/common/PageHeader/PageHeader";
+import { Input } from "@material-tailwind/react";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 import UseEscapeKey from "../../../../utils/UseEscapeKey";
-const EditAssignVendor = () => {
-  const { id } = useParams();
+
+const EditAssignVendorDialog = ({ open, onClose, bookingId, onSuccess }) => {
   UseEscapeKey();
+  const { isPanelUp } = useContext(ContextPanel);
+
   const [bookingUser, setBookingUser] = useState({
     order_user_id: "",
     order_start_time: "",
@@ -24,54 +256,34 @@ const EditAssignVendor = () => {
   });
 
   const [assignUserP, setAssignUserP] = useState([]);
-
   const [loading, setLoading] = useState(false);
-  const { isPanelUp } = useContext(ContextPanel);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchTodayData = async () => {
+    if (!bookingId) return;
+
+    const fetchBookingData = async () => {
       try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
+        if (!isPanelUp) return;
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-booking-assign-vendor-by-id/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `${BASE_URL}/api/panel-fetch-booking-assign-vendor-by-id/${bookingId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
         setBookingUser(response.data?.bookingAssign);
-        setAssignUserP(response.data?.bookingAssignUser);
+        setAssignUserP(response.data?.bookingAssignUser || []);
       } catch (error) {
-        console.error("Error fetching dashboard data", error);
+        console.error("Error fetching booking vendor data", error);
+        toast.error("Failed to load vendor data");
       }
     };
-    fetchTodayData();
-  }, []);
+    fetchBookingData();
+  }, [bookingId, isPanelUp]);
 
-  const status = [
-    {
-      value: "Pending",
-      label: "Pending",
-    },
-    {
-      value: "Confirmed",
-      label: "Confirmed",
-    },
-    {
-      value: "Finish",
-      label: "Finish",
-    },
-    {
-      value: "Cancel",
-      label: "Cancel",
-    },
+  const statusOptions = [
+    { value: "Pending", label: "Pending" },
+    { value: "Confirmed", label: "Confirmed" },
+    { value: "Finish", label: "Finish" },
+    { value: "Cancel", label: "Cancel" },
   ];
 
   const onInputChange = (e) => {
@@ -83,144 +295,116 @@ const EditAssignVendor = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
-
-    let data = {
-      order_user_id: bookingUser.order_user_id,
-      order_start_time: bookingUser.order_start_time,
-      order_end_time: bookingUser.order_end_time,
-      order_assign_remarks: bookingUser.order_assign_remarks,
-      order_assign_status: bookingUser.order_assign_status,
-    };
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem('token')
+      const data = {
+        order_user_id: bookingUser.order_user_id,
+        order_start_time: bookingUser.order_start_time,
+        order_end_time: bookingUser.order_end_time,
+        order_assign_remarks: bookingUser.order_assign_remarks,
+        order_assign_status: bookingUser.order_assign_status,
+      };
+
+      const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${BASE_URL}/api/panel-update-booking-assign-vendor/${id}`,
+        `${BASE_URL}/api/panel-update-booking-assign-vendor/${bookingId}`,
         data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.data.code == "200") {
-        toast.success(response.data?.msg || "Assign Vendor Updated Successfully");
-        navigate(-1);
+        toast.success(
+          response.data?.msg || "Assign Vendor Updated Successfully"
+        );
+        if (onSuccess) onSuccess(); // refresh parent
+        onClose();
       } else {
         toast.error(response.data?.msg || "Failed to update Assign Vendor");
       }
     } catch (error) {
       toast.error("An error occurred while updating");
-      console.error("An error occurred while updating",error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Layout>
-      <BookingFilter />
-      <PageHeader title={"Edit Booking Assign Vendor"} />
-
-      <div className=" border border-gray-300 bg-white p-6 rounded-lg shadow-lg mt-2">
-        <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {/* Assign User */}
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Edit Booking Assign Vendor</DialogTitle>
+      <DialogContent>
+        <form id="editVendorForm" onSubmit={onSubmit} className="mt-4">
+          <div className="grid grid-cols-1  gap-6">
+            {/* Assign Vendor */}
             <div className="col-span-1">
-              <div className="form-group">
-                <FormControl fullWidth>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Assign Vendor <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="order_user_id"
-                    value={bookingUser.order_user_id}
-                    onChange={onInputChange}
-                    label="Assign Vendor *"
-                    required
-                  >
-                    {assignUserP.map((data) => (
-                      <MenuItem key={data.id} value={data.id}>
-                        {data.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
+              <FormControl fullWidth>
+                <InputLabel id="vendor-select-label">
+                  Assign Vendor *
+                </InputLabel>
+                <Select
+                  labelId="vendor-select-label"
+                  name="order_user_id"
+                  value={bookingUser.order_user_id}
+                  onChange={onInputChange}
+                  required
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                >
+                  {assignUserP.map((vendor) => (
+                    <MenuItem key={vendor.id} value={vendor.id}>
+                      {vendor.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
 
             {/* Status */}
-            <div className="col-span-1">
-              <div className="form-group">
-                <FormControl fullWidth>
-                  <InputLabel id="service-select-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Status <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="service-select-label"
-                    id="service-select"
-                    name="order_assign_status"
-                    value={bookingUser.order_assign_status}
-                    onChange={onInputChange}
-                    label="Status *"
-                    required
-                  >
-                    {status.map((data) => (
-                      <MenuItem key={data.value} value={data.value}>
-                        {data.value}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
+            <div >
+              <FormControl fullWidth>
+                <InputLabel id="status-select-label">Status *</InputLabel>
+                <Select
+                  labelId="status-select-label"
+                  name="order_assign_status"
+                  value={bookingUser.order_assign_status}
+                  onChange={onInputChange}
+                  required
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                >
+                  {statusOptions.map((status) => (
+                    <MenuItem key={status.value} value={status.value}>
+                      {status.value}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
 
             {/* Remarks */}
-            <div className="col-span-2">
-              <div className="form-group">
-                <Input
-                  id="remarks"
-                  label="Remarks"
-                  multiline
-                  name="order_assign_remarks"
-                  value={bookingUser.order_assign_remarks}
-                  onChange={onInputChange}
-                  fullWidth
-                  className="bg-gray-100 rounded-md"
-                />
-              </div>
+            <div >
+              <Input
+                label="Remarks"
+                multiline
+                name="order_assign_remarks"
+                value={bookingUser.order_assign_remarks}
+                onChange={onInputChange}
+                fullWidth
+                className="bg-gray-100 rounded-md"
+              />
             </div>
           </div>
-
-          <div className="flex justify-center space-x-4 my-2">
-            <ButtonConfigColor
-              type="edit"
-              buttontype="submit"
-              label="Update"
-              loading={loading}
-            />
-
-            <ButtonConfigColor
-              type="back"
-              buttontype="button"
-              label="Cancel"
-              onClick={() => navigate(-1)}
-            />
-          </div>
         </form>
-      </div>
-    </Layout>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} variant="outlined">
+          Cancel
+        </Button>
+        <Button onClick={onSubmit} variant="contained" disabled={loading}>
+          {loading ? "Updating..." : "Update"}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default EditAssignVendor;
+export default EditAssignVendorDialog;
