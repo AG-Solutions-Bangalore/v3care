@@ -12,15 +12,16 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { View } from "lucide-react";
+import { ClipboardList, View } from "lucide-react";
 import FollowupModal from "../../../components/common/FollowupModal";
+import CommentPopover from "../../../components/common/CommentPopover";
 
 const TomorrowBooking = () => {
   const [tomBookingData, setTomBookingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp, userType } = useContext(ContextPanel);
   const [openFollowModal, setOpenFollowModal] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState("");
+  const [followupdata, setFollowUpData] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const [page, setPage] = useState(0);
@@ -87,10 +88,10 @@ const TomorrowBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
-  const handleFollowModal = (e, ref) => {
+  const handleFollowModal = (e, orderfollowup) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedOrderRef(ref);
+    setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
   };
   const columns = [
@@ -103,7 +104,14 @@ const TomorrowBooking = () => {
         customBodyRender: (id, tableMeta) => {
           const status = tableMeta.rowData[21];
           const ref = tableMeta.rowData[1];
+          const orderfollowup = tableMeta.rowData[21];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
+          const booking = {
+            order_remarks: tableMeta.rowData[18],
+            order_comment: tableMeta.rowData[19],
+            order_postpone_reason: tableMeta.rowData[20],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -113,10 +121,14 @@ const TomorrowBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-              <View
-                onClick={(e) => handleFollowModal(e, ref)}
-                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
-              />{" "}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
@@ -284,7 +296,6 @@ const TomorrowBooking = () => {
         customBodyRender: (value, tableMeta) => {
           console.log(value, "value");
           const orderAssign = tableMeta.rowData[10];
-          console.log(orderAssign, "orderAssign");
           const activeAssignments = orderAssign.filter(
             (assign) => assign.order_assign_status !== "Cancel"
           );
@@ -378,6 +389,54 @@ const TomorrowBooking = () => {
     {
       name: "order_inspection_status",
       label: "Inspection Status",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //18
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //19
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //20
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //21
+    {
+      name: "order_followup",
+      label: "Followup",
       options: {
         filter: true,
         display: "exclude",
@@ -487,11 +546,13 @@ const TomorrowBooking = () => {
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
       />
-      <FollowupModal
-        open={openFollowModal}
-        handleOpen={setOpenFollowModal}
-        orderRef={selectedOrderRef}
-      />
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
+      )}
     </Layout>
   );
 };

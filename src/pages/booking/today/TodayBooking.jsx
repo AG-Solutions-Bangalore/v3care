@@ -10,11 +10,12 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
+import { ClipboardList } from "lucide-react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { View } from "lucide-react";
+import CommentPopover from "../../../components/common/CommentPopover";
 import FollowupModal from "../../../components/common/FollowupModal";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -30,7 +31,7 @@ const TodayBooking = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   const [openFollowModal, setOpenFollowModal] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState("");
+  const [followupdata, setFollowUpData] = useState("");
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -84,10 +85,10 @@ const TodayBooking = () => {
     e.stopPropagation();
     navigate(`/view-booking/${id}`);
   };
-  const handleFollowModal = (e, ref) => {
+  const handleFollowModal = (e, orderfollowup) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedOrderRef(ref);
+    setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
   };
   const columns = [
@@ -99,7 +100,14 @@ const TodayBooking = () => {
         sort: false,
         customBodyRender: (id, tableMeta) => {
           const status = tableMeta.rowData[21];
-          const ref = tableMeta.rowData[1];
+          const orderfollowup = tableMeta.rowData[29];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
+
+          const booking = {
+            order_remarks: tableMeta.rowData[26],
+            order_comment: tableMeta.rowData[27],
+            order_postpone_reason: tableMeta.rowData[28],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -109,10 +117,14 @@ const TodayBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-              <View
-                onClick={(e) => handleFollowModal(e, ref)}
-                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
-              />{" "}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
@@ -541,6 +553,53 @@ const TodayBooking = () => {
         sort: false,
       },
     },
+    //26
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //27
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //28
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_followup",
+      label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
 
   const options = {
@@ -550,7 +609,6 @@ const TodayBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-
     count: todayBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
@@ -645,11 +703,13 @@ const TodayBooking = () => {
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
       />
-      <FollowupModal
-        open={openFollowModal}
-        handleOpen={setOpenFollowModal}
-        orderRef={selectedOrderRef}
-      />
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
+      )}
     </Layout>
   );
 };

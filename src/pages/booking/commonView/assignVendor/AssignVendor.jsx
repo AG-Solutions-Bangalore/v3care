@@ -151,12 +151,12 @@ const AssignVendor = () => {
     <Layout>
       <BookingFilter />
       <PageHeader
-        title="Booking Vendor List"
+        title="Assign Vendor List"
         label2={
           userType !== "4" && (
             <ButtonConfigColor
               type="create"
-              label="Add Booking Vendor"
+              label="Add Assign Vendor"
               // onClick={() => navigate(`/add-booking-vendor/${id}`)}
               onClick={() => {
                 setOpenVendorDialog(true);

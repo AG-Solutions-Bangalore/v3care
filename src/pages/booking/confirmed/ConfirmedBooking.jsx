@@ -13,10 +13,15 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { ClipboardList, View } from "lucide-react";
+import FollowupModal from "../../../components/common/FollowupModal";
+import CommentPopover from "../../../components/common/CommentPopover";
 
 const ConfirmedBooking = () => {
   const [confirmBookData, setConfirmBookData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openFollowModal, setOpenFollowModal] = useState(false);
+  const [followupdata, setFollowUpData] = useState("");
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,6 +82,12 @@ const ConfirmedBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
+  const handleFollowModal = (e, orderfollowup) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFollowUpData(orderfollowup);
+    setOpenFollowModal(true);
+  };
   const columns = [
     //0
     {
@@ -85,7 +96,15 @@ const ConfirmedBooking = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (id) => {
+        customBodyRender: (id, tableMeta) => {
+          const orderfollowup = tableMeta.rowData[25];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
+
+          const booking = {
+            order_remarks: tableMeta.rowData[22],
+            order_comment: tableMeta.rowData[23],
+            order_postpone_reason: tableMeta.rowData[24],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -95,6 +114,14 @@ const ConfirmedBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
@@ -450,6 +477,54 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
+    //22
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //23
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //24
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //25
+    {
+      name: "order_followup",
+      label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
 
   const options = {
@@ -550,6 +625,13 @@ const ConfirmedBooking = () => {
         handleOpen={setOpenModal}
         assignDetails={selectedAssignDetails}
       />
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
+      )}
     </Layout>
   );
 };

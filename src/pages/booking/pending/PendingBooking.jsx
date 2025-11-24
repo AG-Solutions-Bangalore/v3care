@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ClipboardList } from "lucide-react";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
@@ -7,17 +8,17 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import BookingFilter from "../../../components/BookingFilter";
+import CommentPopover from "../../../components/common/CommentPopover";
+import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
-import { View } from "lucide-react";
-import FollowupModal from "../../../components/common/FollowupModal";
 
 const PendingBooking = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [openFollowModal, setOpenFollowModal] = useState(false);
-  const [selectedOrderRef, setSelectedOrderRef] = useState("");
+  const [followupdata, setFollowUpData] = useState("");
   const [loading, setLoading] = useState(false);
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -76,13 +77,14 @@ const PendingBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/view-booking/${id}`);
   };
-  const handleFollowModal = (e, ref) => {
+  const handleFollowModal = (e, orderfollowup) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedOrderRef(ref);
+    setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
   };
   const columns = [
+    //0
     {
       name: "id",
       label: "Action",
@@ -90,8 +92,14 @@ const PendingBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
-          const ref = tableMeta.rowData[1];
+          const orderfollowup = tableMeta.rowData[20];
+          const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
+          const booking = {
+            order_remarks: tableMeta.rowData[16],
+            order_comment: tableMeta.rowData[17],
+            order_postpone_reason: tableMeta.rowData[18],
+          };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
@@ -101,15 +109,20 @@ const PendingBooking = () => {
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
-              <View
-                onClick={(e) => handleFollowModal(e, ref)}
-                className="h-6 w-6  hover:text-blue-900 cursor-pointer"
-              />{" "}
+              <ClipboardList
+                title="Follow Up"
+                onClick={(e) => handleFollowModal(e, orderfollowup)}
+                className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                  noFollowup ? "text-red-600" : "text-gray-700"
+                }`}
+              />
+              <CommentPopover booking={booking} />
             </div>
           );
         },
       },
     },
+    //1
     {
       name: "order_ref",
       label: "ID",
@@ -121,6 +134,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //2
     {
       name: "branch_name",
       label: "Branch",
@@ -132,6 +146,7 @@ const PendingBooking = () => {
         sort: true,
       },
     },
+    //3
     {
       name: "order_ref",
       label: "Order/Branch/BookTime",
@@ -153,6 +168,7 @@ const PendingBooking = () => {
         },
       },
     },
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -164,6 +180,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -175,6 +192,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -193,6 +211,7 @@ const PendingBooking = () => {
         },
       },
     },
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -207,6 +226,7 @@ const PendingBooking = () => {
         },
       },
     },
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -221,6 +241,7 @@ const PendingBooking = () => {
         },
       },
     },
+    //9
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -239,6 +260,7 @@ const PendingBooking = () => {
         },
       },
     },
+    //10
     {
       name: "order_service",
       label: "Service",
@@ -250,6 +272,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //11
     {
       name: "order_amount",
       label: "Price",
@@ -261,6 +284,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //12
     {
       name: "order_custom",
       label: "Custom",
@@ -272,6 +296,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
+    //13
     {
       name: "service_price",
       label: "Service/Price",
@@ -299,7 +324,7 @@ const PendingBooking = () => {
         },
       },
     },
-
+    //14
     {
       name: "order_status",
       label: "Status",
@@ -312,6 +337,54 @@ const PendingBooking = () => {
     {
       name: "order_booking_time",
       label: "Book Time",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //16
+    {
+      name: "order_remarks",
+      label: "Remarks",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //17
+    {
+      name: "order_comment",
+      label: "Comment",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //18
+    {
+      name: "order_postpone_reason",
+      label: "Reason",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //19
+    {
+      name: "order_followup",
+      label: "Followup",
       options: {
         filter: true,
         display: "exclude",
@@ -393,11 +466,13 @@ const PendingBooking = () => {
           />
         </div>
       )}
-      <FollowupModal
-        open={openFollowModal}
-        handleOpen={setOpenFollowModal}
-        orderRef={selectedOrderRef}
-      />
+      {openFollowModal && (
+        <FollowupModal
+          open={openFollowModal}
+          handleOpen={setOpenFollowModal}
+          followData={followupdata}
+        />
+      )}
     </Layout>
   );
 };
