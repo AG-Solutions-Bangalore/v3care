@@ -134,6 +134,7 @@ const DashboardNavbar = ({
           </IconButton>
 
           {/* Profile Menu */}
+      
           <Menu
             open={profileMenuOpen}
             handler={setProfileMenuOpen}

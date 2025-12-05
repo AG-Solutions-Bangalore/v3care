@@ -1,12 +1,13 @@
 import { Carousel, Input, Typography } from "@material-tailwind/react";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { FaEyeSlash } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../base/BaseUrl";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import { ContextPanel } from "../../utils/ContextPanel";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
-
+ const { fetchNotifications } = useContext(ContextPanel);
   const validate = () => {
     let valid = true;
     setPasswordError("");
@@ -60,6 +61,7 @@ const SignIn = () => {
           );
           localStorage.setItem("branch_id", res.data.UserInfo.user.branch_id);
           localStorage.setItem("header_user_type", res.data.user_type.userType);
+          await fetchNotifications()
           navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");
