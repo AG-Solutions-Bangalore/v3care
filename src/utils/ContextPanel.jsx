@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../base/BaseUrl";
+import NotificationPopup from "../components/NotificationComponent";
 
 export const ContextPanel = createContext();
 
@@ -10,22 +11,19 @@ const AppProvider = ({ children }) => {
   const [isPanelUp, setIsPanelUp] = useState(true);
   const [error, setError] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [previousNotifications, setPreviousNotifications] = useState([]);
-  const [newNotifications, setNewNotifications] = useState([]); // For popups
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [newNotifications, setNewNotifications] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [currentPopupNotification, setCurrentPopupNotification] = useState(null);
+  
   const navigate = useNavigate();
   const location = useLocation();
   const userType = localStorage.getItem("user_type_id");
-  const branchId = localStorage.getItem("branch_id");
-
-  // Store IDs of shown popups to avoid duplicates
-  const [shownNotificationIds, setShownNotificationIds] = useState(new Set());
 
   // Fetch notifications
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (isInitial = false) => {
     try {
       const token = localStorage.getItem("token");
-      
       if (!token) return;
 
       const response = await axios.get(
@@ -36,86 +34,126 @@ const AppProvider = ({ children }) => {
           },
         }
       );
-
-      const data = response.data;
       
-      if (data && data.bookingNotification) {
-        const newNotifs = data.bookingNotification;
+      const data = response.data;
+      const currentNotificationList = data?.bookingNotification || [];
+      
+      if (isInitial) {
+        // FIRST TIME: Store only the count, not all notifications
+        const currentCount = currentNotificationList.length;
+        const latestId = currentNotificationList.length > 0 
+          ? Math.max(...currentNotificationList.map(n => n.id))
+          : 0;
         
-        // Find newly added notifications by comparing IDs
-        if (previousNotifications.length > 0) {
-          const currentIds = new Set(previousNotifications.map(n => n.id));
-          const newlyAdded = newNotifs.filter(n => !currentIds.has(n.id));
+        // Store only count and latest ID
+        localStorage.setItem('notification_count', currentCount.toString());
+        localStorage.setItem('last_notification_id', latestId.toString());
+        
+        // Set state
+        setNotifications(currentNotificationList);
+        setNotificationCount(currentCount);
+        
+        console.log("Initial setup: Count =", currentCount, "Latest ID =", latestId);
+      } else {
+        // SUBSEQUENT CALLS: Check for new notifications
+        const storedCount = parseInt(localStorage.getItem('notification_count') || '0');
+        const storedLastId = parseInt(localStorage.getItem('last_notification_id') || '0');
+        const currentCount = currentNotificationList.length;
+        
+        console.log("Checking: Stored count =", storedCount, "Current count =", currentCount);
+        console.log("Stored last ID =", storedLastId);
+        
+        if (currentCount > storedCount) {
+          // New notifications arrived!
+          const currentLatestId = Math.max(...currentNotificationList.map(n => n.id));
+          
+          // Find only NEW notifications (IDs greater than stored last ID)
+          const newlyAdded = currentNotificationList.filter(
+            notification => notification.id > storedLastId
+          );
+          
+          console.log("New notifications found:", newlyAdded.length);
           
           if (newlyAdded.length > 0) {
-            // Add to popup queue
+            // Sort by ID descending (newest first)
+            newlyAdded.sort((a, b) => b.id - a.id);
+            
+            // Add to queue
             setNewNotifications(prev => [...newlyAdded, ...prev]);
             
-            // Mark them as shown
-            setShownNotificationIds(prev => {
-              const newSet = new Set(prev);
-              newlyAdded.forEach(n => newSet.add(n.id));
-              return newSet;
-            });
+            // Update localStorage
+            localStorage.setItem('notification_count', currentCount.toString());
+            localStorage.setItem('last_notification_id', currentLatestId.toString());
+            
+            // Show popup for the first new notification
+            if (!showPopup && newlyAdded.length > 0) {
+              setCurrentPopupNotification(newlyAdded[0]);
+              setShowPopup(true);
+            }
           }
-        } else {
-          // First load, no popups
-          setNewNotifications([]);
+        } else if (currentCount < storedCount) {
+          // Count decreased (maybe some notifications were deleted)
+          // Just update the count
+          localStorage.setItem('notification_count', currentCount.toString());
+          
+          // Also update last ID if needed
+          if (currentNotificationList.length > 0) {
+            const currentLatestId = Math.max(...currentNotificationList.map(n => n.id));
+            localStorage.setItem('last_notification_id', currentLatestId.toString());
+          }
         }
         
-        // Update main notifications list
-        setNotifications(newNotifs);
-        
-        // Update previous notifications for next comparison
-        setPreviousNotifications(newNotifs);
-        
-        // Update unread count
-        const newCount = newNotifs.length;
-        setUnreadCount(newCount);
+        // Always update state with current notifications
+        setNotifications(currentNotificationList);
+        setNotificationCount(currentCount);
       }
+      
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   };
 
-  // Get next popup notification
-  const getNextPopup = () => {
-    if (newNotifications.length === 0) return null;
-    return newNotifications[0];
+  // Handle popup close
+  const handleClosePopup = () => {
+    if (newNotifications.length > 0) {
+      // Remove the current shown notification from newNotifications
+      const updatedNewNotifications = newNotifications.slice(1);
+      setNewNotifications(updatedNewNotifications);
+      
+      if (updatedNewNotifications.length > 0) {
+        // Show next notification
+        setCurrentPopupNotification(updatedNewNotifications[0]);
+      } else {
+        // No more new notifications
+        setShowPopup(false);
+        setCurrentPopupNotification(null);
+      }
+    } else {
+      setShowPopup(false);
+      setCurrentPopupNotification(null);
+    }
   };
 
-  // Remove notification from popup queue after showing
-  const removeFromPopupQueue = (id) => {
-    setNewNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  // Clear all notifications from popup queue
-  const clearAllPopups = () => {
+  // Mark all as read - updates localStorage to current state
+  const markAllAsRead = () => {
+    const currentCount = notifications.length;
+    const latestId = notifications.length > 0 
+      ? Math.max(...notifications.map(n => n.id))
+      : 0;
+    
+    localStorage.setItem('notification_count', currentCount.toString());
+    localStorage.setItem('last_notification_id', latestId.toString());
+    
     setNewNotifications([]);
+    setShowPopup(false);
+    setCurrentPopupNotification(null);
   };
 
-  // Mark all notifications as read
-  const markNotificationsAsRead = () => {
-    setUnreadCount(0);
+  // Manual trigger for testing
+  const triggerNotificationFetch = () => {
+    fetchNotifications(false);
   };
 
-  // Add a new notification (for testing or real-time updates)
-  const addNotification = (notification) => {
-    setNotifications(prev => [notification, ...prev]);
-    setNewNotifications(prev => [notification, ...prev]);
-    setUnreadCount(prev => prev + 1);
-  };
-
-  // Clear all notifications
-  const clearNotifications = () => {
-    setNotifications([]);
-    setNewNotifications([]);
-    setUnreadCount(0);
-    setPreviousNotifications([]);
-    setShownNotificationIds(new Set());
-  };
-
-  // Check panel status
   const checkPanelStatus = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/panel-check-status`);
@@ -132,7 +170,6 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  // Fetch year data
   useEffect(() => {
     const fetchYearData = async () => {
       try {
@@ -146,7 +183,6 @@ const AppProvider = ({ children }) => {
     fetchYearData();
   }, []);
 
-  // Auth and panel status check
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -167,48 +203,84 @@ const AppProvider = ({ children }) => {
     }
   }, [error, navigate, isPanelUp, location.pathname]);
 
-  // Panel status check with interval
   useEffect(() => {
     checkPanelStatus();
-    const intervalId = setInterval(checkPanelStatus, 6000000);
-    return () => clearInterval(intervalId);
+    const panelIntervalId = setInterval(checkPanelStatus, 6000000);
+    
+    return () => clearInterval(panelIntervalId);
   }, []);
 
-  // Notification polling with 30-second interval
+  // Fetch notifications logic
   useEffect(() => {
-    // Initial fetch
-    fetchNotifications();
-
-    // Set up polling every 30 seconds
-    const notificationInterval = setInterval(() => {
-      fetchNotifications();
-    }, 30000); // 30 seconds
-
-    return () => {
-      clearInterval(notificationInterval);
-    };
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Check if this is initial load (no stored count yet)
+      const storedCount = localStorage.getItem('notification_count');
+      
+      const initializeAndFetch = async () => {
+        if (!storedCount) {
+          // First time: fetch and store count only
+          await fetchNotifications(true);
+          console.log("Initial fetch completed");
+        } else {
+          // Already initialized, just check for updates
+          await fetchNotifications(false);
+        }
+      };
+      
+      // Initial fetch
+      initializeAndFetch();
+      
+      // Set up interval for fetching notifications every 30 seconds
+      const notificationIntervalId = setInterval(() => {
+        if (token) {
+          fetchNotifications(false);
+        }
+      }, 30000);
+      
+      return () => clearInterval(notificationIntervalId);
+    }
   }, []);
+
+  // Reset notification tracking on logout
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Only clear state, NOT localStorage (we want to keep the count/ID)
+      setNotifications([]);
+      setNotificationCount(0);
+      setNewNotifications([]);
+      setShowPopup(false);
+      setCurrentPopupNotification(null);
+    }
+  }, [location.pathname]);
 
   return (
     <ContextPanel.Provider
-      value={{
-        isPanelUp,
-        setIsPanelUp,
-        userType,
+      value={{ 
+        isPanelUp, 
+        setIsPanelUp, 
+        userType, 
         currentYear,
         notifications,
-        unreadCount,
+        notificationCount,
         newNotifications,
-        getNextPopup,
-        removeFromPopupQueue,
-        clearAllPopups,
-        fetchNotifications,
-        markNotificationsAsRead,
-        addNotification,
-        clearNotifications,
+        fetchNotifications: () => fetchNotifications(false),
+        markAllAsRead,
+        triggerNotificationFetch // For testing
       }}
     >
       {children}
+      
+      {/* Notification Popup */}
+      {showPopup && currentPopupNotification && (
+        <NotificationPopup
+          notification={currentPopupNotification}
+          onClose={handleClosePopup}
+          totalNew={newNotifications.length}
+           markAllAsRead={markAllAsRead}
+        />
+      )}
     </ContextPanel.Provider>
   );
 };

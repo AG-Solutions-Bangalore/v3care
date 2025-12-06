@@ -1,113 +1,94 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { ContextPanel } from '../utils/ContextPanel';
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import React from 'react';
+import { XMarkIcon, BellAlertIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-const NotificationPopup = () => {
-  const { 
-    newNotifications, 
-    getNextPopup, 
-    removeFromPopupQueue,
-    clearAllPopups 
-  } = useContext(ContextPanel);
-  
-  const [currentPopup, setCurrentPopup] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    if (newNotifications.length > 0 && !currentPopup) {
-      // Get next notification to show
-      const nextPopup = getNextPopup();
-      if (nextPopup) {
-        setCurrentPopup(nextPopup);
-        setIsVisible(true);
-        
-        // Auto hide after 5 seconds
-        const timer = setTimeout(() => {
-          handleClose();
-        }, 5000);
-        
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [newNotifications, currentPopup]);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    // Wait for animation to complete before removing
-    setTimeout(() => {
-      if (currentPopup) {
-        removeFromPopupQueue(currentPopup.id);
-        setCurrentPopup(null);
-      }
-    }, 300);
+const NotificationPopup = ({ notification, onClose, totalNew, markAllAsRead }) => {
+  const handleNext = () => {
+    console.log("Closing notification ID:", notification.id);
+    onClose();
   };
 
-  const handleClearAll = () => {
-    clearAllPopups();
-    setIsVisible(false);
-    setCurrentPopup(null);
+  const handleCloseAll = () => {
+    markAllAsRead();
   };
-
-  if (!currentPopup || !isVisible) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 w-96 animate-slide-in">
-      <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
-        <div className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <h4 className="font-bold text-gray-800">
-                  {currentPopup.notification_booking_heading}
-                </h4>
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                  {currentPopup.branch_name}
-                </span>
-              </div>
-              <p className="text-gray-600 text-sm mb-2">
-                {currentPopup.notification_booking_message}
-              </p>
-              <div className="flex justify-between items-center text-xs text-gray-500">
-                <span>Order ID: {currentPopup.order_id}</span>
-                <span>Just now</span>
-              </div>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        onClick={handleNext}
+      />
+
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-sm transform transition-all animate-fade-in-up">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center space-x-2">
+            <BellAlertIcon className="w-5 h-5 text-blue-600" />
+            <div>
+              <h3 className="font-semibold text-gray-900">New Notification</h3>
+              <p className="text-xs text-gray-500">ID: {notification.id}</p>
             </div>
-            <button
-              onClick={handleClose}
-              className="ml-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <XMarkIcon className="h-5 w-5" />
-            </button>
           </div>
-          
-          <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
-            <button
-              onClick={handleClearAll}
-              className="text-xs text-gray-500 hover:text-gray-700"
-            >
-              Clear all ({newNotifications.length})
-            </button>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => {
-                  // Navigate to order details
-                  // navigate(`/orders/${currentPopup.order_id}`);
-                }}
-                className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-              >
-                View Order
-              </button>
+          <button
+            onClick={handleNext}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <XMarkIcon className="w-5 h-5" />
+          </button>
+        </div>
+        {/* Body */}
+        <div className="p-4">
+          <div className="mb-2">
+            <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+              {notification.notification_booking_heading}
+            </span>
+          </div>
+
+          <p className="text-gray-700 text-sm mb-3">
+            {notification.notification_booking_message}
+          </p>
+
+          <div className="text-xs text-gray-500 space-y-1">
+            <div className="flex items-center">
+              <span className="font-medium mr-2">Branch:</span>
+              {notification.branch_name}
+            </div>
+            <div className="flex items-center">
+              <span className="font-medium mr-2">Order ID:</span>
+              {notification.order_id}
             </div>
           </div>
         </div>
-        
-        {/* Progress bar for auto-dismiss */}
-        <div className="h-1 bg-gray-200">
-          <div 
-            className="h-full bg-green-500 animate-progress"
-            style={{ animationDuration: '5s' }}
-          ></div>
+        {/* Footer */}
+        <div className="px-4 py-3 bg-gray-50 rounded-b-xl flex justify-between items-center">
+          {totalNew > 1 ? (
+            <span className="text-sm text-gray-600">
+              {totalNew - 1} more to show
+            </span>
+          ) : (
+            <span className="text-sm text-gray-600">New notification</span>
+          )}
+
+          <div className="flex space-x-2">
+            <button
+              onClick={handleCloseAll}
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+            >
+              Close All
+            </button>
+            <button
+              onClick={handleNext}
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            >
+              {totalNew > 1 ? (
+                <>
+                  Next
+                  <ChevronRightIcon className="w-4 h-4 ml-1" />
+                </>
+              ) : (
+                'Close'
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

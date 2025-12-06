@@ -122,7 +122,7 @@ import EmailAlert from "./pages/master/emailAlert/EmailAlert";
 import AMCBookingList from "./pages/amcBooking/AMCBookingList";
 import AddAMCBooking from "./pages/amcBooking/AddAMCBooking";
 import ViewAMCBooking from "./pages/amcBooking/ViewAMCBooking";
-import NotificationDialog from "./components/NotificationComponent";
+
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -132,7 +132,6 @@ const App = () => {
       <ValidationWrapper>
         <ToastContainer />
 
-        <NotificationDialog/>
         {/* <DisableRightClick />
         <DevToolsBlocker /> */}
         <Routes>
