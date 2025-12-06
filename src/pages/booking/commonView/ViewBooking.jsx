@@ -363,7 +363,7 @@ const ViewBooking = () => {
               />
             )}
             {(booking.order_status === "Confirmed" ||
-              booking.order_status === "Vendor") && (
+              booking.order_status === "Vendor" || booking.order_status === "Inspection") && (
               <ButtonConfigColor
                 type="create"
                 label="Assign Vendor"
