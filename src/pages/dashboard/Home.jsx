@@ -10,6 +10,9 @@ import Jobs from "./jobs/Jobs";
 import Revenue from "./revenue/Revenue";
 import { toast } from "react-toastify";
 
+
+
+
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const { currentYear, userType } = useContext(ContextPanel);

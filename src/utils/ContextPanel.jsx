@@ -10,21 +10,27 @@ const AppProvider = ({ children }) => {
   const [currentYear, setCurrentYear] = useState("");
   const [isPanelUp, setIsPanelUp] = useState(true);
   const [error, setError] = useState(false);
+
+  // Notifications
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [newNotifications, setNewNotifications] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [currentPopupNotification, setCurrentPopupNotification] = useState(null);
-  
+  const [currentPopupNotification, setCurrentPopupNotification] =
+    useState(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const userType = localStorage.getItem("user_type_id");
 
-  // Fetch notifications
-  const fetchNotifications = async (isInitial = false) => {
+  // =====================================================================
+  // FETCH NOTIFICATIONS
+  // =====================================================================
+
+  const fetchNotifications = async (isInitial = false, forceCheck = false) => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) return [];
 
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-notification-booking`,
@@ -34,97 +40,105 @@ const AppProvider = ({ children }) => {
           },
         }
       );
-      
-      const data = response.data;
-      const currentNotificationList = data?.bookingNotification || [];
-      
+
+      const currentList = response.data?.bookingNotification || [];
+
+      // --------------------------------------
+      // INITIAL FETCH (NO POPUP)
+      // --------------------------------------
       if (isInitial) {
-        // FIRST TIME: Store only the count, not all notifications
-        const currentCount = currentNotificationList.length;
-        const latestId = currentNotificationList.length > 0 
-          ? Math.max(...currentNotificationList.map(n => n.id))
-          : 0;
-        
-        // Store only count and latest ID
-        localStorage.setItem('notification_count', currentCount.toString());
-        localStorage.setItem('last_notification_id', latestId.toString());
-        
-        // Set state
-        setNotifications(currentNotificationList);
-        setNotificationCount(currentCount);
-        
-        console.log("Initial setup: Count =", currentCount, "Latest ID =", latestId);
-      } else {
-        // SUBSEQUENT CALLS: Check for new notifications
-        const storedCount = parseInt(localStorage.getItem('notification_count') || '0');
-        const storedLastId = parseInt(localStorage.getItem('last_notification_id') || '0');
-        const currentCount = currentNotificationList.length;
-        
-        console.log("Checking: Stored count =", storedCount, "Current count =", currentCount);
-        console.log("Stored last ID =", storedLastId);
-        
-        if (currentCount > storedCount) {
-          // New notifications arrived!
-          const currentLatestId = Math.max(...currentNotificationList.map(n => n.id));
-          
-          // Find only NEW notifications (IDs greater than stored last ID)
-          const newlyAdded = currentNotificationList.filter(
-            notification => notification.id > storedLastId
-          );
-          
-          console.log("New notifications found:", newlyAdded.length);
-          
-          if (newlyAdded.length > 0) {
-            // Sort by ID descending (newest first)
-            newlyAdded.sort((a, b) => b.id - a.id);
-            
-            // Add to queue
-            setNewNotifications(prev => [...newlyAdded, ...prev]);
-            
-            // Update localStorage
-            localStorage.setItem('notification_count', currentCount.toString());
-            localStorage.setItem('last_notification_id', currentLatestId.toString());
-            
-            // Show popup for the first new notification
-            if (!showPopup && newlyAdded.length > 0) {
-              setCurrentPopupNotification(newlyAdded[0]);
-              setShowPopup(true);
-            }
-          }
-        } else if (currentCount < storedCount) {
-          // Count decreased (maybe some notifications were deleted)
-          // Just update the count
-          localStorage.setItem('notification_count', currentCount.toString());
-          
-          // Also update last ID if needed
-          if (currentNotificationList.length > 0) {
-            const currentLatestId = Math.max(...currentNotificationList.map(n => n.id));
-            localStorage.setItem('last_notification_id', currentLatestId.toString());
-          }
-        }
-        
-        // Always update state with current notifications
-        setNotifications(currentNotificationList);
-        setNotificationCount(currentCount);
+        const count = currentList.length;
+        const lastId =
+          currentList.length > 0
+            ? Math.max(...currentList.map((n) => n.id))
+            : 0;
+
+        localStorage.setItem("notification_count", count.toString());
+        localStorage.setItem("last_notification_id", lastId.toString());
+        localStorage.setItem("notification_initialized", "true");
+
+        setNotifications(currentList);
+        setNotificationCount(count);
+
+        console.log("Initial notifications stored:", count);
+        return currentList;
       }
-      
+
+      // --------------------------------------
+      // NORMAL SUBSEQUENT CHECKS (WITH POPUP)
+      // --------------------------------------
+      const storedCount = parseInt(
+        localStorage.getItem("notification_count") || "0"
+      );
+      const storedLastId = parseInt(
+        localStorage.getItem("last_notification_id") || "0"
+      );
+
+      const currentCount = currentList.length;
+
+      // Always update the notifications list in state
+      setNotifications(currentList);
+      setNotificationCount(currentCount);
+
+      // Check for new notifications
+      if (currentCount > storedCount) {
+        // New notifications arrived
+        const currentLatestId = Math.max(...currentList.map((n) => n.id));
+
+        const newlyAdded = currentList.filter(
+          (item) => item.id > storedLastId
+        );
+
+        if (newlyAdded.length > 0) {
+          newlyAdded.sort((a, b) => b.id - a.id);
+
+          setNewNotifications((prev) => [...newlyAdded, ...prev]);
+          localStorage.setItem("notification_count", currentCount.toString());
+          localStorage.setItem("last_notification_id", currentLatestId.toString());
+
+          if (!showPopup) {
+            setCurrentPopupNotification(newlyAdded[0]);
+            setShowPopup(true);
+          }
+        } else {
+          // Update stored values even if no new notifications
+          localStorage.setItem("notification_count", currentCount.toString());
+          localStorage.setItem("last_notification_id", currentLatestId.toString());
+        }
+      } else if (currentCount < storedCount) {
+        // Notifications deleted
+        localStorage.setItem("notification_count", currentCount.toString());
+        if (currentList.length > 0) {
+          const currentLatestId = Math.max(...currentList.map((n) => n.id));
+          localStorage.setItem("last_notification_id", currentLatestId.toString());
+        }
+      } else if (forceCheck) {
+        // Force update stored values
+        if (currentList.length > 0) {
+          const currentLatestId = Math.max(...currentList.map((n) => n.id));
+          localStorage.setItem("last_notification_id", currentLatestId.toString());
+        }
+      }
+
+      return currentList;
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      return [];
     }
   };
 
-  // Handle popup close
+  // =====================================================================
+  // POPUP HANDLING
+  // =====================================================================
+
   const handleClosePopup = () => {
     if (newNotifications.length > 0) {
-      // Remove the current shown notification from newNotifications
-      const updatedNewNotifications = newNotifications.slice(1);
-      setNewNotifications(updatedNewNotifications);
-      
-      if (updatedNewNotifications.length > 0) {
-        // Show next notification
-        setCurrentPopupNotification(updatedNewNotifications[0]);
+      const updated = newNotifications.slice(1);
+      setNewNotifications(updated);
+
+      if (updated.length > 0) {
+        setCurrentPopupNotification(updated[0]);
       } else {
-        // No more new notifications
         setShowPopup(false);
         setCurrentPopupNotification(null);
       }
@@ -134,151 +148,143 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  // Mark all as read - updates localStorage to current state
   const markAllAsRead = () => {
-    const currentCount = notifications.length;
-    const latestId = notifications.length > 0 
-      ? Math.max(...notifications.map(n => n.id))
-      : 0;
-    
-    localStorage.setItem('notification_count', currentCount.toString());
-    localStorage.setItem('last_notification_id', latestId.toString());
-    
+    const count = notifications.length;
+    const lastId =
+      notifications.length > 0
+        ? Math.max(...notifications.map((n) => n.id))
+        : 0;
+
+    localStorage.setItem("notification_count", count.toString());
+    localStorage.setItem("last_notification_id", lastId.toString());
+
     setNewNotifications([]);
     setShowPopup(false);
     setCurrentPopupNotification(null);
   };
 
-  // Manual trigger for testing
-  const triggerNotificationFetch = () => {
-    fetchNotifications(false);
-  };
+  // =====================================================================
+  // NOTIFICATION INITIALIZATION
+  // =====================================================================
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const initNotifications = async () => {
+      const notificationInitialized = localStorage.getItem("notification_initialized") === "true";
+      
+      if (!notificationInitialized) {
+        // FIRST TIME → Fetch and store initial notifications but NO POPUP
+        console.log("First login - fetching initial notifications without popup");
+        await fetchNotifications(true);
+      } else {
+        // Already initialized → do a normal check
+        console.log("Already initialized - doing normal check");
+        await fetchNotifications(false, true);
+      }
+    };
+
+    initNotifications();
+
+    // Set up polling interval
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const notificationInitialized = localStorage.getItem("notification_initialized") === "true";
+        if (notificationInitialized) {
+          console.log("Polling for new notifications...");
+          fetchNotifications(false);
+        }
+      }
+    }, 3000000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // =====================================================================
+  // PANEL STATUS + AUTH PROTECTION
+  // =====================================================================
 
   const checkPanelStatus = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/panel-check-status`);
-      const datas = await response.data;
+      const datas = response.data;
       setIsPanelUp(datas);
-      if (datas?.success) {
-        setError(false);
-      } else {
-        setError(true);
-      }
-    } catch (error) {
-      console.error(error);
+
+      if (!datas?.success) setError(true);
+      else setError(false);
+    } catch (err) {
+      console.error(err);
       setError(true);
     }
   };
 
   useEffect(() => {
-    const fetchYearData = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/api/fetch-year`, {});
-        setCurrentYear(response?.data?.year.current_year);
-      } catch (error) {
-        console.error("Error fetching year data:", error);
-      }
-    };
-
-    fetchYearData();
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
     if (error) {
       localStorage.clear();
       navigate("/maintenance");
-    } else if (
-      !token &&
-      ![
-        "/",
-        "/forget-password",
-        "/add-booking-outside",
-        "/become-partner-outside",
-        "/maintenance",
-      ].includes(location.pathname)
-    ) {
-      navigate("/");
+    } else {
+      const token = localStorage.getItem("token");
+      if (
+        !token &&
+        ![
+          "/",
+          "/forget-password",
+          "/add-booking-outside",
+          "/become-partner-outside",
+          "/maintenance",
+        ].includes(location.pathname)
+      ) {
+        navigate("/");
+      }
     }
-  }, [error, navigate, isPanelUp, location.pathname]);
+  }, [error, navigate, location.pathname]);
 
   useEffect(() => {
     checkPanelStatus();
-    const panelIntervalId = setInterval(checkPanelStatus, 6000000);
-    
-    return () => clearInterval(panelIntervalId);
+    const id = setInterval(checkPanelStatus, 6000000);
+    return () => clearInterval(id);
   }, []);
 
-  // Fetch notifications logic
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      // Check if this is initial load (no stored count yet)
-      const storedCount = localStorage.getItem('notification_count');
-      
-      const initializeAndFetch = async () => {
-        if (!storedCount) {
-          // First time: fetch and store count only
-          await fetchNotifications(true);
-          console.log("Initial fetch completed");
-        } else {
-          // Already initialized, just check for updates
-          await fetchNotifications(false);
-        }
-      };
-      
-      // Initial fetch
-      initializeAndFetch();
-      
-      // Set up interval for fetching notifications every 30 seconds
-      const notificationIntervalId = setInterval(() => {
-        if (token) {
-          fetchNotifications(false);
-        }
-      }, 30000);
-      
-      return () => clearInterval(notificationIntervalId);
-    }
-  }, []);
+  // =====================================================================
+  // YEAR FETCH
+  // =====================================================================
 
-  // Reset notification tracking on logout
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // Only clear state, NOT localStorage (we want to keep the count/ID)
-      setNotifications([]);
-      setNotificationCount(0);
-      setNewNotifications([]);
-      setShowPopup(false);
-      setCurrentPopupNotification(null);
-    }
-  }, [location.pathname]);
+    const fetchYearData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/fetch-year`);
+        setCurrentYear(response?.data?.year.current_year);
+      } catch (err) {
+        console.error("Error fetching year:", err);
+      }
+    };
+    fetchYearData();
+  }, []);
 
   return (
     <ContextPanel.Provider
-      value={{ 
-        isPanelUp, 
-        setIsPanelUp, 
-        userType, 
+      value={{
+        isPanelUp,
+        setIsPanelUp,
+        userType,
         currentYear,
         notifications,
         notificationCount,
         newNotifications,
         fetchNotifications: () => fetchNotifications(false),
         markAllAsRead,
-        triggerNotificationFetch // For testing
       }}
     >
       {children}
-      
-      {/* Notification Popup */}
+
       {showPopup && currentPopupNotification && (
         <NotificationPopup
           notification={currentPopupNotification}
           onClose={handleClosePopup}
           totalNew={newNotifications.length}
-           markAllAsRead={markAllAsRead}
+          markAllAsRead={markAllAsRead}
         />
       )}
     </ContextPanel.Provider>
