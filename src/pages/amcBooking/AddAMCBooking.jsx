@@ -724,7 +724,7 @@ const AddAMCBooking = () => {
                 </>
               )}
             </div>
-            <div className={styles["third-div"]}>
+            <div className={styles["second-div"]}>
               <div>
                 <Fields
                   required="required"
@@ -789,10 +789,17 @@ const AddAMCBooking = () => {
                   startIcon={<PinDrop sx={{ color: "orange" }} />}
                 />
               </div>
-              <div>
+            
+            </div>
+            <div className="text-xl p-2">
+              <h1> Please Select the AMC Details</h1>
+            </div>
+            <hr />
+            <div className={styles["second-div"]}>
+            <div>
                 <Fields
                   required="required"
-                  title="Type"
+                  title="AMC Type"
                   type="whatsappDropdown"
                   autoComplete="Name"
                   name="order_type"
@@ -803,7 +810,7 @@ const AddAMCBooking = () => {
               </div>
               <div>
                 <Input
-                  label="From Date"
+                  label="AMC Start Date"
                   required
                   type="date"
                   name="order_from_date"
@@ -813,7 +820,7 @@ const AddAMCBooking = () => {
               </div>
               <div>
                 <Input
-                  label="To Date"
+                  label="AMC End Date"
                   required
                   type="date"
                   name="order_to_date"
@@ -822,7 +829,7 @@ const AddAMCBooking = () => {
                 />
               </div>
             </div>
-            <div className="text-2xl p-2">
+            <div className="text-xl p-2">
               <h1> Address</h1>
             </div>
             <hr />

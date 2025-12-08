@@ -839,6 +839,12 @@ const EditBookingAll = () => {
                         onClick={onSubmit}
                       />
                       <ButtonConfigColor
+                        type="edit"
+                        buttontype="button"
+                        label="Reassign"
+                        onClick={() => navigate(`/add-booking-reassign/${id}`)}
+                      />
+                      <ButtonConfigColor
                         type="submit"
                         buttontype="button"
                         label="Postpone"

@@ -11,9 +11,11 @@ const Logout = ({ open, handleOpen }) => {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
+    localStorage.removeItem('notification_count')
+    localStorage.removeItem('last_notification_id')
     navigate("/");
   };
-
+  
   return (
     <Dialog open={open} handler={handleOpen}>
       <DialogHeader>Confirm Logout</DialogHeader>

@@ -25,7 +25,7 @@ const NotificationPopup = ({ notification, onClose, totalNew, markAllAsRead }) =
             <BellAlertIcon className="w-5 h-5 text-blue-600" />
             <div>
               <h3 className="font-semibold text-gray-900">New Notification</h3>
-              <p className="text-xs text-gray-500">ID: {notification.id}</p>
+              <p className="text-xs text-gray-500">{notification.branch_name}</p>
             </div>
           </div>
           <button
@@ -44,19 +44,12 @@ const NotificationPopup = ({ notification, onClose, totalNew, markAllAsRead }) =
           </div>
 
           <p className="text-gray-700 text-sm mb-3">
-            {notification.notification_booking_message}
+           Booking ID: {notification.order_ref}
+          </p>
+          <p className="text-gray-700 text-sm mb-3">
+          Accepted By:     {notification.notification_booking_message}
           </p>
 
-          <div className="text-xs text-gray-500 space-y-1">
-            <div className="flex items-center">
-              <span className="font-medium mr-2">Branch:</span>
-              {notification.branch_name}
-            </div>
-            <div className="flex items-center">
-              <span className="font-medium mr-2">Order ID:</span>
-              {notification.order_id}
-            </div>
-          </div>
         </div>
         {/* Footer */}
         <div className="px-4 py-3 bg-gray-50 rounded-b-xl flex justify-between items-center">
@@ -65,7 +58,9 @@ const NotificationPopup = ({ notification, onClose, totalNew, markAllAsRead }) =
               {totalNew - 1} more to show
             </span>
           ) : (
-            <span className="text-sm text-gray-600">New notification</span>
+
+            
+            <span className="text-sm text-gray-600"> {notification.created_at ? `Date ${notification.created_at}`: ""}</span>
           )}
 
           <div className="flex space-x-2">

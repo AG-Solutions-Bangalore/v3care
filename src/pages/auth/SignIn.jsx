@@ -17,7 +17,8 @@ const SignIn = () => {
   const navigate = useNavigate();
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
- const { fetchNotifications } = useContext(ContextPanel);
+  const { fetchNotifications } = useContext(ContextPanel);
+  
   const validate = () => {
     let valid = true;
     setPasswordError("");
@@ -35,6 +36,37 @@ const SignIn = () => {
 
     return valid;
   };
+
+  // Function to fetch and store initial notifications
+  const fetchInitialNotifications = async (token) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-notification-booking`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const currentList = response.data?.bookingNotification || [];
+      const count = currentList.length;
+      const lastId = currentList.length > 0 
+        ? Math.max(...currentList.map((n) => n.id)) 
+        : 0;
+
+      // Store the initial state
+      localStorage.setItem("notification_count", count.toString());
+      localStorage.setItem("last_notification_id", lastId.toString());
+      localStorage.setItem("notification_initialized", "true");
+      
+      console.log("Initial notifications fetched and stored:", count);
+      
+    } catch (error) {
+      console.error("Error fetching initial notifications:", error);
+    }
+  };
+
   const handleSumbit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -61,8 +93,16 @@ const SignIn = () => {
           );
           localStorage.setItem("branch_id", res.data.UserInfo.user.branch_id);
           localStorage.setItem("header_user_type", res.data.user_type.userType);
-          await fetchNotifications(true)
+          
+          // Set first login flag
+          localStorage.setItem("first_login", "true");
+          
+          // IMPORTANT: Fetch and store initial notifications immediately after login
+          await fetchInitialNotifications(token);
+          
+          // Navigate to home
           navigate("/home");
+       
         } else {
           toast.error("Login Failed, Token not received.");
         }
@@ -80,6 +120,7 @@ const SignIn = () => {
 
     setLoading(false);
   };
+
   return (
     <>
       <section className="flex flex-col lg:flex-row h-screen">

@@ -184,18 +184,21 @@ const FieldTeamMaster = () => {
                 />
               )}
               {userType === "8" && (
-                <ArrowLeftRight
-                  onClick={
-                    row.status === "Inactive"
-                      ? null
-                      : (e) => handleTransferClick(e, id)
-                  }
-                  className={`h-5 w-5 cursor-pointer ${
-                    row.status === "Inactive"
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "hover:text-green-700"
-                  }`}
-                />
+              <div title='Transfer'>
+                  <ArrowLeftRight
+            
+            onClick={
+              row.status === "Inactive"
+                ? null
+                : (e) => handleTransferClick(e, id)
+            }
+            className={`h-5 w-5 cursor-pointer ${
+              row.status === "Inactive"
+                ? "text-gray-400 cursor-not-allowed"
+                : "hover:text-green-700"
+            }`}
+          />
+              </div>
               )}
             </div>
           );
