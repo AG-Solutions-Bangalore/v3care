@@ -124,7 +124,6 @@ import AddAMCBooking from "./pages/amcBooking/AddAMCBooking";
 import ViewAMCBooking from "./pages/amcBooking/ViewAMCBooking";
 import AddBookingReassign from "./pages/booking/commonView/editBooking/AddBookingReassign";
 
-
 const App = () => {
   const { userType } = useContext(ContextPanel);
 
@@ -196,7 +195,10 @@ const App = () => {
                 element={<PostponeBooking />}
               />
               <Route path="/add-booking" element={<AddBooking />} />
-              <Route path="/add-booking-reassign/:id" element={<AddBookingReassign />} />
+              <Route
+                path="/add-booking-reassign/:id"
+                element={<AddBookingReassign />}
+              />
               <Route path="/add-amcbooking" element={<AddAMCBooking />} />
               <Route path="/cancel" element={<CancelBooking />} />
               <Route path="/completed" element={<CompletedBooking />} />

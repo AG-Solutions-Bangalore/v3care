@@ -5,27 +5,20 @@ import {
   Input,
   Spinner,
   Textarea,
-  Typography
+  Typography,
 } from "@material-tailwind/react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import {
-  FaHome,
-  FaInfoCircle
-} from "react-icons/fa";
+import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../../base/BaseUrl";
 import BookingFilter from "../../../../components/BookingFilter";
 import Layout from "../../../../layout/Layout";
 
-import {
-  Dialog,
-  DialogActions,
-  DialogContent
-} from "@mui/material";
+import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../../components/common/LoaderComponent";
@@ -170,7 +163,7 @@ const EditBookingInspection = () => {
         order_amount: response.data?.booking?.order_amount ?? 0,
       };
       setBooking(bookingData);
-            setVendor(response.data.vendor);
+      setVendor(response.data.vendor);
       setBookingAssign(response.data.bookingAssign);
 
       setOrderRef(response.data?.booking.order_ref);
@@ -288,7 +281,7 @@ const EditBookingInspection = () => {
     setRowProps: () => {
       return {
         style: {
-          borderBottom: "10px solid #f1f7f9", 
+          borderBottom: "10px solid #f1f7f9",
         },
       };
     },
@@ -321,6 +314,10 @@ const EditBookingInspection = () => {
               </Typography>
               <Typography className="text-black">
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
               </Typography>
               <Typography className="text-black">
                 <strong>Email:</strong> {booking.order_customer_email}
@@ -369,11 +366,11 @@ const EditBookingInspection = () => {
                 <strong>Current Price:</strong>{" "}
                 {booking.order_service_price_for} - {booking.order_amount}
               </Typography>
-                     {booking.order_vendor_id !== null && (
-                              <Typography className="text-black">
-                                <strong>Vendor:</strong> {vendor.vendor_company}
-                              </Typography>
-                            )}
+              {booking.order_vendor_id !== null && (
+                <Typography className="text-black">
+                  <strong>Vendor:</strong> {vendor.vendor_company}
+                </Typography>
+              )}
             </div>
           </div>
         );
@@ -504,119 +501,108 @@ const EditBookingInspection = () => {
                 <CardBody>{renderActiveTabContent()}</CardBody>
               </Card>
             </div>
-             <div>
-                                  <Card className="mb-6">
-                                    <CardHeader floated={false} className="h-12 p-4">
-                                      <Typography variant="h6" color="blue-gray">
-                                        Booking Assign
-                                      </Typography>
-                                    </CardHeader>
-                                    <CardBody>
-                                      {bookingAssign.length > 0 ? (
-                                        <div className="overflow-x-auto">
-                                          <table className="min-w-full table-auto border-collapse ">
-                                            <thead>
-                                              <tr className="bg-gray-200 text-left ">
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    Full Name
-                                                  </span>
-                                                </th>
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    Start Time
-                                                  </span>
-                                                </th>
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    On the Way Time
-                                                  </span>
-                                                </th>
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    End Time
-                                                  </span>
-                                                </th>
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    Remarks
-                                                  </span>
-                                                </th>
-                                                <th className="p-3 border border-gray-700">
-                                                  <span className="text-gray-700">
-                                                    Status
-                                                  </span>
-                                                </th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {bookingAssign.map((dataSumm, key) => (
-                                                <tr
-                                                  key={key}
-                                                  className="bg-white border-b hover:bg-gray-50"
-                                                >
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span className="text-gray-900">
-                                                      {dataSumm.name}
-                                                    </span>
-                                                  </td>
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span className="text-gray-900">
-                                                      {dataSumm.order_start_time}
-                                                    </span>
-                                                  </td>
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span className="text-gray-900">
-                                                      {dataSumm.order_way_time}
-                                                    </span>
-                                                  </td>
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span className="text-gray-900">
-                                                      {dataSumm.order_end_time}
-                                                    </span>
-                                                  </td>
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span className="text-gray-900">
-                                                      {dataSumm.order_assign_remarks}
-                                                    </span>
-                                                  </td>
-                                                  <td className="p-3 border border-gray-700">
-                                                    <span
-                                                      className={`${
-                                                        dataSumm.order_assign_status ===
-                                                        "Completed"
-                                                          ? "text-green-500"
-                                                          : "text-red-500"
-                                                      }`}
-                                                    >
-                                                      {dataSumm.order_assign_status}
-                                                    </span>
-                                                  </td>
-                                                </tr>
-                                              ))}
-                                            </tbody>
-                                          </table>
-                                        </div>
-                                      ) : (
-                                        <div className="text-center py-4">
-                                          <h1 className="text-gray-700 text-lg">
-                                            No Data Available
-                                          </h1>
-                                        </div>
-                                      )}
-                                    </CardBody>
-                                  </Card>
-                                  <Card className="mb-6">
-                                    <CardBody>
-                                      <MUIDataTable
-                                        title={"Followup"}
-                                        data={followup ? followup : []}
-                                        columns={columns}
-                                        options={options}
-                                      />
-                                    </CardBody>
-                                  </Card>
-                                </div>
+            <div>
+              <Card className="mb-6">
+                <CardHeader floated={false} className="h-12 p-4">
+                  <Typography variant="h6" color="blue-gray">
+                    Booking Assign
+                  </Typography>
+                </CardHeader>
+                <CardBody>
+                  {bookingAssign.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full table-auto border-collapse ">
+                        <thead>
+                          <tr className="bg-gray-200 text-left ">
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">Full Name</span>
+                            </th>
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">Start Time</span>
+                            </th>
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">
+                                On the Way Time
+                              </span>
+                            </th>
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">End Time</span>
+                            </th>
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">Remarks</span>
+                            </th>
+                            <th className="p-3 border border-gray-700">
+                              <span className="text-gray-700">Status</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bookingAssign.map((dataSumm, key) => (
+                            <tr
+                              key={key}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="p-3 border border-gray-700">
+                                <span className="text-gray-900">
+                                  {dataSumm.name}
+                                </span>
+                              </td>
+                              <td className="p-3 border border-gray-700">
+                                <span className="text-gray-900">
+                                  {dataSumm.order_start_time}
+                                </span>
+                              </td>
+                              <td className="p-3 border border-gray-700">
+                                <span className="text-gray-900">
+                                  {dataSumm.order_way_time}
+                                </span>
+                              </td>
+                              <td className="p-3 border border-gray-700">
+                                <span className="text-gray-900">
+                                  {dataSumm.order_end_time}
+                                </span>
+                              </td>
+                              <td className="p-3 border border-gray-700">
+                                <span className="text-gray-900">
+                                  {dataSumm.order_assign_remarks}
+                                </span>
+                              </td>
+                              <td className="p-3 border border-gray-700">
+                                <span
+                                  className={`${
+                                    dataSumm.order_assign_status === "Completed"
+                                      ? "text-green-500"
+                                      : "text-red-500"
+                                  }`}
+                                >
+                                  {dataSumm.order_assign_status}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <h1 className="text-gray-700 text-lg">
+                        No Data Available
+                      </h1>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+              <Card className="mb-6">
+                <CardBody>
+                  <MUIDataTable
+                    title={"Followup"}
+                    data={followup ? followup : []}
+                    columns={columns}
+                    options={options}
+                  />
+                </CardBody>
+              </Card>
+            </div>
             <div>
               {/* Payment Card */}
               <Card className="mb-6">
