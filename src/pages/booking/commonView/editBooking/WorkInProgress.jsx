@@ -223,11 +223,11 @@ const WorkInProgress = () => {
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Email:</strong> {booking.order_customer_email}
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
               </Typography>
-              e is not defined
               <Typography className="text-black">
-                <strong>Booking Created By:</strong> {booking.created_by}
+                <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
             </div>
             <div className="space-y-2">
@@ -241,6 +241,9 @@ const WorkInProgress = () => {
               </Typography>
               <Typography className="text-black">
                 <strong>Slot Time:</strong> {booking.order_time}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}

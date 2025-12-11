@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Layout from '../../../../layout/Layout'
-import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios';
-import { BASE_URL } from '../../../../base/BaseUrl';
-import { toast } from 'react-toastify';
-import UseEscapeKey from '../../../../utils/UseEscapeKey';
-import ButtonConfigColor from '../../../../components/common/ButtonConfig/ButtonConfigColor';
+import React, { useEffect, useRef, useState } from "react";
+import Layout from "../../../../layout/Layout";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../../../base/BaseUrl";
+import { toast } from "react-toastify";
+import UseEscapeKey from "../../../../utils/UseEscapeKey";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import {
   CurrencyRupee,
   Email,
@@ -20,11 +20,11 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import PageHeader from '../../../../components/common/PageHeader/PageHeader';
+import PageHeader from "../../../../components/common/PageHeader/PageHeader";
 import HomeIcon from "@mui/icons-material/Home";
 import styles from "../../addBooking/AddBooking.module.css";
-import Fields from '../../../../components/addBooking/TextField';
-import { Input } from '@material-tailwind/react';
+import Fields from "../../../../components/addBooking/TextField";
+import { Input } from "@material-tailwind/react";
 
 const whatsapp = [
   {
@@ -40,15 +40,15 @@ const whatsapp = [
 let autoComplete;
 
 const AddBookingReassign = () => {
-  const { id } = useParams()
+  const { id } = useParams();
   const autoCompleteRef = useRef(null);
   UseEscapeKey();
-  
+
   const [query, setQuery] = useState("");
   const [query1, setQuery1] = useState("");
   const [localityBook, setLocalityBook] = useState("");
   const [localitySubBook, setLocalitySubBook] = useState("");
-  
+
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
   var mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -58,15 +58,16 @@ const AddBookingReassign = () => {
 
   const [currentYear, setCurrentYear] = useState("");
   const userType = localStorage.getItem("user_type_id");
-  
+
   const [booking, setBooking] = useState({
     order_date: todayback,
     order_year: currentYear,
     order_refer_by: "",
     order_customer: "",
     order_customer_mobile: "",
+    order_customer_alt_mobile: "",
     order_customer_email: "",
-    order_service_date: '',
+    order_service_date: "",
     order_service: "",
     order_service_sub: "",
     order_service_price_for: "",
@@ -110,7 +111,7 @@ const AddBookingReassign = () => {
 
   const [serdata, setSerData] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
     const requestOptions = {
@@ -119,29 +120,29 @@ const AddBookingReassign = () => {
         Authorization: "Bearer " + theLoginToken,
       },
     };
-    
+
     fetch(BASE_URL + "/api/panel-fetch-service", requestOptions)
       .then((response) => response.json())
       .then((data) => setSerData(data.service))
-      .catch(error => console.error("Error fetching services:", error));
+      .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
   const [timeslot, setTimeSlot] = useState([]);
-  
+
   useEffect(() => {
     fetch(BASE_URL + "/api/panel-fetch-timeslot-out")
       .then((response) => response.json())
       .then((data) => setTimeSlot(data.timeslot))
-      .catch(error => console.error("Error fetching timeslots:", error));
+      .catch((error) => console.error("Error fetching timeslots:", error));
   }, []);
 
   const [serdatasub, setSerDataSub] = useState([]);
   const [pricedata, setPriceData] = useState([]);
-  
+
   // Function to load price data
   const loadPriceData = (serviceId, subServiceId, branchId, serviceDate) => {
     if (!serviceId) return;
-    
+
     let data = {
       order_service: serviceId,
       order_service_sub: subServiceId,
@@ -156,28 +157,30 @@ const AddBookingReassign = () => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    }).then((res) => {
-      setPriceData(res.data.serviceprice || []);
-    }).catch(error => {
-      console.error("Error fetching price data:", error);
-      setPriceData([]);
-    });
+    })
+      .then((res) => {
+        setPriceData(res.data.serviceprice || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching price data:", error);
+        setPriceData([]);
+      });
   };
 
   const HalfA = (selectedValue) => {
     const serviceId = selectedValue.target.value;
     localStorage.setItem("tempService", serviceId);
-    
-    setBooking(prev => ({
+
+    setBooking((prev) => ({
       ...prev,
       order_service: serviceId,
       order_service_sub: "",
       order_service_price_for: "",
     }));
-    
+
     // Load price data
     loadPriceData(serviceId, "", booking.branch_id, booking.order_service_date);
-    
+
     // Load sub services
     if (serviceId && serviceId !== "1") {
       const theLoginToken = localStorage.getItem("token");
@@ -202,27 +205,32 @@ const AddBookingReassign = () => {
 
   const HalfB = (selectedValue) => {
     const subServiceId = selectedValue.target.value;
-    setBooking(prev => ({
+    setBooking((prev) => ({
       ...prev,
       order_service_sub: subServiceId,
       order_service_price_for: "",
     }));
-    
+
     // Load price data with new sub service
-    loadPriceData(localStorage.getItem("tempService"), subServiceId, booking.branch_id, booking.order_service_date);
+    loadPriceData(
+      localStorage.getItem("tempService"),
+      subServiceId,
+      booking.branch_id,
+      booking.order_service_date
+    );
   };
 
   const HalfC = (selectedValue) => {
     const priceId = selectedValue.target.value;
-    setBooking(prev => ({
+    setBooking((prev) => ({
       ...prev,
       order_service_price_for: priceId,
     }));
-    
+
     let data = {
       order_service_price_for: priceId,
     };
-    
+
     axios({
       url: BASE_URL + "/api/panel-fetch-services-prices",
       method: "POST",
@@ -232,7 +240,7 @@ const AddBookingReassign = () => {
       },
     }).then((res) => {
       if (res.data.serviceprice) {
-        setBooking(prev => ({
+        setBooking((prev) => ({
           ...prev,
           order_service_price: res.data.serviceprice.service_price_amount,
           order_amount: res.data.serviceprice.service_price_amount,
@@ -242,7 +250,7 @@ const AddBookingReassign = () => {
   };
 
   const [branch, setBranch] = useState([]);
-  
+
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
     const requestOptions = {
@@ -255,11 +263,11 @@ const AddBookingReassign = () => {
     fetch(BASE_URL + "/api/panel-fetch-branch", requestOptions)
       .then((response) => response.json())
       .then((data) => setBranch(data.branch))
-      .catch(error => console.error("Error fetching branches:", error));
+      .catch((error) => console.error("Error fetching branches:", error));
   }, []);
 
   const [referby, setReferby] = useState([]);
-  
+
   useEffect(() => {
     var theLoginToken = localStorage.getItem("token");
     const requestOptions = {
@@ -272,19 +280,22 @@ const AddBookingReassign = () => {
     fetch(BASE_URL + "/api/panel-fetch-referby", requestOptions)
       .then((response) => response.json())
       .then((data) => setReferby(data.referby))
-      .catch(error => console.error("Error fetching referby:", error));
+      .catch((error) => console.error("Error fetching referby:", error));
   }, []);
 
   const fetchAllData = async () => {
     try {
-      const bookingRes = await axios.get(`${BASE_URL}/api/panel-fetch-booking-by-id/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      
+      const bookingRes = await axios.get(
+        `${BASE_URL}/api/panel-fetch-booking-by-id/${id}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+
       const bookingData = bookingRes.data?.booking;
       if (bookingData) {
         console.log("Booking data loaded:", bookingData);
-        
+
         // Set address-related states first
         setQuery(bookingData.order_address || "");
         setQuery1(bookingData.order_url || "");
@@ -297,7 +308,10 @@ const AddBookingReassign = () => {
           subServiceName: bookingData.order_service_sub,
           priceForString: bookingData.order_service_price_for,
         };
-        localStorage.setItem('originalBookingData', JSON.stringify(originalData));
+        localStorage.setItem(
+          "originalBookingData",
+          JSON.stringify(originalData)
+        );
 
         // Set basic booking data
         const updatedBooking = {
@@ -306,8 +320,9 @@ const AddBookingReassign = () => {
           order_refer_by: bookingData.order_refer_by || "",
           order_customer: bookingData.order_customer || "",
           order_customer_mobile: bookingData.order_customer_mobile || "",
+          order_customer_alt_mobile: bookingData.order_customer_alt_mobile || "",
           order_customer_email: bookingData.order_customer_email || "",
-        
+
           order_service: "", // Will be set after matching
           order_service_sub: "",
           order_service_price_for: "",
@@ -324,14 +339,17 @@ const AddBookingReassign = () => {
           order_time: bookingData.order_time || "",
           order_remarks: bookingData.order_remarks || "",
           order_comment: bookingData.order_comment || "",
-          branch_id: bookingData.branch_id?.toString() || 
-            (localStorage.getItem("user_type_id") == "6" ? "" : localStorage.getItem("branch_id")),
+          branch_id:
+            bookingData.branch_id?.toString() ||
+            (localStorage.getItem("user_type_id") == "6"
+              ? ""
+              : localStorage.getItem("branch_id")),
           order_area: bookingData.order_area || "",
           order_address: bookingData.order_address || "",
           order_url: bookingData.order_url || "",
-          order_send_whatsapp: bookingData.order_send_whatsapp || 'No',
+          order_send_whatsapp: bookingData.order_send_whatsapp || "No",
         };
-        
+
         setBooking(updatedBooking);
         setFetchLoading(false);
       }
@@ -348,27 +366,38 @@ const AddBookingReassign = () => {
 
   // This effect runs when service data is loaded to match with booking data
   useEffect(() => {
-    if (serdata.length > 0 && booking.order_customer && booking.order_service === "") {
-      const originalData = JSON.parse(localStorage.getItem('originalBookingData') || '{}');
-      
+    if (
+      serdata.length > 0 &&
+      booking.order_customer &&
+      booking.order_service === ""
+    ) {
+      const originalData = JSON.parse(
+        localStorage.getItem("originalBookingData") || "{}"
+      );
+
       if (originalData.serviceName) {
         // Find matching service
-        const matchedService = serdata.find(service => 
-          service.service === originalData.serviceName
+        const matchedService = serdata.find(
+          (service) => service.service === originalData.serviceName
         );
-        
+
         if (matchedService) {
           const serviceId = matchedService.id.toString();
-          console.log("Matched service:", originalData.serviceName, "->", serviceId);
-          
+          console.log(
+            "Matched service:",
+            originalData.serviceName,
+            "->",
+            serviceId
+          );
+
           // Update booking with service ID
-          setBooking(prev => ({
+          setBooking((prev) => ({
             ...prev,
             order_service: serviceId,
           }));
-          
+
           localStorage.setItem("tempService", serviceId);
-          
+
           // Load sub-services for this service
           if (serviceId && serviceId !== "1" && originalData.subServiceName) {
             const theLoginToken = localStorage.getItem("token");
@@ -387,35 +416,60 @@ const AddBookingReassign = () => {
               .then((data) => {
                 const subServices = data.servicesub || [];
                 setSerDataSub(subServices);
-                
+
                 // Find matching sub-service
-                const matchedSubService = subServices.find(sub => 
-                  sub.service_sub === originalData.subServiceName
+                const matchedSubService = subServices.find(
+                  (sub) => sub.service_sub === originalData.subServiceName
                 );
-                
+
                 if (matchedSubService) {
                   const subServiceId = matchedSubService.id.toString();
-                  console.log("Matched sub-service:", originalData.subServiceName, "->", subServiceId);
-                  
-                  setBooking(prev => ({
+                  console.log(
+                    "Matched sub-service:",
+                    originalData.subServiceName,
+                    "->",
+                    subServiceId
+                  );
+
+                  setBooking((prev) => ({
                     ...prev,
                     order_service_sub: subServiceId,
                   }));
-                  
+
                   // Load price data
-                  loadPriceData(serviceId, subServiceId, booking.branch_id, booking.order_service_date);
+                  loadPriceData(
+                    serviceId,
+                    subServiceId,
+                    booking.branch_id,
+                    booking.order_service_date
+                  );
                 } else {
                   // No matching sub-service found
-                  loadPriceData(serviceId, "", booking.branch_id, booking.order_service_date);
+                  loadPriceData(
+                    serviceId,
+                    "",
+                    booking.branch_id,
+                    booking.order_service_date
+                  );
                 }
               })
               .catch((error) => {
                 console.error("Error fetching sub-services:", error);
-                loadPriceData(serviceId, "", booking.branch_id, booking.order_service_date);
+                loadPriceData(
+                  serviceId,
+                  "",
+                  booking.branch_id,
+                  booking.order_service_date
+                );
               });
           } else if (serviceId && serviceId !== "1") {
             // No sub-service name but service is not custom
-            loadPriceData(serviceId, "", booking.branch_id, booking.order_service_date);
+            loadPriceData(
+              serviceId,
+              "",
+              booking.branch_id,
+              booking.order_service_date
+            );
           }
         }
       }
@@ -425,18 +479,25 @@ const AddBookingReassign = () => {
   // This effect runs when price data is loaded to match price_for
   useEffect(() => {
     if (pricedata.length > 0 && booking.order_service_price_for === "") {
-      const originalData = JSON.parse(localStorage.getItem('originalBookingData') || '{}');
-      
+      const originalData = JSON.parse(
+        localStorage.getItem("originalBookingData") || "{}"
+      );
+
       if (originalData.priceForString) {
         // Try to find the price ID by matching the string
-        const matchedPrice = pricedata.find(price => 
-          price.service_price_for === originalData.priceForString
+        const matchedPrice = pricedata.find(
+          (price) => price.service_price_for === originalData.priceForString
         );
-        
+
         if (matchedPrice) {
-          console.log("Matched price:", originalData.priceForString, "->", matchedPrice.id);
-          
-          setBooking(prev => ({
+          console.log(
+            "Matched price:",
+            originalData.priceForString,
+            "->",
+            matchedPrice.id
+          );
+
+          setBooking((prev) => ({
             ...prev,
             order_service_price_for: matchedPrice.id.toString(),
             order_service_price: matchedPrice.service_price_amount,
@@ -444,7 +505,7 @@ const AddBookingReassign = () => {
           }));
         } else if (pricedata.length > 0) {
           // If no exact match, use the first available price
-          setBooking(prev => ({
+          setBooking((prev) => ({
             ...prev,
             order_service_price_for: pricedata[0].id.toString(),
             order_service_price: pricedata[0].service_price_amount,
@@ -475,7 +536,7 @@ const AddBookingReassign = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name == "order_customer_mobile") {
       if (validateOnlyDigits(value)) {
         setBooking({
@@ -484,6 +545,13 @@ const AddBookingReassign = () => {
         });
       }
     } else if (name == "order_service_price") {
+      if (validateOnlyDigits(value)) {
+        setBooking({
+          ...booking,
+          [name]: value,
+        });
+      }
+    } else if (name == "order_customer_alt_mobile") {
       if (validateOnlyDigits(value)) {
         setBooking({
           ...booking,
@@ -552,7 +620,7 @@ const AddBookingReassign = () => {
     const query = addressObject.formatted_address;
     const url = addressObject.url;
     updateQuery(query);
-    
+
     let subLocality = "";
     let locality = "";
 
@@ -593,6 +661,7 @@ const AddBookingReassign = () => {
       order_refer_by: booking.order_refer_by,
       order_customer: booking.order_customer,
       order_customer_mobile: booking.order_customer_mobile,
+      order_customer_alt_mobile: booking.order_customer_alt_mobile,
       order_customer_email: booking.order_customer_email,
       order_service_date: booking.order_service_date,
       order_service: booking.order_service,
@@ -654,8 +723,8 @@ const AddBookingReassign = () => {
           <div className="text-center p-8">Loading...</div>
         ) : (
           <form id="addIdniv" onSubmit={onSubmit}>
-            <div className={styles["form-container"]}>
-              <div>
+            <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
                 <FormControl fullWidth>
                   <InputLabel id="order_refer_by-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -702,6 +771,19 @@ const AddBookingReassign = () => {
                     autoComplete="Name"
                     name="order_customer_mobile"
                     value={booking.order_customer_mobile}
+                    onChange={(e) => onInputChange(e)}
+                  />
+                </div>
+                <div>
+                  <Input
+                    label="Alternative Mobile No"
+                    maxLength={10}
+                    types="tel"
+                    title="Alternative Mobile No"
+                    type="numberField"
+                    autoComplete="Name"
+                    name="order_customer_alt_mobile"
+                    value={booking.order_customer_alt_mobile}
                     onChange={(e) => onInputChange(e)}
                   />
                 </div>
@@ -793,7 +875,9 @@ const AddBookingReassign = () => {
                   </FormControl>
                 </div>
 
-                {booking.order_service && booking.order_service !== "1" && serdatasub.length > 0 ? (
+                {booking.order_service &&
+                booking.order_service !== "1" &&
+                serdatasub.length > 0 ? (
                   <div>
                     <FormControl fullWidth>
                       <InputLabel id="order_service_sub-label">
@@ -824,7 +908,9 @@ const AddBookingReassign = () => {
                 ) : (
                   ""
                 )}
-                {booking.order_service && booking.order_service !== "1" && pricedata.length > 0 ? (
+                {booking.order_service &&
+                booking.order_service !== "1" &&
+                pricedata.length > 0 ? (
                   <div>
                     <FormControl fullWidth>
                       <InputLabel id="order_service_price_for-label">
@@ -935,7 +1021,10 @@ const AddBookingReassign = () => {
                     required
                   >
                     {timeslot.map((data) => (
-                      <MenuItem key={data.id || data.time_slot} value={data?.time_slot}>
+                      <MenuItem
+                        key={data.id || data.time_slot}
+                        value={data?.time_slot}
+                      >
                         {data?.time_slot}
                       </MenuItem>
                     ))}
@@ -1053,7 +1142,7 @@ const AddBookingReassign = () => {
         )}
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default AddBookingReassign
+export default AddBookingReassign;

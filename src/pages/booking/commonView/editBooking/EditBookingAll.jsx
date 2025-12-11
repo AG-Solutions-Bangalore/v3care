@@ -330,6 +330,10 @@ const EditBookingAll = () => {
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
               </Typography>
               <Typography className="text-black">
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
+              </Typography>
+              <Typography className="text-black">
                 <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
               <Typography className="text-black">

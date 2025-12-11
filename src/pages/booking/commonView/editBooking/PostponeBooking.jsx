@@ -11,7 +11,7 @@ import {
   CardHeader,
   Input,
   Textarea,
-  Typography
+  Typography,
 } from "@material-tailwind/react";
 import {
   Dialog,
@@ -207,10 +207,11 @@ const PostponeBooking = () => {
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Email:</strong> {booking.order_customer_email}
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Booking Created By:</strong> {booking.created_by}
+                <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
             </div>
             <div className="space-y-2">
@@ -224,6 +225,9 @@ const PostponeBooking = () => {
               </Typography>
               <Typography className="text-black">
                 <strong>Slot Time:</strong> {booking.order_time}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
@@ -553,15 +557,13 @@ const PostponeBooking = () => {
               </Link>
             </CardHeader>
             <CardBody>
-       
-                <div className="mt-5">
-                  <MUIDataTable
-                    data={followup ? followup : []}
-                    columns={columns}
-                    options={options}
-                  />
-                </div>
-           
+              <div className="mt-5">
+                <MUIDataTable
+                  data={followup ? followup : []}
+                  columns={columns}
+                  options={options}
+                />
+              </div>
             </CardBody>
           </Card>
         </div>

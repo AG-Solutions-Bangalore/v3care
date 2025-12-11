@@ -186,10 +186,11 @@ const ViewBooking = () => {
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Email:</strong> {booking.order_customer_email}
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Booking Created By:</strong> {booking.created_by}
+                <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
             </div>
             <div className="space-y-2">
@@ -206,6 +207,9 @@ const ViewBooking = () => {
               </Typography>
               <Typography className="text-black">
                 <strong>Service:</strong> {booking.order_service}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
@@ -363,7 +367,8 @@ const ViewBooking = () => {
               />
             )}
             {(booking.order_status === "Confirmed" ||
-              booking.order_status === "Vendor" || booking.order_status === "Inspection") && (
+              booking.order_status === "Vendor" ||
+              booking.order_status === "Inspection") && (
               <ButtonConfigColor
                 type="create"
                 label="Assign Vendor"

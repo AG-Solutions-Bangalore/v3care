@@ -27,7 +27,6 @@ import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonCon
 import PageHeader from "../../../components/common/PageHeader/PageHeader";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-
 const whatsapp = [
   {
     value: "Yes",
@@ -40,8 +39,6 @@ const whatsapp = [
 ];
 
 let autoComplete;
-
-
 
 const AddBooking = () => {
   const autoCompleteRef = useRef(null);
@@ -65,6 +62,7 @@ const AddBooking = () => {
     order_refer_by: "",
     order_customer: "",
     order_customer_mobile: "",
+    order_customer_alt_mobile: "",
     order_customer_email: "",
     order_service_date: todayback,
     order_service: "",
@@ -286,6 +284,13 @@ const AddBooking = () => {
           [e.target.name]: e.target.value,
         });
       }
+    } else if (e.target.name == "order_customer_alt_mobile") {
+      if (validateOnlyDigits(e.target.value)) {
+        setBooking({
+          ...booking,
+          [e.target.name]: e.target.value,
+        });
+      }
     } else if (e.target.name == "order_custom_price") {
       if (validateOnlyDigits(e.target.value)) {
         setBooking({
@@ -377,8 +382,6 @@ const AddBooking = () => {
       console.error("Google Maps API not loaded!");
     }
   }, []);
-  
-  
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -395,6 +398,7 @@ const AddBooking = () => {
       order_refer_by: booking.order_refer_by,
       order_customer: booking.order_customer,
       order_customer_mobile: booking.order_customer_mobile,
+      order_customer_alt_mobile: booking.order_customer_alt_mobile,
       order_customer_email: booking.order_customer_email,
       order_service_date: booking.order_service_date,
       order_service: booking.order_service,
@@ -453,8 +457,8 @@ const AddBooking = () => {
 
       <div className={styles["sub-container"]}>
         <form id="addIdniv" onSubmit={onSubmit}>
-          <div className={styles["form-container"]}>
-            <div>
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2">
               {/* <div className="form-group">
                 <Fields
                   title="Refer By"
@@ -513,6 +517,19 @@ const AddBooking = () => {
                   autoComplete="Name"
                   name="order_customer_mobile"
                   value={booking.order_customer_mobile}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
+              <div>
+                <Input
+                  label="Alternative Mobile No"
+                  maxLength={10}
+                  types="tel"
+                  title="Alternative Mobile No"
+                  type="numberField"
+                  autoComplete="Name"
+                  name="order_customer_alt_mobile"
+                  value={booking.order_customer_alt_mobile}
                   onChange={(e) => onInputChange(e)}
                 />
               </div>
