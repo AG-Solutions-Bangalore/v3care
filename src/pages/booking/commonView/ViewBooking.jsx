@@ -382,6 +382,14 @@ const ViewBooking = () => {
                 onClick={notifyUpdate}
               />
             )}
+            {(booking.order_status === "Completed" ||
+              booking.order_status === "Cancel") && (
+              <ButtonConfigColor
+                type="create"
+                label="Booking Reassign"
+                onClick={() => navigate(`/add-booking-reassign/${id}`)}
+              />
+            )}
           </span>
         }
       />

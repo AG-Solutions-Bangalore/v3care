@@ -14,6 +14,7 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import AssignDetailsModal from "../../../components/AssignDetailsModal";
 
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
@@ -27,6 +28,8 @@ const VendorJobBooking = () => {
   const [openFollowModal, setOpenFollowModal] = useState(false);
   const [followupdata, setFollowUpData] = useState("");
   const pageParam = searchParams.get("page");
+  const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -122,75 +125,63 @@ const VendorJobBooking = () => {
         },
       },
     },
+    //1
     {
       name: "order_ref",
-      label: "ID",
-      options: {
-        filter: false,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        sort: false,
-      },
-    },
-    {
-      name: "branch_name",
-      label: "Branch",
-      options: {
-        filter: true,
-        sort: true,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-      },
-    },
-    {
-      name: "order_branch",
       label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const brancName = tableMeta.rowData[2];
-          const orderRef = tableMeta.rowData[1];
-          const bookTime = tableMeta.rowData[15];
-
+          const branchName = tableMeta.rowData[2];
+          const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
-              <span>{orderRef}</span>
-              <span>{brancName}</span>
+              <span>{order_ref}</span>
+              <span>{branchName}</span>
               <span>{bookTime}</span>
             </div>
           );
         },
       },
     },
+    //2
+    {
+      name: "branch_name",
+      label: "Branch",
+      options: {
+        filter: true,
+        display: "exclude",
+        searchable: true,
+        viewColumns: false,
+        sort: true,
+      },
+    },
+    //3
     {
       name: "order_customer",
       label: "Customer",
       options: {
         filter: false,
-        sort: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
+        sort: false,
       },
     },
+    //4
     {
       name: "order_customer_mobile",
       label: "Mobile",
       options: {
         filter: true,
-        sort: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
+        sort: false,
       },
     },
+    //5
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -198,10 +189,10 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[4];
-          const mobileNo = tableMeta.rowData[5];
+          const customeName = tableMeta.rowData[3];
+          const mobileNo = tableMeta.rowData[4];
           return (
-            <div className=" flex flex-col w-38">
+            <div className=" flex flex-col w-32">
               <span>{customeName}</span>
               <span>{mobileNo}</span>
             </div>
@@ -209,6 +200,7 @@ const VendorJobBooking = () => {
         },
       },
     },
+    //6
     {
       name: "order_date",
       label: "Booking Date",
@@ -217,13 +209,13 @@ const VendorJobBooking = () => {
         sort: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
+    //7
     {
       name: "order_service_date",
       label: "Service Date",
@@ -232,13 +224,13 @@ const VendorJobBooking = () => {
         sort: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
+    //8
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -246,8 +238,9 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[7];
-          const serviceDate = tableMeta.rowData[8];
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
+
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
@@ -257,29 +250,31 @@ const VendorJobBooking = () => {
         },
       },
     },
+    //9
     {
       name: "order_service",
       label: "Service",
       options: {
         filter: false,
+        viewColumns: false,
         display: "exclude",
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
+    //10
     {
       name: "order_amount",
       label: "Price",
       options: {
         filter: false,
         display: "exclude",
-
+        viewColumns: false,
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
+    //11
     {
       name: "order_custom",
       label: "Custom",
@@ -291,24 +286,222 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
+    //12
     {
       name: "service_price",
-      label: "Service/Price",
+      label: "Service/Price/Advance",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[10];
-          const price = tableMeta.rowData[11];
-          const customeDetails = tableMeta.rowData[12];
+          const service = tableMeta.rowData[9];
+          const advnaced = tableMeta.rowData[34];
+          const price = tableMeta.rowData[10];
+          const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
                 <span>{customeDetails}</span>
-                <span>{price}</span>
+                <div className="flex flex-row gap-2">
+                  <span>{price}</span>
+                  <span>-</span>
+                  <span>{advnaced}</span>
+                </div>
               </div>
             );
           }
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
+              <div className="flex flex-row gap-2">
+                <span>{price}</span>
+                <span>-</span>
+                <span>{advnaced}</span>
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    //13
+    {
+      name: "order_comm_percentage",
+      label: "Commission Percentage",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //14
+    {
+      name: "order_comm",
+      label: "Commission",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //15
+    {
+      name: "service_price",
+      label: "Percentage/Commission",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const comm = tableMeta.rowData[14];
+          const commpercentage = tableMeta.rowData[13];
+
+          return (
+            <div className="flex flex-row gap-2">
+              <span>{commpercentage}</span>
+              <span>-</span>
+              <span>{comm}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //16
+    {
+      name: "order_time",
+      label: "Time/Area",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const area = tableMeta.rowData[33];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{value}</span>
+              <span style={{ fontSize: "12px" }}>{area}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //17
+    {
+      name: "order_assign",
+      label: "Order Assign",
+      options: {
+        filter: false,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+      },
+    },
+    //18
+    {
+      name: "order_no_assign",
+      label: "No of Assign",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderAssign = tableMeta?.rowData[17] || [];
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel"
+          );
+          const count = activeAssignments.length;
+
+          if (count > 0) {
+            return (
+              <button
+                className="w-16 hover:bg-red-200 border border-gray-200 rounded-lg shadow-lg bg-green-200 text-black cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedAssignDetails(activeAssignments);
+                  setOpenModal(true);
+                }}
+              >
+                {count}
+              </button>
+            );
+          }
+          return <span>{count}</span>;
+        },
+      },
+    },
+    //19
+    {
+      name: "assignment_details",
+      label: "Assign Details",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderAssign = tableMeta?.rowData[17];
+
+          if (!Array.isArray(orderAssign) || orderAssign.length === 0) {
+            return <span>-</span>;
+          }
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign?.order_assign_status !== "Cancel"
+          );
+
+          if (activeAssignments.length === 0) return <span>-</span>;
+
+          return (
+            <div className="w-48 overflow-x-auto">
+              <table className="min-w-full table-auto border-collapse text-sm">
+                <tbody className="flex flex-wrap h-[40px] w-48">
+                  <tr>
+                    <td className="text-xs px-[2px] leading-[12px]">
+                      {activeAssignments
+                        .map((assign) => assign?.user?.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          );
+        },
+      },
+    },
+    //20
+    {
+      name: "order_payment_amount",
+      label: "Amount",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: true,
+      },
+    },
+    //21
+    {
+      name: "order_payment_type",
+      label: "Type",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: true,
+      },
+    },
+    //22
+    {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[21];
+          const price = tableMeta.rowData[20];
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
@@ -318,15 +511,77 @@ const VendorJobBooking = () => {
         },
       },
     },
+    //23
+    {
+      name: "updated_by",
+      label: "Confirm By",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //24
     {
       name: "order_status",
       label: "Status",
       options: {
         filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
         sort: false,
       },
     },
-    //15
+    //25
+    {
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
+      options: {
+        filter: false,
+        sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px", // minimum width
+            maxWidth: "200px", // optional maximum
+            width: "180px", // fixed width
+          },
+        }),
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[23];
+          const status = tableMeta.rowData[24];
+          const inspectionstatus = tableMeta.rowData[28];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
+            </div>
+          );
+        },
+      },
+    },
+    //26
+    {
+      name: "order_address",
+      label: "Address",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //27
     {
       name: "order_booking_time",
       label: "Book Time",
@@ -338,7 +593,19 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //16
+    //28
+    {
+      name: "order_inspection_status",
+      label: "Inspection Status",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //29
     {
       name: "order_remarks",
       label: "Remarks",
@@ -350,7 +617,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //17
+    //30
     {
       name: "order_comment",
       label: "Comment",
@@ -362,7 +629,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //18
+    //31
     {
       name: "order_postpone_reason",
       label: "Reason",
@@ -374,12 +641,36 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //19
+    //32
     {
       name: "order_followup",
       label: "Followup",
       options: {
         filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //33
+    {
+      name: "order_area",
+      label: "Order Area",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //34
+    {
+      name: "order_advance",
+      label: "Advance",
+      options: {
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -457,6 +748,13 @@ const VendorJobBooking = () => {
             options={options}
           />
         </div>
+      )}
+      {openModal && (
+        <AssignDetailsModal
+          open={openModal}
+          handleOpen={setOpenModal}
+          assignDetails={selectedAssignDetails}
+        />
       )}
       {openFollowModal && (
         <FollowupModal

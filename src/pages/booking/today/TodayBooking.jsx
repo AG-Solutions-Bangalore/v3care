@@ -326,11 +326,11 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[22];
+          const area = tableMeta.rowData[30];
           return (
             <div className=" flex flex-col w-32">
               <span>{value}</span>
-              <span style={{ fontSize: "9px" }}>{area}</span>
+              <span style={{ fontSize: "12px" }}>{area}</span>
             </div>
           );
         },
@@ -589,9 +589,22 @@ const TodayBooking = () => {
         sort: false,
       },
     },
+    //29
     {
       name: "order_followup",
       label: "Followup",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //30
+    {
+      name: "order_area",
+      label: "Order Area",
       options: {
         filter: true,
         display: "exclude",
