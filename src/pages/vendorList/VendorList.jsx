@@ -133,72 +133,73 @@ const VendorList = () => {
     navigate(`/vendor-user-list/${id}`);
   };
   const handleTransfer = (e, id) => {
-   e.preventDefault();
+    e.preventDefault();
     e.stopPropagation();
-  localStorage.setItem("page-no", pageParam);
-  navigate("/add-vendor", { state: { id } });
-};
+    localStorage.setItem("page-no", pageParam);
+    navigate("/add-vendor", { state: { id } });
+  };
 
   const columns = [
-   {
-  name: "id",
-  label: "ACTION",
-  options: {
-    filter: false,
-    sort: false,
-    customBodyRender: (id, tableMeta) => {
-      const row = vendorListData[tableMeta.rowIndex];
-      const vendorStatus = row.vendor_status;
-      const deviceId = row.device_id;
+    {
+      name: "id",
+      label: "ACTION",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (id, tableMeta) => {
+          const row = vendorListData[tableMeta.rowIndex];
+          const vendorStatus = row.vendor_status;
+          const deviceId = row.device_id;
 
-      return (
-        <div className="flex items-center space-x-2">
-          {userType !== "4" && (
-            <>
-              {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
+          return (
+            <div className="flex items-center space-x-2">
+              {userType !== "4" && (
                 <>
-
-                  <SquarePen
-                    onClick={(e) => handleEdit(e, id)}
-                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
-                  >
-                    <title>Edit Vendor</title>
-                  </SquarePen>
-                  <FiUsers
-                    onClick={(e) => handleViewVendor(e, id)}
-                    title="View Vendor User List"
-                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
-                  />
+                  {vendorStatus === "Active" || vendorStatus === "Inactive" ? (
+                    <>
+                      <SquarePen
+                        onClick={(e) => handleEdit(e, id)}
+                        className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                      >
+                        <title>Edit Vendor</title>
+                      </SquarePen>
+                      <FiUsers
+                        onClick={(e) => handleViewVendor(e, id)}
+                        title="View Vendor User List"
+                        className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                      />
+                    </>
+                  ) : vendorStatus === "Pending" ? (
+                    <>
+                      <RiEditLine
+                        onClick={(e) => handleEditPendingVendor(e, id)}
+                        title="Edit Pending Vendor"
+                        className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                      />
+                      <FiUserPlus
+                        onClick={(e) => handleActivate(e, id)}
+                        title="Activate Vendor"
+                        className="h-6 w-6 cursor-pointer hover:text-blue-700"
+                      />
+                    </>
+                  ) : null}
                 </>
-              ) : vendorStatus === "Pending" ? (
-                <>
-                  <RiEditLine
-                    onClick={(e) => handleEditPendingVendor(e, id)}
-                    title="Edit Pending Vendor"
-                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
-                  />
-                  <FiUserPlus
-                    onClick={(e) => handleActivate(e, id)}
-                    title="Activate Vendor"
-                    className="h-6 w-6 cursor-pointer hover:text-blue-700"
-                  />
-                </>
-              ) : null}
-            </>
-          )}
+              )}
 
-          <img
-            src={deviceId ? "/img/mobile_active.svg" : "/img/mobile_inactive.svg"}
-            alt={deviceId ? "Mobile Active" : "Mobile Inactive"}
-            className="h-[20px] w-[20px]"
-          />
-        </div>
-      );
+              <img
+                src={
+                  deviceId
+                    ? "/img/mobile_active.svg"
+                    : "/img/mobile_inactive.svg"
+                }
+                alt={deviceId ? "Mobile Active" : "Mobile Inactive"}
+                className="h-[20px] w-[20px]"
+              />
+            </div>
+          );
+        },
+      },
     },
-  },
-}
-,
-
     {
       name: "branch_name",
       label: "Branch",
@@ -301,7 +302,7 @@ const VendorList = () => {
       return (
         <div className="flex justify-end items-center p-4">
           <span className="mx-4">
-           <span className="text-red-600">Page {page + 1}</span> of{" "}
+            <span className="text-red-600">Page {page + 1}</span> of{" "}
             {Math.ceil(count / rowsPerPage)}
           </span>
           <IoIosArrowBack
