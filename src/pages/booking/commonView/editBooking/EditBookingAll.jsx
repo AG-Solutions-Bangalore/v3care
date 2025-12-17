@@ -843,17 +843,17 @@ const EditBookingAll = () => {
                         loading={loading}
                         onClick={onSubmit}
                       />
-                     <ButtonConfigColor
-  type="edit"
-  buttontype="button"
-  label="Reassign / Add Service"
-  onClick={() => setOpenReassignPopup(true)}
-/>
+                      <ButtonConfigColor
+                        type="edit"
+                        buttontype="button"
+                        label="Reassign / Add Service"
+                        onClick={() => setOpenReassignPopup(true)}
+                      />
 
                       <ButtonConfigColor
                         type="submit"
                         buttontype="button"
-                        label="Postpone"
+                        label="Prepone / Postpone"
                         onClick={() => navigate(`/postpone-booking/${id}`)}
                       />
                       <ButtonConfigColor
@@ -1044,39 +1044,40 @@ const EditBookingAll = () => {
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={openReassignPopup}
+        onClose={() => setOpenReassignPopup(false)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogContent>
+          <h2 className="text-lg font-semibold mb-4">Reassign / Add Service</h2>
+          <p className="text-gray-700">Please select the appropriate</p>
+        </DialogContent>
 
-      <Dialog open={openReassignPopup} onClose={() => setOpenReassignPopup(false)} fullWidth maxWidth="xs">
-  <DialogContent>
-    <h2 className="text-lg font-semibold mb-4">Reassign / Add Service</h2>
-    <p className="text-gray-700">Please select the appropriate</p>
-  </DialogContent>
-
-  <DialogActions>
-    <div className="flex justify-center space-x-4 my-2">
-
- 
-      <ButtonConfigColor
-        type="submit"
-        buttontype="button"
-        label="Reassign the service"
-        onClick={() => {
-          setOpenReassignPopup(false);
-          navigate(`/add-booking-reassign/${id}`);
-        }}
-      />
-<ButtonConfigColor
-        type="edit"
-        buttontype="button"
-        label="Add Service"
-        onClick={() => {
-          setOpenReassignPopup(false);
-          navigate(`/add-booking-reassign-wo-service/${id}`);
-        }}
-      />
-    </div>
-  </DialogActions>
-</Dialog>
-
+        <DialogActions>
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="button"
+              label="Reassign the service"
+              onClick={() => {
+                setOpenReassignPopup(false);
+                navigate(`/add-booking-reassign/${id}`);
+              }}
+            />
+            <ButtonConfigColor
+              type="edit"
+              buttontype="button"
+              label="Add Service"
+              onClick={() => {
+                setOpenReassignPopup(false);
+                navigate(`/add-booking-reassign-wo-service/${id}`);
+              }}
+            />
+          </div>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 };

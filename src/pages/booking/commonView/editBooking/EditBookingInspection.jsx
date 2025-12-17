@@ -892,7 +892,7 @@ const EditBookingInspection = () => {
                     />
                     <ButtonConfigColor
                       type="submit"
-                      label="Postpone"
+                      label="Prepone / Postpone"
                       onClick={() => navigate(`/booking-reschedule/${id}`)}
                     />
 
