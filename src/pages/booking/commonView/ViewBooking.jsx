@@ -358,7 +358,8 @@ const ViewBooking = () => {
               booking.order_status === "Pending" ||
               booking.order_status === "Completed" ||
               booking.order_status === "Cancel" ||
-              booking.order_status === "Vendor"
+              booking.order_status === "Vendor" ||
+              vendor?.vendor_company
             ) && (
               <ButtonConfigColor
                 type="create"

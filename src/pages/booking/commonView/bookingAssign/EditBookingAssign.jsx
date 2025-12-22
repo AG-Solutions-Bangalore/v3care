@@ -1,6 +1,5 @@
-import { Input } from "@material-tailwind/react";
+import { Input, Textarea } from "@material-tailwind/react";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,34 +10,27 @@ import { useContext, useEffect, useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../../base/BaseUrl";
+import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import { ContextPanel } from "../../../../utils/ContextPanel";
 
 const customStyles = {
   control: (provided) => ({
     ...provided,
     minHeight: "38px",
-    height: "auto",
     borderRadius: "0.375rem",
     borderColor: "#e5e7eb",
-    paddingTop: "2px",
-    paddingBottom: "2px",
-    "&:hover": {
-      borderColor: "#9ca3af",
-    },
   }),
-  valueContainer: (provided) => ({
+
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: 1600,
+  }),
+
+  menu: (provided) => ({
     ...provided,
-    height: "auto",
-    padding: "4px 8px",
+    zIndex: 1600,
   }),
-  input: (provided) => ({
-    ...provided,
-    margin: "0px",
-  }),
-  indicatorsContainer: (provided) => ({
-    ...provided,
-    height: "38px",
-  }),
+
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isSelected ? "#3b82f6" : "white",
@@ -61,7 +53,6 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
   });
   const [assignUserP, setAssignUserP] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     const fetchBookingAssign = async () => {
@@ -136,16 +127,15 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
       toast.error("An error occurred. Please try again.");
     } finally {
       setLoading(false);
-      setIsButtonDisabled(false);
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-      <DialogTitle>Edit Booking Assign User</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>Edit V3Care User</DialogTitle>
       <DialogContent>
         <form id="editBookingAssign" onSubmit={onSubmit} className="mt-2">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
             {/* Assign User */}
             <div>
               <Select
@@ -159,6 +149,8 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
                 }
                 styles={customStyles}
                 placeholder="Select a user..."
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
               />
             </div>
 
@@ -175,12 +167,14 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
                 }
                 styles={customStyles}
                 placeholder="Select status..."
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
               />
             </div>
 
             {/* Remarks */}
             <div className="col-span-2">
-              <Input
+              <Textarea
                 label="Remarks"
                 multiline
                 name="order_assign_remarks"
@@ -191,6 +185,7 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
                     [e.target.name]: e.target.value,
                   })
                 }
+                rows={4}
                 fullWidth
               />
             </div>
@@ -199,16 +194,12 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          Cancel
-        </Button>
-        <Button
+        <ButtonConfigColor onClick={onClose} type="back" label="Cancel" />
+        <ButtonConfigColor
           onClick={onSubmit}
-          variant="contained"
-          disabled={isButtonDisabled || loading}
-        >
-          {loading ? "Updating..." : "Update"}
-        </Button>
+          type="submit"
+          label={`${loading ? "Updating..." : "Update"}`}
+        />
       </DialogActions>
     </Dialog>
   );
