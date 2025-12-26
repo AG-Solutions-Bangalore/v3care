@@ -125,7 +125,27 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //1
+      //1
+      {
+        name: "booking_service_date",
+        label: "Booking/Service",
+        options: {
+          filter: false,
+          sort: false,
+          customBodyRender: (value, tableMeta) => {
+            const bookingDate = tableMeta.rowData[7];
+            const serviceDate = tableMeta.rowData[8];
+  
+            return (
+              <div className=" flex flex-col justify-center">
+                <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+                <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+              </div>
+            );
+          },
+        },
+      },
+    //2
     {
       name: "order_ref",
       label: "Order/Branch/BookTime",
@@ -133,7 +153,7 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[2];
+          const branchName = tableMeta.rowData[3];
           const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
@@ -145,7 +165,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //2
+    //3
     {
       name: "branch_name",
       label: "Branch",
@@ -157,7 +177,7 @@ const VendorJobBooking = () => {
         sort: true,
       },
     },
-    //3
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -169,7 +189,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //4
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -181,7 +201,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //5
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -189,8 +209,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[3];
-          const mobileNo = tableMeta.rowData[4];
+          const customeName = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-32">
               <span>{customeName}</span>
@@ -200,7 +220,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //6
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -215,7 +235,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //7
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -230,26 +250,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //8
-    {
-      name: "booking_service_date",
-      label: "Booking/Service",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
-
-          return (
-            <div className=" flex flex-col justify-center">
-              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
-              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-            </div>
-          );
-        },
-      },
-    },
+  
     //9
     {
       name: "order_service",
@@ -286,7 +287,25 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //12
+     //12
+     {
+      name: "order_time",
+      label: "Time/Area",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const area = tableMeta.rowData[33];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{value}</span>
+              <span style={{ fontSize: "12px" }}>{area}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //13
     {
       name: "service_price",
       label: "Service/Price/Advance",
@@ -323,7 +342,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //13
+    //14
     {
       name: "order_comm_percentage",
       label: "Commission Percentage",
@@ -335,7 +354,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //14
+    //15
     {
       name: "order_comm",
       label: "Commission",
@@ -347,7 +366,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //15
+    //16
     {
       name: "service_price",
       label: "Percentage/Commission",
@@ -355,8 +374,8 @@ const VendorJobBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const comm = tableMeta.rowData[14];
-          const commpercentage = tableMeta.rowData[13];
+          const comm = tableMeta.rowData[15];
+          const commpercentage = tableMeta.rowData[14];
 
           return (
             <div className="flex flex-row gap-2">
@@ -368,24 +387,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //16
-    {
-      name: "order_time",
-      label: "Time/Area",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[33];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{value}</span>
-              <span style={{ fontSize: "12px" }}>{area}</span>
-            </div>
-          );
-        },
-      },
-    },
+   
     //17
     {
       name: "order_assign",
@@ -397,7 +399,62 @@ const VendorJobBooking = () => {
         viewColumns: false,
       },
     },
-    //18
+     //18
+     {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const paid_amount = tableMeta.rowData[21];
+          const type = tableMeta.rowData[22];
+ 
+          return (
+            <div className=" flex flex-col w-32">
+               <span>{paid_amount}</span>
+              <span>{type}</span>
+             
+            </div>
+          );
+        },
+      },
+    },
+    //19
+    {
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
+      options: {
+        filter: false,
+        sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px", // minimum width
+            maxWidth: "200px", // optional maximum
+            width: "180px", // fixed width
+          },
+        }),
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[24];
+          const status = tableMeta.rowData[25];
+          const inspectionstatus = tableMeta.rowData[28];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
+            </div>
+          );
+        },
+      },
+    },
+    //20
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -430,7 +487,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //19
+    //21
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -468,7 +525,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-    //20
+    //22
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -480,7 +537,7 @@ const VendorJobBooking = () => {
         sort: true,
       },
     },
-    //21
+    //23
     {
       name: "order_payment_type",
       label: "Type",
@@ -492,26 +549,8 @@ const VendorJobBooking = () => {
         sort: true,
       },
     },
-    //22
-    {
-      name: "amount_type",
-      label: "Paid Amount/Type",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[21];
-          const price = tableMeta.rowData[20];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //23
+   
+    //24
     {
       name: "updated_by",
       label: "Confirm By",
@@ -523,7 +562,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //24
+    //25
     {
       name: "order_status",
       label: "Status",
@@ -535,40 +574,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    //25
-    {
-      name: "confirm/status/inspection status",
-      label: "Confirm By/Status/Inspection Status",
-      options: {
-        filter: false,
-        sort: false,
-        setCellProps: () => ({
-          style: {
-            minWidth: "150px", // minimum width
-            maxWidth: "200px", // optional maximum
-            width: "180px", // fixed width
-          },
-        }),
-        customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[23];
-          const status = tableMeta.rowData[24];
-          const inspectionstatus = tableMeta.rowData[28];
-          return (
-            <div className=" flex flex-col ">
-              <span>{confirmBy}</span>
-              <span>{status}</span>
-              <td className="flex  items-center">
-                {status === "Inspection" && (
-                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
-                    {inspectionstatus}
-                  </span>
-                )}
-              </td>
-            </div>
-          );
-        },
-      },
-    },
+    
     //26
     {
       name: "order_address",
@@ -694,7 +700,7 @@ const VendorJobBooking = () => {
     },
     onRowClick: (rowData, rowMeta, e) => {
       const id = vendorBookData[rowMeta.dataIndex].id;
-      handleView(e, id)();
+      handleView(e, id)
     },
     setRowProps: () => {
       return {

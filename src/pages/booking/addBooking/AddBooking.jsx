@@ -793,29 +793,24 @@ const AddBooking = () => {
                 />
               </div>
 
-              <FormControl fullWidth>
-                <InputLabel id="order_time-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Time Slot<span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="order_time-label"
-                  id="order_time"
-                  name="order_time"
-                  value={booking.order_time}
-                  onChange={(e) => onInputChange(e)}
-                  label="Time Slot *"
-                  required
-                >
-                  {timeslot.map((data) => (
-                    <MenuItem key={data.value} value={data?.time_slot}>
-                      {data?.time_slot}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <div className="relative">
+  <Input
+    type="time"
+    label="Time Slot *"
+    required
+    id="order_time"
+    name="order_time"
+    value={booking.order_time}
+    onChange={(e) => onInputChange(e)}
+    className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+               [&::-webkit-calendar-picker-indicator]:p-2 
+               [&::-webkit-calendar-picker-indicator]:rounded 
+               hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+    labelProps={{
+      className: "text-sm"
+    }}
+  />
+</div>
               <div>
                 <Fields
                   types="number"

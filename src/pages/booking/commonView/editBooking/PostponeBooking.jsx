@@ -519,6 +519,7 @@ const PostponeBooking = () => {
                       value={booking.order_postpone_reason}
                       onChange={(e) => onInputChange(e)}
                       maxLength={980}
+                      required
                     />
                   </div>
                 </div>

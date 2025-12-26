@@ -47,6 +47,7 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
   const [bookingUser, setBookingUser] = useState({
     order_user_id: "",
     order_start_time: "",
+    order_way_time: "",
     order_end_time: "",
     order_assign_remarks: "",
     order_assign_status: "",
@@ -101,6 +102,7 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
     const data = {
       order_user_id: bookingUser.order_user_id,
       order_start_time: bookingUser.order_start_time,
+      order_way_time: bookingUser.order_way_time,
       order_end_time: bookingUser.order_end_time,
       order_assign_remarks: bookingUser.order_assign_remarks,
       order_assign_status: bookingUser.order_assign_status,
@@ -135,7 +137,7 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
       <DialogTitle>Edit V3Care User</DialogTitle>
       <DialogContent>
         <form id="editBookingAssign" onSubmit={onSubmit} className="mt-2">
-          <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Assign User */}
             <div>
               <Select
@@ -169,6 +171,78 @@ const EditBookingAssignDialog = ({ open, onClose, onSuccess, bookingId }) => {
                 placeholder="Select status..."
                 menuPortalTarget={document.body}
                 menuPosition="fixed"
+              />
+            </div>
+
+            {/* Start Time */}
+            <div className="relative">
+              <Input
+                type="time"
+                label="Start Time *"
+                
+                name="order_start_time"
+                value={bookingUser.order_start_time}
+                onChange={(e) =>
+                  setBookingUser({
+                    ...bookingUser,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                         [&::-webkit-calendar-picker-indicator]:p-2 
+                         [&::-webkit-calendar-picker-indicator]:rounded 
+                         hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                labelProps={{
+                  className: "text-sm"
+                }}
+              />
+            </div>
+
+            {/* Way Time */}
+            <div className="relative">
+              <Input
+                type="time"
+                label="Way Time *"
+                
+                name="order_way_time"
+                value={bookingUser.order_way_time}
+                onChange={(e) =>
+                  setBookingUser({
+                    ...bookingUser,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                         [&::-webkit-calendar-picker-indicator]:p-2 
+                         [&::-webkit-calendar-picker-indicator]:rounded 
+                         hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                labelProps={{
+                  className: "text-sm"
+                }}
+              />
+            </div>
+
+            {/* End Time */}
+            <div className="relative">
+              <Input
+                type="time"
+                label="End Time *"
+                
+                name="order_end_time"
+                value={bookingUser.order_end_time}
+                onChange={(e) =>
+                  setBookingUser({
+                    ...bookingUser,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                         [&::-webkit-calendar-picker-indicator]:p-2 
+                         [&::-webkit-calendar-picker-indicator]:rounded 
+                         hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                labelProps={{
+                  className: "text-sm"
+                }}
               />
             </div>
 

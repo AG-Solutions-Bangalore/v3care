@@ -94,20 +94,21 @@ const RnrList = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
+    
           const orderfollowup = tableMeta.rowData[29];
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
           const booking = {
-            order_remarks: tableMeta.rowData[15],
-            order_comment: tableMeta.rowData[16],
-            order_postpone_reason: tableMeta.rowData[17],
+            order_remarks: tableMeta.rowData[26],
+            order_comment: tableMeta.rowData[27],
+            order_postpone_reason: tableMeta.rowData[28],
           };
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                  onClick={(e) => handleEdit(e, id)}
-                  title="edit booking"
+                onClick={(e) => handleEdit(e, id)}
+                  title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
               )}
@@ -126,130 +127,6 @@ const RnrList = () => {
     },
     //1
     {
-      name: "order_ref",
-      label: "ID",
-      options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
-        viewColumns: false,
-
-        sort: false,
-      },
-    },
-    //2
-    {
-      name: "branch_name",
-      label: "Branch",
-      options: {
-        filter: true,
-        viewColumns: false,
-
-        display: "exclude",
-        searchable: true,
-        sort: true,
-      },
-    },
-    //3
-    {
-      name: "order_ref",
-      label: "Order/Branch/BookTime",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[2];
-          const bookTime = tableMeta.rowData[24];
-          return (
-            <div className="flex flex-col w-32">
-              <span>{order_ref}</span>
-              <span>{branchName}</span>
-              <span>{bookTime}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //4
-    {
-      name: "order_customer",
-      label: "Customer",
-      options: {
-        filter: false,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        sort: false,
-      },
-    },
-    //5
-    {
-      name: "order_customer_mobile",
-      label: "Mobile",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        sort: false,
-      },
-    },
-    //6
-    {
-      name: "customer_mobile",
-      label: "Customer/Mobile",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[4];
-          const mobileNo = tableMeta.rowData[5];
-          return (
-            <div className=" flex flex-col w-38">
-              <span>{customeName}</span>
-              <span>{mobileNo}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //7
-    {
-      name: "order_date",
-      label: "Booking Date",
-      options: {
-        filter: true,
-        sort: false,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
-    //8
-    {
-      name: "order_service_date",
-      label: "Service Date",
-
-      options: {
-        filter: true,
-        sort: false,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
-    //9
-    {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
@@ -267,20 +144,127 @@ const RnrList = () => {
         },
       },
     },
-    //10
+    //2
+    {
+      name: "order_ref",
+      label: "Order/Branch/BookTime",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (order_ref, tableMeta) => {
+          const branchName = tableMeta.rowData[4];
+          const bookTime = tableMeta.rowData[24];
+          return (
+            <div className="flex flex-col w-32">
+              <span>{order_ref}</span>
+              <span>{branchName}</span>
+              <span>{bookTime}</span>
+            </div>
+          );
+        },
+      },
+    },
+     //3
+     {
+      name: "customer_mobile",
+      label: "Customer/Mobile",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[5];
+          const mobileNo = tableMeta.rowData[6];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //4
+
+    {
+      name: "branch_name",
+      label: "Branch",
+      options: {
+        filter: true,
+        display: "exclude",
+        searchable: true,
+        viewColumns: false,
+        sort: true,
+      },
+    },
+    //5
+    {
+      name: "order_customer",
+      label: "Customer",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //6
+    {
+      name: "order_customer_mobile",
+      label: "Mobile",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+   
+    //7
+    {
+      name: "order_date",
+      label: "Booking Date",
+      options: {
+        filter: true,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
+      },
+    },
+    //8
+    {
+      name: "order_service_date",
+      label: "Service Date",
+      options: {
+        filter: true,
+        sort: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        customBodyRender: (value) => {
+          return Moment(value).format("DD-MM-YYYY");
+        },
+      },
+    },
+    
+    //9 service name 
     {
       name: "order_service",
       label: "Service",
       options: {
         filter: false,
-        display: "exclude",
         viewColumns: false,
-
+        display: "exclude",
         searchable: true,
         sort: false,
       },
     },
-    //11
+    //10
     {
       name: "order_amount",
       label: "Price",
@@ -288,20 +272,38 @@ const RnrList = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
-
         searchable: true,
         sort: false,
       },
     },
-    //12
+    //11
     {
       name: "order_custom",
       label: "Custom",
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
         searchable: true,
         sort: false,
+      },
+    },
+     //12
+     {
+      name: "order_time",
+      label: "Time/Area",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const area = tableMeta.rowData[30];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{value}</span>
+              <span style={{ fontSize: "12px" }}>{area}</span>
+            </div>
+          );
+        },
       },
     },
     //13
@@ -312,19 +314,19 @@ const RnrList = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[10];
-          const price = tableMeta.rowData[11];
-          const customeDetails = tableMeta.rowData[12];
+          const service = tableMeta.rowData[9];
+          const price = tableMeta.rowData[10];
+          const customeDetails = tableMeta.rowData[11];
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span>
+                <span>{customeDetails}</span> 
                 <span>{price}</span>
               </div>
             );
           }
           return (
-            <div className=" flex flex-col w-38">
+            <div className=" flex flex-col w-32">
               <span>{service}</span>
               <span>{price}</span>
             </div>
@@ -332,25 +334,8 @@ const RnrList = () => {
         },
       },
     },
+   
     //14
-    {
-      name: "order_time",
-      label: "Time/Area",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[31];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{value}</span>
-              <span style={{ fontSize: "12px" }}>{area}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //15
     {
       name: "order_assign",
       label: "Order Assign",
@@ -361,7 +346,61 @@ const RnrList = () => {
         viewColumns: false,
       },
     },
-    //16
+    //15
+    {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const type = tableMeta.rowData[20];
+          const paid_amount = tableMeta.rowData[19];
+        
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{paid_amount}</span>
+              <span>{type}</span>
+            </div>
+          );
+        },
+      },
+    },
+     //16
+     {
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
+      options: {
+        filter: false,
+        sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px", // minimum width
+            maxWidth: "200px", // optional maximum
+            width: "180px", // fixed width
+          },
+        }),
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[21];
+          const status = tableMeta.rowData[22];
+          const inspectionstatus = tableMeta.rowData[25];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
+            </div>
+          );
+        },
+      },
+    },
+    //17
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -369,11 +408,9 @@ const RnrList = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderAssign = tableMeta?.rowData[15] || [];
-          if (!Array.isArray(orderAssign) || orderAssign.length === 0) {
-            return <span>-</span>;
-          }
-          const activeAssignments = orderAssign?.filter(
+          const orderAssign = tableMeta.rowData[14];
+
+          const activeAssignments = orderAssign.filter(
             (assign) => assign.order_assign_status !== "Cancel"
           );
           const count = activeAssignments.length;
@@ -396,7 +433,7 @@ const RnrList = () => {
         },
       },
     },
-    // 17
+    // 18
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -404,11 +441,8 @@ const RnrList = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderAssign = tableMeta.rowData[15];
+          const orderAssign = tableMeta.rowData[14];
 
-          if (!Array.isArray(orderAssign) || orderAssign.length === 0) {
-            return <span>-</span>;
-          }
           const activeAssignments = orderAssign.filter(
             (assign) => assign.order_assign_status !== "Cancel"
           );
@@ -435,7 +469,7 @@ const RnrList = () => {
         },
       },
     },
-    //18
+    //19
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -447,7 +481,7 @@ const RnrList = () => {
         sort: true,
       },
     },
-    //19
+    //20
     {
       name: "order_payment_type",
       label: "Type",
@@ -459,25 +493,7 @@ const RnrList = () => {
         sort: true,
       },
     },
-    //20
-    {
-      name: "amount_type",
-      label: "Paid Amount/Type",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[18];
-          const price = tableMeta.rowData[17];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
+    
     //21
     {
       name: "updated_by",
@@ -502,41 +518,8 @@ const RnrList = () => {
         sort: false,
       },
     },
+   
     //23
-    {
-      name: "confirm/status/inspection status",
-      label: "Confirm By/Status/Inspection Status",
-      options: {
-        filter: false,
-        sort: false,
-        setCellProps: () => ({
-          style: {
-            minWidth: "150px", // minimum width
-            maxWidth: "200px", // optional maximum
-            width: "180px", // fixed width
-          },
-        }),
-        customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[21];
-          const status = tableMeta.rowData[22];
-          const inspectionstatus = tableMeta.rowData[26];
-          return (
-            <div className=" flex flex-col ">
-              <span>{confirmBy}</span>
-              <span>{status}</span>
-              <td className="flex  items-center">
-                {status === "Inspection" && (
-                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
-                    {inspectionstatus}
-                  </span>
-                )}
-              </td>
-            </div>
-          );
-        },
-      },
-    },
-    //24
     {
       name: "order_address",
       label: "Address",
@@ -548,7 +531,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //25
+    //24
     {
       name: "order_booking_time",
       label: "Book Time",
@@ -560,7 +543,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //26
+    //25
     {
       name: "order_inspection_status",
       label: "Inspection Status",
@@ -572,7 +555,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //27
+    //26
     {
       name: "order_remarks",
       label: "Remarks",
@@ -584,7 +567,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //28
+    //27
     {
       name: "order_comment",
       label: "Comment",
@@ -596,7 +579,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //29
+    //28
     {
       name: "order_postpone_reason",
       label: "Reason",
@@ -608,7 +591,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //30
+    //29
     {
       name: "order_followup",
       label: "Followup",
@@ -620,7 +603,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-    //31
+    //30
     {
       name: "order_area",
       label: "Order Area",
