@@ -131,13 +131,32 @@ const WebsiteBooking = () => {
     },
     //1
     {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //2
+    {
       name: "order_ref",
       label: "Order/Branch/BookTime",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[2];
+          const branchName = tableMeta.rowData[4];
           const bookTime = tableMeta.rowData[24];
           return (
             <div className="flex flex-col w-32">
@@ -149,7 +168,27 @@ const WebsiteBooking = () => {
         },
       },
     },
-    //2
+     //3
+     {
+      name: "customer_mobile",
+      label: "Customer/Mobile",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const customeName = tableMeta.rowData[5];
+          const mobileNo = tableMeta.rowData[6];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{customeName}</span>
+              <span>{mobileNo}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //4
+
     {
       name: "branch_name",
       label: "Branch",
@@ -161,7 +200,7 @@ const WebsiteBooking = () => {
         sort: true,
       },
     },
-    //3
+    //5
     {
       name: "order_customer",
       label: "Customer",
@@ -173,7 +212,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-    //4
+    //6
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -185,26 +224,8 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-    //5
-    {
-      name: "customer_mobile",
-      label: "Customer/Mobile",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[3];
-          const mobileNo = tableMeta.rowData[4];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{customeName}</span>
-              <span>{mobileNo}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //6
+   
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -219,7 +240,7 @@ const WebsiteBooking = () => {
         },
       },
     },
-    //7
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -234,26 +255,8 @@ const WebsiteBooking = () => {
         },
       },
     },
-    //8
-    {
-      name: "booking_service_date",
-      label: "Booking/Service",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
-          return (
-            <div className=" flex flex-col justify-center">
-              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
-              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //9
+    
+    //9 service name 
     {
       name: "order_service",
       label: "Service",
@@ -289,7 +292,25 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-    //12
+     //12
+     {
+      name: "order_time",
+      label: "Time/Area",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const area = tableMeta.rowData[30];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{value}</span>
+              <span style={{ fontSize: "12px" }}>{area}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //13
     {
       name: "service_price",
       label: "Service/Price",
@@ -303,7 +324,7 @@ const WebsiteBooking = () => {
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span>
+                <span>{customeDetails}</span> 
                 <span>{price}</span>
               </div>
             );
@@ -317,24 +338,7 @@ const WebsiteBooking = () => {
         },
       },
     },
-    //13
-    {
-      name: "order_time",
-      label: "Time/Area",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[22];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{value}</span>
-              <span style={{ fontSize: "9px" }}>{area}</span>
-            </div>
-          );
-        },
-      },
-    },
+   
     //14
     {
       name: "order_assign",
@@ -347,6 +351,60 @@ const WebsiteBooking = () => {
       },
     },
     //15
+    {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const type = tableMeta.rowData[20];
+          const paid_amount = tableMeta.rowData[19];
+        
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{paid_amount}</span>
+              <span>{type}</span>
+            </div>
+          );
+        },
+      },
+    },
+     //16
+     {
+      name: "confirm/status/inspection status",
+      label: "Confirm By/Status/Inspection Status",
+      options: {
+        filter: false,
+        sort: false,
+        setCellProps: () => ({
+          style: {
+            minWidth: "150px", // minimum width
+            maxWidth: "200px", // optional maximum
+            width: "180px", // fixed width
+          },
+        }),
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[21];
+          const status = tableMeta.rowData[22];
+          const inspectionstatus = tableMeta.rowData[25];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+              <td className="flex  items-center">
+                {status === "Inspection" && (
+                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+                    {inspectionstatus}
+                  </span>
+                )}
+              </td>
+            </div>
+          );
+        },
+      },
+    },
+    //17
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -379,7 +437,7 @@ const WebsiteBooking = () => {
         },
       },
     },
-    // 16
+    // 18
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -415,7 +473,7 @@ const WebsiteBooking = () => {
         },
       },
     },
-    //17
+    //19
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -427,7 +485,7 @@ const WebsiteBooking = () => {
         sort: true,
       },
     },
-    //18
+    //20
     {
       name: "order_payment_type",
       label: "Type",
@@ -439,26 +497,8 @@ const WebsiteBooking = () => {
         sort: true,
       },
     },
-    //19
-    {
-      name: "amount_type",
-      label: "Paid Amount/Type",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[18];
-          const price = tableMeta.rowData[17];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
-    //20
+    
+    //21
     {
       name: "updated_by",
       label: "Confirm By",
@@ -470,7 +510,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-    //21
+    //22
     {
       name: "order_status",
       label: "Status",
@@ -482,40 +522,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-    //22
-    {
-      name: "confirm/status/inspection status",
-      label: "Confirm By/Status/Inspection Status",
-      options: {
-        filter: false,
-        sort: false,
-        setCellProps: () => ({
-          style: {
-            minWidth: "150px",
-            maxWidth: "200px",
-            width: "180px",
-          },
-        }),
-        customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[20];
-          const status = tableMeta.rowData[21];
-          const inspectionstatus = tableMeta.rowData[25];
-          return (
-            <div className=" flex flex-col ">
-              <span>{confirmBy}</span>
-              <span>{status}</span>
-              <td className="flex  items-center">
-                {status === "Inspection" && (
-                  <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
-                    {inspectionstatus}
-                  </span>
-                )}
-              </td>
-            </div>
-          );
-        },
-      },
-    },
+   
     //23
     {
       name: "order_address",
@@ -600,6 +607,18 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
+    //30
+    {
+      name: "order_area",
+      label: "Order Area",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
   ];
 
   const options = {
@@ -623,7 +642,7 @@ const WebsiteBooking = () => {
     },
 
     setRowProps: (rowData) => {
-      const orderStatus = rowData[21];
+      const orderStatus = rowData[22];
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink

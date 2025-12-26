@@ -127,7 +127,19 @@ const ConfirmedBooking = () => {
         },
       },
     },
-    //1
+      //1
+      {
+        name: "order_service_date",
+        label: "Service Date",
+        options: {
+          filter: true,
+          sort: false,
+          customBodyRender: (value) => {
+            return Moment(value).format("DD-MM-YYYY");
+          },
+        },
+      },
+    //2
     {
       name: "order_ref",
       label: "Order/Branch/BookTime",
@@ -135,7 +147,7 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
-          const branchName = tableMeta.rowData[2];
+          const branchName = tableMeta.rowData[3];
           const bookTime = tableMeta.rowData[21];
           return (
             <div className="flex flex-col w-32">
@@ -147,7 +159,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-    //2
+    //3
     {
       name: "branch_name",
       label: "Branch",
@@ -159,7 +171,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
-    //3
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -171,7 +183,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-    //4
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -183,7 +195,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-    //5
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -191,8 +203,8 @@ const ConfirmedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const customeName = tableMeta.rowData[3];
-          const mobileNo = tableMeta.rowData[4];
+          const customeName = tableMeta.rowData[4];
+          const mobileNo = tableMeta.rowData[5];
           return (
             <div className=" flex flex-col w-32">
               <span>{customeName}</span>
@@ -202,18 +214,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-    //6
-    {
-      name: "order_service_date",
-      label: "Service Date",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          return Moment(value).format("DD-MM-YYYY");
-        },
-      },
-    },
+  
     //7
     {
       name: "order_service",
@@ -310,7 +311,45 @@ const ConfirmedBooking = () => {
         viewColumns: false,
       },
     },
-    //13
+     //13
+     {
+      name: "amount_type",
+      label: "Paid Amount/Type",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const service = tableMeta.rowData[16];
+          const price = tableMeta.rowData[17];
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
+              <span>{price}</span>
+            </div>
+          );
+        },
+      },
+    },
+     //14
+     {
+      name: "confirm/status",
+      label: "Confirm By/Status",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const confirmBy = tableMeta.rowData[19];
+          const status = tableMeta.rowData[20];
+          return (
+            <div className=" flex flex-col ">
+              <span>{confirmBy}</span>
+              <span>{status}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //15
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -343,7 +382,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-    // 14
+    // 16
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -379,7 +418,7 @@ const ConfirmedBooking = () => {
         },
       },
     },
-    //15
+    //17
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -391,7 +430,7 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
-    //16
+    //18
     {
       name: "order_payment_type",
       label: "Type",
@@ -403,26 +442,8 @@ const ConfirmedBooking = () => {
         sort: true,
       },
     },
-    //17
-    {
-      name: "amount_type",
-      label: "Paid Amount/Type",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[15];
-          const price = tableMeta.rowData[16];
-          return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>{price}</span>
-            </div>
-          );
-        },
-      },
-    },
-    // 18
+   
+    // 19
     {
       name: "updated_by",
       label: "Confirm By",
@@ -434,7 +455,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-    // 19
+    // 20
     {
       name: "order_status",
       label: "Status",
@@ -446,25 +467,7 @@ const ConfirmedBooking = () => {
         sort: false,
       },
     },
-    //20
-    {
-      name: "confirm/status",
-      label: "Confirm By/Status",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[18];
-          const status = tableMeta.rowData[19];
-          return (
-            <div className=" flex flex-col ">
-              <span>{confirmBy}</span>
-              <span>{status}</span>
-            </div>
-          );
-        },
-      },
-    },
+   
     //21
     {
       name: "order_booking_time",
@@ -536,7 +539,7 @@ const ConfirmedBooking = () => {
     print: false,
     onRowClick: (rowData, rowMeta, e) => {
       const id = confirmBookData[rowMeta.dataIndex].id;
-      handleView(e, id)();
+      handleView(e, id)
     },
     count: confirmBookData?.length || 0,
     rowsPerPage: rowsPerPage,
@@ -546,7 +549,7 @@ const ConfirmedBooking = () => {
       navigate(`/confirmed?page=${currentPage + 1}`);
     },
     setRowProps: (rowData) => {
-      const orderStatus = rowData[19];
+      const orderStatus = rowData[20];
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink

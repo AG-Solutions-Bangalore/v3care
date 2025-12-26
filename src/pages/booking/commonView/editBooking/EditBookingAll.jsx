@@ -124,6 +124,7 @@ const EditBookingAll = () => {
     if (
       [
         "order_amount",
+        "order_discount",
         "order_advance",
         "order_payment_amount",
         "order_comm",
@@ -224,6 +225,7 @@ const EditBookingAll = () => {
       order_advance: booking.order_advance,
       order_time: booking.order_time,
       order_status: booking.order_status,
+      order_discount: booking.order_discount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
       order_comment: booking.order_comment,
@@ -732,6 +734,10 @@ const EditBookingAll = () => {
                         </>
                       )}
 
+
+
+
+
                       <div
                         className={`${
                           booking?.order_vendor_id == null ? " col-span-2" : ""
@@ -764,6 +770,58 @@ const EditBookingAll = () => {
                           />
                         </div>
                       </div>
+                      <div
+                        className={`${
+                          booking?.order_vendor_id == null ? " col-span-2" : ""
+                        }`}
+                      >
+                        <div className="form-group">
+                          <Input
+                            fullWidth
+                            
+                            label="Discount"
+                            name="order_discount"
+                            value={booking.order_discount}
+                            onChange={(e) => onInputChange(e)}
+                          />
+                        </div>
+                      </div>
+
+                      <div
+  className={`${
+    booking?.order_vendor_id == null ? " col-span-2" : ""
+  }`}
+>
+  <div className="form-group">
+    <Input
+      fullWidth
+      label="Balance"
+      name="order_balance"
+      value={
+        (parseFloat(booking.order_amount) || 0) -
+        ((parseFloat(booking.order_advance) || 0) + 
+         (parseFloat(booking.order_discount) || 0))
+      }
+      disabled
+      readOnly
+    />
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
                       <div className="md:col-span-8">
