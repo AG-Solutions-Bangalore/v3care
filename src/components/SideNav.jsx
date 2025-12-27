@@ -203,6 +203,11 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           text: "Vendor",
           title: "Vendor Download",
         },
+         {
+          to: "/report-vendor-summary-form",
+          text: "Vendor Summary",
+          title: "Vendor Summary",
+        },
         {
           to: "/received-download",
           text: "Received",

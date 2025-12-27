@@ -1,4 +1,4 @@
-import { Divider } from "@mui/material";
+import { Divider, Dialog, DialogActions, DialogContent } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import MUIDataTable from "mui-datatables";
@@ -10,6 +10,7 @@ import {
   FiCheck,
   FiCheckCircle,
   FiClock,
+  FiEdit,
   FiHelpCircle,
   FiLoader,
   FiMapPin,
@@ -20,9 +21,10 @@ import {
   FiUser,
   FiXCircle
 } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../base/BaseUrl";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
 import Layout from "../../layout/Layout";
 
@@ -32,6 +34,9 @@ const CustomerView = () => {
   const [loading, setLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState(null);
   const [customerSince, setCustomerSince] = useState(null);
+  const [openReassignPopup, setOpenReassignPopup] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchcustomerListData = async () => {
@@ -68,9 +73,7 @@ const CustomerView = () => {
         if (response.data?.booking?.length > 0) {
           const lastBooking = response.data.booking[response.data.booking.length - 1];
           setCustomerSince({
-        
             lastBookingDate: lastBooking.order_date,
-            
           });
         }
       } catch (error) {
@@ -81,6 +84,25 @@ const CustomerView = () => {
     };
     fetchcustomerListData();
   }, [customer_name, customer_mobile]);
+
+  const handleEditClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setOpenReassignPopup(true);
+  };
+
+  const handleReassignService = () => {
+    if (selectedBookingId) {
+      setOpenReassignPopup(false);
+      navigate(`/add-booking-reassign/${selectedBookingId}`);
+    }
+  };
+
+  const handleAddService = () => {
+    if (selectedBookingId) {
+      setOpenReassignPopup(false);
+      navigate(`/add-booking-reassign-wo-service/${selectedBookingId}`);
+    }
+  };
 
   const columns = [
     {
@@ -102,7 +124,6 @@ const CustomerView = () => {
         sort: true,
         customBodyRender: (value) => (
           <div className="flex items-center justify-center">
-            {/* <FiCalendar className="mr-1 text-gray-500" size={14} /> */}
             <span>{moment(value).format("DD-MMM-YY")}</span>
           </div>
         )
@@ -125,10 +146,8 @@ const CustomerView = () => {
         sort: true,
         customBodyRender: (value,tableMeta) => {
           const amount = tableMeta.rowData[3];
-
           return(
           <div className="flex items-center justify-center">
-          
             <span className="font-medium "> ₹&nbsp;{amount ? amount : 0}  </span>
           </div>
           )
@@ -145,7 +164,6 @@ const CustomerView = () => {
           const advancedAmount = tableMeta.rowData[4];
           return (
           <div className="flex items-center justify-center">
-          
             <span className="font-medium text-center">₹&nbsp;{advancedAmount ? advancedAmount : 0} </span>
           </div>
           )
@@ -162,7 +180,6 @@ const CustomerView = () => {
           const paidAmount = tableMeta.rowData[5];
           return (
           <div className="flex items-center justify-center">
-          
             <span className="font-medium text-center">₹&nbsp;{paidAmount ? paidAmount : 0} </span>
           </div>
           )
@@ -230,6 +247,26 @@ const CustomerView = () => {
         }
       }
     },
+    {
+      name: "id",
+      label: "ACTIONS",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value) => (
+          <button
+            onClick={() => handleEditClick(value)}
+            className="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition-colors"
+            title="Edit Booking"
+          >
+            <FiEdit size={18} />
+          </button>
+        ),
+        setCellHeaderProps: () => ({
+          style: { textAlign: 'center' }
+        })
+      }
+    },
   ];
 
   const options = {
@@ -244,7 +281,6 @@ const CustomerView = () => {
     setRowProps: () => ({
       style: {
         borderBottom: "1px solid #f3f4f6",
-        cursor: "pointer",
       }
     }),
     textLabels: {
@@ -373,6 +409,38 @@ const CustomerView = () => {
           </div>
         </div>
       )}
+
+      {/* Reassign/Add Service Dialog */}
+      <Dialog
+        open={openReassignPopup}
+        onClose={() => setOpenReassignPopup(false)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogContent>
+          <h2 className="text-lg font-semibold mb-4">Reassign / Add Service</h2>
+          <p className="text-gray-700">Please select the appropriate action for this booking.</p>
+        </DialogContent>
+
+        <DialogActions>
+          <div className="flex justify-center space-x-4 my-2 w-full">
+            <ButtonConfigColor
+              type="submit"
+              buttontype="button"
+              label="Reassign the service"
+              onClick={handleReassignService}
+              fullWidth
+            />
+            <ButtonConfigColor
+              type="edit"
+              buttontype="button"
+              label="Add Service"
+              onClick={handleAddService}
+              fullWidth
+            />
+          </div>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 };
