@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BookingFilter from "../../../../components/BookingFilter";
 import Layout from "../../../../layout/Layout";
+import { Popover, PopoverHandler, PopoverContent, Button } from "@material-tailwind/react";
 
 import {
   Card,
@@ -23,7 +24,7 @@ import {
   Select,
 } from "@mui/material";
 import MUIDataTable from "mui-datatables";
-import { FaHome, FaInfoCircle } from "react-icons/fa";
+import { FaEdit, FaHome, FaInfoCircle, FaWhatsapp } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
@@ -75,6 +76,8 @@ const EditBookingAll = () => {
   var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
   const [openReassignPopup, setOpenReassignPopup] = useState(false);
+ const [openEditService, setOpenEditService] = useState(false);
+  const [serviceLoading, setServiceLoading] = useState(false);
 
   today = mm + "/" + dd + "/" + yyyy;
   const navigate = useNavigate();
@@ -87,6 +90,19 @@ const EditBookingAll = () => {
     order_vendor_id: "",
     order_amount: 0,
   });
+
+   const [serviceData, setServiceData] = useState({
+      order_service: "",
+      order_service_sub: "",
+      order_service_price_for: "",
+      order_service_price: "",
+      order_custom: "",
+      order_custom_price: ""
+    });
+
+    const [serdata, setSerData] = useState([]);
+  const [serdatasub, setSerDataSub] = useState([]);
+  const [pricedata, setPriceData] = useState([]);
   const [paymentmode, setPaymentMode] = useState([]);
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const [loading, setLoading] = useState(false);
@@ -106,6 +122,15 @@ const EditBookingAll = () => {
       [name]: value,
     }));
   };
+
+   const onServiceChange = (e) => {
+    const { name, value } = e.target;
+    setServiceData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const [orderref, setOrderRef] = useState([]);
   const [open, setOpen] = useState(false);
 
@@ -125,6 +150,7 @@ const EditBookingAll = () => {
       [
         "order_amount",
         "order_discount",
+        "order_vendor_amount",
         "order_advance",
         "order_payment_amount",
         "order_comm",
@@ -139,7 +165,88 @@ const EditBookingAll = () => {
       setBooking((prev) => ({ ...prev, [name]: value }));
     }
   };
+// Fetch services data for dropdown
+  const fetchServices = async () => {
+    try {
+      const theLoginToken = localStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + theLoginToken,
+        },
+      };
+      
+      const response = await fetch(BASE_URL + "/api/panel-fetch-service", requestOptions);
+      const data = await response.json();
+      setSerData(data.service);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
+  };
 
+  // Fetch sub-services based on selected service
+  const fetchSubServices = async (serviceId) => {
+    if (!serviceId) return;
+    
+    try {
+      const theLoginToken = localStorage.getItem("token");
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + theLoginToken,
+        },
+      };
+      
+      const response = await fetch(
+        `${BASE_URL}/api/panel-fetch-service-sub/${serviceId}`,
+        requestOptions
+      );
+      const data = await response.json();
+      setSerDataSub(data.servicesub || []);
+    } catch (error) {
+      console.error("Error fetching sub-services:", error);
+      setSerDataSub([]);
+    }
+  };
+
+  // Fetch price data
+  const fetchPriceData = async (serviceId, subServiceId, priceFor = "") => {
+    try {
+      let data = {
+        order_service: serviceId,
+        order_service_sub: subServiceId,
+        branch_id: booking.branch_id,
+        order_service_date: booking.order_service_date,
+      };
+      
+      const response = await axios({
+        url: BASE_URL + "/api/panel-fetch-service-price",
+        method: "POST",
+        data,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      setPriceData(response.data.serviceprice || []);
+      
+      // If priceFor is provided, set the price
+      if (priceFor && response.data.serviceprice) {
+        const selectedPrice = response.data.serviceprice.find(
+          item => item.id === priceFor
+        );
+        if (selectedPrice) {
+          setServiceData(prev => ({
+            ...prev,
+            order_service_price: selectedPrice.service_price_amount
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching price data:", error);
+      setPriceData([]);
+    }
+  };
   const fetchAllData = async () => {
     setFetchLoading(true);
 
@@ -167,6 +274,14 @@ const EditBookingAll = () => {
       setFollowUp(bookingRes.data?.bookingFollowup);
       setPaymentMode(paymentRes.data?.paymentMode);
       setBranch(branchRes.data?.branch);
+      setServiceData({
+        order_service: bookingRes.data?.booking?.order_service || "",
+        order_service_sub: bookingRes.data?.booking?.order_service_sub || "",
+        order_service_price_for: bookingRes.data?.booking?.order_service_price_for || "",
+        order_service_price: bookingRes.data?.booking?.order_service_price || "",
+        order_custom: bookingRes.data?.booking?.order_custom || "",
+        order_custom_price: bookingRes.data?.booking?.order_custom_price || ""
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -182,7 +297,49 @@ const EditBookingAll = () => {
 
   useEffect(() => {
     fetchAllData();
+     fetchServices();
   }, [id]);
+ useEffect(() => {
+    if (serviceData.order_service) {
+      fetchSubServices(serviceData.order_service);
+      
+      // If there's existing sub-service and priceFor, fetch price data
+      if (serviceData.order_service_sub && serviceData.order_service_price_for) {
+        fetchPriceData(
+          serviceData.order_service,
+          serviceData.order_service_sub,
+          serviceData.order_service_price_for
+        );
+      } else {
+        fetchPriceData(serviceData.order_service, serviceData.order_service_sub);
+      }
+    }
+  }, [serviceData.order_service]);
+
+  // When sub-service changes in modal
+  useEffect(() => {
+    if (serviceData.order_service && serviceData.order_service_sub) {
+      fetchPriceData(serviceData.order_service, serviceData.order_service_sub);
+    }
+  }, [serviceData.order_service_sub]);
+
+  // Handle price for change in modal
+  const handlePriceForChange = (e) => {
+    const { value } = e.target;
+    setServiceData(prev => ({
+      ...prev,
+      order_service_price_for: value
+    }));
+    
+    // Find and set the price
+    const selectedPrice = pricedata.find(item => item.id === value);
+    if (selectedPrice) {
+      setServiceData(prev => ({
+        ...prev,
+        order_service_price: selectedPrice.service_price_amount
+      }));
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -226,6 +383,7 @@ const EditBookingAll = () => {
       order_time: booking.order_time,
       order_status: booking.order_status,
       order_discount: booking.order_discount,
+          order_vendor_amount: booking.order_vendor_amount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
       order_comment: booking.order_comment,
@@ -260,7 +418,52 @@ const EditBookingAll = () => {
       setLoading(false);
     }
   };
+ const handleUpdateService = async () => {
+    if (!serviceData.order_service) {
+      toast.error("Please select a service");
+      return;
+    }
+    
+    if (serviceData.order_service === "1") {
+      if (!serviceData.order_custom || !serviceData.order_custom_price) {
+        toast.error("Please fill custom service details");
+        return;
+      }
+    } else {
+      if (!serviceData.order_service_price_for || !serviceData.order_service_price) {
+        toast.error("Please fill service price details");
+        return;
+      }
+    }
 
+    setServiceLoading(true);
+    
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-booking-service/${id}`,
+        serviceData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.data.code === "200") {
+        toast.success(response.data?.msg || "Service updated successfully");
+        setOpenEditService(false);
+        // Refresh the booking data
+        fetchAllData();
+      } else {
+        toast.error(response.data?.msg || "Failed to update service");
+      }
+    } catch (error) {
+      console.error("Error updating service:", error);
+      toast.error("Error updating service");
+    } finally {
+      setServiceLoading(false);
+    }
+  };
   const columns = [
     {
       name: "order_followup_date",
@@ -313,6 +516,42 @@ const EditBookingAll = () => {
       );
     },
   };
+const handleShareAction = async (type) => {
+  let url = "";
+
+  switch (type) {
+    case "reschedule":
+      url = `${BASE_URL}/api/panel-send-whatsapp-reschedule-booking/${id}`;
+      break;
+    case "postpone":
+      url = `${BASE_URL}/api/panel-send-whatsapp-postpone-booking/${id}`;
+      break;
+    case "feedback":
+      url = `${BASE_URL}/api/panel-send-whatsapp-feedback-booking/${id}`;
+      break;
+    case "reconfirmed":
+      url = `${BASE_URL}/api/panel-send-whatsapp-reconfirmed-booking/${id}`;
+      break;
+    default:
+      return;
+  }
+
+  try {
+    const res = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (res.data?.code === 200) {
+      toast.success(res.data?.msg || "Message sent successfully");
+    } else {
+      toast.error(res.data?.msg || "Something went wrong");
+    }
+  } catch (err) {
+    toast.error("Failed to send message");
+  }
+};
 
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -388,6 +627,13 @@ const EditBookingAll = () => {
                   <strong>Vendor:</strong> {vendor.vendor_company}
                 </Typography>
               )}
+               <button
+                                    onClick={() => setOpenEditService(true)}
+                                    className="ml-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-1"
+                                  >
+                                    <FaEdit size={14} />
+                                    Edit Service
+                                  </button>
             </div>
           </div>
         );
@@ -754,6 +1000,22 @@ const EditBookingAll = () => {
                           />
                         </div>
                       </div>
+                      <div
+                        className={`${
+                          booking?.order_vendor_id == null ? " col-span-2" : ""
+                        }`}
+                      >
+                        <div className="form-group">
+                          <Input
+                            fullWidth
+                            
+                            label="Vendor Amount"
+                            name="order_vendor_amount"
+                            value={booking.order_vendor_amount}
+                            onChange={(e) => onInputChange(e)}
+                          />
+                        </div>
+                      </div>
 
                       <div
                         className={`${
@@ -926,6 +1188,39 @@ const EditBookingAll = () => {
                         label="Cancel"
                         onClick={() => navigate(-1)}
                       />
+<Popover placement="bottom-start" offset={10}>
+  <PopoverHandler>
+    <div className="inline-block">
+     <Button
+      color="green"
+      className="flex items-center gap-2"
+    >
+      <FaWhatsapp size={18} />
+      Share
+    </Button>
+    </div>
+  </PopoverHandler>
+
+  <PopoverContent className="flex flex-col gap-2 w-64">
+    <Button fullWidth onClick={() => handleShareAction("reschedule")}>
+      Reschedule Booking
+    </Button>
+
+    <Button fullWidth onClick={() => handleShareAction("postpone")}>
+      Postpone Booking
+    </Button>
+
+    <Button fullWidth onClick={() => handleShareAction("feedback")}>
+      Feedback Booking
+    </Button>
+
+    <Button fullWidth onClick={() => handleShareAction("reconfirmed")}>
+      Reconfirmed Booking
+    </Button>
+  </PopoverContent>
+</Popover>
+
+                      
                     </div>
                   </CardBody>
                 </Card>
@@ -1097,6 +1392,163 @@ const EditBookingAll = () => {
               label="Submit"
               loading={loading}
               onClick={(e) => onSubmitFollowup(e)}
+            />
+          </div>
+        </DialogActions>
+      </Dialog>
+  {/* Edit Service Modal */}
+      <Dialog 
+        open={openEditService} 
+        onClose={() => setOpenEditService(false)} 
+        fullWidth 
+        maxWidth="md"
+      >
+        <DialogContent>
+          <div className="mb-5">
+            <h1 className="font-bold text-xl">Edit Service Details</h1>
+          </div>
+          
+          <div className="space-y-4">
+            {/* Service Dropdown */}
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="order_service-label">
+                  <span className="text-sm relative bottom-[6px]">
+                    Service <span className="text-red-700">*</span>
+                  </span>
+                </InputLabel>
+                <Select
+                  sx={{ height: "40px", borderRadius: "5px" }}
+                  labelId="order_service-label"
+                  id="order_service"
+                  name="order_service"
+                  value={serviceData.order_service}
+                  onChange={(e) => onServiceChange(e)}
+                  label="Service *"
+                  required
+                >
+                  {serdata.map((data) => (
+                    <MenuItem key={data.id} value={data.id}>
+                      {data.service}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            {/* Sub-service Dropdown (only if service is not Custom) */}
+            {serviceData.order_service !== "1" && serdatasub.length > 0 && (
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel id="order_service_sub-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Service Sub <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="order_service_sub-label"
+                    id="order_service_sub"
+                    name="order_service_sub"
+                    value={serviceData.order_service_sub}
+                    onChange={(e) => onServiceChange(e)}
+                    label="Service Sub *"
+                    required
+                  >
+                    {serdatasub.map((data) => (
+                      <MenuItem key={data.id} value={data.id}>
+                        {data.service_sub}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+
+            {/* Price For Dropdown (only if service is not Custom) */}
+            {serviceData.order_service !== "1" && pricedata.length > 0 && (
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel id="order_service_price_for-label">
+                    <span className="text-sm relative bottom-[6px]">
+                      Price For <span className="text-red-700">*</span>
+                    </span>
+                  </InputLabel>
+                  <Select
+                    sx={{ height: "40px", borderRadius: "5px" }}
+                    labelId="order_service_price_for-label"
+                    id="order_service_price_for"
+                    name="order_service_price_for"
+                    value={serviceData.order_service_price_for}
+                    onChange={handlePriceForChange}
+                    label="Price For *"
+                    required
+                  >
+                    {pricedata.map((data) => (
+                      <MenuItem key={data.id} value={data.id}>
+                        {data.service_price_for} - {data.service_price_rate}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+
+            {/* Service Price (only if service is not Custom) */}
+            {serviceData.order_service !== "1" && (
+              <div>
+                <Input
+                  fullWidth
+                  label="Service Price"
+                  name="order_service_price"
+                  value={serviceData.order_service_price}
+                  onChange={(e) => onServiceChange(e)}
+                  required
+                />
+              </div>
+            )}
+
+            {/* Custom Service Fields (only if service is Custom) */}
+            {serviceData.order_service === "1" && (
+              <>
+                <div>
+                  <Input
+                    fullWidth
+                    label="Custom Service"
+                    name="order_custom"
+                    value={serviceData.order_custom}
+                    onChange={(e) => onServiceChange(e)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Input
+                    fullWidth
+                    label="Custom Price"
+                    name="order_custom_price"
+                    value={serviceData.order_custom_price}
+                    onChange={(e) => onServiceChange(e)}
+                    required
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <div className="flex justify-center space-x-4 my-2">
+            <ButtonConfigColor
+              type="back"
+              buttontype="button"
+              label="Cancel"
+              onClick={() => setOpenEditService(false)}
+            />
+            <ButtonConfigColor
+              type="submit"
+              buttontype="submit"
+              label="Update Service"
+              loading={serviceLoading}
+              onClick={handleUpdateService}
             />
           </div>
         </DialogActions>

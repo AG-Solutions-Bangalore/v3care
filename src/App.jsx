@@ -124,6 +124,7 @@ import AddAMCBooking from "./pages/amcBooking/AddAMCBooking";
 import ViewAMCBooking from "./pages/amcBooking/ViewAMCBooking";
 import AddBookingReassign from "./pages/booking/commonView/editBooking/AddBookingReassign";
 import AddBookReassignWOService from "./pages/booking/commonView/editBooking/AddBookReassignWOService";
+import VendorSummaryForm from "./pages/report/vendor-summary/VendorSummaryForm";
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -467,6 +468,8 @@ const App = () => {
           <Route path="/report-tax-invoice" element={<TaxInvoice />} />
           {/* )} */}
 
+{/* vendor summary report  */}
+    <Route path="/report-vendor-summary-form" element={<VendorSummaryForm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/change-password" element={<ChangePassword />} />
         </Routes>

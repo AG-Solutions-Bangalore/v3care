@@ -47,29 +47,64 @@ const OperationEditTeamMaster = () => {
     user_trained_bywhom: "",
     user_last_training: "",
     user_joinining_date: "",
+    // New fields
+    user_image: "",
+    user_bank_name: "",
+    user_account_no: "",
+    user_ifsc_code: "",
+    user_branch_name: "",
+    user_account_holder_name: "",
+    user_alternate_name: "",
+    user_alternate_mobile: "",
+    user_refered_by: ""
   });
+  
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
 
   const [selectedFile1, setSelectedFile1] = useState(null);
   const [selectedFile2, setSelectedFile2] = useState(null);
+  const [selectedFile3, setSelectedFile3] = useState(null); // For user_image
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const storedPageNo = localStorage.getItem("page-no");
   const pageNo =
     storedPageNo === "null" || storedPageNo === null ? "1" : storedPageNo;
+    
   const validateOnlyDigits = (inputtxt) => {
     return /^\d+$/.test(inputtxt) || inputtxt.length === 0;
   };
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    if (
-      (name === "mobile" || name === "user_aadhar_no") &&
-      !validateOnlyDigits(value)
-    ) {
+    
+    // Validation for mobile, aadhar, alternate mobile, and account number
+    if ((name === "mobile" || name === "user_aadhar_no" || name === "user_alternate_mobile" || name === "user_account_no") && !validateOnlyDigits(value)) {
       return;
     }
+
+    // Validation for PAN card (uppercase and alphanumeric)
+    if (name === "user_pancard_no") {
+      const input = value.toUpperCase();
+      const allowed = /^[A-Z0-9]{0,10}$/;
+
+      if (allowed.test(input)) {
+        setTeam(prev => ({ ...prev, user_pancard_no: input }));
+      }
+      return;
+    }
+
+    // Validation for IFSC code (uppercase and alphanumeric)
+    if (name === "user_ifsc_code") {
+      const input = value.toUpperCase();
+      const allowed = /^[A-Z0-9]{0,11}$/;
+
+      if (allowed.test(input)) {
+        setTeam(prev => ({ ...prev, user_ifsc_code: input }));
+      }
+      return;
+    }
+
     setTeam({ ...team, [name]: value });
   };
 
@@ -101,10 +136,12 @@ const OperationEditTeamMaster = () => {
         setFetchLoading(false);
       });
   }, [id]);
+  
   const handleBack = (e) => {
     e.preventDefault();
     navigate(`/operation-team?page=${pageNo}`);
   };
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -121,6 +158,7 @@ const OperationEditTeamMaster = () => {
 
     try {
       const data = new FormData();
+      // Existing fields
       data.append("name", team.name);
       data.append("mobile", team.mobile);
       data.append("email", team.email);
@@ -138,6 +176,17 @@ const OperationEditTeamMaster = () => {
       data.append("user_trained_bywhom", team.user_trained_bywhom);
       data.append("user_last_training", team.user_last_training);
       data.append("user_joinining_date", team.user_joinining_date);
+      
+      // New fields
+      data.append("user_image", selectedFile3);
+      data.append("user_bank_name", team.user_bank_name);
+      data.append("user_account_no", team.user_account_no);
+      data.append("user_ifsc_code", team.user_ifsc_code);
+      data.append("user_branch_name", team.user_branch_name);
+      data.append("user_account_holder_name", team.user_account_holder_name);
+      data.append("user_alternate_name", team.user_alternate_name);
+      data.append("user_alternate_mobile", team.user_alternate_mobile);
+      data.append("user_refered_by", team.user_refered_by);
 
       const response = await axios.post(
         `${BASE_URL}/api/panel-update-admin-user/${id}?_method=PUT`,
@@ -175,6 +224,7 @@ const OperationEditTeamMaster = () => {
           <Card className="p-6 mt-2">
             <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-4">
+                {/* Full Name Field */}
                 <div>
                   <Input
                     label="Full Name"
@@ -184,9 +234,11 @@ const OperationEditTeamMaster = () => {
                     onChange={onInputChange}
                     required
                     maxLength={80}
-                    className="w-full px-4 py-3 border border-gray-500 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-500 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Mobile No Field */}
                 <div>
                   <Input
                     label="Mobile No"
@@ -197,9 +249,11 @@ const OperationEditTeamMaster = () => {
                     maxLength={10}
                     minLength={10}
                     required
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Email Id Field */}
                 <div>
                   <Input
                     label="Email Id"
@@ -208,9 +262,11 @@ const OperationEditTeamMaster = () => {
                     required
                     value={team.email}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Aadhar No Field */}
                 <div>
                   <Input
                     label="Aadhar No"
@@ -219,9 +275,11 @@ const OperationEditTeamMaster = () => {
                     value={team.user_aadhar_no}
                     onChange={onInputChange}
                     maxLength={12}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Aadhar File Upload */}
                 <div>
                   <Input
                     label="Aadhar File"
@@ -232,17 +290,8 @@ const OperationEditTeamMaster = () => {
                   />
                   <small className="text-gray-500">{team.user_aadhar}</small>
                 </div>
-                {/* <div>
-                  <Input
-                    label="Pancard No"
-                    type="text"
-                    name="user_pancard_no"
-                    value={team.user_pancard_no}
-                    onChange={onInputChange}
-                    maxLength={10}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
-                  />
-                </div> */}
+                
+                {/* PAN Card Field */}
                 <div>
                   <InputMask
                     mask="aaaaa 9999 a"
@@ -260,21 +309,25 @@ const OperationEditTeamMaster = () => {
                           type="text"
                           label="PAN"
                           name="user_pancard_no"
-                          className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                          className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                         />
                       </div>
                     )}
                   </InputMask>
                 </div>
+                
+                {/* Designation Field */}
                 <div>
                   <Input
                     label="Designation"
                     name="user_designation"
                     value={team.user_designation}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Training Completed Field */}
                 <FormControl fullWidth>
                   <InputLabel id="user_training-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -296,17 +349,20 @@ const OperationEditTeamMaster = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>{" "}
-                {/* Remarks Field */}
+                </FormControl>
+                
+                {/* Trained By Field */}
                 <div>
                   <Input
                     label="Trained By"
                     name="user_trained_bywhom"
                     value={team.user_trained_bywhom}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Last Training Field */}
                 <div>
                   <Input
                     label="Last Training"
@@ -314,9 +370,11 @@ const OperationEditTeamMaster = () => {
                     value={team.user_last_training}
                     type="date"
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Joining Date Field */}
                 <div>
                   <Input
                     label="Joining Date"
@@ -324,19 +382,23 @@ const OperationEditTeamMaster = () => {
                     type="date"
                     value={team.user_joinining_date}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                 </div>
+                
+                {/* Pancard File Upload */}
                 <div>
                   <Input
                     label="Pancard File"
                     type="file"
                     name="user_pancard"
                     onChange={(e) => setSelectedFile2(e.target.files[0])}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
                   />
                   <small className="text-gray-500">{team.user_pancard}</small>
                 </div>
+                
+                {/* Status Field */}
                 <FormControl fullWidth>
                   <InputLabel id="service-select-label">
                     <span className="text-sm relative bottom-[6px]">
@@ -360,6 +422,7 @@ const OperationEditTeamMaster = () => {
                     ))}
                   </Select>
                 </FormControl>
+                
                 {/* Remarks Field */}
                 <div className="col-span-3">
                   <Textarea
@@ -367,11 +430,124 @@ const OperationEditTeamMaster = () => {
                     name="remarks"
                     value={team.remarks}
                     onChange={onInputChange}
-                    className="w-full px-4 py-3 border border-gray-400 rounded-md  transition-all"
+                    className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                    maxLength={980}
                   ></Textarea>
                 </div>
               </div>
 
+              {/* Horizontal Rule */}
+              <hr className="my-1 border-gray-300" />
+
+              {/* New Additional Fields Section */}
+              <div className="mt-1">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Additional Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                  {/* User Image Upload */}
+                  <div>
+                    <Input
+                      label="Profile Photo"
+                      type="file"
+                      name="user_image"
+                      onChange={(e) => setSelectedFile3(e.target.files[0])}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                    />
+                    <small className="text-gray-500">{team.user_image}</small>
+                  </div>
+                   <div>
+                    <Input
+                      label="Alternate Name"
+                      name="user_alternate_name"
+                      value={team.user_alternate_name}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={80}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Input
+                      label="Alternate Mobile"
+                      name="user_alternate_mobile"
+                      value={team.user_alternate_mobile}
+                      onChange={onInputChange}
+                      maxLength={10}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                    />
+                  </div>
+                  
+                 
+                  <div>
+                    <Input
+                      label="Referred By"
+                      name="user_refered_by"
+                      value={team.user_refered_by}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={80}
+                    />
+                  </div>
+               
+                  <div>
+                    <Input
+                      label="Bank Name"
+                      name="user_bank_name"
+                      value={team.user_bank_name}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={80}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Input
+                      label="Account Number"
+                      name="user_account_no"
+                      value={team.user_account_no}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={20}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Input
+                      label="IFSC Code"
+                      name="user_ifsc_code"
+                      value={team.user_ifsc_code}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={11}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Input
+                      label="Branch Name"
+                      name="user_branch_name"
+                      value={team.user_branch_name}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={80}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Input
+                      label="Account Holder Name"
+                      name="user_account_holder_name"
+                      value={team.user_account_holder_name}
+                      onChange={onInputChange}
+                      className="w-full px-4 py-3 border border-gray-400 rounded-md transition-all"
+                      maxLength={80}
+                    />
+                  </div>
+                  
+              
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
               <div className="flex justify-center space-x-4 my-2">
                 <ButtonConfigColor
                   type="edit"
