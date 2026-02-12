@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BookingFilter from "../../../../components/BookingFilter";
 import Layout from "../../../../layout/Layout";
-import { Popover, PopoverHandler, PopoverContent, Button } from "@material-tailwind/react";
+import {
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+  Button,
+} from "@material-tailwind/react";
 
 import {
   Card,
@@ -76,7 +81,7 @@ const EditBookingAll = () => {
   var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
   const [openReassignPopup, setOpenReassignPopup] = useState(false);
- const [openEditService, setOpenEditService] = useState(false);
+  const [openEditService, setOpenEditService] = useState(false);
   const [serviceLoading, setServiceLoading] = useState(false);
 
   today = mm + "/" + dd + "/" + yyyy;
@@ -91,16 +96,16 @@ const EditBookingAll = () => {
     order_amount: 0,
   });
 
-   const [serviceData, setServiceData] = useState({
-      order_service: "",
-      order_service_sub: "",
-      order_service_price_for: "",
-      order_service_price: "",
-      order_custom: "",
-      order_custom_price: ""
-    });
+  const [serviceData, setServiceData] = useState({
+    order_service: "",
+    order_service_sub: "",
+    order_service_price_for: "",
+    order_service_price: "",
+    order_custom: "",
+    order_custom_price: "",
+  });
 
-    const [serdata, setSerData] = useState([]);
+  const [serdata, setSerData] = useState([]);
   const [serdatasub, setSerDataSub] = useState([]);
   const [pricedata, setPriceData] = useState([]);
   const [paymentmode, setPaymentMode] = useState([]);
@@ -123,7 +128,7 @@ const EditBookingAll = () => {
     }));
   };
 
-   const onServiceChange = (e) => {
+  const onServiceChange = (e) => {
     const { name, value } = e.target;
     setServiceData((prev) => ({
       ...prev,
@@ -165,7 +170,7 @@ const EditBookingAll = () => {
       setBooking((prev) => ({ ...prev, [name]: value }));
     }
   };
-// Fetch services data for dropdown
+  // Fetch services data for dropdown
   const fetchServices = async () => {
     try {
       const theLoginToken = localStorage.getItem("token");
@@ -175,8 +180,11 @@ const EditBookingAll = () => {
           Authorization: "Bearer " + theLoginToken,
         },
       };
-      
-      const response = await fetch(BASE_URL + "/api/panel-fetch-service", requestOptions);
+
+      const response = await fetch(
+        BASE_URL + "/api/panel-fetch-service",
+        requestOptions,
+      );
       const data = await response.json();
       setSerData(data.service);
     } catch (error) {
@@ -187,7 +195,7 @@ const EditBookingAll = () => {
   // Fetch sub-services based on selected service
   const fetchSubServices = async (serviceId) => {
     if (!serviceId) return;
-    
+
     try {
       const theLoginToken = localStorage.getItem("token");
       const requestOptions = {
@@ -196,10 +204,10 @@ const EditBookingAll = () => {
           Authorization: "Bearer " + theLoginToken,
         },
       };
-      
+
       const response = await fetch(
         `${BASE_URL}/api/panel-fetch-service-sub/${serviceId}`,
-        requestOptions
+        requestOptions,
       );
       const data = await response.json();
       setSerDataSub(data.servicesub || []);
@@ -218,7 +226,7 @@ const EditBookingAll = () => {
         branch_id: booking.branch_id,
         order_service_date: booking.order_service_date,
       };
-      
+
       const response = await axios({
         url: BASE_URL + "/api/panel-fetch-service-price",
         method: "POST",
@@ -227,18 +235,18 @@ const EditBookingAll = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       setPriceData(response.data.serviceprice || []);
-      
+
       // If priceFor is provided, set the price
       if (priceFor && response.data.serviceprice) {
         const selectedPrice = response.data.serviceprice.find(
-          item => item.id === priceFor
+          (item) => item.id === priceFor,
         );
         if (selectedPrice) {
-          setServiceData(prev => ({
+          setServiceData((prev) => ({
             ...prev,
-            order_service_price: selectedPrice.service_price_amount
+            order_service_price: selectedPrice.service_price_amount,
           }));
         }
       }
@@ -277,10 +285,12 @@ const EditBookingAll = () => {
       setServiceData({
         order_service: bookingRes.data?.booking?.order_service || "",
         order_service_sub: bookingRes.data?.booking?.order_service_sub || "",
-        order_service_price_for: bookingRes.data?.booking?.order_service_price_for || "",
-        order_service_price: bookingRes.data?.booking?.order_service_price || "",
+        order_service_price_for:
+          bookingRes.data?.booking?.order_service_price_for || "",
+        order_service_price:
+          bookingRes.data?.booking?.order_service_price || "",
         order_custom: bookingRes.data?.booking?.order_custom || "",
-        order_custom_price: bookingRes.data?.booking?.order_custom_price || ""
+        order_custom_price: bookingRes.data?.booking?.order_custom_price || "",
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -297,21 +307,27 @@ const EditBookingAll = () => {
 
   useEffect(() => {
     fetchAllData();
-     fetchServices();
+    fetchServices();
   }, [id]);
- useEffect(() => {
+  useEffect(() => {
     if (serviceData.order_service) {
       fetchSubServices(serviceData.order_service);
-      
+
       // If there's existing sub-service and priceFor, fetch price data
-      if (serviceData.order_service_sub && serviceData.order_service_price_for) {
+      if (
+        serviceData.order_service_sub &&
+        serviceData.order_service_price_for
+      ) {
         fetchPriceData(
           serviceData.order_service,
           serviceData.order_service_sub,
-          serviceData.order_service_price_for
+          serviceData.order_service_price_for,
         );
       } else {
-        fetchPriceData(serviceData.order_service, serviceData.order_service_sub);
+        fetchPriceData(
+          serviceData.order_service,
+          serviceData.order_service_sub,
+        );
       }
     }
   }, [serviceData.order_service]);
@@ -326,17 +342,17 @@ const EditBookingAll = () => {
   // Handle price for change in modal
   const handlePriceForChange = (e) => {
     const { value } = e.target;
-    setServiceData(prev => ({
+    setServiceData((prev) => ({
       ...prev,
-      order_service_price_for: value
+      order_service_price_for: value,
     }));
-    
+
     // Find and set the price
-    const selectedPrice = pricedata.find(item => item.id === value);
+    const selectedPrice = pricedata.find((item) => item.id === value);
     if (selectedPrice) {
-      setServiceData(prev => ({
+      setServiceData((prev) => ({
         ...prev,
-        order_service_price: selectedPrice.service_price_amount
+        order_service_price: selectedPrice.service_price_amount,
       }));
     }
   };
@@ -366,7 +382,7 @@ const EditBookingAll = () => {
 
     if (missingFields.length > 0) {
       toast.error(
-        `Please fill the following required fields: ${missingFields.join(", ")}`
+        `Please fill the following required fields: ${missingFields.join(", ")}`,
       );
       return;
     }
@@ -383,7 +399,7 @@ const EditBookingAll = () => {
       order_time: booking.order_time,
       order_status: booking.order_status,
       order_discount: booking.order_discount,
-          order_vendor_amount: booking.order_vendor_amount,
+      order_vendor_amount: booking.order_vendor_amount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
       order_comment: booking.order_comment,
@@ -402,7 +418,7 @@ const EditBookingAll = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (response.data.code == "200") {
@@ -418,26 +434,29 @@ const EditBookingAll = () => {
       setLoading(false);
     }
   };
- const handleUpdateService = async () => {
+  const handleUpdateService = async () => {
     if (!serviceData.order_service) {
       toast.error("Please select a service");
       return;
     }
-    
+
     if (serviceData.order_service === "1") {
       if (!serviceData.order_custom || !serviceData.order_custom_price) {
         toast.error("Please fill custom service details");
         return;
       }
     } else {
-      if (!serviceData.order_service_price_for || !serviceData.order_service_price) {
+      if (
+        !serviceData.order_service_price_for ||
+        !serviceData.order_service_price
+      ) {
         toast.error("Please fill service price details");
         return;
       }
     }
 
     setServiceLoading(true);
-    
+
     try {
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-booking-service/${id}`,
@@ -446,10 +465,10 @@ const EditBookingAll = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
-      if (response.data.code === "200") {
+      if (response.data.code == "200") {
         toast.success(response.data?.msg || "Service updated successfully");
         setOpenEditService(false);
         // Refresh the booking data
@@ -516,42 +535,42 @@ const EditBookingAll = () => {
       );
     },
   };
-const handleShareAction = async (type) => {
-  let url = "";
+  const handleShareAction = async (type) => {
+    let url = "";
 
-  switch (type) {
-    case "reschedule":
-      url = `${BASE_URL}/api/panel-send-whatsapp-reschedule-booking/${id}`;
-      break;
-    case "postpone":
-      url = `${BASE_URL}/api/panel-send-whatsapp-postpone-booking/${id}`;
-      break;
-    case "feedback":
-      url = `${BASE_URL}/api/panel-send-whatsapp-feedback-booking/${id}`;
-      break;
-    case "reconfirmed":
-      url = `${BASE_URL}/api/panel-send-whatsapp-reconfirmed-booking/${id}`;
-      break;
-    default:
-      return;
-  }
-
-  try {
-    const res = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    if (res.data?.code === 200) {
-      toast.success(res.data?.msg || "Message sent successfully");
-    } else {
-      toast.error(res.data?.msg || "Something went wrong");
+    switch (type) {
+      case "reschedule":
+        url = `${BASE_URL}/api/panel-send-whatsapp-reschedule-booking/${id}`;
+        break;
+      case "postpone":
+        url = `${BASE_URL}/api/panel-send-whatsapp-postpone-booking/${id}`;
+        break;
+      case "feedback":
+        url = `${BASE_URL}/api/panel-send-whatsapp-feedback-booking/${id}`;
+        break;
+      case "reconfirmed":
+        url = `${BASE_URL}/api/panel-send-whatsapp-reconfirmed-booking/${id}`;
+        break;
+      default:
+        return;
     }
-  } catch (err) {
-    toast.error("Failed to send message");
-  }
-};
+
+    try {
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data?.code === 200) {
+        toast.success(res.data?.msg || "Message sent successfully");
+      } else {
+        toast.error(res.data?.msg || "Something went wrong");
+      }
+    } catch (err) {
+      toast.error("Failed to send message");
+    }
+  };
 
   const renderActiveTabContent = () => {
     switch (activeTab) {
@@ -627,13 +646,13 @@ const handleShareAction = async (type) => {
                   <strong>Vendor:</strong> {vendor.vendor_company}
                 </Typography>
               )}
-               <button
-                                    onClick={() => setOpenEditService(true)}
-                                    className="ml-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-1"
-                                  >
-                                    <FaEdit size={14} />
-                                    Edit Service
-                                  </button>
+              <button
+                onClick={() => setOpenEditService(true)}
+                className="ml-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-1"
+              >
+                <FaEdit size={14} />
+                Edit Service
+              </button>
             </div>
           </div>
         );
@@ -880,7 +899,7 @@ const handleShareAction = async (type) => {
                               label="Branch *"
                               required
                               disabled={disabledStatuses.includes(
-                                booking.order_status
+                                booking.order_status,
                               )}
                             >
                               {branch.map((data) => (
@@ -980,10 +999,6 @@ const handleShareAction = async (type) => {
                         </>
                       )}
 
-
-
-
-
                       <div
                         className={`${
                           booking?.order_vendor_id == null ? " col-span-2" : ""
@@ -1008,7 +1023,6 @@ const handleShareAction = async (type) => {
                         <div className="form-group">
                           <Input
                             fullWidth
-                            
                             label="Vendor Amount"
                             name="order_vendor_amount"
                             value={booking.order_vendor_amount}
@@ -1040,7 +1054,6 @@ const handleShareAction = async (type) => {
                         <div className="form-group">
                           <Input
                             fullWidth
-                            
                             label="Discount"
                             name="order_discount"
                             value={booking.order_discount}
@@ -1050,40 +1063,28 @@ const handleShareAction = async (type) => {
                       </div>
 
                       <div
-  className={`${
-    booking?.order_vendor_id == null ? " col-span-2" : ""
-  }`}
->
-  <div className="form-group">
-    <Input
-      fullWidth
-      label="Balance"
-      name="order_balance"
-      value={
-        (parseFloat(booking.order_amount) || 0) -
-        ((parseFloat(booking.order_advance) || 0) + 
-         (parseFloat(booking.order_discount) || 0))
-      }
-      disabled
-      readOnly
-    />
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        className={`${
+                          booking?.order_vendor_id == null ? " col-span-2" : ""
+                        }`}
+                      >
+                        <div className="form-group">
+                          <Input
+                            fullWidth
+                            label="Balance"
+                            name="order_balance"
+                            labelProps={{
+                              className: "!text-gray-600 ",
+                            }}
+                            value={
+                              (parseFloat(booking.order_amount) || 0) -
+                              ((parseFloat(booking.order_advance) || 0) +
+                                (parseFloat(booking.order_discount) || 0))
+                            }
+                            disabled
+                            readOnly
+                          />
+                        </div>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
                       <div className="md:col-span-8">
@@ -1173,7 +1174,7 @@ const handleShareAction = async (type) => {
                       <ButtonConfigColor
                         type="submit"
                         buttontype="button"
-                        label="Prepone / Postpone"
+                        label="Cancel / Postponed"
                         onClick={() => navigate(`/postpone-booking/${id}`)}
                       />
                       <ButtonConfigColor
@@ -1188,39 +1189,49 @@ const handleShareAction = async (type) => {
                         label="Cancel"
                         onClick={() => navigate(-1)}
                       />
-<Popover placement="bottom-start" offset={10}>
-  <PopoverHandler>
-    <div className="inline-block">
-     <Button
-      color="green"
-      className="flex items-center gap-2"
-    >
-      <FaWhatsapp size={18} />
-      Share
-    </Button>
-    </div>
-  </PopoverHandler>
+                      <Popover placement="bottom-start" offset={10}>
+                        <PopoverHandler>
+                          <div className="inline-block">
+                            <Button
+                              color="green"
+                              className="flex items-center gap-2"
+                            >
+                              <FaWhatsapp size={18} />
+                              Share
+                            </Button>
+                          </div>
+                        </PopoverHandler>
 
-  <PopoverContent className="flex flex-col gap-2 w-64">
-    <Button fullWidth onClick={() => handleShareAction("reschedule")}>
-      Reschedule Booking
-    </Button>
+                        <PopoverContent className="flex flex-col gap-2 w-64">
+                          <Button
+                            fullWidth
+                            onClick={() => handleShareAction("reschedule")}
+                          >
+                            Reschedule Booking
+                          </Button>
 
-    <Button fullWidth onClick={() => handleShareAction("postpone")}>
-      Postpone Booking
-    </Button>
+                          <Button
+                            fullWidth
+                            onClick={() => handleShareAction("postpone")}
+                          >
+                            Postpone Booking
+                          </Button>
 
-    <Button fullWidth onClick={() => handleShareAction("feedback")}>
-      Feedback Booking
-    </Button>
+                          <Button
+                            fullWidth
+                            onClick={() => handleShareAction("feedback")}
+                          >
+                            Feedback Booking
+                          </Button>
 
-    <Button fullWidth onClick={() => handleShareAction("reconfirmed")}>
-      Reconfirmed Booking
-    </Button>
-  </PopoverContent>
-</Popover>
-
-                      
+                          <Button
+                            fullWidth
+                            onClick={() => handleShareAction("reconfirmed")}
+                          >
+                            Reconfirmed Booking
+                          </Button>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </CardBody>
                 </Card>
@@ -1396,18 +1407,18 @@ const handleShareAction = async (type) => {
           </div>
         </DialogActions>
       </Dialog>
-  {/* Edit Service Modal */}
-      <Dialog 
-        open={openEditService} 
-        onClose={() => setOpenEditService(false)} 
-        fullWidth 
+      {/* Edit Service Modal */}
+      <Dialog
+        open={openEditService}
+        onClose={() => setOpenEditService(false)}
+        fullWidth
         maxWidth="md"
       >
         <DialogContent>
           <div className="mb-5">
             <h1 className="font-bold text-xl">Edit Service Details</h1>
           </div>
-          
+
           <div className="space-y-4">
             {/* Service Dropdown */}
             <div>
