@@ -275,7 +275,6 @@ const FieldTeamEditMaster = () => {
                   <Input
                     label="Email Id"
                     type="email"
-                    required
                     name="email"
                     value={team.email}
                     onChange={onInputChange}

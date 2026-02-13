@@ -306,7 +306,7 @@ const AddFieldTeamMaster = () => {
                   label="Email Id"
                   type="email"
                   name="email"
-                  required
+                  // required
                   value={team.email}
                   onChange={onInputChange}
                   maxLength={50}
