@@ -21,17 +21,17 @@ import React from "react";
 const YesterdayBooking = () => {
   const [yesterdayBookingData, setYesterdayBookingData] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
-    const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("all");
   const [openFollowModal, setOpenFollowModal] = useState(false);
   const [followupdata, setFollowUpData] = useState("");
   const [loading, setLoading] = useState(false);
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
- 
+
   UseEscapeKey();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const YesterdayBooking = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const bookingData = response.data?.booking;
@@ -61,53 +61,53 @@ const YesterdayBooking = () => {
   }, []);
 
   useEffect(() => {
-      if (!yesterdayBookingData) return;
-  
-      let filtered = [...yesterdayBookingData];
-  
-      switch (activeTab) {
-        case "v3-team":
-          filtered = filtered.filter(item => {
-            const orderAssign = item.order_assign || [];
-            const activeAssignments = orderAssign.filter(
-              assign => assign.order_assign_status !== "Cancel"
-            );
-            return (
-              activeAssignments.length > 0 &&
-              item.order_vendor_id === null &&
-              item.order_status !== "Vendor"
-            );
-          });
-          break;
-  
-        case "non-assigned":
-          filtered = filtered.filter(item => {
-            const orderAssign = item.order_assign || [];
-            const activeAssignments = orderAssign.filter(
-              assign => assign.order_assign_status !== "Cancel"
-            );
-            return activeAssignments.length === 0;
-          });
-          break;
-  
-        case "vendor-team":
-          filtered = filtered.filter(item => 
-            item.order_vendor_id !== null && item.order_status === "Vendor"
+    if (!yesterdayBookingData) return;
+
+    let filtered = [...yesterdayBookingData];
+
+    switch (activeTab) {
+      case "v3-team":
+        filtered = filtered.filter((item) => {
+          const orderAssign = item.order_assign || [];
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel",
           );
-          break;
-  
-        case "all":
-        default:
-          break;
-      }
-  
-      setFilteredData(filtered);
-    }, [activeTab, yesterdayBookingData]);
-  
-    const handleTabClick = (tab) => {
-      setActiveTab(tab);
-    };
-  
+          return (
+            activeAssignments.length > 0 &&
+            item.order_vendor_id === null &&
+            item.order_status !== "Vendor"
+          );
+        });
+        break;
+
+      case "non-assigned":
+        filtered = filtered.filter((item) => {
+          const orderAssign = item.order_assign || [];
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel",
+          );
+          return activeAssignments.length === 0;
+        });
+        break;
+
+      case "vendor-team":
+        filtered = filtered.filter(
+          (item) =>
+            item.order_vendor_id !== null || item.order_status === "Vendor",
+        );
+        break;
+
+      case "all":
+      default:
+        break;
+    }
+
+    setFilteredData(filtered);
+  }, [activeTab, yesterdayBookingData]);
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
 
   const handleAction = (e, id, status) => {
     e.preventDefault();
@@ -168,8 +168,8 @@ const YesterdayBooking = () => {
         },
       },
     },
-     //1
-     {
+    //1
+    {
       name: "booking_service_date",
       label: "Booking/Service",
       options: {
@@ -187,8 +187,8 @@ const YesterdayBooking = () => {
         },
       },
     },
-     //2
-     {
+    //2
+    {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
@@ -263,7 +263,7 @@ const YesterdayBooking = () => {
         sort: false,
       },
     },
-   
+
     //7
     {
       name: "order_date",
@@ -294,7 +294,7 @@ const YesterdayBooking = () => {
         },
       },
     },
-   
+
     //9
     {
       name: "order_service",
@@ -331,8 +331,8 @@ const YesterdayBooking = () => {
         sort: false,
       },
     },
-     //12
-     {
+    //12
+    {
       name: "order_time",
       label: "Time/Area",
       options: {
@@ -340,10 +340,13 @@ const YesterdayBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const area = tableMeta.rowData[30];
+          const subarea = tableMeta.rowData[31];
           return (
             <div className=" flex flex-col w-32">
               <span>{value}</span>
-              <span style={{ fontSize: "9px" }}>{area}</span>
+              <span style={{ fontSize: "9px" }}>
+                {area}-{subarea}
+              </span>
             </div>
           );
         },
@@ -378,7 +381,7 @@ const YesterdayBooking = () => {
         },
       },
     },
-   
+
     //14
     {
       name: "order_assign",
@@ -402,15 +405,15 @@ const YesterdayBooking = () => {
           const paid_amount = tableMeta.rowData[19];
           return (
             <div className=" flex flex-col w-32">
-                <span>{paid_amount}</span>
-                <span>{type}</span>
+              <span>{paid_amount}</span>
+              <span>{type}</span>
             </div>
           );
         },
       },
     },
-     //16
-     {
+    //16
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -454,7 +457,7 @@ const YesterdayBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -487,7 +490,7 @@ const YesterdayBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -536,7 +539,7 @@ const YesterdayBooking = () => {
         sort: true,
       },
     },
-    
+
     //21
     {
       name: "updated_by",
@@ -561,7 +564,7 @@ const YesterdayBooking = () => {
         sort: false,
       },
     },
-   
+
     //23
     {
       name: "order_address",
@@ -648,8 +651,20 @@ const YesterdayBooking = () => {
     },
     //30
     {
-      name: "order_area",
-      label: "Order Area",
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //31
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
       options: {
         filter: true,
         display: "exclude",
@@ -668,13 +683,15 @@ const YesterdayBooking = () => {
     download: false,
     print: false,
     pagination: false,
-    rowsPerPageOptions: [], 
+    rowsPerPageOptions: [],
     fixedHeader: true,
-    tableBodyHeight: "calc(100vh - 250px)", 
-    tableBodyMaxHeight: "", 
-    
+    tableBodyHeight: "calc(100vh - 250px)",
+    tableBodyMaxHeight: "",
+
     onRowClick: (rowData, rowMeta, e) => {
       const id = yesterdayBookingData[rowMeta.dataIndex].id;
+      console.log(id, "id", yesterdayBookingData[rowMeta.dataIndex]);
+
       handleView(e, id)();
     },
 
@@ -709,52 +726,52 @@ const YesterdayBooking = () => {
         },
       };
     },
-   customToolbar: () => {
-        return (
-          <React.Fragment>
-            <button
-              onClick={() => handleTabClick("all")}
-              className={`px-4 py-2 rounded-md font-medium text-xs ${
-                activeTab === "all" 
-                  ? "bg-blue-600 text-white" 
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => handleTabClick("v3-team")}
-              className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-                activeTab === "v3-team" 
-                  ? "bg-blue-600 text-white" 
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              V3 Team
-            </button>
-            <button
-              onClick={() => handleTabClick("non-assigned")}
-              className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-                activeTab === "non-assigned" 
-                  ? "bg-blue-600 text-white" 
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              Non Assigned
-            </button>
-            <button
-              onClick={() => handleTabClick("vendor-team")}
-              className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-                activeTab === "vendor-team" 
-                  ? "bg-blue-600 text-white" 
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
-              Vendor Team
-            </button>
-          </React.Fragment>
-        );
-      },
+    customToolbar: () => {
+      return (
+        <React.Fragment>
+          <button
+            onClick={() => handleTabClick("all")}
+            className={`px-4 py-2 rounded-md font-medium text-xs ${
+              activeTab === "all"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => handleTabClick("v3-team")}
+            className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
+              activeTab === "v3-team"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            V3 Team
+          </button>
+          <button
+            onClick={() => handleTabClick("non-assigned")}
+            className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
+              activeTab === "non-assigned"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Non Assigned
+          </button>
+          <button
+            onClick={() => handleTabClick("vendor-team")}
+            className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
+              activeTab === "vendor-team"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Vendor Team
+          </button>
+        </React.Fragment>
+      );
+    },
   };
   return (
     <Layout>
