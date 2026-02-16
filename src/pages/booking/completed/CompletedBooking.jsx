@@ -270,18 +270,31 @@ const CompletedBooking = () => {
       },
     },
     //12
-    {
+  {
       name: "order_time",
       label: "Time/Area",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[30];
+          const locality = tableMeta.rowData[32];
+          const subLocality = tableMeta.rowData[33]; 
+          
+          let areaDisplay = "";
+          if (locality && subLocality) {
+            areaDisplay = `${locality} - ${subLocality}`;
+          } else if (locality) {
+            areaDisplay = locality;
+          } else if (subLocality) {
+            areaDisplay = subLocality;
+          } else {
+            areaDisplay = "N/A";
+          }
+          
           return (
-            <div className=" flex flex-col w-32">
+            <div className="flex flex-col w-32">
               <span>{value}</span>
-              <span style={{ fontSize: "12px" }}>{area}</span>
+              <span style={{ fontSize: "12px" }}>{areaDisplay}</span>
             </div>
           );
         },
@@ -617,6 +630,31 @@ const CompletedBooking = () => {
         sort: false,
       },
     },
+      //32 - order_locality
+    {
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //33 - order_sub_locality
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+  
   ];
   const options = {
     selectableRows: "none",

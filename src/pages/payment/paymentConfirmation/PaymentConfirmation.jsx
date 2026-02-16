@@ -2,7 +2,6 @@ import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaCircle, FaCheckCircle, FaTimesCircle, FaHourglassHalf } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import PaymentFilter from "../../../components/PaymentFilter";
@@ -13,7 +12,7 @@ import Moment from "moment";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-const PendingPayment = () => {
+const PaymentConfirmation = () => {
   const [pendingData, setPendingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
@@ -23,14 +22,6 @@ const PendingPayment = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-  
-  // State for totals
-  const [totals, setTotals] = useState({
-    totalPrice: 0,
-    totalPaid: 0,
-    totalBalance: 0
-  });
-
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -38,16 +29,14 @@ const PendingPayment = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/pending-payment?page=${storedPageNo}`);
+        navigate(`/pending-payment-confirmation?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
       }
     }
   }, [location]);
-  
   UseEscapeKey();
-  
   useEffect(() => {
     const fetchPendingData = async () => {
       try {
@@ -66,21 +55,12 @@ const PendingPayment = () => {
           }
         );
 
-        const bookingData = response.data?.booking;
-        setPendingData(bookingData);
+        // Filter the data to only show records where order_payment_amount is not null and not 0
+        const filteredData = response.data?.booking?.filter(item => 
+          item.order_payment_amount && parseFloat(item.order_payment_amount) > 0
+        );
         
-        // Calculate totals
-        if (bookingData && bookingData.length > 0) {
-          const totalPrice = bookingData.reduce((sum, item) => sum + (parseFloat(item.order_amount) || 0), 0);
-          const totalPaid = bookingData.reduce((sum, item) => sum + (parseFloat(item.order_payment_amount) || 0), 0);
-          const totalBalance = totalPrice - totalPaid;
-          
-          setTotals({
-            totalPrice,
-            totalPaid,
-            totalBalance
-          });
-        }
+        setPendingData(filteredData);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -88,29 +68,14 @@ const PendingPayment = () => {
       }
     };
     fetchPendingData();
-  }, []);
+  }, [isPanelUp, navigate]);
 
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-payment-view/${id}`);
+    navigate(`/pending-payment-confirmation-view/${id}`);
   };
-
-
-  const getStatusIcon = (status) => {
-    switch(status) {
-      case "Completed":
-        return <FaTimesCircle className="text-green-600" title="close the job" />;
-      case "Pending":
-        return <FaTimesCircle className="text-yellow-600" title="close the job" />;
-      case "Cancel":
-        return <FaTimesCircle className="text-red-600" title="close the job" />;
-      default:
-        return <FaCircle className="text-gray-400" title={status} />;
-    }
-  };
-
   const columns = [
     {
       name: "order_ref",
@@ -127,7 +92,7 @@ const PendingPayment = () => {
       name: "branch_name",
       label: "Branch",
       options: {
-        filter: true, // Enabled branch filter
+        filter: false,
         display: "exclude",
         searchable: true,
         sort: true,
@@ -209,6 +174,7 @@ const PendingPayment = () => {
         display: "exclude",
         searchable: true,
         viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -223,6 +189,7 @@ const PendingPayment = () => {
         display: "exclude",
         searchable: true,
         viewColumns: false,
+
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
@@ -254,9 +221,11 @@ const PendingPayment = () => {
         display: "exclude",
         searchable: true,
         viewColumns: false,
+
         sort: true,
       },
     },
+
     {
       name: "order_amount",
       label: "Price",
@@ -264,6 +233,7 @@ const PendingPayment = () => {
         filter: true,
         display: "exclude",
         viewColumns: false,
+
         searchable: true,
         sort: false,
       },
@@ -293,6 +263,7 @@ const PendingPayment = () => {
         filter: false,
         display: "exclude",
         viewColumns: false,
+
         searchable: true,
         sort: false,
       },
@@ -326,43 +297,7 @@ const PendingPayment = () => {
         },
       },
     },
-    // Status Column 
-    {
-      name: "order_status",
-      label: "Status Changed",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value) => {
-          return (
-            <div className="flex justify-center grayscale ">
-              {getStatusIcon(value)}
-            </div>
-          );
-        },
-      },
-    },
-    // Balance Column
-    {
-      name: "balance",
-      label: "Balance",
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const price = parseFloat(tableMeta.rowData[11]) || 0;
-          const paid = parseFloat(tableMeta.rowData[13]) || 0;
-          const balance = price - paid;
-          return (
-            <span className={balance > 0 ? "text-red-600 font-semibold" : "text-green-600 font-semibold"}>
-              ₹{balance.toFixed(2)}
-            </span>
-          );
-        },
-      },
-    },
   ];
-
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -370,12 +305,13 @@ const PendingPayment = () => {
     viewColumns: true,
     download: false,
     print: false,
+
     count: pendingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
-      navigate(`/pending-payment?page=${currentPage + 1}`);
+      navigate(`/pending-payment-confirmation?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
       const id = pendingData[rowMeta.dataIndex].id;
@@ -418,36 +354,15 @@ const PendingPayment = () => {
       );
     },
   };
-
   return (
     <Layout>
-      <PaymentFilter />
+  
       {loading ? (
         <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title={
-              <div className="flex items-center justify-between w-full">
-                <span className="text-lg font-semibold">This list to be confirmed by accounts    </span>
-                <div className="flex items-center space-x-4 px-3 py-1 bg-blue-50 rounded-md">
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs text-gray-600">Total Amount:</span>
-                    <span className="text-sm font-bold text-blue-600">₹{totals.totalPrice.toFixed(2)}</span>
-                  </div>
-                  <div className="w-px h-4 bg-gray-300"></div>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs text-gray-600">Paid:</span>
-                    <span className="text-sm font-bold text-green-600">₹{totals.totalPaid.toFixed(2)}</span>
-                  </div>
-                  <div className="w-px h-4 bg-gray-300"></div>
-                  <div className="flex items-center space-x-1">
-                    <span className="text-xs text-gray-600">Balance:</span>
-                    <span className="text-sm font-bold text-red-600">₹{totals.totalBalance.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-            }
+            title="Payment Confirm List"
             data={pendingData ? pendingData : []}
             columns={columns}
             options={options}
@@ -458,4 +373,4 @@ const PendingPayment = () => {
   );
 };
 
-export default PendingPayment;
+export default PaymentConfirmation;

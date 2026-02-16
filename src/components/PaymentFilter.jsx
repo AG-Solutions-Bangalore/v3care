@@ -12,14 +12,14 @@ const PaymentFilter = () => {
 
   const buttons = [
     {
-      label: "Pending Payment",
+      label: "Completed Jobs",
       path: "/pending-payment",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
-      label: "Received Payment",
+      label: "Close Jobs",
       path: "/received-payment",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",
