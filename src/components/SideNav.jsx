@@ -160,6 +160,13 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
     },
     {
+      to: "/pending-payment-confirmation?page=1",
+      icon: <MdOutlinePayment className="w-5 h-5 text-inherit" />,
+      text: "payment Conf. ",
+      title: "Payments",
+      roles: ["admin", "superadmin", "operationteam", "viewer", "masteradmins"],
+    },
+    {
       to: "/commission-pending?page=1",
       icon: <RiGitRepositoryCommitsLine className="w-5 h-5 text-inherit" />,
       text: "Commission",
@@ -195,7 +202,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
         },
         {
           to: "/allBooking-download",
-          text: "All Booking",
+          text: "Payment Summary",
           title: "All Booking Download",
         },
         {

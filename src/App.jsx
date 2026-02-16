@@ -125,6 +125,7 @@ import ViewAMCBooking from "./pages/amcBooking/ViewAMCBooking";
 import AddBookingReassign from "./pages/booking/commonView/editBooking/AddBookingReassign";
 import AddBookReassignWOService from "./pages/booking/commonView/editBooking/AddBookReassignWOService";
 import VendorSummaryForm from "./pages/report/vendor-summary/VendorSummaryForm";
+import PaymentConfirmation from "./pages/payment/paymentConfirmation/PaymentConfirmation";
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -383,7 +384,8 @@ const App = () => {
             userType === "8") && (
             <>
               {/* payment  */}
-              <Route path="/pending-payment" element={<PendingPayment />} />
+              <Route path="/pending-payment-confirmation" element={<PaymentConfirmation />} />
+                <Route path="/pending-payment" element={<PendingPayment />} />
               <Route
                 path="/pending-payment-view/:id"
                 element={<PendingPaymentView />}

@@ -332,21 +332,31 @@ const YesterdayBooking = () => {
       },
     },
     //12
-    {
+     {
       name: "order_time",
       label: "Time/Area",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const area = tableMeta.rowData[30];
-          const subarea = tableMeta.rowData[31];
+          const locality = tableMeta.rowData[30];
+          const subLocality = tableMeta.rowData[31]; 
+          
+          let areaDisplay = "";
+          if (locality && subLocality) {
+            areaDisplay = `${locality} - ${subLocality}`;
+          } else if (locality) {
+            areaDisplay = locality;
+          } else if (subLocality) {
+            areaDisplay = subLocality;
+          } else {
+            areaDisplay = "N/A";
+          }
+          
           return (
-            <div className=" flex flex-col w-32">
+            <div className="flex flex-col w-32">
               <span>{value}</span>
-              <span style={{ fontSize: "9px" }}>
-                {area}-{subarea}
-              </span>
+              <span style={{ fontSize: "12px" }}>{areaDisplay}</span>
             </div>
           );
         },

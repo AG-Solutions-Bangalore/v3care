@@ -358,7 +358,7 @@ const ReceivedPayment = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Payment Received List"
+            title="Payment Confirmed by accounts "
             data={receivedData ? receivedData : []}
             columns={columns}
             options={options}

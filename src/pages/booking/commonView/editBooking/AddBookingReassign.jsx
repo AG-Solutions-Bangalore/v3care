@@ -334,7 +334,7 @@ const AddBookingReassign = () => {
           order_flat: bookingData.order_flat || "",
           order_building: bookingData.order_building || "",
           order_landmark: bookingData.order_landmark || "",
-          order_advance: bookingData.order_advance || "",
+          // order_advance: bookingData.order_advance || "",
           order_km: bookingData.order_km || "",
           order_time: bookingData.order_time || "",
           order_remarks: bookingData.order_remarks || "",
