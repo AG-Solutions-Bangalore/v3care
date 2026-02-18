@@ -111,9 +111,8 @@ const MasterFilter = () => {
           },
         ]
       : []),
-    ...( userType == '7'
+    ...(userType == "7"
       ? [
-          
           {
             label: "Blogs",
             path: "/blogs",
@@ -121,10 +120,9 @@ const MasterFilter = () => {
             hoverColor: "hover:bg-yellow-50",
             textColor: "text-black-900",
           },
-         
         ]
       : []),
-    ...(userType == "6" || userType == "8" 
+    ...(userType == "6" || userType == "8"
       ? [
           {
             label: "Holiday List",
@@ -153,6 +151,13 @@ const MasterFilter = () => {
             color: "from-blue-500 to-gray-400",
             hoverColor: "hover:bg-blue-50",
             textColor: "text-black-900",
+          },
+          {
+            label: "Bank",
+            path: "/bank",
+            color: "from-pink-500 to-cyan-400",
+            hoverColor: "hover:bg-green-50",
+            textColor: "text-green-900",
           },
         ]
       : []),

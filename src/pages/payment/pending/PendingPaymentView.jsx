@@ -86,7 +86,7 @@ const PendingPaymentView = () => {
   };
   const updateData = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
 
     try {
       const res = await axios.put(
@@ -96,7 +96,7 @@ const PendingPaymentView = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (res.data.code == "200") {
@@ -288,26 +288,6 @@ const PendingPaymentView = () => {
                   <form onSubmit={updateData}>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                       <div className="md:col-span-4">
-                        {/* <Select
-                          label="Select Payment Mode"
-                          name="order_check_payment_type"
-                          value={payment.order_check_payment_type || ""}
-                        >
-                          {paymentModes.map((mode) => (
-                            <Option
-                              key={mode.payment_mode}
-                              value={mode.payment_mode}
-                              onClick={() =>
-                                setPayment({
-                                  ...payment,
-                                  order_check_payment_type: mode.payment_mode,
-                                })
-                              }
-                            >
-                              {mode.payment_mode}
-                            </Option>
-                          ))}
-                        </Select> */}
                         <FormControl fullWidth>
                           <InputLabel id="order_check_payment_type-label">
                             <span className="text-sm relative bottom-[6px]">
@@ -336,6 +316,40 @@ const PendingPaymentView = () => {
                           </Select>
                         </FormControl>{" "}
                       </div>
+                      {/* order_check_payment_bank_type */}
+
+                      {/* (16:54) panel-fetch-bank. */}
+
+                      <div className="md:col-span-4">
+                        <FormControl fullWidth>
+                          <InputLabel id="order_check_payment_type-label">
+                            <span className="text-sm relative bottom-[6px]">
+                              Payment Mode
+                              <span className="text-red-700">*</span>
+                            </span>
+                          </InputLabel>
+                          <Select
+                            sx={{ height: "40px", borderRadius: "5px" }}
+                            labelId="order_check_payment_type"
+                            id="id"
+                            name="order_check_payment_type"
+                            value={payment.order_check_payment_type || ""}
+                            onChange={onInputChange}
+                            label="Payment Mode *"
+                            required
+                          >
+                            {paymentModes.map((item) => (
+                              <MenuItem
+                                key={item.id}
+                                value={String(item.payment_mode)}
+                              >
+                                {item.payment_mode}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>{" "}
+                      </div>
+
                       <div className="md:col-span-8">
                         {" "}
                         <Textarea

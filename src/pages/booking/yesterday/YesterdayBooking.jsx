@@ -1,22 +1,19 @@
 import axios from "axios";
+import { ClipboardList } from "lucide-react";
 import Moment from "moment";
 import MUIDataTable from "mui-datatables";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CiSquarePlus } from "react-icons/ci";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
-import BookingFilter from "../../../components/BookingFilter";
-import Layout from "../../../layout/Layout";
-import { ContextPanel } from "../../../utils/ContextPanel";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
-
-import { ClipboardList } from "lucide-react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import BookingFilter from "../../../components/BookingFilter";
 import CommentPopover from "../../../components/common/CommentPopover";
 import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import React from "react";
+import Layout from "../../../layout/Layout";
+import { ContextPanel } from "../../../utils/ContextPanel";
+import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const YesterdayBooking = () => {
   const [yesterdayBookingData, setYesterdayBookingData] = useState(null);
@@ -64,7 +61,6 @@ const YesterdayBooking = () => {
     if (!yesterdayBookingData) return;
 
     let filtered = [...yesterdayBookingData];
-
     switch (activeTab) {
       case "v3-team":
         filtered = filtered.filter((item) => {
@@ -332,7 +328,7 @@ const YesterdayBooking = () => {
       },
     },
     //12
-     {
+    {
       name: "order_time",
       label: "Time/Area",
       options: {
@@ -340,8 +336,8 @@ const YesterdayBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const locality = tableMeta.rowData[30];
-          const subLocality = tableMeta.rowData[31]; 
-          
+          const subLocality = tableMeta.rowData[31];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -352,7 +348,7 @@ const YesterdayBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
             <div className="flex flex-col w-32">
               <span>{value}</span>
@@ -699,10 +695,8 @@ const YesterdayBooking = () => {
     tableBodyMaxHeight: "",
 
     onRowClick: (rowData, rowMeta, e) => {
-      const id = yesterdayBookingData[rowMeta.dataIndex].id;
-      console.log(id, "id", yesterdayBookingData[rowMeta.dataIndex]);
-
-      handleView(e, id)();
+      const id = filteredData[rowMeta.dataIndex].id;
+      handleView(e, id);
     },
 
     setRowProps: (rowData) => {
