@@ -47,12 +47,12 @@ const ReceivedPayment = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-payment-received-list`,
+          `${BASE_URL}/api/panel-fetch-final-payment-close-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setReceivedData(response.data?.booking);
@@ -358,7 +358,7 @@ const ReceivedPayment = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Payment Confirmed by accounts "
+            title="Payment Closed"
             data={receivedData ? receivedData : []}
             columns={columns}
             options={options}

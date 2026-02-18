@@ -126,6 +126,7 @@ import AddBookingReassign from "./pages/booking/commonView/editBooking/AddBookin
 import AddBookReassignWOService from "./pages/booking/commonView/editBooking/AddBookReassignWOService";
 import VendorSummaryForm from "./pages/report/vendor-summary/VendorSummaryForm";
 import PaymentConfirmation from "./pages/payment/paymentConfirmation/PaymentConfirmation";
+import BankList from "./pages/master/bank/bank-list";
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -319,6 +320,7 @@ const App = () => {
               <Route path="/blogs-edit/:id" element={<BlogsEditMaster />} />
 
               <Route path="/email-alert" element={<EmailAlert />} />
+              <Route path="/bank" element={<BankList />} />
               <Route
                 path="/right-sidebar-content"
                 element={<RightSidebarList />}

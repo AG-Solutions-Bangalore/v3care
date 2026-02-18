@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
-import PaymentFilter from "../../../components/PaymentFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 
@@ -52,14 +51,14 @@ const PaymentConfirmation = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
+        );
+        const filteredData = response.data?.booking?.filter(
+          (item) =>
+            item.order_payment_amount &&
+            parseFloat(item.order_payment_amount) > 0,
         );
 
-        // Filter the data to only show records where order_payment_amount is not null and not 0
-        const filteredData = response.data?.booking?.filter(item => 
-          item.order_payment_amount && parseFloat(item.order_payment_amount) > 0
-        );
-        
         setPendingData(filteredData);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
@@ -74,7 +73,7 @@ const PaymentConfirmation = () => {
     e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-payment-confirmation-view/${id}`);
+    navigate(`/pending-payment-view/${id}`);
   };
   const columns = [
     {
@@ -356,13 +355,12 @@ const PaymentConfirmation = () => {
   };
   return (
     <Layout>
-  
       {loading ? (
         <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Payment Confirm List"
+            title="This list to be confirmed by accounts"
             data={pendingData ? pendingData : []}
             columns={columns}
             options={options}

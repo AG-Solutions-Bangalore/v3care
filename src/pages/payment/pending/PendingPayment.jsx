@@ -1,8 +1,8 @@
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
+import { FaCircle, FaTimesCircle } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaCircle, FaCheckCircle, FaTimesCircle, FaHourglassHalf } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import PaymentFilter from "../../../components/PaymentFilter";
@@ -12,6 +12,13 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import Moment from "moment";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
 
 const PendingPayment = () => {
   const [pendingData, setPendingData] = useState(null);
@@ -23,14 +30,13 @@ const PendingPayment = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
-  
-  // State for totals
   const [totals, setTotals] = useState({
     totalPrice: 0,
     totalPaid: 0,
-    totalBalance: 0
+    totalBalance: 0,
   });
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -45,73 +51,84 @@ const PendingPayment = () => {
       }
     }
   }, [location]);
-  
-  UseEscapeKey();
-  
-  useEffect(() => {
-    const fetchPendingData = async () => {
-      try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-payment-pending-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        const bookingData = response.data?.booking;
-        setPendingData(bookingData);
-        
-        // Calculate totals
-        if (bookingData && bookingData.length > 0) {
-          const totalPrice = bookingData.reduce((sum, item) => sum + (parseFloat(item.order_amount) || 0), 0);
-          const totalPaid = bookingData.reduce((sum, item) => sum + (parseFloat(item.order_payment_amount) || 0), 0);
-          const totalBalance = totalPrice - totalPaid;
-          
-          setTotals({
-            totalPrice,
-            totalPaid,
-            totalBalance
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
+  UseEscapeKey();
+
+  const fetchPendingData = async () => {
+    try {
+      if (!isPanelUp) {
+        navigate("/maintenance");
+        return;
       }
-    };
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-final-payment-open-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const bookingData = response.data?.booking;
+      setPendingData(bookingData);
+
+      if (bookingData && bookingData.length > 0) {
+        const totalPrice = bookingData.reduce(
+          (sum, item) => sum + (parseFloat(item.order_amount) || 0),
+          0,
+        );
+        const totalPaid = bookingData.reduce(
+          (sum, item) => sum + (parseFloat(item.order_payment_amount) || 0),
+          0,
+        );
+        const totalBalance = totalPrice - totalPaid;
+
+        setTotals({
+          totalPrice,
+          totalPaid,
+          totalBalance,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchPendingData();
   }, []);
 
-  const handleView = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-payment-view/${id}`);
-  };
 
 
   const getStatusIcon = (status) => {
-    switch(status) {
+    switch (status) {
       case "Completed":
-        return <FaTimesCircle className="text-green-600" title="close the job" />;
+        return (
+          <FaTimesCircle className="text-green-600" title="close the job" />
+        );
       case "Pending":
-        return <FaTimesCircle className="text-yellow-600" title="close the job" />;
+        return (
+          <FaTimesCircle className="text-yellow-600" title="close the job" />
+        );
       case "Cancel":
         return <FaTimesCircle className="text-red-600" title="close the job" />;
       default:
         return <FaCircle className="text-gray-400" title={status} />;
     }
   };
+  const handleClick = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setSelectedId(id);
+    setIsDialogOpen(true);
+  };
 
   const columns = [
+    //0
     {
       name: "order_ref",
       label: "ID",
@@ -123,17 +140,19 @@ const PendingPayment = () => {
         viewColumns: false,
       },
     },
+    //1
     {
       name: "branch_name",
       label: "Branch",
       options: {
-        filter: true, // Enabled branch filter
+        filter: true,
         display: "exclude",
         searchable: true,
         sort: true,
         viewColumns: false,
       },
     },
+    //2
     {
       name: "order_branch",
       label: "Order/Branch",
@@ -152,14 +171,26 @@ const PendingPayment = () => {
         },
       },
     },
+    //3
     {
-      name: "order_area",
+      name: "order_locality",
       label: "Area",
       options: {
         filter: false,
         sort: true,
+        customBodyRender: (value, tableMeta) => {
+          const locality = tableMeta.rowData[20];
+          const sublocality = tableMeta.rowData[19];
+          return (
+            <div className=" flex flex-col w-40">
+              <span>{locality}</span>
+              <span>{sublocality}</span>
+            </div>
+          );
+        },
       },
     },
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -171,6 +202,7 @@ const PendingPayment = () => {
         viewColumns: false,
       },
     },
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -182,6 +214,7 @@ const PendingPayment = () => {
         viewColumns: false,
       },
     },
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -200,6 +233,7 @@ const PendingPayment = () => {
         },
       },
     },
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -214,6 +248,7 @@ const PendingPayment = () => {
         },
       },
     },
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -228,6 +263,7 @@ const PendingPayment = () => {
         },
       },
     },
+    //9
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -246,6 +282,7 @@ const PendingPayment = () => {
         },
       },
     },
+    //10
     {
       name: "order_service",
       label: "Service",
@@ -257,6 +294,8 @@ const PendingPayment = () => {
         sort: true,
       },
     },
+
+    //11
     {
       name: "order_amount",
       label: "Price",
@@ -268,6 +307,7 @@ const PendingPayment = () => {
         sort: false,
       },
     },
+    //12
     {
       name: "service_price",
       label: "Service/Price",
@@ -277,15 +317,29 @@ const PendingPayment = () => {
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[10];
           const price = tableMeta.rowData[11];
+          const custom = tableMeta.rowData[13];
           return (
             <div className=" flex flex-col w-40">
-              <span>{service}</span>
+              <span>{service == "Custom" ? custom : service}</span>
               <span>{price}</span>
             </div>
           );
         },
       },
     },
+    //13
+    {
+      name: "order_custom",
+      label: "Custom Description",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //14
     {
       name: "order_payment_amount",
       label: "Paid Amount",
@@ -297,6 +351,7 @@ const PendingPayment = () => {
         sort: false,
       },
     },
+    //15
     {
       name: "order_payment_type",
       label: "Paid Type",
@@ -308,6 +363,7 @@ const PendingPayment = () => {
         viewColumns: false,
       },
     },
+    //16
     {
       name: "amount_type",
       label: "Paid Amount/Type",
@@ -315,8 +371,8 @@ const PendingPayment = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const amountType = tableMeta.rowData[13];
-          const paidType = tableMeta.rowData[14];
+          const amountType = tableMeta.rowData[14];
+          const paidType = tableMeta.rowData[15];
           return (
             <div className=" flex flex-col ">
               <span>{amountType}</span>
@@ -326,7 +382,34 @@ const PendingPayment = () => {
         },
       },
     },
-    // Status Column 
+    // 17
+
+    {
+      name: "balance",
+      label: "Balance",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const price = parseFloat(tableMeta.rowData[11]) || 0;
+          const paid = parseFloat(tableMeta.rowData[14]) || 0;
+          const balance = price - paid;
+          return (
+            <span
+              className={
+                balance > 0
+                  ? "text-red-600 font-semibold"
+                  : "text-green-600 font-semibold"
+              }
+            >
+              ₹{balance.toFixed(2)}
+            </span>
+          );
+        },
+      },
+    },
+
+    // 18
     {
       name: "order_status",
       label: "Status Changed",
@@ -342,27 +425,55 @@ const PendingPayment = () => {
         },
       },
     },
-    // Balance Column
+    //19
     {
-      name: "balance",
-      label: "Balance",
+      name: "order_sub_locality",
+      label: "Sub Locality",
       options: {
         filter: false,
+        display: "exclude",
+        searchable: true,
         sort: false,
-        customBodyRender: (value, tableMeta) => {
-          const price = parseFloat(tableMeta.rowData[11]) || 0;
-          const paid = parseFloat(tableMeta.rowData[13]) || 0;
-          const balance = price - paid;
-          return (
-            <span className={balance > 0 ? "text-red-600 font-semibold" : "text-green-600 font-semibold"}>
-              ₹{balance.toFixed(2)}
-            </span>
-          );
-        },
+        viewColumns: false,
+      },
+    },
+    //20
+    {
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
       },
     },
   ];
+  const confirmPayment = async () => {
+    if (!selectedId) return;
 
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-update-final-payment-status/${selectedId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      if (res?.data?.code == "200") {
+        toast.success(res.data?.msg || "Payment Updated successfully");
+        setIsDialogOpen(false);
+        fetchPendingData();
+      } else {
+        toast.error(res?.data?.msg || "Failed to Payment");
+      }
+    } catch (error) {
+      setIsDialogOpen(false);
+      toast.error(error.response?.data?.message || "An error occurred");
+    }
+  };
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -379,7 +490,7 @@ const PendingPayment = () => {
     },
     onRowClick: (rowData, rowMeta, e) => {
       const id = pendingData[rowMeta.dataIndex].id;
-      handleView(e, id)();
+      handleClick(e, id)();
     },
     setRowProps: () => {
       return {
@@ -429,21 +540,27 @@ const PendingPayment = () => {
           <MUIDataTable
             title={
               <div className="flex items-center justify-between w-full">
-                <span className="text-lg font-semibold">This list to be confirmed by accounts    </span>
+                <span className="text-lg font-semibold">Payments</span>
                 <div className="flex items-center space-x-4 px-3 py-1 bg-blue-50 rounded-md">
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-end space-x-1">
                     <span className="text-xs text-gray-600">Total Amount:</span>
-                    <span className="text-sm font-bold text-blue-600">₹{totals.totalPrice.toFixed(2)}</span>
+                    <span className="text-sm font-bold text-blue-600">
+                      ₹{totals.totalPrice.toFixed(2)}
+                    </span>
                   </div>
                   <div className="w-px h-4 bg-gray-300"></div>
                   <div className="flex items-center space-x-1">
                     <span className="text-xs text-gray-600">Paid:</span>
-                    <span className="text-sm font-bold text-green-600">₹{totals.totalPaid.toFixed(2)}</span>
+                    <span className="text-sm font-bold text-green-600">
+                      ₹{totals.totalPaid.toFixed(2)}
+                    </span>
                   </div>
                   <div className="w-px h-4 bg-gray-300"></div>
                   <div className="flex items-center space-x-1">
                     <span className="text-xs text-gray-600">Balance:</span>
-                    <span className="text-sm font-bold text-red-600">₹{totals.totalBalance.toFixed(2)}</span>
+                    <span className="text-sm font-bold text-red-600">
+                      ₹{totals.totalBalance.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -454,6 +571,27 @@ const PendingPayment = () => {
           />
         </div>
       )}
+      <Dialog open={isDialogOpen} handler={() => setIsDialogOpen(false)}>
+        <DialogHeader>Confirm Payment</DialogHeader>
+        <DialogBody>
+          Do you want to Close this payment? <br />
+          <span className="text-red-500 font-semibold">
+            You cannot undo this action.
+          </span>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            onClick={() => setIsDialogOpen(false)}
+            className="mr-2"
+          >
+            Cancel
+          </Button>
+          <Button color="red" onClick={confirmPayment}>
+            Yes
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </Layout>
   );
 };
