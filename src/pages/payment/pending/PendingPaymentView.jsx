@@ -320,7 +320,7 @@ const PendingPaymentView = () => {
 
                       {/* (16:54) panel-fetch-bank. */}
 
-                      <div className="md:col-span-4">
+                      {/* <div className="md:col-span-4">
                         <FormControl fullWidth>
                           <InputLabel id="order_check_payment_type-label">
                             <span className="text-sm relative bottom-[6px]">
@@ -348,7 +348,7 @@ const PendingPaymentView = () => {
                             ))}
                           </Select>
                         </FormControl>{" "}
-                      </div>
+                      </div> */}
 
                       <div className="md:col-span-8">
                         {" "}
