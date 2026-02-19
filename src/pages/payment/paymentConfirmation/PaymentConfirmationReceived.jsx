@@ -1,19 +1,21 @@
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
+import PaymentFilter from "../../../components/PaymentFilter";
 import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 
 import Moment from "moment";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import PaymentConfirmationFilter from "../../../components/PaymentConfirmationFilter";
 
-const PaymentConfirmation = () => {
-  const [pendingData, setPendingData] = useState(null);
+const PaymentConformationReceived = () => {
+  const [confirmationreceivedData, setConfirmationReceivedData] =
+    useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const PaymentConfirmation = () => {
       const storedPageNo = localStorage.getItem("page-no");
       if (storedPageNo) {
         setPage(parseInt(storedPageNo) - 1);
-        navigate(`/pending-payment-confirmation?page=${storedPageNo}`);
+        navigate(`/received-payment-confirmation?page=${storedPageNo}`);
       } else {
         localStorage.setItem("page-no", 1);
         setPage(0);
@@ -38,7 +40,7 @@ const PaymentConfirmation = () => {
   }, [location]);
   UseEscapeKey();
   useEffect(() => {
-    const fetchPendingData = async () => {
+    const fetchConfirmationReceivedData = async () => {
       try {
         if (!isPanelUp) {
           navigate("/maintenance");
@@ -47,34 +49,29 @@ const PaymentConfirmation = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-payment-pending-list`,
+          `${BASE_URL}/api/panel-fetch-payment-received-list`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           },
         );
-        const filteredData = response.data?.booking?.filter(
-          (item) =>
-            item.order_payment_amount &&
-            parseFloat(item.order_payment_amount) > 0,
-        );
 
-        setPendingData(filteredData);
+        setConfirmationReceivedData(response.data?.booking);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchPendingData();
-  }, [isPanelUp, navigate]);
+    fetchConfirmationReceivedData();
+  }, []);
 
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
     localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-payment-view/${id}`);
+    navigate(`/pending-received-view/${id}`);
   };
   const columns = [
     {
@@ -83,7 +80,7 @@ const PaymentConfirmation = () => {
       options: {
         filter: false,
         display: "exclude",
-        searchable: true,
+        serchable: true,
         sort: true,
         viewColumns: false,
       },
@@ -92,9 +89,9 @@ const PaymentConfirmation = () => {
       name: "branch_name",
       label: "Branch",
       options: {
-        filter: false,
+        filter: true,
         display: "exclude",
-        searchable: true,
+        serchable: true,
         sort: true,
         viewColumns: false,
       },
@@ -157,7 +154,7 @@ const PaymentConfirmation = () => {
           const customeName = tableMeta.rowData[4];
           const mobileNo = tableMeta.rowData[5];
           return (
-            <div className=" flex flex-col w-38">
+            <div className=" flex flex-col w-40">
               <span>{customeName}</span>
               <span>{mobileNo}</span>
             </div>
@@ -172,7 +169,7 @@ const PaymentConfirmation = () => {
         filter: true,
         sort: true,
         display: "exclude",
-        searchable: true,
+        serchable: true,
         viewColumns: false,
 
         customBodyRender: (value) => {
@@ -187,7 +184,7 @@ const PaymentConfirmation = () => {
         filter: true,
         sort: true,
         display: "exclude",
-        searchable: true,
+        serchable: true,
         viewColumns: false,
 
         customBodyRender: (value) => {
@@ -202,8 +199,8 @@ const PaymentConfirmation = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[7];
-          const serviceDate = tableMeta.rowData[8];
+          const bookingDate = tableMeta.rowData[6];
+          const serviceDate = tableMeta.rowData[7];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
@@ -218,11 +215,11 @@ const PaymentConfirmation = () => {
       label: "Service",
       options: {
         filter: true,
+        sort: true,
         display: "exclude",
-        searchable: true,
         viewColumns: false,
 
-        sort: true,
+        searchable: true,
       },
     },
 
@@ -262,9 +259,9 @@ const PaymentConfirmation = () => {
       options: {
         filter: false,
         display: "exclude",
+        searchable: true,
         viewColumns: false,
 
-        searchable: true,
         sort: false,
       },
     },
@@ -274,9 +271,10 @@ const PaymentConfirmation = () => {
       options: {
         filter: false,
         display: "exclude",
+        viewColumns: false,
+
         searchable: true,
         sort: false,
-        viewColumns: false,
       },
     },
     {
@@ -289,12 +287,54 @@ const PaymentConfirmation = () => {
           const amountType = tableMeta.rowData[13];
           const paidType = tableMeta.rowData[14];
           return (
-            <div className=" flex flex-col ">
+            <div className=" flex flex-col w-32 ">
               <span>{amountType}</span>
               <span>{paidType}</span>
             </div>
           );
         },
+      },
+    },
+
+    {
+      name: "order_check_payment_type",
+      label: "Received Confirmation",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const paymenttype = tableMeta.rowData[17];
+          const bank = tableMeta.rowData[18];
+          return (
+            <div className=" flex flex-col w-32 ">
+              <span>{paymenttype}</span>
+              <span>{bank}</span>
+            </div>
+          );
+        },
+      },
+    },
+    {
+      name: "order_check_payment_type",
+      label: "Payment Type",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    {
+      name: "order_check_payment_bank_type",
+      label: "Bank",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+
+        searchable: true,
+        sort: false,
       },
     },
   ];
@@ -306,15 +346,15 @@ const PaymentConfirmation = () => {
     download: false,
     print: false,
 
-    count: pendingData?.length || 0,
+    count: confirmationreceivedData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
-      navigate(`/pending-payment-confirmation?page=${currentPage + 1}`);
+      navigate(`/received-payment-confirmation?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = pendingData[rowMeta.dataIndex].id;
+      const id = confirmationreceivedData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
     setRowProps: () => {
@@ -357,14 +397,13 @@ const PaymentConfirmation = () => {
   return (
     <Layout>
       <PaymentConfirmationFilter />
-
       {loading ? (
         <LoaderComponent />
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="This list to be confirmed by accounts"
-            data={pendingData ? pendingData : []}
+            title="Payment Confirmation"
+            data={confirmationreceivedData ? confirmationreceivedData : []}
             columns={columns}
             options={options}
           />
@@ -374,4 +413,4 @@ const PaymentConfirmation = () => {
   );
 };
 
-export default PaymentConfirmation;
+export default PaymentConformationReceived;

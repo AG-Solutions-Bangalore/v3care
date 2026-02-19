@@ -26,14 +26,17 @@ const PendingPaymentView = () => {
   const navigate = useNavigate();
   UseEscapeKey();
   const [booking, setBooking] = useState({});
+  const [vendor, setVendor] = useState({});
   const [payment, setPayment] = useState({
     order_check_payment_type: "",
     order_check_payment_details: "",
+    order_check_payment_bank_type: "",
   });
   const [loading, setLoading] = useState(false);
   const [fetchloading, setFetchLoading] = useState(false);
 
   const { userType } = useContext(ContextPanel);
+  const [bankModes, setaBankModes] = useState([]);
   const [paymentModes, setPaymentModes] = useState([]);
   const [activeTab, setActiveTab] = useState("bookingDetails");
   const storedPageNo = localStorage.getItem("page-no");
@@ -50,6 +53,7 @@ const PendingPaymentView = () => {
         },
       });
       setBooking(response.data?.booking);
+      setVendor(response.data.vendor);
     } catch (error) {
       console.error("Error fetching booking data:", error);
     } finally {
@@ -72,9 +76,25 @@ const PendingPaymentView = () => {
     }
   };
 
+  const fetchBanks = async () => {
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/api/panel-fetch-bank`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setaBankModes(response.data?.bank);
+    } catch (error) {
+      console.error("Error fetching payment modes:", error);
+    }
+  };
+
   useEffect(() => {
     fetchBookingData();
     fetchPaymentModes();
+    fetchBanks();
   }, []);
 
   const onInputChange = (e) => {
@@ -82,7 +102,7 @@ const PendingPaymentView = () => {
   };
   const handleBack = (e) => {
     e.preventDefault();
-    navigate(`/pending-payment?page=${pageNo}`);
+    navigate(`/pending-payment-confirmation?page=${pageNo}`);
   };
   const updateData = async (e) => {
     e.preventDefault();
@@ -101,7 +121,7 @@ const PendingPaymentView = () => {
 
       if (res.data.code == "200") {
         toast.success(res.data?.msg || "Payment Updated Successfully");
-        navigate(`/pending-payment?page=${pageNo}`);
+        navigate(`/pending-payment-confirmation?page=${pageNo}`);
       } else {
         toast.error(res.data?.msg || "Network Error");
       }
@@ -120,7 +140,7 @@ const PendingPaymentView = () => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {" "}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Typography className="text-black">
                 <strong>ID:</strong> {booking.order_ref} ({booking.order_status}
                 )
@@ -132,46 +152,73 @@ const PendingPaymentView = () => {
                 <strong>Mobile:</strong> {booking.order_customer_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Email:</strong> {booking.order_customer_email}
+                <strong>Alternative Mobile:</strong>{" "}
+                {booking.order_customer_alt_mobile}
               </Typography>
               <Typography className="text-black">
-                <strong>Booking Created By:</strong> {booking.created_by}
+                <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
-            </div>
-            <div className="space-y-2">
               <Typography className="text-black">
                 <strong>Date:</strong>{" "}
                 {moment(booking.order_date).format("DD-MM-YYYY")}
               </Typography>
+            </div>
+            <div className="space-y-1">
               <Typography className="text-black">
                 <strong>Service Date:</strong>{" "}
                 {moment(booking.order_service_date).format("DD-MM-YYYY")}
               </Typography>
+
               <Typography className="text-black">
                 <strong>Slot Time:</strong> {booking.order_time}
               </Typography>
               <Typography className="text-black">
-                <strong>Service:</strong>{" "}
-                {booking.order_custom_price <= "1"
-                  ? booking.order_service
-                  : booking.order_custom}
+                <strong>Service:</strong> {booking.order_service}
+              </Typography>
+              {booking.order_service !== "Custom" && (
+                <Typography className="text-black">
+                  <strong>Sub-service:</strong>{" "}
+                  {booking.order_custom_price <= "1"
+                    ? booking.order_service_sub
+                    : ""}
+                </Typography>
+              )}
+              {booking.order_service !== "Custom" && (
+                <Typography className="text-black">
+                  <strong>Sub Service Price For:</strong>{" "}
+                  {booking.order_service_price_for}
+                </Typography>
+              )}
+              {booking.order_service == "Custom" && (
+                <Typography className="text-black">
+                  <strong>Custom:</strong> {booking.order_custom}
+                </Typography>
+              )}
+              <Typography className="text-black">
+                <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
               <Typography className="text-black">
                 <strong>Booking Confirmed By:</strong> {booking.updated_by}
               </Typography>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Typography className="text-black">
-                <strong>Sub-service:</strong>{" "}
-                {booking.order_custom_price <= "1"
-                  ? booking.order_service_sub
-                  : ""}
+                <strong>Booking Amount:</strong> {booking?.order_amount}
               </Typography>
               <Typography className="text-black">
-                <strong>Amount:</strong> {booking?.order_payment_amount}
+                <strong>Advance:</strong> {booking?.order_advance}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Discount:</strong> {booking?.order_discount}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Paid Amount:</strong> {booking?.order_payment_amount}
               </Typography>
               <Typography className="text-black">
                 <strong>Type:</strong> {booking.order_payment_type}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Bank:</strong> {booking.order_check_payment_bank_type}
               </Typography>
               <Typography className="text-black">
                 <strong>Transaction Details:</strong>{" "}
@@ -199,7 +246,8 @@ const PendingPaymentView = () => {
             </div>
             <div className="space-y-2">
               <Typography className="text-black">
-                <strong>Area:</strong> {booking.order_area}
+                <strong>Area:</strong> {booking.order_locality}-
+                {booking.order_sub_locality}
               </Typography>
               <Typography className="text-black">
                 <strong>Branch:</strong> {booking.branch_name}
@@ -222,9 +270,7 @@ const PendingPaymentView = () => {
                 <strong>Current Price:</strong>{" "}
                 {booking.order_service_price_for} - {booking.order_amount}
               </Typography>
-              <Typography className="text-black">
-                <strong>Advanced:</strong> {booking.order_advance}
-              </Typography>
+
               <Typography className="text-black">
                 <strong>Distance:</strong> {booking.order_km} Km
               </Typography>
@@ -256,7 +302,7 @@ const PendingPaymentView = () => {
                   }`}
                 >
                   <FaHome />
-                  {booking?.order_service}
+                  Booking Overview
                 </button>
 
                 <button
@@ -275,6 +321,25 @@ const PendingPaymentView = () => {
               {/* Main Content Based on Active Tab */}
               <Card className="mt-2">
                 <CardBody>{renderActiveTabContent()}</CardBody>
+                {booking.order_vendor_id !== null && (
+                  <CardBody className="p-2 border ">
+                    {" "}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                      <Typography className="text-black col-span-2">
+                        <strong>Vendor:</strong> {vendor.vendor_company}
+                      </Typography>
+
+                      <Typography className="text-black">
+                        <strong>Vendor Amount:</strong>{" "}
+                        {booking.order_vendor_amount}
+                      </Typography>
+                      <Typography className="text-black">
+                        <strong>Commission:</strong> {booking.order_comm} - (
+                        {booking.order_comm_percentage}%)
+                      </Typography>
+                    </div>
+                  </CardBody>
+                )}
               </Card>
             </div>
             {userType !== "4" && (
@@ -287,69 +352,68 @@ const PendingPaymentView = () => {
                 <CardBody>
                   <form onSubmit={updateData}>
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                      <div className="md:col-span-4">
-                        <FormControl fullWidth>
-                          <InputLabel id="order_check_payment_type-label">
-                            <span className="text-sm relative bottom-[6px]">
-                              Payment Mode
-                              <span className="text-red-700">*</span>
-                            </span>
-                          </InputLabel>
-                          <Select
-                            sx={{ height: "40px", borderRadius: "5px" }}
-                            labelId="order_check_payment_type"
-                            id="id"
-                            name="order_check_payment_type"
-                            value={payment.order_check_payment_type || ""}
-                            onChange={onInputChange}
-                            label="Payment Mode *"
-                            required
-                          >
-                            {paymentModes.map((item) => (
-                              <MenuItem
-                                key={item.id}
-                                value={String(item.payment_mode)}
-                              >
-                                {item.payment_mode}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>{" "}
+                      <div className="md:col-span-4 space-y-4">
+                        <div>
+                          <FormControl fullWidth>
+                            <InputLabel id="order_check_payment_type-label">
+                              <span className="text-sm relative bottom-[6px]">
+                                Payment Mode
+                                <span className="text-red-700">*</span>
+                              </span>
+                            </InputLabel>
+                            <Select
+                              sx={{ height: "40px", borderRadius: "5px" }}
+                              labelId="order_check_payment_type"
+                              id="id"
+                              name="order_check_payment_type"
+                              value={payment.order_check_payment_type || ""}
+                              onChange={onInputChange}
+                              label="Payment Mode *"
+                              required
+                            >
+                              {paymentModes.map((item) => (
+                                <MenuItem
+                                  key={item.id}
+                                  value={String(item.payment_mode)}
+                                >
+                                  {item.payment_mode}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+                        <div className="md:col-span-4">
+                          <FormControl fullWidth>
+                            <InputLabel id="order_check_payment_bank_type-label">
+                              <span className="text-sm relative bottom-[6px]">
+                                Payment Bank
+                                <span className="text-red-700">*</span>
+                              </span>
+                            </InputLabel>
+                            <Select
+                              sx={{ height: "40px", borderRadius: "5px" }}
+                              labelId="order_check_payment_bank_type"
+                              id="id"
+                              name="order_check_payment_bank_type"
+                              value={
+                                payment.order_check_payment_bank_type || ""
+                              }
+                              onChange={onInputChange}
+                              label="Payment Bank *"
+                              required
+                            >
+                              {bankModes.map((item) => (
+                                <MenuItem
+                                  key={item.id}
+                                  value={String(item.bank_type)}
+                                >
+                                  {item.bank_type}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>{" "}
+                        </div>
                       </div>
-                      {/* order_check_payment_bank_type */}
-
-                      {/* (16:54) panel-fetch-bank. */}
-
-                      {/* <div className="md:col-span-4">
-                        <FormControl fullWidth>
-                          <InputLabel id="order_check_payment_type-label">
-                            <span className="text-sm relative bottom-[6px]">
-                              Payment Mode
-                              <span className="text-red-700">*</span>
-                            </span>
-                          </InputLabel>
-                          <Select
-                            sx={{ height: "40px", borderRadius: "5px" }}
-                            labelId="order_check_payment_type"
-                            id="id"
-                            name="order_check_payment_type"
-                            value={payment.order_check_payment_type || ""}
-                            onChange={onInputChange}
-                            label="Payment Mode *"
-                            required
-                          >
-                            {paymentModes.map((item) => (
-                              <MenuItem
-                                key={item.id}
-                                value={String(item.payment_mode)}
-                              >
-                                {item.payment_mode}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>{" "}
-                      </div> */}
-
                       <div className="md:col-span-8">
                         {" "}
                         <Textarea

@@ -98,7 +98,7 @@ const ViewBooking = () => {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
     if (res.data.code == "200") {
       toast.success(res.data?.msg || "Notification Sent Successfully");
@@ -192,12 +192,12 @@ const ViewBooking = () => {
               <Typography className="text-black">
                 <strong>Email:</strong> {booking.order_customer_email}
               </Typography>
-            </div>
-            <div className="space-y-2">
               <Typography className="text-black">
                 <strong>Date:</strong>{" "}
                 {moment(booking.order_date).format("DD-MM-YYYY")}
               </Typography>
+            </div>
+            <div className="space-y-2">
               <Typography className="text-black">
                 <strong>Service Date:</strong>{" "}
                 {moment(booking.order_service_date).format("DD-MM-YYYY")}
@@ -208,6 +208,22 @@ const ViewBooking = () => {
               <Typography className="text-black">
                 <strong>Service:</strong> {booking.order_service}
               </Typography>
+              {booking.order_service !== "Custom" && (
+                <Typography className="text-black">
+                  <strong>Sub Service:</strong> {booking.order_service_sub}
+                </Typography>
+              )}
+              {booking.order_service !== "Custom" && (
+                <Typography className="text-black">
+                  <strong>Sub Service Price For:</strong>{" "}
+                  {booking.order_service_price_for}
+                </Typography>
+              )}
+              {booking.order_service == "Custom" && (
+                <Typography className="text-black">
+                  <strong>Custom:</strong> {booking.order_custom}
+                </Typography>
+              )}
               <Typography className="text-black">
                 <strong>Booking Created By:</strong> {booking.created_by}
               </Typography>
@@ -216,19 +232,14 @@ const ViewBooking = () => {
               </Typography>
             </div>
             <div className="space-y-2">
-              {booking.order_service == "Custom" && (
-                <Typography className="text-black">
-                  <strong>Custom:</strong> {booking.order_custom}
-                </Typography>
-              )}
-              {booking.order_service !== "Custom" && (
-                <Typography className="text-black">
-                  <strong>Sub Service:</strong> {booking.order_service_sub}
-                </Typography>
-              )}
-
               <Typography className="text-black">
                 <strong>Booking Amount:</strong> {booking?.order_amount}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Advance:</strong> {booking?.order_advance}
+              </Typography>
+              <Typography className="text-black">
+                <strong>Discount:</strong> {booking?.order_discount}
               </Typography>
               <Typography className="text-black">
                 <strong>Paid Amount:</strong> {booking?.order_payment_amount}
@@ -237,15 +248,12 @@ const ViewBooking = () => {
                 <strong>Type:</strong> {booking.order_payment_type}
               </Typography>
               <Typography className="text-black">
+                <strong>Bank:</strong> {booking.order_check_payment_bank_type}
+              </Typography>
+              <Typography className="text-black">
                 <strong>Transaction Details:</strong>{" "}
                 {booking.order_transaction_details}
               </Typography>
-              {/* add condition  */}
-              {booking.order_vendor_id !== null && (
-                <Typography className="text-black">
-                  <strong>Vendor:</strong> {vendor.vendor_company}
-                </Typography>
-              )}
             </div>
           </div>
         );
@@ -268,7 +276,8 @@ const ViewBooking = () => {
             </div>
             <div className="space-y-2">
               <Typography className="text-black">
-                <strong>Area:</strong> {booking.order_area}
+                <strong>Area:</strong> {booking.order_locality}-
+                {booking.order_sub_locality}
               </Typography>
               <Typography className="text-black">
                 <strong>Branch:</strong> {booking.branch_name}
@@ -291,9 +300,7 @@ const ViewBooking = () => {
                 <strong>Current Price:</strong>{" "}
                 {booking.order_service_price_for} - {booking.order_amount}
               </Typography>
-              <Typography className="text-black">
-                <strong>Advanced:</strong> {booking.order_advance}
-              </Typography>
+            
               <Typography className="text-black">
                 <strong>Distance:</strong> {booking.order_km} Km
               </Typography>
@@ -444,6 +451,25 @@ const ViewBooking = () => {
                   <>
                     <Card className="my-2 ">
                       <CardBody>{renderActiveTabContent()}</CardBody>
+                      {booking.order_vendor_id !== null && (
+                        <CardBody className="p-2 border ">
+                          {" "}
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                            <Typography className="text-black col-span-2">
+                              <strong>Vendor:</strong> {vendor.vendor_company}
+                            </Typography>
+
+                            <Typography className="text-black">
+                              <strong>Vendor Amount:</strong>{" "}
+                              {booking.order_vendor_amount}
+                            </Typography>
+                            <Typography className="text-black">
+                              <strong>Commission:</strong> {booking.order_comm}{" "}
+                              - ({booking.order_comm_percentage}%)
+                            </Typography>
+                          </div>
+                        </CardBody>
+                      )}
                     </Card>
                     <div>
                       <Card className="mb-6">

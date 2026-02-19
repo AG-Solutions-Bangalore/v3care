@@ -4,11 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 
-import {
-  Card,
-  CardBody,
-  Typography
-} from "@material-tailwind/react";
+import { Card, CardBody, Typography } from "@material-tailwind/react";
 import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../../base/BaseUrl";
@@ -56,7 +52,7 @@ const PendingReceivedView = () => {
 
   const updateData = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     setIsButtonDisabled(true);
     try {
       const res = await axios.put(
@@ -66,12 +62,12 @@ const PendingReceivedView = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (res.data.code == "200") {
         toast.success(res.data?.msg || "Received Updated Successfully");
-        navigate("/received-payment");
+        navigate("/received-payment-confirmation");
       } else {
         toast.error(res.data?.msg || "Network Error");
       }
@@ -79,7 +75,7 @@ const PendingReceivedView = () => {
       console.error("Error updating received status:", error);
       toast.error("Error updating received status");
     } finally {
-      setLoading(false); 
+      setLoading(false);
       setIsButtonDisabled(false);
     }
   };
@@ -216,7 +212,7 @@ const PendingReceivedView = () => {
   };
   const handleBack = (e) => {
     e.preventDefault();
-    navigate(`/received-payment?page=${pageNo}`);
+    navigate(`/received-payment-confirmation?page=${pageNo}`);
   };
   return (
     <Layout>
