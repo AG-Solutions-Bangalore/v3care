@@ -75,6 +75,12 @@ const InspectionBooking = () => {
     localStorage.setItem("page-no", pageParam);
     navigate(`/edit-booking-inspection/${id}`);
   };
+  const handleQuotation = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/quotation/${id}?mode=create`);
+  };
   const handleView = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
@@ -130,7 +136,8 @@ const InspectionBooking = () => {
                 quotation && (
                   <BsFillChatQuoteFill
                     title="Quotation"
-                    // onClick={(e) => handleFollowModal(e, orderfollowup)}
+                    onClick={(e) => handleQuotation(e, id)}
+                    // onClick={() => navigate(`/quotation/${id}?mode=create`)}
                     className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
                       noFollowup ? "text-blue-400" : "text-gray-700"
                     }`}
