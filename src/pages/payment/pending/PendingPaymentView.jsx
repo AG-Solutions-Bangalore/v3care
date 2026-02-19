@@ -387,7 +387,7 @@ const PendingPaymentView = () => {
                             <InputLabel id="order_check_payment_bank_type-label">
                               <span className="text-sm relative bottom-[6px]">
                                 Payment Bank
-                                <span className="text-red-700">*</span>
+                                
                               </span>
                             </InputLabel>
                             <Select
@@ -399,8 +399,8 @@ const PendingPaymentView = () => {
                                 payment.order_check_payment_bank_type || ""
                               }
                               onChange={onInputChange}
-                              label="Payment Bank *"
-                              required
+                              label="Payment Bank"
+                              // required
                             >
                               {bankModes.map((item) => (
                                 <MenuItem

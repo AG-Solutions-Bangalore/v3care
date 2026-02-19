@@ -1,0 +1,23 @@
+panel-create-quotation
+
+branch_id 
+quotation_date
+order_ref
+quotation_customer
+quotation_customer_mobile
+quotation_customer_alt_mobile
+quotation_customer_email
+quotation_customer_address
+sub[quotationSub_heading, quotationSub_description, quotationSub_rate, quotationSub_qnty, quotationSub_amount]
+
+panel-fetch-quotation-by-id/{id}
+
+panel-update-quotation/{id}
+
+quotation_date
+quotation_customer
+quotation_customer_mobile
+quotation_customer_alt_mobile
+quotation_customer_email
+quotation_customer_address
+sub[id, quotationSub_heading, quotationSub_description, quotationSub_rate, quotationSub_qnty, quotationSub_amount]
