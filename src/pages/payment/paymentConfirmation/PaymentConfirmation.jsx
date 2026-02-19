@@ -118,11 +118,21 @@ const PaymentConfirmation = () => {
       },
     },
     {
-      name: "order_area",
+      name: "area",
       label: "Area",
       options: {
         filter: false,
-        sort: true,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const locality = tableMeta.rowData[16];
+          const sublocality = tableMeta.rowData[17];
+          return (
+            <div className=" flex flex-col ">
+              <span>{locality}</span>
+              <span>{sublocality}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -295,6 +305,28 @@ const PaymentConfirmation = () => {
             </div>
           );
         },
+      },
+    },
+    {
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
       },
     },
   ];

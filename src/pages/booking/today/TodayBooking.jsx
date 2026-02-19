@@ -29,7 +29,7 @@ const TodayBooking = () => {
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   const [openFollowModal, setOpenFollowModal] = useState(false);
   const [followupdata, setFollowUpData] = useState("");
- 
+
   UseEscapeKey();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const TodayBooking = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const bookingData = response.data?.booking;
@@ -64,10 +64,10 @@ const TodayBooking = () => {
 
     switch (activeTab) {
       case "v3-team":
-        filtered = filtered.filter(item => {
+        filtered = filtered.filter((item) => {
           const orderAssign = item.order_assign || [];
-          const activeAssignments = orderAssign.filter(
-            assign => assign.order_assign_status !== "Cancel"
+          const activeAssignments = orderAssign?.filter(
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           return (
             activeAssignments.length > 0 &&
@@ -78,18 +78,19 @@ const TodayBooking = () => {
         break;
 
       case "non-assigned":
-        filtered = filtered.filter(item => {
+        filtered = filtered.filter((item) => {
           const orderAssign = item.order_assign || [];
-          const activeAssignments = orderAssign.filter(
-            assign => assign.order_assign_status !== "Cancel"
+          const activeAssignments = orderAssign?.filter(
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           return activeAssignments.length === 0;
         });
         break;
 
       case "vendor-team":
-        filtered = filtered.filter(item => 
-          item.order_vendor_id !== null && item.order_status === "Vendor"
+        filtered = filtered.filter(
+          (item) =>
+            item.order_vendor_id !== null && item.order_status === "Vendor",
         );
         break;
 
@@ -136,14 +137,14 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
-          const status = tableMeta.rowData[21];
-          const orderfollowup = tableMeta.rowData[29];
+          const status = tableMeta.rowData[22];
+          const orderfollowup = tableMeta.rowData[30];
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
           const booking = {
-            order_remarks: tableMeta.rowData[26],
-            order_comment: tableMeta.rowData[27],
-            order_postpone_reason: tableMeta.rowData[28],
+            order_remarks: tableMeta.rowData[27],
+            order_comment: tableMeta.rowData[28],
+            order_postpone_reason: tableMeta.rowData[29],
           };
           return (
             <div className="flex items-center space-x-2">
@@ -196,7 +197,7 @@ const TodayBooking = () => {
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[4];
-          const bookTime = tableMeta.rowData[24];
+          const bookTime = tableMeta.rowData[25];
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
@@ -207,8 +208,8 @@ const TodayBooking = () => {
         },
       },
     },
-     //3
-     {
+    //3
+    {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
@@ -263,7 +264,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-   
+
     //7
     {
       name: "order_date",
@@ -294,8 +295,8 @@ const TodayBooking = () => {
         },
       },
     },
-    
-    //9 service name 
+
+    //9 service name
     {
       name: "order_service",
       label: "Service",
@@ -331,17 +332,37 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-     //12
-      {
+    //12
+    {
       name: "order_time",
-      label: "Time/Area",
+      label: "Time/Km",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const locality = tableMeta.rowData[31]; 
-          const subLocality = tableMeta.rowData[32]; 
-          
+          // const km = tableMeta.rowData[33];
+
+          return (
+            <div>
+              <div className="text-sm break-words">{value || "N/A"}</div>
+              {/* <div className="text-xs text-gray-500 ">{km}</div> */}
+            </div>
+          );
+        },
+      },
+    },
+    //13
+    {
+      name: "order_address",
+      label: "Address/Area",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const address = tableMeta.rowData[24];
+          const locality = tableMeta.rowData[32];
+          const subLocality = tableMeta.rowData[33];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -352,17 +373,19 @@ const TodayBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
-            <div className="flex flex-col w-32">
-              <span>{value}</span>
-              <span style={{ fontSize: "12px" }}>{areaDisplay}</span>
+            <div className="w-48 max-w-48 break-words whitespace-normal">
+              <div className="text-sm break-words">{address || "N/A"}</div>
+              <div className="text-xs text-gray-500 break-words">
+                {areaDisplay}
+              </div>
             </div>
           );
         },
       },
     },
-    //13
+    //14
     {
       name: "service_price",
       label: "Service/Price",
@@ -376,7 +399,7 @@ const TodayBooking = () => {
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span> 
+                <span>{customeDetails}</span>
                 <span>{price}</span>
               </div>
             );
@@ -390,8 +413,8 @@ const TodayBooking = () => {
         },
       },
     },
-   
-    //14
+
+    //15
     {
       name: "order_assign",
       label: "Order Assign",
@@ -402,7 +425,7 @@ const TodayBooking = () => {
         viewColumns: false,
       },
     },
-    //15
+    //16
     {
       name: "amount_type",
       label: "Paid Amount/Type",
@@ -410,9 +433,9 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const type = tableMeta.rowData[20];
-          const paid_amount = tableMeta.rowData[19];
-        
+          const type = tableMeta.rowData[21];
+          const paid_amount = tableMeta.rowData[20];
+
           return (
             <div className=" flex flex-col w-32">
               <span>{paid_amount}</span>
@@ -422,8 +445,8 @@ const TodayBooking = () => {
         },
       },
     },
-     //16
-     {
+    //17
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -437,9 +460,9 @@ const TodayBooking = () => {
           },
         }),
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[21];
-          const status = tableMeta.rowData[22];
-          const inspectionstatus = tableMeta.rowData[25];
+          const confirmBy = tableMeta.rowData[22];
+          const status = tableMeta.rowData[23];
+          const inspectionstatus = tableMeta.rowData[26];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -456,7 +479,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //17
+    //18
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -464,10 +487,10 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderAssign = tableMeta.rowData[14];
+          const orderAssign = tableMeta.rowData[15];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -489,7 +512,7 @@ const TodayBooking = () => {
         },
       },
     },
-    // 18
+    // 19
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -497,10 +520,10 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const orderAssign = tableMeta.rowData[14];
+          const orderAssign = tableMeta.rowData[15];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -525,7 +548,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //19
+    //20
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -537,7 +560,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    //20
+    //21
     {
       name: "order_payment_type",
       label: "Type",
@@ -549,8 +572,8 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    
-    //21
+
+    //22
     {
       name: "updated_by",
       label: "Confirm By",
@@ -562,7 +585,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //22
+    //23
     {
       name: "order_status",
       label: "Status",
@@ -574,8 +597,8 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-   
-    //23
+
+    //24
     {
       name: "order_address",
       label: "Address",
@@ -587,7 +610,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //24
+    //25
     {
       name: "order_booking_time",
       label: "Book Time",
@@ -599,7 +622,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //25
+    //26
     {
       name: "order_inspection_status",
       label: "Inspection Status",
@@ -611,7 +634,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //26
+    //27
     {
       name: "order_remarks",
       label: "Remarks",
@@ -623,7 +646,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //27
+    //28
     {
       name: "order_comment",
       label: "Comment",
@@ -635,7 +658,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //28
+    //29
     {
       name: "order_postpone_reason",
       label: "Reason",
@@ -647,7 +670,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //29
+    //30
     {
       name: "order_followup",
       label: "Followup",
@@ -659,7 +682,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //30
+    //31
     {
       name: "order_area",
       label: "Order Area",
@@ -671,7 +694,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-      //31 - order_locality
+    //32
     {
       name: "order_locality",
       label: "Locality",
@@ -683,7 +706,19 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //32 - order_sub_locality
+    //33
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //34
     {
       name: "order_sub_locality",
       label: "Sub Locality",
@@ -704,11 +739,11 @@ const TodayBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    pagination: false, 
+    pagination: false,
     rowsPerPageOptions: [],
     fixedHeader: true,
     tableBodyHeight: "calc(100vh - 250px)",
-    tableBodyMaxHeight: "", 
+    tableBodyMaxHeight: "",
     onRowClick: (rowData, rowMeta, e) => {
       const id = filteredData[rowMeta.dataIndex].id;
       handleView(e, id)();
@@ -746,18 +781,14 @@ const TodayBooking = () => {
       };
     },
 
-    
-   
-  customToolbar: () => {
+    customToolbar: () => {
       return (
-        <React.Fragment >
-          
-
+        <React.Fragment>
           <button
             onClick={() => handleTabClick("all")}
             className={`px-4 py-2 rounded-md font-medium text-xs ${
-              activeTab === "all" 
-                ? "bg-blue-600 text-white" 
+              activeTab === "all"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -766,8 +797,8 @@ const TodayBooking = () => {
           <button
             onClick={() => handleTabClick("v3-team")}
             className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-              activeTab === "v3-team" 
-                ? "bg-blue-600 text-white" 
+              activeTab === "v3-team"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -776,8 +807,8 @@ const TodayBooking = () => {
           <button
             onClick={() => handleTabClick("non-assigned")}
             className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-              activeTab === "non-assigned" 
-                ? "bg-blue-600 text-white" 
+              activeTab === "non-assigned"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -786,8 +817,8 @@ const TodayBooking = () => {
           <button
             onClick={() => handleTabClick("vendor-team")}
             className={`px-4 py-2 ml-2 rounded-md font-medium text-xs ${
-              activeTab === "vendor-team" 
-                ? "bg-blue-600 text-white" 
+              activeTab === "vendor-team"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -796,8 +827,6 @@ const TodayBooking = () => {
         </React.Fragment>
       );
     },
- 
-
   };
 
   return (

@@ -1,257 +1,530 @@
-panel-create-quotation
-/panel-fetch-booking-by-id/ using this api below set in creae mode 
-{
-    "booking": {
-        "id": 4426,
-        "branch_id": 2,
-        "branch_name": "Bengaluru",
-        "order_ref": "V3-2025-26-4378",
-        "order_status": "Inspection",
-        "order_customer": "Gagan aradhya",
-        "order_customer_mobile": "9611260721",
-        "order_service_date": "2026-02-16",
-        "order_time": "13:12",
-        "order_date": "2026-02-16",
-        "order_service": "Inspection",
-        "order_custom": null,
-        "order_amount": 0,
-        "order_advance": 0,
-        "order_custom_price": null,
-        "order_vendor_amount": "0",
-        "order_refer_by": "Suhana",
-        "created_by": "Suhana",
-        "created_at": "2026-02-16T06:44:44.000000Z",
-        "order_vendor_id": null,
-        "order_customer_email": null,
-        "order_service_price_for": "Inspection",
-        "order_service_sub": "Inspection",
-        "order_service_price": "0",
-        "order_discount": 0,
-        "order_area": "Bengaluru",
-        "order_flat": "06",
-        "order_building": null,
-        "order_landmark": "Near railway station",
-        "order_address": "Shop No 06 2st Main Road, Road, SJP Road, near Railway Station, 3rd Cross, Kumbarpet, Dodpete, Nagarathpete, Bengaluru, Karnataka 560002, India",
-        "order_url": "https:\/\/maps.google.com\/?cid=13566972973369280107",
-        "order_locality": "Bengaluru",
-        "order_sub_locality": "Nagarathpete",
-        "order_km": "9.7",
-        "order_payment_amount": null,
-        "order_payment_type": null,
-        "order_transaction_details": null,
-        "order_remarks": null,
-        "order_comment": null,
-        "order_no_assign": 0,
-        "updated_by": null,
-        "updated_at": "2026-02-16T06:44:44.000000Z",
-        "order_comm": null,
-        "order_inspection_status": "Pending",
-        "order_comm_percentage": 26,
-        "order_ref_group": "V3-2025-26-4378",
-        "order_person_name": null,
-        "order_person_contact_no": null,
-        "order_customer_alt_mobile": null
-    },
-    "vendor": 0,
-    "bookingAssign": [],
-    "bookingFollowup": []
-}
-this are my response
-from this  you need to take the data and set
-using library is material tailwind 
-for input 
-
-branch_id  - from api
-quotation_date --- today date 
-order_ref - from api
-quotation_customer - from api
-quotation_customer_mobile- from api
-quotation_customer_alt_mobile- from api
-quotation_customer_email- from api
-quotation_customer_address- from api
-sub[quotationSub_heading, quotationSub_description, quotationSub_rate, quotationSub_qnty, quotationSub_amount---> amount need to auto caluclate like rate * qunaty]
-
-
-panel-fetch-quotation-by-id/{id}
-
-panel-update-quotation/{id}
-
-quotation_date
-quotation_customer
-quotation_customer_mobile
-quotation_customer_alt_mobile
-quotation_customer_email
-quotation_customer_address
-sub[id, quotationSub_heading, quotationSub_description, quotationSub_rate, quotationSub_qnty, quotationSub_amount]
-
-
-import { Input } from "@material-tailwind/react";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  IconButton,
+  Textarea,
+  Typography,
+  Input,
+} from "@material-tailwind/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../../base/BaseUrl";
-import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
-import PageHeader from "../../../components/common/PageHeader/PageHeader";
-import MasterFilter from "../../../components/MasterFilter";
-import Layout from "../../../layout/Layout";
-import UseEscapeKey from "../../../utils/UseEscapeKey";
+import { BASE_URL } from "../../base/BaseUrl";
+import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import Layout from "../../layout/Layout";
+import {
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Button,
+} from "@material-tailwind/react";
+import PageHeader from "../../components/common/PageHeader/PageHeader";
+const QuotationForm = () => {
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get("mode");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedDeleteIndex, setSelectedDeleteIndex] = useState(null);
 
-const AddReferBy = () => {
-  const [referby, setReferBy] = useState({
-    refer_by: "",
-    branch_id: "",
-    refer_by_contact_no: "",
-  });
+  const isEdit = mode === "edit";
   const navigate = useNavigate();
-  UseEscapeKey();
-  const [branch, setBranch] = useState([]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+    branch_id: "",
+    quotation_date: new Date().toISOString().split("T")[0],
+    order_ref: "",
+    quotation_customer: "",
+    quotation_customer_mobile: "",
+    quotation_customer_alt_mobile: "",
+    quotation_customer_email: "",
+    quotation_customer_address: "",
+    sub: [
+      {
+        id: "",
+        quotationSub_heading: "",
+        quotationSub_description: "",
+        quotationSub_rate: "",
+        quotationSub_qnty: "",
+        quotationSub_amount: "",
+      },
+    ],
+  });
+  const addRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      sub: [
+        ...prev.sub,
+        {
+          id: "",
+          quotationSub_heading: "",
+          quotationSub_description: "",
+          quotationSub_rate: "",
+          quotationSub_qnty: "",
+          quotationSub_amount: "",
+        },
+      ],
+    }));
+  };
 
+  const removeRow = (index) => {
+    const row = formData.sub[index];
 
-  const onInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "refer_by_contact_no") {
-      const cleanedValue = value.replace(/\D/g, "").slice(0, 10);
-      setReferBy({
-        ...referby,
-        [name]: cleanedValue,
-      });
+    if (row.id) {
+      setSelectedDeleteIndex(index);
+      setOpenDeleteDialog(true);
     } else {
-      setReferBy({
-        ...referby,
-        [name]: value,
-      });
+      setFormData((prev) => ({
+        ...prev,
+        sub: prev.sub.filter((_, i) => i !== index),
+      }));
+    }
+  };
+  useEffect(() => {
+    if (!id || !mode) return;
+
+    if (isEdit) {
+      fetchQuotation();
+    } else {
+      fetchBooking();
+    }
+  }, [id, mode]);
+
+  const fetchBooking = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-booking-by-id/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      const booking = response.data?.booking;
+
+      setFormData((prev) => ({
+        ...prev,
+        branch_id: booking.branch_id,
+        order_ref: booking.order_ref,
+        quotation_customer: booking.order_customer,
+        quotation_customer_mobile: booking.order_customer_mobile,
+        quotation_customer_alt_mobile: booking.order_customer_alt_mobile || "",
+        quotation_customer_email: booking.order_customer_email || "",
+        quotation_customer_address: booking.order_address,
+      }));
+    } catch (err) {
+      toast.error("Failed to load booking");
     }
   };
 
-  useEffect(() => {
-    const fetchBranchData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${BASE_URL}/api/panel-fetch-branch`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setBranch(response.data?.branch);
-      } catch (error) {
-        console.error("Error fetching branch data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBranchData();
-  }, []);
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const form = document.getElementById("addIndiv");
-    if (!form || !form.checkValidity()) {
-      toast.error("Fill all required fields");
-      setLoading(false);
-      return;
-    }
-
-    setIsButtonDisabled(true);
-
+  const fetchQuotation = async () => {
     try {
-      let data = {
-        refer_by: referby.refer_by,
-        branch_id: referby.branch_id,
-        refer_by_contact_no: referby.refer_by_contact_no,
-      };
-
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-referby`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-quotation-by-id/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      if (response.data.code == "200") {
-        toast.success(response.data?.msg || "ReferBy Created Successfully");
-        setReferBy({ refer_by: "", branch_id: "" });
-        navigate("/refer-by");
+      const data = response.data?.quotation;
+
+      setFormData({
+        branch_id: data.branch_id,
+        quotation_date: data.quotation_date,
+        order_ref: data.order_ref,
+        quotation_customer: data.quotation_customer,
+        quotation_customer_mobile: data.quotation_customer_mobile,
+        quotation_customer_alt_mobile: data.quotation_customer_alt_mobile || "",
+        quotation_customer_email: data.quotation_customer_email || "",
+        quotation_customer_address: data.quotation_customer_address,
+        sub: response?.data?.quotationSub || [],
+      });
+    } catch (err) {
+      toast.error("Failed to load quotation");
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubChange = (index, e) => {
+    const { name, value } = e.target;
+    const updated = [...formData.sub];
+    updated[index][name] = value;
+
+    const rate = Number(updated[index].quotationSub_rate || 0);
+    const qty = Number(updated[index].quotationSub_qnty || 0);
+    updated[index].quotationSub_amount = rate * qty;
+
+    setFormData({ ...formData, sub: updated });
+  };
+  const validateForm = () => {
+    let newErrors = {};
+    let isValid = true;
+
+    formData.sub.forEach((row, index) => {
+      if (!row.quotationSub_heading?.trim()) {
+        newErrors[`heading_${index}`] = "Heading is required";
+        isValid = false;
+      }
+
+      if (!row.quotationSub_qnty || Number(row.quotationSub_qnty) <= 0) {
+        newErrors[`qty_${index}`] = "Quantity is required";
+        isValid = false;
+      }
+
+      if (!row.quotationSub_amount || Number(row.quotationSub_amount) <= 0) {
+        newErrors[`rate_${index}`] = "Rate is Required";
+        isValid = false;
+      }
+      if (!row.quotationSub_amount || Number(row.quotationSub_amount) <= 0) {
+        newErrors[`amount_${index}`] = "Amount must be greater than 0";
+        isValid = false;
+      }
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      toast.error("Please fill all required fields in items");
+      return;
+    }
+    const payload = {
+      branch_id: formData.branch_id,
+      quotation_date: formData.quotation_date,
+      order_ref: formData.order_ref,
+      quotation_customer: formData.quotation_customer,
+      quotation_customer_mobile: formData.quotation_customer_mobile,
+      quotation_customer_alt_mobile: formData.quotation_customer_alt_mobile,
+      quotation_customer_email: formData.quotation_customer_email,
+      quotation_customer_address: formData.quotation_customer_address,
+      sub: formData.sub.map((item) => ({
+        id: item.id,
+        quotationSub_heading: item.quotationSub_heading,
+        quotationSub_description: item.quotationSub_description,
+        quotationSub_rate: item.quotationSub_rate,
+        quotationSub_qnty: item.quotationSub_qnty,
+        quotationSub_amount: item.quotationSub_amount,
+      })),
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const url = isEdit
+        ? `${BASE_URL}/api/panel-update-quotation/${id}`
+        : `${BASE_URL}/api/panel-create-quotation`;
+
+      const method = isEdit ? "put" : "post";
+
+      const response = await axios({
+        method,
+        url,
+        data: payload,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data.code == 200) {
+        toast.success(
+          response.data.msg
+            ? response.data.msg
+            : isEdit
+              ? "Quotation Updated uccessfully"
+              : "Quotation Created uccessfully",
+        );
+        navigate("/quotation-list");
       } else {
-        toast.error(response.data?.msg || "Duplicate entry");
+        toast.error(response.data.msg);
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
-      console.error("Error:", error);
-      setLoading(false);
+      toast.error("Something went wrong");
     }
-    setIsButtonDisabled(false);
-    setLoading(false);
+  };
+  const confirmDelete = async () => {
+    if (selectedDeleteIndex === null) return;
+
+    const row = formData.sub[selectedDeleteIndex];
+
+    try {
+      const token = localStorage.getItem("token");
+      if (row.id) {
+        const response = await axios.delete(
+          `${BASE_URL}/api/panel-delete-quotation-sub/${row.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (response.data.code !== 200) {
+          toast.error(response.data.msg || "Deleted Sucessfully");
+          return;
+        }
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        sub: prev.sub.filter((_, i) => i !== selectedDeleteIndex),
+      }));
+
+      setOpenDeleteDialog(false);
+      setSelectedDeleteIndex(null);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
     <Layout>
-      <MasterFilter />
+      <PageHeader title="Quotation Form" />
+      <div className="p-6 bg-white rounded shadow mt-4">
+        <h2 className="text-xl font-bold mb-4">
+          {isEdit ? "Edit Quotation" : "Create Quotation"}
+        </h2>
 
-      <PageHeader title={"Create Referred By"} />
-      <div className="w-full mx-auto mt-2 p-4 bg-white shadow-md rounded-lg">
-        <form id="addIndiv" autoComplete="off" onSubmit={onSubmit}>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-            <div className="form-group">
-              <Input
-                label="Referred By"
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Input
+              label="Quotation Date"
+              type="date"
+              name="quotation_date"
+              value={formData.quotation_date}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              label="Order Ref"
+              name="order_ref"
+              value={formData.order_ref}
+              disabled
+              labelProps={{
+                className: "!text-gray-600 ",
+              }}
+              required
+            />
+            <Input
+              label="Customer Name"
+              name="quotation_customer"
+              value={formData.quotation_customer}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              label="Mobile"
+              name="quotation_customer_mobile"
+              value={formData.quotation_customer_mobile}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              label="Alternative Mobile"
+              name="quotation_customer_alt_mobile"
+              value={formData.quotation_customer_alt_mobile}
+              onChange={handleChange}
+            />
+            <Input
+              label="Email"
+              name="quotation_customer_email"
+              value={formData.quotation_customer_email}
+              onChange={handleChange}
+            />
+            <div className="md:col-span-3">
+              <Textarea
+                label="Address"
                 required
-                name="refer_by"
-                maxLength={80}
-                value={referby.refer_by}
-                onChange={onInputChange}
+                name="quotation_customer_address"
+                value={formData.quotation_customer_address}
+                onChange={handleChange}
               />
             </div>
-            <FormControl>
-              <InputLabel id="service-select-label">
-                <span className="text-sm relative bottom-[6px]">
-                  Branch Name
-                  <span className="text-red-700">*</span>
-                </span>
-              </InputLabel>
-              <Select
-                sx={{ height: "40px", borderRadius: "5px" }}
-                labelId="service-select-label"
-                id="service-select"
-                name="branch_id"
-                value={referby.branch_id}
-                onChange={onInputChange}
-                label="Branch Id *"
-                required
-              >
-                {branch.map((item) => (
-                  <MenuItem key={item.id} value={String(item.id)}>
-                    {item.branch_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>{" "}
-            <Input
-              label="Referred Mobile"
-              name="refer_by_contact_no"
-              value={referby.refer_by_contact_no}
-              onChange={onInputChange}
-            />
           </div>
 
+          <table className="w-full table-fixed text-left border-collapse mb-4">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border p-3 w-[25%]">
+                  <Typography variant="small" className="font-bold">
+                    Heading
+                  </Typography>
+                </th>
+
+                <th className="border p-3 w-[35%]">
+                  <Typography variant="small" className="font-bold">
+                    Description
+                  </Typography>
+                </th>
+
+                <th className="border p-3 w-[13%] text-center">
+                  <Typography variant="small" className="font-bold">
+                    Rate
+                  </Typography>
+                </th>
+
+                <th className="border p-3 w-[13%] text-center">
+                  <Typography variant="small" className="font-bold">
+                    Qty
+                  </Typography>
+                </th>
+
+                <th className="border p-3 w-[13%] text-center">
+                  <Typography variant="small" className="font-bold">
+                    Amount
+                  </Typography>
+                </th>
+
+                <th className="border p-3 w-[10%] text-center">
+                  <Typography variant="small" className="font-bold">
+                    Action
+                  </Typography>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {formData.sub.map((item, index) => (
+                <tr key={index} className="border-b">
+                  {/* Heading */}
+                  <td className="border p-2">
+                    <Input
+                      className="w-full appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      name="quotationSub_heading"
+                      value={item.quotationSub_heading}
+                      onChange={(e) => handleSubChange(index, e)}
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                    />
+                  </td>
+
+                  {/* Description */}
+                  <td className="border p-2">
+                    <Textarea
+                      name="quotationSub_description"
+                      value={item.quotationSub_description}
+                      onChange={(e) => handleSubChange(index, e)}
+                      rows={2}
+                      className="w-full min-h-[60px] appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                    />
+                  </td>
+
+                  {/* Rate */}
+                  <td className="border p-2">
+                    <Input
+                      type="number"
+                      name="quotationSub_rate"
+                      value={item.quotationSub_rate}
+                      onChange={(e) => handleSubChange(index, e)}
+                      className="!w-24 appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                    />
+                  </td>
+
+                  {/* Qty */}
+                  <td className="border p-2">
+                    <Input
+                      type="number"
+                      name="quotationSub_qnty"
+                      value={item.quotationSub_qnty}
+                      onChange={(e) => handleSubChange(index, e)}
+                      className="!w-24 appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      labelProps={{
+                        className: "before:content-none after:content-none",
+                      }}
+                    />
+                  </td>
+
+                  {/* Amount */}
+                  <td className="border p-2">
+                    <Input
+                      value={item.quotationSub_amount}
+                      disabled
+                      className="!w-24"
+                    />
+                  </td>
+
+                  {/* Action */}
+                  <td className="border p-2">
+                    <div className="flex gap-2 justify-center">
+                      {item.id ? (
+                        <>
+                          <IconButton
+                            type="button"
+                            size="sm"
+                            color="red"
+                            disabled={formData.sub.length <= 1}
+                            onClick={() => removeRow(index)}
+                          >
+                            <FiTrash2 size={18} />
+                          </IconButton>
+
+                          {index === formData.sub.length - 1 && (
+                            <IconButton
+                              type="button"
+                              size="sm"
+                              color="green"
+                              onClick={addRow}
+                            >
+                              <FiPlus size={18} />
+                            </IconButton>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {index === formData.sub.length - 1 && (
+                            <IconButton
+                              type="button"
+                              size="sm"
+                              color="green"
+                              onClick={addRow}
+                            >
+                              <FiPlus size={18} />
+                            </IconButton>
+                          )}
+
+                          {formData.sub.length > 1 && (
+                            <IconButton
+                              type="button"
+                              size="sm"
+                              color="red"
+                              onClick={() => removeRow(index)}
+                            >
+                              <FiMinus size={18} />
+                            </IconButton>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
           <div className="flex justify-center space-x-4">
-            <ButtonConfigColor
-              type="submit"
-              buttontype="submit"
-              label="Submit"
-              disabled={isButtonDisabled}
-              loading={loading}
-            />
+            {isEdit ? (
+              <ButtonConfigColor
+                type="submit"
+                buttontype="edit"
+                label="Update"
+              />
+            ) : (
+              <ButtonConfigColor
+                type="submit"
+                buttontype="submit"
+                label="Submit"
+              />
+            )}
 
             <ButtonConfigColor
               type="back"
@@ -262,10 +535,28 @@ const AddReferBy = () => {
           </div>
         </form>
       </div>
+      <Dialog open={openDeleteDialog} handler={setOpenDeleteDialog}>
+        <DialogHeader>Confirm Delete</DialogHeader>
+
+        <DialogBody>Are you sure you want to delete this row?</DialogBody>
+
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="gray"
+            onClick={() => setOpenDeleteDialog(false)}
+            className="mr-2"
+          >
+            Cancel
+          </Button>
+
+          <Button variant="gradient" color="red" onClick={confirmDelete}>
+            Confirm
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </Layout>
   );
 };
 
-export default AddReferBy;
-
-the above is is my field in this i need 
+export default QuotationForm;

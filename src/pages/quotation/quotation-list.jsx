@@ -10,6 +10,7 @@ import Layout from "../../layout/Layout";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import ButtonConfigColor from "../../components/common/ButtonConfig/ButtonConfigColor";
+import moment from "moment";
 
 const Quotation = () => {
   const [quotationData, setQuotationData] = useState([]);
@@ -68,7 +69,8 @@ const Quotation = () => {
 
   const handleEdit = (e, id) => {
     e.preventDefault();
-    navigate(`/quotation-edit/${id}`);
+    e.stopPropagation();
+    navigate(`/quotation/${id}?mode=edit`);
   };
 
   const columns = [
@@ -91,33 +93,54 @@ const Quotation = () => {
           ),
       },
     },
+
     {
-      name: "quotation_no",
-      label: "Quotation No",
+      name: "quotation_ref",
+      label: "Quotation Ref",
       options: { filter: true, sort: true },
     },
     {
-      name: "customer_name",
+      name: "order_ref",
+      label: "Order Ref",
+      options: { filter: true, sort: true },
+    },
+    {
+      name: "quotation_date",
+      label: "Date",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => {
+          return value ? moment(value).format("DD-MM-YYYY") : "-";
+        },
+      },
+    },
+    {
+      name: "quotation_customer",
       label: "Customer Name",
       options: { filter: true, sort: true },
     },
     {
-      name: "contact_no",
+      name: "quotation_customer_mobile",
       label: "Contact No",
       options: { filter: true, sort: true },
     },
     {
-      name: "total_amount",
+      name: "sub_sum_quotation_sub_amount",
       label: "Total Amount",
-      options: { filter: false, sort: true },
-    },
-    {
-      name: "status",
-      label: "Status",
-      options: { filter: true, sort: true },
+      options: {
+        filter: false,
+        sort: true,
+        customBodyRender: (value) => `₹ ${value}`,
+      },
     },
   ];
-
+  const handleView = (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    localStorage.setItem("page-no", pageParam);
+    navigate(`/quotation/view/${id}`);
+  };
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -132,7 +155,11 @@ const Quotation = () => {
       setPage(currentPage);
       navigate(`/quotation-list?page=${currentPage + 1}`);
     },
+    onRowClick: (rowData, rowMeta, e) => {
+      const id = quotationData[rowMeta.dataIndex].id;
 
+      handleView(e, id);
+    },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => (
       <div className="flex justify-end items-center p-4">
         <span className="mx-4">
@@ -166,7 +193,7 @@ const Quotation = () => {
       {loading ? (
         <LoaderComponent />
       ) : (
-        <div className="mt-1">
+        <div className="mt-4">
           <MUIDataTable
             title="Quotation List"
             data={quotationData}

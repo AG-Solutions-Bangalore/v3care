@@ -115,11 +115,21 @@ const PaymentConformationReceived = () => {
       },
     },
     {
-      name: "order_area",
+      name: "area",
       label: "Area",
       options: {
         filter: false,
         sort: true,
+        customBodyRender: (value, tableMeta) => {
+          const locality = tableMeta.rowData[19];
+          const sublocality = tableMeta.rowData[20];
+          return (
+            <div className=" flex flex-col ">
+              <span>{locality}</span>
+              <span>{sublocality}</span>
+            </div>
+          );
+        },
       },
     },
     {
@@ -335,6 +345,28 @@ const PaymentConformationReceived = () => {
 
         searchable: true,
         sort: false,
+      },
+    },
+    {
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
       },
     },
   ];

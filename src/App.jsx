@@ -129,6 +129,8 @@ import PaymentConfirmation from "./pages/payment/paymentConfirmation/PaymentConf
 import BankList from "./pages/master/bank/bank-list";
 import PaymentConformationReceived from "./pages/payment/paymentConfirmation/PaymentConfirmationReceived";
 import Quotation from "./pages/quotation/quotation-list";
+import QuotationForm from "./pages/quotation/quotation-form";
+import QuatationView from "./pages/quotation/quotation-view";
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -432,6 +434,8 @@ const App = () => {
               {/* commission  */}
               <Route path="/web-enquiry" element={<WebEnquiry />} />
               <Route path="/quotation-list" element={<Quotation />} />
+              <Route path="/quotation/:id" element={<QuotationForm />} />
+              <Route path="/quotation/view/:id" element={<QuatationView />} />
             </>
           )}
           {(userType === "6" ||

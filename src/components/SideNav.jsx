@@ -36,7 +36,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       if (item.subMenu) {
         const isActive = item.subMenu.some(
           (subItem) =>
-            pathname === subItem.to || pathname.startsWith(subItem.to)
+            pathname === subItem.to || pathname.startsWith(subItem.to),
         );
 
         if (isActive) {
@@ -91,6 +91,20 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
       text: "Booking",
       title: "Booking",
+      roles: [
+        "user",
+        "viewer",
+        "admin",
+        "superadmin",
+        "operationteam",
+        "masteradmins",
+      ],
+    },
+    {
+      to: "/quotation-list?page=1",
+      icon: <MdOutlineLibraryBooks className="w-5 h-5 text-inherit" />,
+      text: "Quotation",
+      title: "Quotation",
       roles: [
         "user",
         "viewer",
@@ -210,7 +224,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
           text: "Vendor",
           title: "Vendor Download",
         },
-         {
+        {
           to: "/report-vendor-summary-form",
           text: "Vendor Summary",
           title: "Vendor Summary",
@@ -247,7 +261,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
       ? menuItems.filter((item) =>
           item.text === "Report"
             ? userName === "superadmins"
-            : item.roles.includes(role)
+            : item.roles.includes(role),
         )
       : [];
   };
@@ -259,7 +273,7 @@ const SideNav = ({ openSideNav, setOpenSideNav, isCollapsed }) => {
   const isParentActive = (item) => {
     if (!item.subMenu) return false;
     return item.subMenu.some(
-      (subItem) => pathname === subItem.to || pathname.startsWith(subItem.to)
+      (subItem) => pathname === subItem.to || pathname.startsWith(subItem.to),
     );
   };
 
