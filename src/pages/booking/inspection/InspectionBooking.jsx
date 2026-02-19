@@ -15,6 +15,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import { BsFillChatQuoteFill } from "react-icons/bs";
 
 const InspectionBooking = () => {
   const [InspectionBookData, setInspectionBookData] = useState(null);
@@ -56,7 +57,7 @@ const InspectionBooking = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setInspectionBookData(response.data?.booking);
@@ -94,7 +95,6 @@ const InspectionBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
-    
           const orderfollowup = tableMeta.rowData[29];
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
@@ -103,11 +103,16 @@ const InspectionBooking = () => {
             order_comment: tableMeta.rowData[27],
             order_postpone_reason: tableMeta.rowData[28],
           };
+          const status = tableMeta.rowData[22];
+          const inspectionstatus = tableMeta.rowData[25];
+          const quotation =
+            status == "Inspection" && inspectionstatus == "Pending";
+
           return (
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                onClick={(e) => handleEdit(e, id)}
+                  onClick={(e) => handleEdit(e, id)}
                   title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
@@ -119,7 +124,18 @@ const InspectionBooking = () => {
                   noFollowup ? "text-red-600" : "text-gray-700"
                 }`}
               />
+
               <CommentPopover booking={booking} />
+              {(userType == "6" || userType == "7" || userType == "8") &&
+                quotation && (
+                  <BsFillChatQuoteFill
+                    title="Quotation"
+                    // onClick={(e) => handleFollowModal(e, orderfollowup)}
+                    className={`h-6 w-6 cursor-pointer hover:text-blue-900 ${
+                      noFollowup ? "text-blue-400" : "text-gray-700"
+                    }`}
+                  />
+                )}
             </div>
           );
         },
@@ -164,8 +180,8 @@ const InspectionBooking = () => {
         },
       },
     },
-     //3
-     {
+    //3
+    {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
@@ -220,7 +236,7 @@ const InspectionBooking = () => {
         sort: false,
       },
     },
-   
+
     //7
     {
       name: "order_date",
@@ -251,8 +267,8 @@ const InspectionBooking = () => {
         },
       },
     },
-    
-    //9 service name 
+
+    //9 service name
     {
       name: "order_service",
       label: "Service",
@@ -288,7 +304,7 @@ const InspectionBooking = () => {
         sort: false,
       },
     },
-     //12
+    //12
     {
       name: "order_time",
       label: "Time/Area",
@@ -297,8 +313,8 @@ const InspectionBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const locality = tableMeta.rowData[31];
-          const subLocality = tableMeta.rowData[32]; 
-          
+          const subLocality = tableMeta.rowData[32];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -309,7 +325,7 @@ const InspectionBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
             <div className="flex flex-col w-32">
               <span>{value}</span>
@@ -333,7 +349,7 @@ const InspectionBooking = () => {
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span> 
+                <span>{customeDetails}</span>
                 <span>{price}</span>
               </div>
             );
@@ -347,7 +363,7 @@ const InspectionBooking = () => {
         },
       },
     },
-   
+
     //14
     {
       name: "order_assign",
@@ -369,7 +385,7 @@ const InspectionBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const type = tableMeta.rowData[20];
           const paid_amount = tableMeta.rowData[19];
-        
+
           return (
             <div className=" flex flex-col w-32">
               <span>{paid_amount}</span>
@@ -379,8 +395,8 @@ const InspectionBooking = () => {
         },
       },
     },
-     //16
-     {
+    //16
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -424,7 +440,7 @@ const InspectionBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -457,7 +473,7 @@ const InspectionBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -506,7 +522,7 @@ const InspectionBooking = () => {
         sort: true,
       },
     },
-    
+
     //21
     {
       name: "updated_by",
@@ -531,7 +547,7 @@ const InspectionBooking = () => {
         sort: false,
       },
     },
-   
+
     //23
     {
       name: "order_address",
@@ -628,7 +644,7 @@ const InspectionBooking = () => {
         sort: false,
       },
     },
-      //31 - order_locality
+    //31 - order_locality
     {
       name: "order_locality",
       label: "Locality",
@@ -652,7 +668,6 @@ const InspectionBooking = () => {
         sort: false,
       },
     },
-  
   ];
   const options = {
     selectableRows: "none",

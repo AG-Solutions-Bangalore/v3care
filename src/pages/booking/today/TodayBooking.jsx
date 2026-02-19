@@ -60,7 +60,6 @@ const TodayBooking = () => {
 
   useEffect(() => {
     if (!todayBookingData) return;
-
     let filtered = [...todayBookingData];
 
     switch (activeTab) {

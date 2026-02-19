@@ -127,6 +127,8 @@ import AddBookReassignWOService from "./pages/booking/commonView/editBooking/Add
 import VendorSummaryForm from "./pages/report/vendor-summary/VendorSummaryForm";
 import PaymentConfirmation from "./pages/payment/paymentConfirmation/PaymentConfirmation";
 import BankList from "./pages/master/bank/bank-list";
+import PaymentConformationReceived from "./pages/payment/paymentConfirmation/PaymentConfirmationReceived";
+import Quotation from "./pages/quotation/quotation-list";
 
 const App = () => {
   const { userType } = useContext(ContextPanel);
@@ -387,6 +389,7 @@ const App = () => {
             <>
               {/* payment  */}
               <Route path="/pending-payment-confirmation" element={<PaymentConfirmation />} />
+              <Route path="/received-payment-confirmation" element={<PaymentConformationReceived />} />
                 <Route path="/pending-payment" element={<PendingPayment />} />
               <Route
                 path="/pending-payment-view/:id"
@@ -428,6 +431,7 @@ const App = () => {
             <>
               {/* commission  */}
               <Route path="/web-enquiry" element={<WebEnquiry />} />
+              <Route path="/quotation-list" element={<Quotation />} />
             </>
           )}
           {(userType === "6" ||
