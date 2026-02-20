@@ -16,6 +16,7 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import { BsFillChatQuoteFill } from "react-icons/bs";
+import { FaWpforms } from "react-icons/fa";
 
 const InspectionBooking = () => {
   const [InspectionBookData, setInspectionBookData] = useState(null);
@@ -134,7 +135,7 @@ const InspectionBooking = () => {
               <CommentPopover booking={booking} />
               {(userType == "6" || userType == "7" || userType == "8") &&
                 quotation && (
-                  <BsFillChatQuoteFill
+                  <FaWpforms 
                     title="Quotation"
                     onClick={(e) => handleQuotation(e, id)}
                     // onClick={() => navigate(`/quotation/${id}?mode=create`)}
