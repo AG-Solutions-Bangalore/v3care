@@ -750,7 +750,7 @@ const TodayBooking = () => {
     },
 
     setRowProps: (rowData) => {
-      const orderStatus = rowData[22];
+      const orderStatus = rowData[23];
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
