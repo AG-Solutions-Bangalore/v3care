@@ -20,6 +20,7 @@ import {
   Button,
 } from "@material-tailwind/react";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
+import { OutlinedInput, TextareaAutosize } from "@mui/material";
 const QuotationForm = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
@@ -148,8 +149,11 @@ const QuotationForm = () => {
   const handleSubChange = (index, e) => {
     const { name, value } = e.target;
     const updated = [...formData.sub];
-    updated[index][name] = value;
-
+    if (name === "quotationSub_rate" || name === "quotationSub_qnty") {
+      updated[index][name] = value.replace(/[^0-9.]/g, "");
+    } else {
+      updated[index][name] = value;
+    }
     const rate = Number(updated[index].quotationSub_rate || 0);
     const qty = Number(updated[index].quotationSub_qnty || 0);
     updated[index].quotationSub_amount = rate * qty;
@@ -288,7 +292,14 @@ const QuotationForm = () => {
           {isEdit ? "Edit Quotation" : "Create Quotation"}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <Input
               label="Quotation Date"
@@ -360,19 +371,19 @@ const QuotationForm = () => {
                   </Typography>
                 </th>
 
-                <th className="border p-3 w-[13%] text-center">
+                <th className="border p-3 w-[10%] text-center">
                   <Typography variant="small" className="font-bold">
                     Rate
                   </Typography>
                 </th>
 
-                <th className="border p-3 w-[13%] text-center">
+                <th className="border p-3 w-[10%] text-center">
                   <Typography variant="small" className="font-bold">
                     Qty
                   </Typography>
                 </th>
 
-                <th className="border p-3 w-[13%] text-center">
+                <th className="border p-3 w-[10%] text-center">
                   <Typography variant="small" className="font-bold">
                     Amount
                   </Typography>
@@ -391,7 +402,7 @@ const QuotationForm = () => {
                 <tr key={index} className="border-b">
                   {/* Heading */}
                   <td className="border p-2">
-                    <Input
+                    {/* <Input
                       className="w-full appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
                       name="quotationSub_heading"
                       value={item.quotationSub_heading}
@@ -399,47 +410,80 @@ const QuotationForm = () => {
                       labelProps={{
                         className: "before:content-none after:content-none",
                       }}
+                    /> */}
+                    <OutlinedInput
+                      name="quotationSub_heading"
+                      value={item.quotationSub_heading}
+                      onChange={(e) => handleSubChange(index, e)}
+                      size="small"
+                      sx={{ width: "100%" }}
                     />
                   </td>
 
                   {/* Description */}
                   <td className="border p-2">
-                    <Textarea
+                    {/* <TextareaAutosize
                       name="quotationSub_description"
                       value={item.quotationSub_description}
                       onChange={(e) => handleSubChange(index, e)}
                       rows={2}
-                      className="w-full min-h-[60px] appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      className="w-full min-h-[60px] appearance-none !border border-gray-400 rounded-lg"
                       labelProps={{
                         className: "before:content-none after:content-none",
                       }}
+                    /> */}
+                    <OutlinedInput
+                      name="quotationSub_description"
+                      value={item.quotationSub_description}
+                      onChange={(e) => handleSubChange(index, e)}
+                      multiline
+                      minRows={2}
+                      fullWidth
+                      size="small"
                     />
                   </td>
 
                   {/* Rate */}
-                  <td className="border p-2">
-                    <Input
-                      type="number"
+                  <td className="border p-2 items-center">
+                    {/* <Input
                       name="quotationSub_rate"
                       value={item.quotationSub_rate}
                       onChange={(e) => handleSubChange(index, e)}
-                      className="!w-24 appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
+                      className="!w-28 appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
                       labelProps={{
                         className: "before:content-none after:content-none",
+                      }}
+                    /> */}
+
+                    <OutlinedInput
+                      name="quotationSub_rate"
+                      value={item.quotationSub_rate}
+                      onChange={(e) => handleSubChange(index, e)}
+                      size="small"
+                      inputProps={{
+                        inputMode: "decimal",
                       }}
                     />
                   </td>
 
                   {/* Qty */}
                   <td className="border p-2">
-                    <Input
-                      type="number"
+                    {/* <Input
                       name="quotationSub_qnty"
                       value={item.quotationSub_qnty}
                       onChange={(e) => handleSubChange(index, e)}
                       className="!w-24 appearance-none !border-t-blue-gray-200 focus:!border-t-gray-900"
                       labelProps={{
                         className: "before:content-none after:content-none",
+                      }}
+                    /> */}
+                    <OutlinedInput
+                      name="quotationSub_qnty"
+                      value={item.quotationSub_qnty}
+                      onChange={(e) => handleSubChange(index, e)}
+                      size="small"
+                      inputProps={{
+                        inputMode: "decimal",
                       }}
                     />
                   </td>
