@@ -1237,7 +1237,7 @@ const autoCommissionCalc =
                       <ButtonConfigColor
                         type="back"
                         buttontype="button"
-                        label="Cancel"
+                        label="Back"
                         onClick={() => navigate(-1)}
                       />
                       <Popover placement="bottom-start" offset={10}>
