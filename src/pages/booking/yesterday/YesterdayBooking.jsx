@@ -384,7 +384,7 @@ const YesterdayBooking = () => {
     //14
     {
       name: "service_price",
-      label: "Service/Price",
+      label: "Service/Price/Advance/Discount",
       options: {
         filter: false,
         sort: false,
@@ -392,18 +392,24 @@ const YesterdayBooking = () => {
           const service = tableMeta.rowData[9];
           const price = tableMeta.rowData[10];
           const customeDetails = tableMeta.rowData[11];
+          const advance_amount = tableMeta.rowData[35];
+          const dis_amount = tableMeta.rowData[36];
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
                 <span>{customeDetails}</span>
-                <span>{price}</span>
+                <span>Total Amount: {price}</span>
+                <span>Advance : {advance_amount}</span>
+                <span>Discount : {dis_amount}</span>
               </div>
             );
           }
           return (
             <div className=" flex flex-col w-32">
               <span>{service}</span>
-              <span>{price}</span>
+              <span>Total Amount: {price}</span>
+              <span>Advance : {advance_amount}</span>
+              <span>Discount : {dis_amount}</span>
             </div>
           );
         },
@@ -424,18 +430,26 @@ const YesterdayBooking = () => {
     //16
     {
       name: "amount_type",
-      label: "Paid Amount/Type",
+      label: "Paid Amount/Type/Balance",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const type = tableMeta.rowData[21];
           const paid_amount = tableMeta.rowData[20];
-
+          const price = tableMeta.rowData[10];
+          const advance_amount = tableMeta.rowData[35];
+          const dis_amount = tableMeta.rowData[36];
+          const balance =
+            Number(price) -
+            Number(advance_amount) -
+            Number(dis_amount) -
+            Number(paid_amount);
           return (
             <div className=" flex flex-col w-32">
-              <span>{paid_amount}</span>
+              <span>Received :{paid_amount ? paid_amount : "0"}</span>
               <span>{type}</span>
+              <span>Balance : {balance ? balance : "0"}</span>
             </div>
           );
         },
@@ -718,6 +732,30 @@ const YesterdayBooking = () => {
     {
       name: "order_sub_locality",
       label: "Sub Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //35
+    {
+      name: "order_advance",
+      label: "Advance",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //36
+    {
+      name: "order_discount",
+      label: "Discount",
       options: {
         filter: true,
         display: "exclude",
