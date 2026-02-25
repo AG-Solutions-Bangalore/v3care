@@ -247,7 +247,7 @@ const PaymentConformationReceived = () => {
     },
     {
       name: "service_price",
-      label: "Service/Price",
+      label: "Service/Total Amount",
       options: {
         filter: false,
         sort: false,
@@ -289,7 +289,7 @@ const PaymentConformationReceived = () => {
     },
     {
       name: "amount_type",
-      label: "Paid Amount/Type",
+      label: "Received Amount/Type",
       options: {
         filter: false,
         sort: false,

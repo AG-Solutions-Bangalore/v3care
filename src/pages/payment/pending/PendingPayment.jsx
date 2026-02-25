@@ -19,6 +19,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@material-tailwind/react";
+import { toast } from "react-toastify";
 
 const PendingPayment = () => {
   const [pendingData, setPendingData] = useState(null);
@@ -100,8 +101,6 @@ const PendingPayment = () => {
   useEffect(() => {
     fetchPendingData();
   }, []);
-
-
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -297,18 +296,6 @@ const PendingPayment = () => {
 
     //11
     {
-      name: "order_amount",
-      label: "Price",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-        searchable: true,
-        sort: false,
-      },
-    },
-    //12
-    {
       name: "service_price",
       label: "Service/Price",
       options: {
@@ -316,15 +303,27 @@ const PendingPayment = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[10];
-          const price = tableMeta.rowData[11];
+          // const price = tableMeta.rowData[11];
           const custom = tableMeta.rowData[13];
           return (
             <div className=" flex flex-col w-40">
               <span>{service == "Custom" ? custom : service}</span>
-              <span>{price}</span>
+              {/* <span>{price}</span> */}
             </div>
           );
         },
+      },
+    },
+    //12
+    {
+      name: "order_amount",
+      label: "Total Amount",
+      options: {
+        filter: true,
+        // display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
       },
     },
     //13
@@ -342,7 +341,7 @@ const PendingPayment = () => {
     //14
     {
       name: "order_payment_amount",
-      label: "Paid Amount",
+      label: "Received Amount",
       options: {
         filter: false,
         display: "exclude",
@@ -366,16 +365,19 @@ const PendingPayment = () => {
     //16
     {
       name: "amount_type",
-      label: "Paid Amount/Type",
+      label: "Received Amount/Type",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const amountType = tableMeta.rowData[14];
+          const receivedamount = tableMeta.rowData[14];
           const paidType = tableMeta.rowData[15];
+          const advance = tableMeta.rowData[21];
+
+          const totalreceivedamount = Number(receivedamount) + Number(advance);
           return (
             <div className=" flex flex-col ">
-              <span>{amountType}</span>
+              <span>{totalreceivedamount}</span>
               <span>{paidType}</span>
             </div>
           );
@@ -391,7 +393,7 @@ const PendingPayment = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const price = parseFloat(tableMeta.rowData[11]) || 0;
+          const price = parseFloat(tableMeta.rowData[12]) || 0;
           const paid = parseFloat(tableMeta.rowData[14]) || 0;
           const balance = price - paid;
           return (
@@ -449,6 +451,18 @@ const PendingPayment = () => {
         viewColumns: false,
       },
     },
+    //21
+    {
+      name: "order_advance",
+      label: "Advance",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
   ];
   const confirmPayment = async () => {
     if (!selectedId) return;
@@ -456,6 +470,7 @@ const PendingPayment = () => {
     try {
       const res = await axios.put(
         `${BASE_URL}/api/panel-update-final-payment-status/${selectedId}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -470,7 +485,6 @@ const PendingPayment = () => {
         toast.error(res?.data?.msg || "Failed to Payment");
       }
     } catch (error) {
-      setIsDialogOpen(false);
       toast.error(error.response?.data?.message || "An error occurred");
     }
   };

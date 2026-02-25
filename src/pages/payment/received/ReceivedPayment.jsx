@@ -1,6 +1,7 @@
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
 import { useContext, useEffect, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../base/BaseUrl";
 import PaymentFilter from "../../../components/PaymentFilter";
@@ -8,12 +9,11 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 
 import Moment from "moment";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 const ReceivedPayment = () => {
-  const [receivedData, setReceivedData] = useState(null);
+  const [pendingData, setPendingData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { isPanelUp } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -22,6 +22,11 @@ const ReceivedPayment = () => {
   const rowsPerPage = 10;
   const searchParams = new URLSearchParams(location.search);
   const pageParam = searchParams.get("page");
+  const [totals, setTotals] = useState({
+    totalPrice: 0,
+    totalPaid: 0,
+    totalBalance: 0,
+  });
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -36,64 +41,84 @@ const ReceivedPayment = () => {
       }
     }
   }, [location]);
-  UseEscapeKey();
-  useEffect(() => {
-    const fetchReceivedData = async () => {
-      try {
-        if (!isPanelUp) {
-          navigate("/maintenance");
-          return;
-        }
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-final-payment-close-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
 
-        setReceivedData(response.data?.booking);
-      } catch (error) {
-        console.error("Error fetching dashboard data", error);
-      } finally {
-        setLoading(false);
+  UseEscapeKey();
+
+  const fetchPendingData = async () => {
+    try {
+      if (!isPanelUp) {
+        navigate("/maintenance");
+        return;
       }
-    };
-    fetchReceivedData();
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-final-payment-close-list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const bookingData = response.data?.booking;
+      setPendingData(bookingData);
+
+      if (bookingData && bookingData.length > 0) {
+        const totalPrice = bookingData.reduce(
+          (sum, item) => sum + (parseFloat(item.order_amount) || 0),
+          0,
+        );
+        const totalPaid = bookingData.reduce(
+          (sum, item) => sum + (parseFloat(item.order_payment_amount) || 0),
+          0,
+        );
+        const totalBalance = totalPrice - totalPaid;
+
+        setTotals({
+          totalPrice,
+          totalPaid,
+          totalBalance,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchPendingData();
   }, []);
 
-  const handleView = (e, id) => {
-    e.preventDefault();
-    e.stopPropagation();
-    localStorage.setItem("page-no", pageParam);
-    navigate(`/pending-received-view/${id}`);
-  };
+
+
   const columns = [
+    //0
     {
       name: "order_ref",
       label: "ID",
       options: {
         filter: false,
         display: "exclude",
-        serchable: true,
+        searchable: true,
         sort: true,
         viewColumns: false,
       },
     },
+    //1
     {
       name: "branch_name",
       label: "Branch",
       options: {
         filter: true,
         display: "exclude",
-        serchable: true,
+        searchable: true,
         sort: true,
         viewColumns: false,
       },
     },
+    //2
     {
       name: "order_branch",
       label: "Order/Branch",
@@ -112,14 +137,26 @@ const ReceivedPayment = () => {
         },
       },
     },
+    //3
     {
-      name: "order_area",
+      name: "order_locality",
       label: "Area",
       options: {
         filter: false,
         sort: true,
+        customBodyRender: (value, tableMeta) => {
+          const locality = tableMeta.rowData[20];
+          const sublocality = tableMeta.rowData[19];
+          return (
+            <div className=" flex flex-col w-40">
+              <span>{locality}</span>
+              <span>{sublocality}</span>
+            </div>
+          );
+        },
       },
     },
+    //4
     {
       name: "order_customer",
       label: "Customer",
@@ -131,6 +168,7 @@ const ReceivedPayment = () => {
         viewColumns: false,
       },
     },
+    //5
     {
       name: "order_customer_mobile",
       label: "Mobile",
@@ -142,6 +180,7 @@ const ReceivedPayment = () => {
         viewColumns: false,
       },
     },
+    //6
     {
       name: "customer_mobile",
       label: "Customer/Mobile",
@@ -152,7 +191,7 @@ const ReceivedPayment = () => {
           const customeName = tableMeta.rowData[4];
           const mobileNo = tableMeta.rowData[5];
           return (
-            <div className=" flex flex-col w-40">
+            <div className=" flex flex-col w-38">
               <span>{customeName}</span>
               <span>{mobileNo}</span>
             </div>
@@ -160,6 +199,7 @@ const ReceivedPayment = () => {
         },
       },
     },
+    //7
     {
       name: "order_date",
       label: "Booking Date",
@@ -167,14 +207,14 @@ const ReceivedPayment = () => {
         filter: true,
         sort: true,
         display: "exclude",
-        serchable: true,
+        searchable: true,
         viewColumns: false,
-
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
+    //8
     {
       name: "order_service_date",
       label: "Service Date",
@@ -182,14 +222,14 @@ const ReceivedPayment = () => {
         filter: true,
         sort: true,
         display: "exclude",
-        serchable: true,
+        searchable: true,
         viewColumns: false,
-
         customBodyRender: (value) => {
           return Moment(value).format("DD-MM-YYYY");
         },
       },
     },
+    //9
     {
       name: "booking_service_date",
       label: "Booking/Service",
@@ -197,8 +237,8 @@ const ReceivedPayment = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const bookingDate = tableMeta.rowData[6];
-          const serviceDate = tableMeta.rowData[7];
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
           return (
             <div className=" flex flex-col justify-center">
               <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
@@ -208,31 +248,20 @@ const ReceivedPayment = () => {
         },
       },
     },
+    //10
     {
       name: "order_service",
       label: "Service",
       options: {
         filter: true,
+        display: "exclude",
+        searchable: true,
+        viewColumns: false,
         sort: true,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
       },
     },
 
-    {
-      name: "order_amount",
-      label: "Price",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-
-        searchable: true,
-        sort: false,
-      },
-    },
+    //11
     {
       name: "service_price",
       label: "Service/Price",
@@ -241,59 +270,164 @@ const ReceivedPayment = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const service = tableMeta.rowData[10];
-          const price = tableMeta.rowData[11];
+          // const price = tableMeta.rowData[11];
+          const custom = tableMeta.rowData[13];
           return (
             <div className=" flex flex-col w-40">
-              <span>{service}</span>
-              <span>{price}</span>
+              <span>{service == "Custom" ? custom : service}</span>
+              {/* <span>{price}</span> */}
             </div>
           );
         },
       },
     },
+    //12
     {
-      name: "order_payment_amount",
-      label: "Paid Amount",
+      name: "order_amount",
+      label: "Total Amount",
       options: {
-        filter: false,
-        display: "exclude",
-        searchable: true,
+        filter: true,
+        // display: "exclude",
         viewColumns: false,
-
+        searchable: true,
         sort: false,
       },
     },
+    //13
+    {
+      name: "order_custom",
+      label: "Custom Description",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //14
+    {
+      name: "order_payment_amount",
+      label: "Received Amount",
+      options: {
+        filter: false,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //15
     {
       name: "order_payment_type",
       label: "Paid Type",
       options: {
         filter: false,
         display: "exclude",
-        viewColumns: false,
-
         searchable: true,
         sort: false,
+        viewColumns: false,
       },
     },
+    //16
     {
       name: "amount_type",
-      label: "Paid Amount/Type",
+      label: "Received Amount/Type",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const amountType = tableMeta.rowData[13];
-          const paidType = tableMeta.rowData[14];
+          const receivedamount = tableMeta.rowData[14];
+          const paidType = tableMeta.rowData[15];
+          const advance = tableMeta.rowData[21];
+
+          const totalreceivedamount = Number(receivedamount) + Number(advance);
           return (
-            <div className=" flex flex-col w-32 ">
-              <span>{amountType}</span>
+            <div className=" flex flex-col ">
+              <span>{totalreceivedamount}</span>
               <span>{paidType}</span>
             </div>
           );
         },
       },
     },
+    // 17
+
+    {
+      name: "balance",
+      label: "Balance",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const price = parseFloat(tableMeta.rowData[12]) || 0;
+          const paid = parseFloat(tableMeta.rowData[14]) || 0;
+          const balance = price - paid;
+          return (
+            <span
+              className={
+                balance > 0
+                  ? "text-red-600 font-semibold"
+                  : "text-green-600 font-semibold"
+              }
+            >
+              ₹{balance.toFixed(2)}
+            </span>
+          );
+        },
+      },
+    },
+
+    // 18
+    {
+      name: "order_status",
+      label: "Status Changed",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: false,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    //19
+    {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    //20
+    {
+      name: "order_locality",
+      label: "Locality",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
+    //21
+    {
+      name: "order_advance",
+      label: "Advance",
+      options: {
+        filter: false,
+        display: "exclude",
+        searchable: true,
+        sort: false,
+        viewColumns: false,
+      },
+    },
   ];
+
   const options = {
     selectableRows: "none",
     elevation: 0,
@@ -301,17 +435,12 @@ const ReceivedPayment = () => {
     viewColumns: true,
     download: false,
     print: false,
-
-    count: receivedData?.length || 0,
+    count: pendingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
       setPage(currentPage);
       navigate(`/received-payment?page=${currentPage + 1}`);
-    },
-    onRowClick: (rowData, rowMeta, e) => {
-      const id = receivedData[rowMeta.dataIndex].id;
-      handleView(e, id)();
     },
     setRowProps: () => {
       return {
@@ -350,6 +479,7 @@ const ReceivedPayment = () => {
       );
     },
   };
+
   return (
     <Layout>
       <PaymentFilter />
@@ -358,13 +488,40 @@ const ReceivedPayment = () => {
       ) : (
         <div className="mt-1">
           <MUIDataTable
-            title="Payment Closed"
-            data={receivedData ? receivedData : []}
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span className="text-lg font-semibold">Payment Closed</span>
+                <div className="flex items-center space-x-4 px-3 py-1 bg-blue-50 rounded-md">
+                  <div className="flex items-end space-x-1">
+                    <span className="text-xs text-gray-600">Total Amount:</span>
+                    <span className="text-sm font-bold text-blue-600">
+                      ₹{totals.totalPrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="w-px h-4 bg-gray-300"></div>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-xs text-gray-600">Paid:</span>
+                    <span className="text-sm font-bold text-green-600">
+                      ₹{totals.totalPaid.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="w-px h-4 bg-gray-300"></div>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-xs text-gray-600">Balance:</span>
+                    <span className="text-sm font-bold text-red-600">
+                      ₹{totals.totalBalance.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+            data={pendingData ? pendingData : []}
             columns={columns}
             options={options}
           />
         </div>
       )}
+ 
     </Layout>
   );
 };
