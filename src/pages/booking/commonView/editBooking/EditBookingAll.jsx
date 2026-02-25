@@ -646,13 +646,6 @@ const EditBookingAll = () => {
                   <strong>Vendor:</strong> {vendor.vendor_company}
                 </Typography>
               )}
-              <button
-                onClick={() => setOpenEditService(true)}
-                className="ml-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center gap-1"
-              >
-                <FaEdit size={14} />
-                Edit Service
-              </button>
             </div>
           </div>
         );
@@ -766,11 +759,14 @@ const EditBookingAll = () => {
   //   Math.round((booking.order_amount * booking.order_comm_percentage) / 100) ||
   //   0;
 
-   
-const autoCommissionCalc = 
-  booking.order_vendor_amount && parseFloat(booking.order_vendor_amount) > 0 
-    ? Math.round((parseFloat(booking.order_vendor_amount) * parseFloat(booking.order_comm_percentage)) / 100) 
-    : 0;
+  const autoCommissionCalc =
+    booking.order_vendor_amount && parseFloat(booking.order_vendor_amount) > 0
+      ? Math.round(
+          (parseFloat(booking.order_vendor_amount) *
+            parseFloat(booking.order_comm_percentage)) /
+            100,
+        )
+      : 0;
   return (
     <Layout>
       <BookingFilter />
@@ -1005,51 +1001,68 @@ const autoCommissionCalc =
                         </>
                       )} */}
 
+                      {booking?.order_vendor_id !== null && (
+                        <>
+                          <div className="form-group relative">
+                            <Input
+                              fullWidth
+                              required={booking.order_vendor_id}
+                              label="Commission (%)"
+                              name="order_comm_percentage"
+                              value={booking.order_comm_percentage}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                            <span
+                              className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                              onClick={() => {
+                                setBooking((prev) => ({
+                                  ...prev,
+                                  order_comm:
+                                    booking.order_vendor_amount &&
+                                    parseFloat(booking.order_vendor_amount) > 0
+                                      ? Math.round(
+                                          (parseFloat(
+                                            booking.order_vendor_amount,
+                                          ) *
+                                            parseFloat(
+                                              prev.order_comm_percentage,
+                                            )) /
+                                            100,
+                                        )
+                                      : 0,
+                                }));
+                              }}
+                            >
+                              (₹
+                              {booking.order_vendor_amount &&
+                              parseFloat(booking.order_vendor_amount) > 0 &&
+                              booking.order_comm_percentage
+                                ? Math.round(
+                                    (parseFloat(booking.order_vendor_amount) *
+                                      parseFloat(
+                                        booking.order_comm_percentage,
+                                      )) /
+                                      100,
+                                  )
+                                : 0}
+                              )
+                            </span>
+                          </div>
 
-{booking?.order_vendor_id !== null && (
-  <>
-    <div className="form-group relative">
-      <Input
-        fullWidth
-        required={booking.order_vendor_id}
-        label="Commission (%)"
-        name="order_comm_percentage"
-        value={booking.order_comm_percentage}
-        onChange={(e) => onInputChange(e)}
-      />
-      <span
-        className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
-        onClick={() => {
-          setBooking((prev) => ({
-            ...prev,
-            order_comm: booking.order_vendor_amount && parseFloat(booking.order_vendor_amount) > 0 
-              ? Math.round((parseFloat(booking.order_vendor_amount) * parseFloat(prev.order_comm_percentage)) / 100)
-              : 0,
-          }));
-        }}
-      >
-        (₹{
-          booking.order_vendor_amount && parseFloat(booking.order_vendor_amount) > 0 && booking.order_comm_percentage
-            ? Math.round((parseFloat(booking.order_vendor_amount) * parseFloat(booking.order_comm_percentage)) / 100)
-            : 0
-        })
-      </span>
-    </div>
-
-    <div>
-      <div className="form-group ">
-        <Input
-          fullWidth
-          required={booking.order_vendor_id}
-          label="Commission Amount"
-          name="order_comm"
-          value={booking.order_comm}
-          onChange={(e) => onInputChange(e)}
-        />
-      </div>
-    </div>
-  </>
-)}
+                          <div>
+                            <div className="form-group ">
+                              <Input
+                                fullWidth
+                                required={booking.order_vendor_id}
+                                label="Commission Amount"
+                                name="order_comm"
+                                value={booking.order_comm}
+                                onChange={(e) => onInputChange(e)}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <div
                         className={`${
                           booking?.order_vendor_id == null ? " col-span-2" : ""
@@ -1218,10 +1231,26 @@ const autoCommissionCalc =
                       <ButtonConfigColor
                         type="edit"
                         buttontype="button"
-                        label="Reassign / Add Service"
-                        onClick={() => setOpenReassignPopup(true)}
+                        label=" Edit Service"
+                        onClick={() => setOpenEditService(true)}
                       />
 
+                      <ButtonConfigColor
+                        type="submit"
+                        buttontype="button"
+                        label="Reassign"
+                        onClick={() => {
+                          navigate(`/add-booking-reassign/${id}`);
+                        }}
+                      />
+                      <ButtonConfigColor
+                        type="create"
+                        buttontype="button"
+                        label="Add New Service"
+                        onClick={() => {
+                          navigate(`/add-booking-reassign-wo-service/${id}`);
+                        }}
+                      />
                       <ButtonConfigColor
                         type="submit"
                         buttontype="button"
@@ -1233,13 +1262,13 @@ const autoCommissionCalc =
                         label="Work in Progress"
                         onClick={() => navigate(`/booking-reschedule/${id}`)}
                       />
-
+{/* 
                       <ButtonConfigColor
                         type="back"
                         buttontype="button"
                         label="Back"
                         onClick={() => navigate(-1)}
-                      />
+                      /> */}
                       <Popover placement="bottom-start" offset={10}>
                         <PopoverHandler>
                           <div className="inline-block">
@@ -1427,20 +1456,6 @@ const autoCommissionCalc =
           </div>
         </DialogContent>
         <DialogActions>
-          {/* <button
-            onClick={handleClose}
-            className="btn btn-primary text-center md:text-right text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-md"
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-primary text-center md:text-right text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-md"
-            type="sumbit"
-            onClick={(e) => onSubmitFollowup(e)}
-          >
-            Submit
-          </button> */}
-
           <div className="flex justify-center space-x-4 my-2">
             <ButtonConfigColor
               type="back"
@@ -1458,8 +1473,8 @@ const autoCommissionCalc =
           </div>
         </DialogActions>
       </Dialog>
-      {/* Edit Service Modal */}
-      {/* <Dialog
+
+      <Dialog
         open={openEditService}
         onClose={() => setOpenEditService(false)}
         fullWidth
@@ -1471,7 +1486,6 @@ const autoCommissionCalc =
           </div>
 
           <div className="space-y-4">
-       
             <div>
               <FormControl fullWidth>
                 <InputLabel id="order_service-label">
@@ -1498,80 +1512,7 @@ const autoCommissionCalc =
               </FormControl>
             </div>
 
-           
-            {serviceData.order_service !== "1" && serdatasub.length > 0 && (
-              <div>
-                <FormControl fullWidth>
-                  <InputLabel id="order_service_sub-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Service Sub <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="order_service_sub-label"
-                    id="order_service_sub"
-                    name="order_service_sub"
-                    value={serviceData.order_service_sub}
-                    onChange={(e) => onServiceChange(e)}
-                    label="Service Sub *"
-                    required
-                  >
-                    {serdatasub.map((data) => (
-                      <MenuItem key={data.id} value={data.id}>
-                        {data.service_sub}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            )}
-
-         
-            {serviceData.order_service !== "1" && pricedata.length > 0 && (
-              <div>
-                <FormControl fullWidth>
-                  <InputLabel id="order_service_price_for-label">
-                    <span className="text-sm relative bottom-[6px]">
-                      Price For <span className="text-red-700">*</span>
-                    </span>
-                  </InputLabel>
-                  <Select
-                    sx={{ height: "40px", borderRadius: "5px" }}
-                    labelId="order_service_price_for-label"
-                    id="order_service_price_for"
-                    name="order_service_price_for"
-                    value={serviceData.order_service_price_for}
-                    onChange={handlePriceForChange}
-                    label="Price For *"
-                    required
-                  >
-                    {pricedata.map((data) => (
-                      <MenuItem key={data.id} value={data.id}>
-                        {data.service_price_for} - {data.service_price_rate}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            )}
-
-          
-            {serviceData.order_service !== "1" && (
-              <div>
-                <Input
-                  fullWidth
-                  label="Service Price"
-                  name="order_service_price"
-                  value={serviceData.order_service_price}
-                  onChange={(e) => onServiceChange(e)}
-                  required
-                />
-              </div>
-            )}
-
-           
-            {serviceData.order_service === "1" && (
+            {serviceData.order_service == "1" ? (
               <>
                 <div>
                   <Input
@@ -1581,6 +1522,7 @@ const autoCommissionCalc =
                     value={serviceData.order_custom}
                     onChange={(e) => onServiceChange(e)}
                     required
+                    placeholder="Enter custom service name"
                   />
                 </div>
                 <div>
@@ -1589,6 +1531,76 @@ const autoCommissionCalc =
                     label="Custom Price"
                     name="order_custom_price"
                     value={serviceData.order_custom_price}
+                    onChange={(e) => onServiceChange(e)}
+                    required
+                    placeholder="Enter custom price"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                {serdatasub.length > 0 && (
+                  <div>
+                    <FormControl fullWidth>
+                      <InputLabel id="order_service_sub-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Service Sub <span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <Select
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="order_service_sub-label"
+                        id="order_service_sub"
+                        name="order_service_sub"
+                        value={serviceData.order_service_sub}
+                        onChange={(e) => onServiceChange(e)}
+                        label="Service Sub *"
+                        required
+                      >
+                        {serdatasub.map((data) => (
+                          <MenuItem key={data.id} value={data.id}>
+                            {data.service_sub}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                )}
+
+                {pricedata.length > 0 && (
+                  <div>
+                    <FormControl fullWidth>
+                      <InputLabel id="order_service_price_for-label">
+                        <span className="text-sm relative bottom-[6px]">
+                          Price For <span className="text-red-700">*</span>
+                        </span>
+                      </InputLabel>
+                      <Select
+                        sx={{ height: "40px", borderRadius: "5px" }}
+                        labelId="order_service_price_for-label"
+                        id="order_service_price_for"
+                        name="order_service_price_for"
+                        value={serviceData.order_service_price_for}
+                        onChange={handlePriceForChange}
+                        label="Price For *"
+                        required
+                      >
+                        {pricedata.map((data) => (
+                          <MenuItem key={data.id} value={data.id}>
+                            {data.service_price_for} - {data.service_price_rate}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                )}
+
+                <div>
+                  <Input
+                    fullWidth
+                    label="Service Price"
+                    name="order_service_price"
+                    value={serviceData.order_service_price}
                     onChange={(e) => onServiceChange(e)}
                     required
                   />
@@ -1614,167 +1626,7 @@ const autoCommissionCalc =
             />
           </div>
         </DialogActions>
-      </Dialog> */}
-{/* Edit Service Modal */}
-<Dialog
-  open={openEditService}
-  onClose={() => setOpenEditService(false)}
-  fullWidth
-  maxWidth="md"
->
-  <DialogContent>
-    <div className="mb-5">
-      <h1 className="font-bold text-xl">Edit Service Details</h1>
-    </div>
-
-    <div className="space-y-4">
-
-      <div>
-        <FormControl fullWidth>
-          <InputLabel id="order_service-label">
-            <span className="text-sm relative bottom-[6px]">
-              Service <span className="text-red-700">*</span>
-            </span>
-          </InputLabel>
-          <Select
-            sx={{ height: "40px", borderRadius: "5px" }}
-            labelId="order_service-label"
-            id="order_service"
-            name="order_service"
-            value={serviceData.order_service}
-            onChange={(e) => onServiceChange(e)}
-            label="Service *"
-            required
-          >
-            {serdata.map((data) => (
-              <MenuItem key={data.id} value={data.id}>
-                {data.service}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-
-      
-      {serviceData.order_service == "1" ? (
-        <>
-          <div>
-            <Input
-              fullWidth
-              label="Custom Service"
-              name="order_custom"
-              value={serviceData.order_custom}
-              onChange={(e) => onServiceChange(e)}
-              required
-              placeholder="Enter custom service name"
-            />
-          </div>
-          <div>
-            <Input
-              fullWidth
-              label="Custom Price"
-              name="order_custom_price"
-              value={serviceData.order_custom_price}
-              onChange={(e) => onServiceChange(e)}
-              required
-              placeholder="Enter custom price"
-            />
-          </div>
-        </>
-      ) : (
-      
-        <>
-      
-          {serdatasub.length > 0 && (
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="order_service_sub-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Service Sub <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="order_service_sub-label"
-                  id="order_service_sub"
-                  name="order_service_sub"
-                  value={serviceData.order_service_sub}
-                  onChange={(e) => onServiceChange(e)}
-                  label="Service Sub *"
-                  required
-                >
-                  {serdatasub.map((data) => (
-                    <MenuItem key={data.id} value={data.id}>
-                      {data.service_sub}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          )}
-
-         
-          {pricedata.length > 0 && (
-            <div>
-              <FormControl fullWidth>
-                <InputLabel id="order_service_price_for-label">
-                  <span className="text-sm relative bottom-[6px]">
-                    Price For <span className="text-red-700">*</span>
-                  </span>
-                </InputLabel>
-                <Select
-                  sx={{ height: "40px", borderRadius: "5px" }}
-                  labelId="order_service_price_for-label"
-                  id="order_service_price_for"
-                  name="order_service_price_for"
-                  value={serviceData.order_service_price_for}
-                  onChange={handlePriceForChange}
-                  label="Price For *"
-                  required
-                >
-                  {pricedata.map((data) => (
-                    <MenuItem key={data.id} value={data.id}>
-                      {data.service_price_for} - {data.service_price_rate}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-          )}
-
-        
-          <div>
-            <Input
-              fullWidth
-              label="Service Price"
-              name="order_service_price"
-              value={serviceData.order_service_price}
-              onChange={(e) => onServiceChange(e)}
-              required
-            />
-          </div>
-        </>
-      )}
-    </div>
-  </DialogContent>
-  <DialogActions>
-    <div className="flex justify-center space-x-4 my-2">
-      <ButtonConfigColor
-        type="back"
-        buttontype="button"
-        label="Cancel"
-        onClick={() => setOpenEditService(false)}
-      />
-      <ButtonConfigColor
-        type="submit"
-        buttontype="submit"
-        label="Update Service"
-        loading={serviceLoading}
-        onClick={handleUpdateService}
-      />
-    </div>
-  </DialogActions>
-</Dialog>
+      </Dialog>
       <Dialog
         open={openReassignPopup}
         onClose={() => setOpenReassignPopup(false)}
