@@ -796,7 +796,7 @@ const AddBooking = () => {
               <div className="relative">
   <Input
     type="time"
-    label="Time Slot *"
+    label="Time Slot"
     required
     id="order_time"
     name="order_time"

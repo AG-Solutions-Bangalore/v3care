@@ -439,7 +439,7 @@ const PostponeBooking = () => {
                   </div>
 
                   <div>
-                    <FormControl fullWidth>
+                    {/* <FormControl fullWidth>
                       <InputLabel id="order_time-label">
                         <span className="text-sm relative bottom-[6px]">
                           Time Slot<span className="text-red-700">*</span>
@@ -462,7 +462,23 @@ const PostponeBooking = () => {
                           </MenuItem>
                         ))}
                       </SelectMui>
-                    </FormControl>
+                    </FormControl> */}
+                    <Input
+                      type="time"
+                      label="Time Slot"
+                      required
+                      id="order_time"
+                      name="order_time"
+                      value={booking.order_time}
+                      onChange={(e) => onInputChange(e)}
+                      className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                                                     [&::-webkit-calendar-picker-indicator]:p-2 
+                                                     [&::-webkit-calendar-picker-indicator]:rounded 
+                                                     hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                      labelProps={{
+                        className: "text-sm",
+                      }}
+                    />
                   </div>
                   <div className="form-group relative">
                     <Input
@@ -535,7 +551,7 @@ const PostponeBooking = () => {
                   <ButtonConfigColor
                     type="back"
                     buttontype="button"
-                    label="Cancel"
+                    label="Back"
                     onClick={() => navigate(-1)}
                   />
                 </div>

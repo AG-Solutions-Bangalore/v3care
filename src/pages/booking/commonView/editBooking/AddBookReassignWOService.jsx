@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
@@ -173,7 +170,6 @@ const AddBookReassignWOService = () => {
   const HalfA = (selectedValue) => {
     const serviceId = selectedValue.target.value;
 
-
     setBooking((prev) => ({
       ...prev,
       order_service: serviceId,
@@ -196,7 +192,7 @@ const AddBookReassignWOService = () => {
 
       fetch(
         `${BASE_URL}/api/panel-fetch-service-sub/${serviceId}`,
-        requestOptions
+        requestOptions,
       )
         .then((response) => response.json())
         .then((data) => setSerDataSub(data.servicesub || []))
@@ -214,13 +210,7 @@ const AddBookReassignWOService = () => {
       order_service_price_for: "",
     }));
 
-
-    loadPriceData(
-     
-      subServiceId,
-      booking.branch_id,
-      booking.order_service_date
-    );
+    loadPriceData(subServiceId, booking.branch_id, booking.order_service_date);
   };
 
   const HalfC = (selectedValue) => {
@@ -292,7 +282,7 @@ const AddBookReassignWOService = () => {
         `${BASE_URL}/api/panel-fetch-booking-by-id/${id}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        },
       );
 
       const bookingData = bookingRes.data?.booking;
@@ -305,8 +295,6 @@ const AddBookReassignWOService = () => {
         setLocalityBook(bookingData.order_locality || "");
         setLocalitySubBook(bookingData.order_sub_locality || "");
 
-       
-
         // Set basic booking data
         const updatedBooking = {
           order_date: todayback,
@@ -314,7 +302,8 @@ const AddBookReassignWOService = () => {
           order_refer_by: bookingData.order_refer_by || "",
           order_customer: bookingData.order_customer || "",
           order_customer_mobile: bookingData.order_customer_mobile || "",
-          order_customer_alt_mobile: bookingData.order_customer_alt_mobile || "",
+          order_customer_alt_mobile:
+            bookingData.order_customer_alt_mobile || "",
           order_customer_email: bookingData.order_customer_email || "",
 
           order_service: "", // Will be set after matching
@@ -357,8 +346,6 @@ const AddBookReassignWOService = () => {
   useEffect(() => {
     fetchAllData();
   }, [id]);
-
-
 
   const validateOnlyDigits = (inputtxt) => {
     var phoneno = /^\d+$/;
@@ -451,7 +438,7 @@ const AddBookReassignWOService = () => {
       autoCompleteRef.current,
       {
         componentRestrictions: { country: "IN" },
-      }
+      },
     );
 
     autoComplete.addListener("place_changed", () => {
@@ -849,7 +836,7 @@ const AddBookReassignWOService = () => {
                 </div>
 
                 <FormControl fullWidth>
-                  <InputLabel id="order_time-label">
+                  {/* <InputLabel id="order_time-label">
                     <span className="text-sm relative bottom-[6px]">
                       Time Slot<span className="text-red-700">*</span>
                     </span>
@@ -872,7 +859,23 @@ const AddBookReassignWOService = () => {
                         {data?.time_slot}
                       </MenuItem>
                     ))}
-                  </Select>
+                  </Select> */}
+                  <Input
+                    type="time"
+                    label="Time Slot"
+                    required
+                    id="order_time"
+                    name="order_time"
+                    value={booking.order_time}
+                    onChange={(e) => onInputChange(e)}
+                    className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                                 [&::-webkit-calendar-picker-indicator]:p-2 
+                                 [&::-webkit-calendar-picker-indicator]:rounded 
+                                 hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                    labelProps={{
+                      className: "text-sm",
+                    }}
+                  />
                 </FormControl>
                 <div>
                   <Fields
@@ -977,7 +980,7 @@ const AddBookReassignWOService = () => {
                 <ButtonConfigColor
                   type="back"
                   buttontype="button"
-                  label="Cancel"
+                  label="Back"
                   onClick={() => navigate(-1)}
                 />
               </div>

@@ -193,7 +193,7 @@ const AddBookingReassign = () => {
 
       fetch(
         `${BASE_URL}/api/panel-fetch-service-sub/${serviceId}`,
-        requestOptions
+        requestOptions,
       )
         .then((response) => response.json())
         .then((data) => setSerDataSub(data.servicesub || []))
@@ -216,7 +216,7 @@ const AddBookingReassign = () => {
       localStorage.getItem("tempService"),
       subServiceId,
       booking.branch_id,
-      booking.order_service_date
+      booking.order_service_date,
     );
   };
 
@@ -289,7 +289,7 @@ const AddBookingReassign = () => {
         `${BASE_URL}/api/panel-fetch-booking-by-id/${id}`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        },
       );
 
       const bookingData = bookingRes.data?.booking;
@@ -310,7 +310,7 @@ const AddBookingReassign = () => {
         };
         localStorage.setItem(
           "originalBookingData",
-          JSON.stringify(originalData)
+          JSON.stringify(originalData),
         );
 
         // Set basic booking data
@@ -320,7 +320,8 @@ const AddBookingReassign = () => {
           order_refer_by: bookingData.order_refer_by || "",
           order_customer: bookingData.order_customer || "",
           order_customer_mobile: bookingData.order_customer_mobile || "",
-          order_customer_alt_mobile: bookingData.order_customer_alt_mobile || "",
+          order_customer_alt_mobile:
+            bookingData.order_customer_alt_mobile || "",
           order_customer_email: bookingData.order_customer_email || "",
 
           order_service: "", // Will be set after matching
@@ -372,13 +373,13 @@ const AddBookingReassign = () => {
       booking.order_service === ""
     ) {
       const originalData = JSON.parse(
-        localStorage.getItem("originalBookingData") || "{}"
+        localStorage.getItem("originalBookingData") || "{}",
       );
 
       if (originalData.serviceName) {
         // Find matching service
         const matchedService = serdata.find(
-          (service) => service.service === originalData.serviceName
+          (service) => service.service === originalData.serviceName,
         );
 
         if (matchedService) {
@@ -387,7 +388,7 @@ const AddBookingReassign = () => {
             "Matched service:",
             originalData.serviceName,
             "->",
-            serviceId
+            serviceId,
           );
 
           // Update booking with service ID
@@ -410,7 +411,7 @@ const AddBookingReassign = () => {
 
             fetch(
               `${BASE_URL}/api/panel-fetch-service-sub/${serviceId}`,
-              requestOptions
+              requestOptions,
             )
               .then((response) => response.json())
               .then((data) => {
@@ -419,7 +420,7 @@ const AddBookingReassign = () => {
 
                 // Find matching sub-service
                 const matchedSubService = subServices.find(
-                  (sub) => sub.service_sub === originalData.subServiceName
+                  (sub) => sub.service_sub === originalData.subServiceName,
                 );
 
                 if (matchedSubService) {
@@ -428,7 +429,7 @@ const AddBookingReassign = () => {
                     "Matched sub-service:",
                     originalData.subServiceName,
                     "->",
-                    subServiceId
+                    subServiceId,
                   );
 
                   setBooking((prev) => ({
@@ -441,7 +442,7 @@ const AddBookingReassign = () => {
                     serviceId,
                     subServiceId,
                     booking.branch_id,
-                    booking.order_service_date
+                    booking.order_service_date,
                   );
                 } else {
                   // No matching sub-service found
@@ -449,7 +450,7 @@ const AddBookingReassign = () => {
                     serviceId,
                     "",
                     booking.branch_id,
-                    booking.order_service_date
+                    booking.order_service_date,
                   );
                 }
               })
@@ -459,7 +460,7 @@ const AddBookingReassign = () => {
                   serviceId,
                   "",
                   booking.branch_id,
-                  booking.order_service_date
+                  booking.order_service_date,
                 );
               });
           } else if (serviceId && serviceId !== "1") {
@@ -468,7 +469,7 @@ const AddBookingReassign = () => {
               serviceId,
               "",
               booking.branch_id,
-              booking.order_service_date
+              booking.order_service_date,
             );
           }
         }
@@ -480,13 +481,13 @@ const AddBookingReassign = () => {
   useEffect(() => {
     if (pricedata.length > 0 && booking.order_service_price_for === "") {
       const originalData = JSON.parse(
-        localStorage.getItem("originalBookingData") || "{}"
+        localStorage.getItem("originalBookingData") || "{}",
       );
 
       if (originalData.priceForString) {
         // Try to find the price ID by matching the string
         const matchedPrice = pricedata.find(
-          (price) => price.service_price_for === originalData.priceForString
+          (price) => price.service_price_for === originalData.priceForString,
         );
 
         if (matchedPrice) {
@@ -494,7 +495,7 @@ const AddBookingReassign = () => {
             "Matched price:",
             originalData.priceForString,
             "->",
-            matchedPrice.id
+            matchedPrice.id,
           );
 
           setBooking((prev) => ({
@@ -607,7 +608,7 @@ const AddBookingReassign = () => {
       autoCompleteRef.current,
       {
         componentRestrictions: { country: "IN" },
-      }
+      },
     );
 
     autoComplete.addListener("place_changed", () => {
@@ -1005,7 +1006,7 @@ const AddBookingReassign = () => {
                 </div>
 
                 <FormControl fullWidth>
-                  <InputLabel id="order_time-label">
+                  {/* <InputLabel id="order_time-label">
                     <span className="text-sm relative bottom-[6px]">
                       Time Slot<span className="text-red-700">*</span>
                     </span>
@@ -1028,7 +1029,23 @@ const AddBookingReassign = () => {
                         {data?.time_slot}
                       </MenuItem>
                     ))}
-                  </Select>
+                  </Select> */}
+                  <Input
+                    type="time"
+                    label="Time Slot"
+                    required
+                    id="order_time"
+                    name="order_time"
+                    value={booking.order_time}
+                    onChange={(e) => onInputChange(e)}
+                    className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                                 [&::-webkit-calendar-picker-indicator]:p-2 
+                                 [&::-webkit-calendar-picker-indicator]:rounded 
+                                 hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                    labelProps={{
+                      className: "text-sm",
+                    }}
+                  />
                 </FormControl>
                 <div>
                   <Fields
@@ -1133,7 +1150,7 @@ const AddBookingReassign = () => {
                 <ButtonConfigColor
                   type="back"
                   buttontype="button"
-                  label="Cancel"
+                  label="Back"
                   onClick={() => navigate(-1)}
                 />
               </div>

@@ -54,6 +54,10 @@ const status = [
     label: "Confirmed",
   },
   {
+    value: "ReConfirmed",
+    label: "ReConfirmed",
+  },
+  {
     value: "On the way",
     label: "On the way",
   },
@@ -92,6 +96,7 @@ const EditBookingAll = () => {
     order_person_name: "",
     order_payment_type: "",
     order_payment_amount: "",
+    order_postpone_reason: "",
     order_vendor_id: "",
     order_amount: 0,
   });
@@ -160,7 +165,6 @@ const EditBookingAll = () => {
         "order_payment_amount",
         "order_comm",
         "order_comm_percentage",
-        "order_payment_amount",
       ].includes(name)
     ) {
       if (validateOnlyDigits(value)) {
@@ -399,6 +403,7 @@ const EditBookingAll = () => {
       order_time: booking.order_time,
       order_status: booking.order_status,
       order_discount: booking.order_discount,
+      order_postpone_reason: booking.order_postpone_reason,
       order_vendor_amount: booking.order_vendor_amount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
@@ -814,155 +819,172 @@ const EditBookingAll = () => {
               <div className={`${activeTab === "followUp" ? "hidden" : ""}`}>
                 <Card className="mb-6">
                   <CardBody>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
-                      <div className="form-group">
-                        <Input
-                          label="Person Name"
-                          name="order_person_name"
-                          value={booking.order_person_name}
-                          onChange={(e) => onInputChange(e)}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <Input
-                          label="Person Contact No"
-                          name="order_person_contact_no"
-                          value={booking.order_person_contact_no}
-                          onChange={(e) => onInputChange(e)}
-                          minLength={10}
-                          maxLength={10}
-                          onKeyDown={(e) => {
-                            if (
-                              [
-                                "Backspace",
-                                "Delete",
-                                "Tab",
-                                "Escape",
-                                "Enter",
-                                "ArrowLeft",
-                                "ArrowRight",
-                                "Home",
-                                "End",
-                              ].includes(e.key)
-                            ) {
-                              return;
-                            }
-
-                            if (!/[0-9]/.test(e.key)) {
-                              e.preventDefault();
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <div>
-                        <div>
-                          <FormControl fullWidth>
-                            <InputLabel id="service-select-label">
-                              <span className="text-sm relative bottom-[6px]">
-                                Status <span className="text-red-700">*</span>
-                              </span>
-                            </InputLabel>
-                            <Select
-                              sx={{ height: "40px", borderRadius: "5px" }}
-                              labelId="service-select-label"
-                              id="service-select"
-                              name="order_status"
-                              value={booking.order_status}
-                              onChange={(e) => onInputChange(e)}
-                              label="Status *"
-                              required
-                            >
-                              {status.map((data) => (
-                                <MenuItem key={data.value} value={data.value}>
-                                  {data.label}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </div>
-                      <div>
-                        <div>
-                          <FormControl fullWidth>
-                            <InputLabel id="service-select-label">
-                              <span className="text-sm relative bottom-[6px]">
-                                Branch <span className="text-red-700">*</span>
-                              </span>
-                            </InputLabel>
-                            <Select
-                              sx={{ height: "40px", borderRadius: "5px" }}
-                              labelId="service-select-label"
-                              id="service-select"
-                              name="branch_id"
-                              value={booking?.branch_id || ""}
-                              onChange={(e) => onInputChange(e)}
-                              label="Branch *"
-                              required
-                              disabled={disabledStatuses.includes(
-                                booking.order_status,
-                              )}
-                            >
-                              {branch.map((data) => (
-                                <MenuItem key={data.id} value={data.id}>
-                                  {data.branch_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </div>
-
-                      <div>
+                    <form onSubmit={onSubmit}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
                         <div className="form-group">
                           <Input
-                            fullWidth
-                            required
-                            id="order_service_date"
-                            label="Service Date"
-                            type="date"
-                            disabled
-                            labelProps={{
-                              className: "!text-gray-600 ",
-                            }}
-                            min={today}
-                            name="order_service_date"
-                            value={booking.order_service_date}
+                            label="Person Name"
+                            name="order_person_name"
+                            value={booking.order_person_name}
                             onChange={(e) => onInputChange(e)}
                           />
                         </div>
-                      </div>
-
-                      <div>
-                        <FormControl fullWidth>
-                          <InputLabel id="order_time-label">
-                            <span className="text-sm relative bottom-[6px]">
-                              Time Slot<span className="text-red-700">*</span>
-                            </span>
-                          </InputLabel>
-                          <Select
-                            sx={{ height: "40px", borderRadius: "5px" }}
-                            labelId="order_time-label"
-                            id="order_time"
-                            name="order_time"
-                            value={booking.order_time}
+                        <div className="form-group">
+                          <Input
+                            label="Person Contact No"
+                            name="order_person_contact_no"
+                            value={booking.order_person_contact_no}
                             onChange={(e) => onInputChange(e)}
-                            label="Time Slot *"
-                            required
-                          >
-                            {timeslot.map((data) => (
-                              <MenuItem
-                                key={data.value}
-                                value={data?.time_slot}
-                              >
-                                {data?.time_slot}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                            minLength={10}
+                            maxLength={10}
+                            onKeyDown={(e) => {
+                              if (
+                                [
+                                  "Backspace",
+                                  "Delete",
+                                  "Tab",
+                                  "Escape",
+                                  "Enter",
+                                  "ArrowLeft",
+                                  "ArrowRight",
+                                  "Home",
+                                  "End",
+                                ].includes(e.key)
+                              ) {
+                                return;
+                              }
+
+                              if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </div>
                       </div>
-                      {/* {booking?.order_vendor_id !== null && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                          <div>
+                            <FormControl fullWidth>
+                              <InputLabel id="service-select-label">
+                                <span className="text-sm relative bottom-[6px]">
+                                  Status <span className="text-red-700">*</span>
+                                </span>
+                              </InputLabel>
+                              <Select
+                                sx={{ height: "40px", borderRadius: "5px" }}
+                                labelId="service-select-label"
+                                id="service-select"
+                                name="order_status"
+                                value={booking.order_status}
+                                onChange={(e) => onInputChange(e)}
+                                label="Status *"
+                                required
+                              >
+                                {status.map((data) => (
+                                  <MenuItem key={data.value} value={data.value}>
+                                    {data.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>
+                        <div>
+                          <div>
+                            <FormControl fullWidth>
+                              <InputLabel id="service-select-label">
+                                <span className="text-sm relative bottom-[6px]">
+                                  Branch <span className="text-red-700">*</span>
+                                </span>
+                              </InputLabel>
+                              <Select
+                                sx={{ height: "40px", borderRadius: "5px" }}
+                                labelId="service-select-label"
+                                id="service-select"
+                                name="branch_id"
+                                value={booking?.branch_id || ""}
+                                onChange={(e) => onInputChange(e)}
+                                label="Branch *"
+                                required
+                                disabled={disabledStatuses.includes(
+                                  booking.order_status,
+                                )}
+                              >
+                                {branch.map((data) => (
+                                  <MenuItem key={data.id} value={data.id}>
+                                    {data.branch_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              required
+                              id="order_service_date"
+                              label="Service Date"
+                              type="date"
+                              disabled
+                              labelProps={{
+                                className: "!text-gray-600 ",
+                              }}
+                              min={today}
+                              name="order_service_date"
+                              value={booking.order_service_date}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <FormControl fullWidth>
+                            {/* <InputLabel id="order_time-label">
+                              <span className="text-sm relative bottom-[6px]">
+                                Time Slot<span className="text-red-700">*</span>
+                              </span>
+                            </InputLabel> */}
+                            {/* <Select
+                              sx={{ height: "40px", borderRadius: "5px" }}
+                              labelId="order_time-label"
+                              id="order_time"
+                              name="order_time"
+                              value={booking.order_time}
+                              onChange={(e) => onInputChange(e)}
+                              label="Time Slot *"
+                              required
+                            >
+                              {timeslot.map((data) => (
+                                <MenuItem
+                                  key={data.value}
+                                  value={data?.time_slot}
+                                >
+                                  {data?.time_slot}
+                                </MenuItem>
+                              ))}
+                            </Select> */}
+                            <Input
+                              type="time"
+                              label="Time Slot"
+                              required
+                              id="order_time"
+                              name="order_time"
+                              value={booking.order_time}
+                              onChange={(e) => onInputChange(e)}
+                              className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                                           [&::-webkit-calendar-picker-indicator]:p-2 
+                                           [&::-webkit-calendar-picker-indicator]:rounded 
+                                           hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
+                              labelProps={{
+                                className: "text-sm",
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                        {/* {booking?.order_vendor_id !== null && (
                         <>
                           <div className="form-group relative">
                             <Input
@@ -1001,116 +1023,123 @@ const EditBookingAll = () => {
                         </>
                       )} */}
 
-                      {booking?.order_vendor_id !== null && (
-                        <>
-                          <div className="form-group relative">
-                            <Input
-                              fullWidth
-                              required={booking.order_vendor_id}
-                              label="Commission (%)"
-                              name="order_comm_percentage"
-                              value={booking.order_comm_percentage}
-                              onChange={(e) => onInputChange(e)}
-                            />
-                            <span
-                              className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
-                              onClick={() => {
-                                setBooking((prev) => ({
-                                  ...prev,
-                                  order_comm:
-                                    booking.order_vendor_amount &&
-                                    parseFloat(booking.order_vendor_amount) > 0
-                                      ? Math.round(
-                                          (parseFloat(
-                                            booking.order_vendor_amount,
-                                          ) *
-                                            parseFloat(
-                                              prev.order_comm_percentage,
-                                            )) /
-                                            100,
-                                        )
-                                      : 0,
-                                }));
-                              }}
-                            >
-                              (₹
-                              {booking.order_vendor_amount &&
-                              parseFloat(booking.order_vendor_amount) > 0 &&
-                              booking.order_comm_percentage
-                                ? Math.round(
-                                    (parseFloat(booking.order_vendor_amount) *
-                                      parseFloat(
-                                        booking.order_comm_percentage,
-                                      )) /
-                                      100,
-                                  )
-                                : 0}
-                              )
-                            </span>
-                          </div>
-
-                          <div>
-                            <div className="form-group ">
+                        {booking?.order_vendor_id !== null && (
+                          <>
+                            <div className="form-group relative">
                               <Input
                                 fullWidth
                                 required={booking.order_vendor_id}
-                                label="Commission Amount"
-                                name="order_comm"
-                                value={booking.order_comm}
+                                label="Commission (%)"
+                                name="order_comm_percentage"
+                                value={booking.order_comm_percentage}
                                 onChange={(e) => onInputChange(e)}
                               />
+                              <span
+                                className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                                onClick={() => {
+                                  setBooking((prev) => ({
+                                    ...prev,
+                                    order_comm:
+                                      booking.order_vendor_amount &&
+                                      parseFloat(booking.order_vendor_amount) >
+                                        0
+                                        ? Math.round(
+                                            (parseFloat(
+                                              booking.order_vendor_amount,
+                                            ) *
+                                              parseFloat(
+                                                prev.order_comm_percentage,
+                                              )) /
+                                              100,
+                                          )
+                                        : 0,
+                                  }));
+                                }}
+                              >
+                                (₹
+                                {booking.order_vendor_amount &&
+                                parseFloat(booking.order_vendor_amount) > 0 &&
+                                booking.order_comm_percentage
+                                  ? Math.round(
+                                      (parseFloat(booking.order_vendor_amount) *
+                                        parseFloat(
+                                          booking.order_comm_percentage,
+                                        )) /
+                                        100,
+                                    )
+                                  : 0}
+                                )
+                              </span>
                             </div>
-                          </div>
-                        </>
-                      )}
-                      <div
-                        className={`${
-                          booking?.order_vendor_id == null ? " col-span-2" : ""
-                        }`}
-                      >
-                        <div className="form-group">
-                          <Input
-                            fullWidth
-                            required
-                            label="Amount"
-                            name="order_amount"
-                            value={booking.order_amount}
-                            onChange={(e) => onInputChange(e)}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className={`${
-                          booking?.order_vendor_id == null ? " col-span-2" : ""
-                        }`}
-                      >
-                        <div className="form-group">
-                          <Input
-                            fullWidth
-                            label="Vendor Amount"
-                            name="order_vendor_amount"
-                            value={booking.order_vendor_amount}
-                            onChange={(e) => onInputChange(e)}
-                          />
-                        </div>
-                      </div>
 
-                      <div
-                        className={`${
-                          booking?.order_vendor_id == null ? " col-span-2" : ""
-                        }`}
-                      >
-                        <div className="form-group">
-                          <Input
-                            fullWidth
-                            label="Advance"
-                            name="order_advance"
-                            value={booking.order_advance}
-                            onChange={(e) => onInputChange(e)}
-                          />
+                            <div>
+                              <div className="form-group ">
+                                <Input
+                                  fullWidth
+                                  required={booking.order_vendor_id}
+                                  label="Commission Amount"
+                                  name="order_comm"
+                                  value={booking.order_comm}
+                                  onChange={(e) => onInputChange(e)}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        <div
+                          className={`${
+                            booking?.order_vendor_id == null
+                              ? " col-span-2"
+                              : ""
+                          }`}
+                        >
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              required
+                              label="Total Amount"
+                              name="order_amount"
+                              value={booking.order_amount}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div
+                        <div
+                          className={`${
+                            booking?.order_vendor_id == null
+                              ? " col-span-2"
+                              : ""
+                          }`}
+                        >
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              label="Vendor Amount"
+                              name="order_vendor_amount"
+                              value={booking.order_vendor_amount}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                          </div>
+                        </div>
+
+                        <div
+                          className={`${
+                            booking?.order_vendor_id == null
+                              ? " col-span-2"
+                              : ""
+                          }`}
+                        >
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              label="Advance"
+                              name="order_advance"
+                              value={booking.order_advance}
+                              onChange={(e) => onInputChange(e)}
+                            />
+                          </div>
+                        </div>
+                        {/* <div
                         className={`${
                           booking?.order_vendor_id == null ? " col-span-2" : ""
                         }`}
@@ -1124,195 +1153,217 @@ const EditBookingAll = () => {
                             onChange={(e) => onInputChange(e)}
                           />
                         </div>
-                      </div>
+                      </div> */}
 
+                        <div
+                          className={`${
+                            booking?.order_vendor_id == null
+                              ? " col-span-2"
+                              : ""
+                          }`}
+                        >
+                          <div className="form-group">
+                            <Input
+                              fullWidth
+                              label="Balance"
+                              name="order_balance"
+                              labelProps={{
+                                className: "!text-gray-600 ",
+                              }}
+                              value={
+                                (parseFloat(booking.order_amount) || 0) -
+                                ((parseFloat(booking.order_advance) || 0) +
+                                  (parseFloat(booking.order_discount) || 0))
+                              }
+                              disabled
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
+                        <div className="md:col-span-8">
+                          <div className="form-group">
+                            <Textarea
+                              fullWidth
+                              label="Comment"
+                              multiline
+                              name="order_comment"
+                              value={booking.order_comment}
+                              onChange={(e) => onInputChange(e)}
+                              maxLength={980}
+                            />
+                          </div>
+                        </div>
+                        <div className="md:col-span-4 space-y-3">
+                          <div>
+                            <div className="form-group">
+                              <Input
+                                fullWidth
+                                label="Paid Amount"
+                                name="order_payment_amount"
+                                value={booking.order_payment_amount}
+                                onChange={(e) => onInputChange(e)}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-span-3">
+                            <FormControl fullWidth>
+                              <InputLabel id="order_payment_type-label">
+                                <span className="text-sm relative bottom-[6px]">
+                                  Payment Mode{" "}
+                                </span>
+                              </InputLabel>
+                              <Select
+                                sx={{ height: "40px", borderRadius: "5px" }}
+                                labelId="order_payment_type-label"
+                                id="service-order_payment_type"
+                                name="order_payment_type"
+                                value={booking.order_payment_type}
+                                onChange={(e) => onInputChange(e)}
+                                label="Payment Mode"
+                              >
+                                {paymentmode.map((data) => (
+                                  <MenuItem
+                                    key={data.payment_mode}
+                                    value={data.payment_mode}
+                                  >
+                                    {data.payment_mode}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>
+                      </div>
                       <div
-                        className={`${
-                          booking?.order_vendor_id == null ? " col-span-2" : ""
+                        className={`grid gap-4 ${
+                          booking?.order_status === "Cancel"
+                            ? "grid-cols-1 md:grid-cols-2"
+                            : "grid-cols-1"
                         }`}
                       >
                         <div className="form-group">
-                          <Input
-                            fullWidth
-                            label="Balance"
-                            name="order_balance"
-                            labelProps={{
-                              className: "!text-gray-600 ",
-                            }}
-                            value={
-                              (parseFloat(booking.order_amount) || 0) -
-                              ((parseFloat(booking.order_advance) || 0) +
-                                (parseFloat(booking.order_discount) || 0))
-                            }
-                            disabled
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
-                      <div className="md:col-span-8">
-                        <div className="form-group">
                           <Textarea
                             fullWidth
-                            label="Comment"
-                            multiline
-                            name="order_comment"
-                            value={booking.order_comment}
+                            label="Transaction Details"
+                            name="order_transaction_details"
+                            value={booking.order_transaction_details}
                             onChange={(e) => onInputChange(e)}
                             maxLength={980}
                           />
                         </div>
-                      </div>
-                      <div className="md:col-span-4 space-y-3">
-                        <div>
+
+                        {booking?.order_status === "Cancel" && (
                           <div className="form-group">
-                            <Input
+                            <Textarea
                               fullWidth
-                              label="Paid Amount"
-                              name="order_payment_amount"
-                              value={booking.order_payment_amount}
+                              label="Postpone Reason"
+                              name="order_postpone_reason"
+                              required
+                              value={booking.order_postpone_reason}
                               onChange={(e) => onInputChange(e)}
+                              maxLength={980}
                             />
                           </div>
-                        </div>
-
-                        <div className="col-span-3">
-                          <FormControl fullWidth>
-                            <InputLabel id="order_payment_type-label">
-                              <span className="text-sm relative bottom-[6px]">
-                                Payment Mode{" "}
-                              </span>
-                            </InputLabel>
-                            <Select
-                              sx={{ height: "40px", borderRadius: "5px" }}
-                              labelId="order_payment_type-label"
-                              id="service-order_payment_type"
-                              name="order_payment_type"
-                              value={booking.order_payment_type}
-                              onChange={(e) => onInputChange(e)}
-                              label="Payment Mode"
-                            >
-                              {paymentmode.map((data) => (
-                                <MenuItem
-                                  key={data.payment_mode}
-                                  value={data.payment_mode}
-                                >
-                                  {data.payment_mode}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
+                        )}
                       </div>
-                    </div>
-                    <div>
-                      <div className="form-group">
-                        <Textarea
-                          fullWidth
-                          label="Transaction Details"
-                          name="order_transaction_details"
-                          value={booking.order_transaction_details}
-                          onChange={(e) => onInputChange(e)}
-                          maxLength={980}
+
+                      <div className="flex justify-center space-x-4 my-2">
+                        <ButtonConfigColor
+                          type="edit"
+                          buttontype="submit"
+                          label="Update"
+                          disabled={isButtonDisabled}
+                          loading={loading}
                         />
-                      </div>
-                    </div>
+                        <ButtonConfigColor
+                          type="edit"
+                          buttontype="button"
+                          label=" Edit Service"
+                          onClick={() => setOpenEditService(true)}
+                        />
 
-                    <div className="flex justify-center space-x-4 my-2">
-                      <ButtonConfigColor
-                        type="edit"
-                        buttontype="submit"
-                        label="Update"
-                        disabled={isButtonDisabled}
-                        loading={loading}
-                        onClick={onSubmit}
-                      />
-                      <ButtonConfigColor
-                        type="edit"
-                        buttontype="button"
-                        label=" Edit Service"
-                        onClick={() => setOpenEditService(true)}
-                      />
-
-                      <ButtonConfigColor
-                        type="submit"
-                        buttontype="button"
-                        label="Reassign"
-                        onClick={() => {
-                          navigate(`/add-booking-reassign/${id}`);
-                        }}
-                      />
-                      <ButtonConfigColor
-                        type="create"
-                        buttontype="button"
-                        label="Add New Service"
-                        onClick={() => {
-                          navigate(`/add-booking-reassign-wo-service/${id}`);
-                        }}
-                      />
-                      <ButtonConfigColor
-                        type="submit"
-                        buttontype="button"
-                        label="Cancel / Postponed"
-                        onClick={() => navigate(`/postpone-booking/${id}`)}
-                      />
-                      <ButtonConfigColor
-                        type="submit"
-                        label="Work in Progress"
-                        onClick={() => navigate(`/booking-reschedule/${id}`)}
-                      />
-{/* 
+                        <ButtonConfigColor
+                          type="submit"
+                          buttontype="button"
+                          label="Reassign"
+                          onClick={() => {
+                            navigate(`/add-booking-reassign/${id}`);
+                          }}
+                        />
+                        <ButtonConfigColor
+                          type="create"
+                          buttontype="button"
+                          label="Add New Service"
+                          onClick={() => {
+                            navigate(`/add-booking-reassign-wo-service/${id}`);
+                          }}
+                        />
+                        <ButtonConfigColor
+                          type="submit"
+                          buttontype="button"
+                          label="Postponed"
+                          onClick={() => navigate(`/postpone-booking/${id}`)}
+                        />
+                        <ButtonConfigColor
+                          type="submit"
+                          label="Work in Progress"
+                          onClick={() => navigate(`/booking-reschedule/${id}`)}
+                        />
+                        {/* 
                       <ButtonConfigColor
                         type="back"
                         buttontype="button"
                         label="Back"
                         onClick={() => navigate(-1)}
                       /> */}
-                      <Popover placement="bottom-start" offset={10}>
-                        <PopoverHandler>
-                          <div className="inline-block">
+                        <Popover placement="bottom-start" offset={10}>
+                          <PopoverHandler>
+                            <div className="inline-block">
+                              <Button
+                                color="green"
+                                className="flex items-center gap-2"
+                              >
+                                <FaWhatsapp size={18} />
+                                Share
+                              </Button>
+                            </div>
+                          </PopoverHandler>
+
+                          <PopoverContent className="flex flex-col gap-2 w-64">
                             <Button
-                              color="green"
-                              className="flex items-center gap-2"
+                              fullWidth
+                              onClick={() => handleShareAction("reschedule")}
                             >
-                              <FaWhatsapp size={18} />
-                              Share
+                              Reschedule Booking
                             </Button>
-                          </div>
-                        </PopoverHandler>
 
-                        <PopoverContent className="flex flex-col gap-2 w-64">
-                          <Button
-                            fullWidth
-                            onClick={() => handleShareAction("reschedule")}
-                          >
-                            Reschedule Booking
-                          </Button>
+                            <Button
+                              fullWidth
+                              onClick={() => handleShareAction("postpone")}
+                            >
+                              Postpone Booking
+                            </Button>
 
-                          <Button
-                            fullWidth
-                            onClick={() => handleShareAction("postpone")}
-                          >
-                            Postpone Booking
-                          </Button>
+                            <Button
+                              fullWidth
+                              onClick={() => handleShareAction("feedback")}
+                            >
+                              Feedback Booking
+                            </Button>
 
-                          <Button
-                            fullWidth
-                            onClick={() => handleShareAction("feedback")}
-                          >
-                            Feedback Booking
-                          </Button>
-
-                          <Button
-                            fullWidth
-                            onClick={() => handleShareAction("reconfirmed")}
-                          >
-                            Reconfirmed Booking
-                          </Button>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
+                            <Button
+                              fullWidth
+                              onClick={() => handleShareAction("reconfirmed")}
+                            >
+                              Reconfirmed Booking
+                            </Button>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </form>
                   </CardBody>
                 </Card>
               </div>

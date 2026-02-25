@@ -11,11 +11,11 @@ import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
 import { ClipboardList } from "lucide-react";
+import React from "react";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import CommentPopover from "../../../components/common/CommentPopover";
 import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import React from "react";
 
 const TodayBooking = () => {
   const [todayBookingData, setTodayBookingData] = useState(null);
@@ -137,14 +137,14 @@ const TodayBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
-          const status = tableMeta.rowData[22];
-          const orderfollowup = tableMeta.rowData[30];
+          const status = tableMeta.rowData[23];
+          const orderfollowup = tableMeta.rowData[31];
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
           const booking = {
-            order_remarks: tableMeta.rowData[27],
-            order_comment: tableMeta.rowData[28],
-            order_postpone_reason: tableMeta.rowData[29],
+            order_remarks: tableMeta.rowData[28],
+            order_comment: tableMeta.rowData[29],
+            order_postpone_reason: tableMeta.rowData[30],
           };
           return (
             <div className="flex items-center space-x-2">
@@ -191,18 +191,32 @@ const TodayBooking = () => {
     //2
     {
       name: "order_ref",
-      label: "Order/Branch/BookTime",
+      label: "Order/Branch/BookTime/Area",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[4];
-          const bookTime = tableMeta.rowData[25];
+          const bookTime = tableMeta.rowData[26];
+          const locality = tableMeta.rowData[33];
+          const subLocality = tableMeta.rowData[34];
+
+          let areaDisplay = "";
+          if (locality && subLocality) {
+            areaDisplay = `${locality} - ${subLocality}`;
+          } else if (locality) {
+            areaDisplay = locality;
+          } else if (subLocality) {
+            areaDisplay = subLocality;
+          } else {
+            areaDisplay = "N/A";
+          }
           return (
             <div className="flex flex-col w-32">
               <span>{order_ref}</span>
               <span>{branchName}</span>
               <span>{bookTime}</span>
+              <span>{areaDisplay}</span>
             </div>
           );
         },
@@ -343,7 +357,7 @@ const TodayBooking = () => {
           // const km = tableMeta.rowData[33];
 
           return (
-            <div>
+            <div className="w-32">
               <div className="text-sm break-words">{value || "N/A"}</div>
               {/* <div className="text-xs text-gray-500 ">{km}</div> */}
             </div>
@@ -352,34 +366,26 @@ const TodayBooking = () => {
       },
     },
     //13
+
     {
-      name: "order_address",
-      label: "Address/Area",
+      name: "service_data",
+      label: "Service",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const address = tableMeta.rowData[24];
-          const locality = tableMeta.rowData[32];
-          const subLocality = tableMeta.rowData[33];
-
-          let areaDisplay = "";
-          if (locality && subLocality) {
-            areaDisplay = `${locality} - ${subLocality}`;
-          } else if (locality) {
-            areaDisplay = locality;
-          } else if (subLocality) {
-            areaDisplay = subLocality;
-          } else {
-            areaDisplay = "N/A";
-          }
-
-          return (
-            <div className="w-48 max-w-48 break-words whitespace-normal">
-              <div className="text-sm break-words">{address || "N/A"}</div>
-              <div className="text-xs text-gray-500 break-words">
-                {areaDisplay}
+          const service = tableMeta.rowData[9];
+          const customeDetails = tableMeta.rowData[11];
+          if (service == "Custom") {
+            return (
+              <div className="flex flex-col w-32">
+                <span>{customeDetails}</span>
               </div>
+            );
+          }
+          return (
+            <div className=" flex flex-col w-32">
+              <span>{service}</span>
             </div>
           );
         },
@@ -388,32 +394,21 @@ const TodayBooking = () => {
     //14
     {
       name: "service_price",
-      label: "Service/Price/Advance/Discount",
+      label: "Total Amount",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const service = tableMeta.rowData[9];
           const price = tableMeta.rowData[10];
-          const customeDetails = tableMeta.rowData[11];
-          const advance_amount = tableMeta.rowData[35];
-          const dis_amount = tableMeta.rowData[36];
-          if (service == "Custom") {
-            return (
-              <div className="flex flex-col w-32">
-                <span>{customeDetails}</span>
-                <span>Total Amount: {price}</span>
-                <span>Advance : {advance_amount}</span>
-                <span>Discount : {dis_amount}</span>
-              </div>
-            );
-          }
+
+          // const advance_amount = tableMeta.rowData[35];
+          // const dis_amount = tableMeta.rowData[36];
           return (
-            <div className=" flex flex-col w-32">
-              <span>{service}</span>
-              <span>Total Amount: {price}</span>
-              <span>Advance : {advance_amount}</span>
-              <span>Discount : {dis_amount}</span>
+            <div className=" flex flex-col">
+              {/* <span>{service}</span> */}
+              <span>{price}</span>
+              {/* <span>Advance : {advance_amount}</span>
+              <span>Discount : {dis_amount}</span> */}
             </div>
           );
         },
@@ -434,32 +429,59 @@ const TodayBooking = () => {
     //16
     {
       name: "amount_type",
-      label: "Paid Amount/Type/Balance",
+      label: "Received Amount/Type",
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const type = tableMeta.rowData[21];
-          const paid_amount = tableMeta.rowData[20];
+          // const type = tableMeta.rowData[22];
+          const paid_amount = tableMeta.rowData[21];
           const price = tableMeta.rowData[10];
-          const advance_amount = tableMeta.rowData[35];
-          const dis_amount = tableMeta.rowData[36];
+          const advance_amount = tableMeta.rowData[36];
+          const dis_amount = tableMeta.rowData[37];
           const balance =
             Number(price) -
             Number(advance_amount) -
             Number(dis_amount) -
             Number(paid_amount);
+          const receivedamount = Number(paid_amount) + Number(advance_amount);
           return (
-            <div className=" flex flex-col w-32">
-              <span>Received :{paid_amount ? paid_amount : "0"}</span>
-              <span>{type}</span> 
-              <span>Balance : {balance ? balance : "0"}</span> 
+            <div className=" flex flex-col">
+              <span>{receivedamount ? receivedamount : "0"}</span>
+              {/* <span>{type}</span> */}
+              {/* <span>Balance : {balance ? balance : "0"}</span> */}
             </div>
           );
         },
       },
     },
     //17
+     {
+      name: "amount_type",
+      label: "Balance Amount",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const paid_amount = tableMeta.rowData[21];
+          const price = tableMeta.rowData[10];
+          const advance_amount = tableMeta.rowData[36];
+          const dis_amount = tableMeta.rowData[37];
+          const balance =
+            Number(price) -
+            Number(advance_amount) -
+            Number(dis_amount) -
+            Number(paid_amount);
+          return (
+            <div className=" flex flex-col">
+          
+              <span> {balance ? balance : "0"}</span>
+            </div>
+          );
+        },
+      },
+    },
+    //18
     {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
@@ -474,9 +496,9 @@ const TodayBooking = () => {
           },
         }),
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[22];
-          const status = tableMeta.rowData[23];
-          const inspectionstatus = tableMeta.rowData[26];
+          const confirmBy = tableMeta.rowData[23];
+          const status = tableMeta.rowData[24];
+          const inspectionstatus = tableMeta.rowData[27];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -493,7 +515,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //18
+    //19
     {
       name: "order_no_assign",
       label: "No of Assign",
@@ -526,7 +548,7 @@ const TodayBooking = () => {
         },
       },
     },
-    // 19
+    // 20
     {
       name: "assignment_details",
       label: "Assign Details",
@@ -562,7 +584,7 @@ const TodayBooking = () => {
         },
       },
     },
-    //20
+    //21
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -574,7 +596,7 @@ const TodayBooking = () => {
         sort: true,
       },
     },
-    //21
+    //22
     {
       name: "order_payment_type",
       label: "Type",
@@ -587,7 +609,7 @@ const TodayBooking = () => {
       },
     },
 
-    //22
+    //23
     {
       name: "updated_by",
       label: "Confirm By",
@@ -599,7 +621,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //23
+    //24
     {
       name: "order_status",
       label: "Status",
@@ -612,7 +634,7 @@ const TodayBooking = () => {
       },
     },
 
-    //24
+    //25
     {
       name: "order_address",
       label: "Address",
@@ -624,7 +646,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //25
+    //26
     {
       name: "order_booking_time",
       label: "Book Time",
@@ -636,7 +658,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //26
+    //27
     {
       name: "order_inspection_status",
       label: "Inspection Status",
@@ -648,7 +670,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //27
+    //28
     {
       name: "order_remarks",
       label: "Remarks",
@@ -660,7 +682,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //28
+    //29
     {
       name: "order_comment",
       label: "Comment",
@@ -672,7 +694,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //29
+    //30
     {
       name: "order_postpone_reason",
       label: "Reason",
@@ -684,7 +706,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //30
+    //31
     {
       name: "order_followup",
       label: "Followup",
@@ -696,7 +718,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //31
+    //32
     {
       name: "order_area",
       label: "Order Area",
@@ -708,22 +730,10 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //32
+    //33
     {
       name: "order_locality",
       label: "Locality",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-        searchable: true,
-        sort: false,
-      },
-    },
-    //33
-    {
-      name: "order_sub_locality",
-      label: "Sub Locality",
       options: {
         filter: true,
         display: "exclude",
@@ -746,6 +756,18 @@ const TodayBooking = () => {
     },
     //35
     {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //36
+    {
       name: "order_advance",
       label: "Advance",
       options: {
@@ -756,7 +778,7 @@ const TodayBooking = () => {
         sort: false,
       },
     },
-    //36
+    //37
     {
       name: "order_discount",
       label: "Discount",
@@ -788,7 +810,7 @@ const TodayBooking = () => {
     },
 
     setRowProps: (rowData) => {
-      const orderStatus = rowData[23];
+      const orderStatus = rowData[24];
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
