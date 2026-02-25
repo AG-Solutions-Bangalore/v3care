@@ -899,7 +899,7 @@ const EditBookingInspection = () => {
                     <ButtonConfigColor
                       type="back"
                       buttontype="button"
-                      label="Cancel"
+                      label="Back"
                       onClick={() => navigate(-1)}
                     />
                   </div>

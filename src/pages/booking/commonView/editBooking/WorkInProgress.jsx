@@ -190,7 +190,7 @@ const WorkInProgress = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       if (response.data.code == "200") {
@@ -201,10 +201,11 @@ const WorkInProgress = () => {
       }
     } catch (error) {
       toast.error(
-        error.response.data.message || "An error occurred while rescheduling"
+        error.response.data.message || "An error occurred while rescheduling",
       );
     } finally {
       setLoading(false);
+      setIsButtonDisabled(false);
     }
   };
 
@@ -397,158 +398,159 @@ const WorkInProgress = () => {
           <Card className="mb-6">
             {/* here booking assign table  */}
             <CardBody>
-              {/* <form id="addIdniv"> */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
-                <div className="form-group">
-                  <Input
-                    label="Person Name"
-                    name="order_person_name"
-                    value={booking.order_person_name}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                </div>
-                <div className="form-group">
-                  <Input
-                    label="Person Contact No"
-                    name="order_person_contact_no"
-                    value={booking.order_person_contact_no}
-                    onChange={(e) => onInputChange(e)}
-                    minLength={10}
-                    maxLength={10}
-                    onKeyDown={(e) => {
-                      if (
-                        [
-                          "Backspace",
-                          "Delete",
-                          "Tab",
-                          "Escape",
-                          "Enter",
-                          "ArrowLeft",
-                          "ArrowRight",
-                          "Home",
-                          "End",
-                        ].includes(e.key)
-                      ) {
-                        return;
-                      }
-
-                      if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
+              <form id="addIdniv" onSubmit={onSubmit}>
+                {" "}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
                   <div className="form-group">
                     <Input
-                      fullWidth
-                      required
-                      id="order_service_date"
-                      label="Service Date"
-                      type="date"
-                      min={today}
-                      name="order_service_date"
-                      value={booking.order_service_date}
+                      label="Person Name"
+                      name="order_person_name"
+                      value={booking.order_person_name}
                       onChange={(e) => onInputChange(e)}
                     />
                   </div>
-                </div>
+                  <div className="form-group">
+                    <Input
+                      label="Person Contact No"
+                      name="order_person_contact_no"
+                      value={booking.order_person_contact_no}
+                      onChange={(e) => onInputChange(e)}
+                      minLength={10}
+                      maxLength={10}
+                      onKeyDown={(e) => {
+                        if (
+                          [
+                            "Backspace",
+                            "Delete",
+                            "Tab",
+                            "Escape",
+                            "Enter",
+                            "ArrowLeft",
+                            "ArrowRight",
+                            "Home",
+                            "End",
+                          ].includes(e.key)
+                        ) {
+                          return;
+                        }
 
-                <div>
+                        if (!/[0-9]/.test(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
-                    <FormControl fullWidth>
-                      <InputLabel id="order_time-label">
-                        <span className="text-sm relative bottom-[6px]">
-                          Time Slot<span className="text-red-700">*</span>
-                        </span>
-                      </InputLabel>
-                      <SelectMui
-                        sx={{ height: "40px", borderRadius: "5px" }}
-                        labelId="order_time-label"
-                        id="order_time"
-                        name="order_time"
-                        key={booking.order_time}
-                        value={booking.order_time}
-                        onChange={(e) => onInputChange(e)}
-                        label="Time Slot *"
+                    <div className="form-group">
+                      <Input
+                        fullWidth
                         required
-                      >
-                        {timeslot?.map((data) => (
-                          <MenuItem key={data.value} value={data?.time_slot}>
-                            {data?.time_slot}
-                          </MenuItem>
-                        ))}
-                      </SelectMui>
-                    </FormControl>
+                        id="order_service_date"
+                        label="Service Date"
+                        type="date"
+                        min={today}
+                        name="order_service_date"
+                        value={booking.order_service_date}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="form-group relative">
-                  <Input
-                    fullWidth
-                    required
-                    label="Commission (%)"
-                    name="order_comm_percentage"
-                    value={booking.order_comm_percentage}
-                    onChange={(e) => onInputChange(e)}
-                  />
-                  <span
-                    className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
-                    onClick={() => {
-                      setBooking((prev) => ({
-                        ...prev,
-                        order_comm: autoCommissionCalc,
-                      }));
-                    }}
-                  >
-                    (₹{autoCommissionCalc})
-                  </span>
-                </div>
-                <div className="">
-                  <div className="form-group">
+
+                  <div>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="order_time-label">
+                          <span className="text-sm relative bottom-[6px]">
+                            Time Slot<span className="text-red-700">*</span>
+                          </span>
+                        </InputLabel>
+                        <SelectMui
+                          sx={{ height: "40px", borderRadius: "5px" }}
+                          labelId="order_time-label"
+                          id="order_time"
+                          name="order_time"
+                          key={booking.order_time}
+                          value={booking.order_time}
+                          onChange={(e) => onInputChange(e)}
+                          label="Time Slot *"
+                          required
+                        >
+                          {timeslot?.map((data) => (
+                            <MenuItem key={data.value} value={data?.time_slot}>
+                              {data?.time_slot}
+                            </MenuItem>
+                          ))}
+                        </SelectMui>
+                      </FormControl>
+                    </div>
+                  </div>
+                  <div className="form-group relative">
                     <Input
                       fullWidth
                       required
-                      label="Commission Amount"
-                      name="order_comm"
-                      value={booking.order_comm}
+                      label="Commission (%)"
+                      name="order_comm_percentage"
+                      value={booking.order_comm_percentage}
                       onChange={(e) => onInputChange(e)}
                     />
+                    <span
+                      className="absolute right-2 bottom-2 text-gray-500 cursor-pointer hover:text-blue-500"
+                      onClick={() => {
+                        setBooking((prev) => ({
+                          ...prev,
+                          order_comm: autoCommissionCalc,
+                        }));
+                      }}
+                    >
+                      (₹{autoCommissionCalc})
+                    </span>
+                  </div>
+                  <div className="">
+                    <div className="form-group">
+                      <Input
+                        fullWidth
+                        required
+                        label="Commission Amount"
+                        name="order_comm"
+                        value={booking.order_comm}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-span-4">
+                    <div className="form-group">
+                      <Textarea
+                        fullWidth
+                        label="Comment"
+                        multiline
+                        required
+                        name="order_comment"
+                        value={booking.order_comment}
+                        onChange={(e) => onInputChange(e)}
+                      />
+                    </div>
                   </div>
                 </div>
+                <div className="flex justify-center space-x-4 my-2">
+                  <ButtonConfigColor
+                    type="edit"
+                    buttontype="submit"
+                    label="Update"
+                    disabled={isButtonDisabled}
+                    loading={loading}
+                  />
 
-                <div className="col-span-4">
-                  <div className="form-group">
-                    <Textarea
-                      fullWidth
-                      label="Comment"
-                      multiline
-                      name="order_comment"
-                      value={booking.order_comment}
-                      onChange={(e) => onInputChange(e)}
-                    />
-                  </div>
+                  <ButtonConfigColor
+                    type="back"
+                    buttontype="button"
+                    label="Back"
+                    onClick={() => navigate(-1)}
+                  />
                 </div>
-              </div>
-
-              <div className="flex justify-center space-x-4 my-2">
-                <ButtonConfigColor
-                  type="edit"
-                  buttontype="submit"
-                  label="Update"
-                  disabled={isButtonDisabled}
-                  loading={loading}
-                  onClick={(e) => onSubmit(e)}
-                />
-
-                <ButtonConfigColor
-                  type="back"
-                  buttontype="button"
-                  label="Cancel"
-                  onClick={() => navigate(-1)}
-                />
-              </div>
+              </form>
             </CardBody>
           </Card>
           <Card className="mb-6">
@@ -624,7 +626,7 @@ const WorkInProgress = () => {
             <ButtonConfigColor
               type="back"
               buttontype="button"
-              label="Cancel"
+              label="Back"
               onClick={handleClose}
             />
 
