@@ -13,14 +13,14 @@ const CommissionFilter = () => {
 
   const buttons = [
     {
-      label: "Commission Pending",
+      label: "Commission Open",
       path: "/commission-pending",
       color: "from-pink-500 to-orange-400",
       hoverColor: "hover:bg-pink-50",
       textColor: "text-pink-900",
     },
     {
-      label: "Commission Received",
+      label: "Commission Close",
       path: "/commission-received",
       color: "from-blue-500 to-cyan-400",
       hoverColor: "hover:bg-blue-50",

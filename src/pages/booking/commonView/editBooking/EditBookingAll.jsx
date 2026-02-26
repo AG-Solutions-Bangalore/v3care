@@ -35,7 +35,16 @@ import { BASE_URL } from "../../../../base/BaseUrl";
 import ButtonConfigColor from "../../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../../components/common/LoaderComponent";
 import PageHeader from "../../../../components/common/PageHeader/PageHeader";
-
+const CommissionBy = [
+  {
+    value: "Vendor",
+    label: "Vendor",
+  },
+  {
+    value: "V3 Care",
+    label: "V3 Care",
+  },
+];
 const status = [
   {
     value: "Pending",
@@ -98,6 +107,7 @@ const EditBookingAll = () => {
     order_payment_amount: "",
     order_postpone_reason: "",
     order_vendor_id: "",
+    order_comm_received_by: "",
     order_amount: 0,
   });
 
@@ -404,6 +414,7 @@ const EditBookingAll = () => {
       order_status: booking.order_status,
       order_discount: booking.order_discount,
       order_postpone_reason: booking.order_postpone_reason,
+      order_comm_received_by: booking.order_comm_received_by,
       order_vendor_amount: booking.order_vendor_amount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
@@ -1236,6 +1247,54 @@ const EditBookingAll = () => {
                             </FormControl>
                           </div>
                         </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        {booking.order_vendor_id != null && (
+                          <>
+                            <div>
+                              <FormControl fullWidth>
+                                <InputLabel id="order_comm_received_by-label">
+                                  <span className="text-sm relative bottom-[6px]">
+                                    Select Commission received By
+                                  </span>
+                                </InputLabel>
+                                <Select
+                                  sx={{ height: "40px", borderRadius: "5px" }}
+                                  labelId="order_comm_received_by"
+                                  id="id"
+                                  name="order_comm_received_by"
+                                  value={booking.order_comm_received_by || ""}
+                                  onChange={onInputChange}
+                                  label="Select Commission received By"
+                                >
+                                  {CommissionBy.map((item) => (
+                                    <MenuItem
+                                      key={item.id}
+                                      value={String(item.value)}
+                                    >
+                                      {item.label}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </div>
+                            <div>
+                              {booking.order_comm_received_by == "Vendor" && (
+                                <Typography className="text-black">
+                                  <strong>To be Received :</strong>{" "}
+                                  {booking.order_comm ?? ""}
+                                </Typography>
+                              )}
+                              {booking.order_comm_received_by == "V3 Care" && (
+                                <Typography className="text-black">
+                                  <strong>To be Pay :</strong>
+                                  {(Number(booking.order_vendor_amount) || 0) -
+                                    (Number(booking.order_comm) || 0)}
+                                </Typography>
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div
                         className={`grid gap-4 ${

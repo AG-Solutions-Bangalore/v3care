@@ -250,7 +250,7 @@ const PaymentConfirmation = () => {
     },
     {
       name: "service_price",
-      label: "Service/Total Price",
+      label: "Service/Total Amount",
       options: {
         filter: false,
         sort: false,
