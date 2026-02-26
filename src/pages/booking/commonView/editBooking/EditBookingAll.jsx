@@ -1292,7 +1292,8 @@ const EditBookingAll = () => {
                                     (Number(booking.order_comm) || 0)}
                                 </Typography>
                               )}
-                            </div>
+                            </div> 
+                            
                           </>
                         )}
                       </div>
