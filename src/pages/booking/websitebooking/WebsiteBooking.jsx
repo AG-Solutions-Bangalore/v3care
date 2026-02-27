@@ -58,7 +58,7 @@ const WebsiteBooking = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setWebsiteBookingData(response.data?.booking);
@@ -168,8 +168,8 @@ const WebsiteBooking = () => {
         },
       },
     },
-     //3
-     {
+    //3
+    {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
@@ -224,7 +224,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-   
+
     //7
     {
       name: "order_date",
@@ -255,8 +255,8 @@ const WebsiteBooking = () => {
         },
       },
     },
-    
-    //9 service name 
+
+    //9 service name
     {
       name: "order_service",
       label: "Service",
@@ -292,8 +292,8 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-     //12
-      {
+    //12
+    {
       name: "order_time",
       label: "Time/Area",
       options: {
@@ -301,8 +301,8 @@ const WebsiteBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const locality = tableMeta.rowData[31];
-          const subLocality = tableMeta.rowData[32]; 
-          
+          const subLocality = tableMeta.rowData[32];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -313,7 +313,7 @@ const WebsiteBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
             <div className="flex flex-col w-32">
               <span>{value}</span>
@@ -337,7 +337,7 @@ const WebsiteBooking = () => {
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span> 
+                <span>{customeDetails}</span>
                 <span>{price}</span>
               </div>
             );
@@ -351,7 +351,7 @@ const WebsiteBooking = () => {
         },
       },
     },
-   
+
     //14
     {
       name: "order_assign",
@@ -373,7 +373,7 @@ const WebsiteBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const type = tableMeta.rowData[20];
           const paid_amount = tableMeta.rowData[19];
-        
+
           return (
             <div className=" flex flex-col w-32">
               <span>{paid_amount}</span>
@@ -383,8 +383,8 @@ const WebsiteBooking = () => {
         },
       },
     },
-     //16
-     {
+    //16
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -428,7 +428,7 @@ const WebsiteBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -461,7 +461,7 @@ const WebsiteBooking = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -510,7 +510,7 @@ const WebsiteBooking = () => {
         sort: true,
       },
     },
-    
+
     //21
     {
       name: "updated_by",
@@ -535,7 +535,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-   
+
     //23
     {
       name: "order_address",
@@ -632,7 +632,7 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-      //31 - order_locality
+    //31 - order_locality
     {
       name: "order_locality",
       label: "Locality",
@@ -656,7 +656,6 @@ const WebsiteBooking = () => {
         sort: false,
       },
     },
-  
   ];
 
   const options = {
@@ -683,6 +682,8 @@ const WebsiteBooking = () => {
       const orderStatus = rowData[22];
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
+        backgroundColor = "#F7D5F1"; // light pink
+      } else if (orderStatus == "ReConfirmed") {
         backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light

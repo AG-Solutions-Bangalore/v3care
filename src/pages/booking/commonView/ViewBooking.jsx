@@ -300,7 +300,7 @@ const ViewBooking = () => {
                 <strong>Current Price:</strong>{" "}
                 {booking.order_service_price_for} - {booking.order_amount}
               </Typography>
-            
+
               <Typography className="text-black">
                 <strong>Distance:</strong> {booking.order_km} Km
               </Typography>
@@ -375,6 +375,7 @@ const ViewBooking = () => {
               />
             )}
             {(booking.order_status === "Confirmed" ||
+              booking.order_status === "ReConfirmed" ||
               booking.order_status === "Vendor" ||
               booking.order_status === "Inspection") && (
               <ButtonConfigColor
@@ -383,13 +384,15 @@ const ViewBooking = () => {
                 onClick={() => navigate(`/assign-vendor/${id}`)}
               />
             )}
-            {booking.order_status === "Confirmed" && userType !== "4" && (
-              <ButtonConfigColor
-                type="create"
-                label="Notify All Vendor"
-                onClick={notifyUpdate}
-              />
-            )}
+            {(booking.order_status === "Confirmed" ||
+              booking.order_status === "ReConfirmed") &&
+              userType !== "4" && (
+                <ButtonConfigColor
+                  type="create"
+                  label="Notify All Vendor"
+                  onClick={notifyUpdate}
+                />
+              )}
             {(booking.order_status === "Completed" ||
               booking.order_status === "Cancel") && (
               <ButtonConfigColor

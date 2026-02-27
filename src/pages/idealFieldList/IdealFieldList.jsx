@@ -29,6 +29,8 @@ import IdealFieldListFilter from "../../components/IdealFieldListFilter";
 import Layout from "../../layout/Layout";
 import UseEscapeKey from "../../utils/UseEscapeKey";
 import CreateAttendanceDialog from "./AddtendanceMark";
+import EmployeeMultiSelect from "../../components/common/EmployeeMultiSelect";
+import moment from "moment";
 
 const IdealFieldList = () => {
   UseEscapeKey();
@@ -57,7 +59,9 @@ const IdealFieldList = () => {
   const [branches, setBranches] = useState([]);
   const [openAttendance, setOpenAttendance] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
-
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [attendanceFromDate, setAttendanceFromDate] = useState("");
+  const [attendanceToDate, setAttendanceToDate] = useState("");
   const fetchIdealData = async () => {
     try {
       setLoading(true);
@@ -130,30 +134,46 @@ const IdealFieldList = () => {
     if (attendanceView) {
       fetchAttendanceData();
     }
-  }, [attendanceView, attendanceMonth, attendanceYear, selectedBranch]);
+  }, [
+    attendanceView,
+    attendanceMonth,
+    attendanceYear,
+    selectedBranch,
+    attendanceFromDate,
+    attendanceToDate,
+  ]);
 
   const fetchAttendanceData = async () => {
     try {
       setAttendanceLoading(true);
       const token = localStorage.getItem("token");
-      const fromDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-01`;
-      let toDate;
-      const now = new Date();
-      const isCurrentMonth =
-        attendanceYear === now.getFullYear() &&
-        attendanceMonth === now.getMonth();
+      // const fromDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-01`;
+      // let toDate;
+      // const now = new Date();
+      // const isCurrentMonth =
+      //   attendanceYear === now.getFullYear() &&
+      //   attendanceMonth === now.getMonth();
 
-      if (isCurrentMonth) {
-        toDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-      } else {
-        const lastDay = new Date(
-          attendanceYear,
-          attendanceMonth + 1,
-          0,
-        ).getDate();
-        toDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
-      }
+      // if (isCurrentMonth) {
+      //   toDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      // } else {
+      //   const lastDay = new Date(
+      //     attendanceYear,
+      //     attendanceMonth + 1,
+      //     0,
+      //   ).getDate();
+      //   toDate = `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+      // }
+      const fromDate = attendanceFromDate
+        ? attendanceFromDate
+        : `${attendanceYear}-${String(attendanceMonth + 1).padStart(2, "0")}-01`;
 
+      const toDate = attendanceToDate
+        ? attendanceToDate
+        : `${attendanceYear}-${String(attendanceMonth + 1).padStart(
+            2,
+            "0",
+          )}-${new Date(attendanceYear, attendanceMonth + 1, 0).getDate()}`;
       let branchId = null;
       if (selectedBranch !== "ALL") {
         const selectedBranchData = branches.find(
@@ -281,32 +301,75 @@ const IdealFieldList = () => {
     setSelectedUserId(row.id);
     setOpenAttendance(true);
   };
-  const handleAttendancePrevMonth = () => {
-    let newMonth = attendanceMonth - 1;
-    let newYear = attendanceYear;
+  // const handleAttendancePrevMonth = () => {
+  //   let newMonth = attendanceMonth - 1;
+  //   let newYear = attendanceYear;
 
-    if (newMonth < 0) {
-      newMonth = 11;
-      newYear = attendanceYear - 1;
-    }
+  //   if (newMonth < 0) {
+  //     newMonth = 11;
+  //     newYear = attendanceYear - 1;
+  //   }
+
+  //   setAttendanceMonth(newMonth);
+  //   setAttendanceYear(newYear);
+  // };
+
+  // const handleAttendanceNextMonth = () => {
+  //   let newMonth = attendanceMonth + 1;
+  //   let newYear = attendanceYear;
+
+  //   if (newMonth > 11) {
+  //     newMonth = 0;
+  //     newYear = attendanceYear + 1;
+  //   }
+
+  //   setAttendanceMonth(newMonth);
+  //   setAttendanceYear(newYear);
+  // };
+
+  const handleAttendancePrevMonth = () => {
+    const newMoment = moment()
+      .year(attendanceYear)
+      .month(attendanceMonth)
+      .subtract(1, "month");
+
+    const newMonth = newMoment.month();
+    const newYear = newMoment.year();
 
     setAttendanceMonth(newMonth);
     setAttendanceYear(newYear);
+
+    if (attendanceFromDate || attendanceToDate) {
+      setAttendanceFromDate(
+        newMoment.clone().startOf("month").format("YYYY-MM-DD"),
+      );
+      setAttendanceToDate(
+        newMoment.clone().endOf("month").format("YYYY-MM-DD"),
+      );
+    }
   };
 
   const handleAttendanceNextMonth = () => {
-    let newMonth = attendanceMonth + 1;
-    let newYear = attendanceYear;
+    const newMoment = moment()
+      .year(attendanceYear)
+      .month(attendanceMonth)
+      .add(1, "month");
 
-    if (newMonth > 11) {
-      newMonth = 0;
-      newYear = attendanceYear + 1;
-    }
+    const newMonth = newMoment.month();
+    const newYear = newMoment.year();
 
     setAttendanceMonth(newMonth);
     setAttendanceYear(newYear);
-  };
 
+    if (attendanceFromDate || attendanceToDate) {
+      setAttendanceFromDate(
+        newMoment.clone().startOf("month").format("YYYY-MM-DD"),
+      );
+      setAttendanceToDate(
+        newMoment.clone().endOf("month").format("YYYY-MM-DD"),
+      );
+    }
+  };
   const uniqueBranches = Array.from(
     new Set(idealData.map((item) => item.branch_name)),
   );
@@ -324,12 +387,12 @@ const IdealFieldList = () => {
   const getCardStyle = (o_id, type) => {
     if (type == "other") {
       return {
-        bg: "bg-green-300",
-        border: "border-green-300",
-        accent: "bg-green-300",
-        textPrimary: "text-white",
-        textSecondary: "text-white/90",
-        shadow: "shadow-green-300",
+        bg: "bg-orange-100",
+        border: "bg-orange-100",
+        accent: "bg-orange-100",
+        textPrimary: "text-black/70",
+        textSecondary: "text-black/80",
+        shadow: "shadow-orange-100",
       };
     }
     return o_id !== "0"
@@ -350,7 +413,9 @@ const IdealFieldList = () => {
           shadow: "shadow-red-50",
         };
   };
-
+  const uniqueEmployees = Array.from(
+    new Map(attendanceData.map((emp) => [emp.id, emp])).values(),
+  );
   const handleCardClick = (data) => {
     if (attendanceView) {
       setSelectedUser(data);
@@ -457,88 +522,6 @@ const IdealFieldList = () => {
     setOrderData([]);
   };
 
-  // const renderCustomCalendar = () => {
-  //   const monthNames = [
-  //     "January",
-  //     "February",
-  //     "March",
-  //     "April",
-  //     "May",
-  //     "June",
-  //     "July",
-  //     "August",
-  //     "September",
-  //     "October",
-  //     "November",
-  //     "December",
-  //   ];
-  //   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  //   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-  //   const serviceDates = orderData.map((order) => order.order_service_date);
-  //   const days = [];
-
-  //   for (let i = 0; i < firstDayOfMonth; i++) {
-  //     days.push(<div key={`empty-${i}`} className="h-8 w-8"></div>);
-  //   }
-
-  //   for (let day = 1; day <= daysInMonth; day++) {
-  //     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  //     const hasService = serviceDates.includes(dateStr);
-  //     console.log(serviceDates, "hasService");
-  //     days.push(
-  //       <div
-  //         key={`day-${day}`}
-  //         className={`h-10 w-10 flex items-center justify-center rounded-full text-sm
-  //           ${hasService ? "bg-green-100 text-green-800 border border-green-300" : "text-gray-600"}`}
-  //       >
-  //         {day}
-  //       </div>,
-  //     );
-  //   }
-
-  //   const now = new Date();
-  //   const currentMonthNow = now.getMonth();
-  //   const currentYearNow = now.getFullYear();
-  //   const isCurrentMonth =
-  //     currentYear === currentYearNow && currentMonth === currentMonthNow;
-
-  //   return (
-  //     <div className="space-y-4">
-  //       <div className="flex items-center justify-between">
-  //         <Button
-  //           variant="text"
-  //           size="sm"
-  //           onClick={handlePrevMonth}
-  //           className="p-1 rounded-full"
-  //         >
-  //           <FaChevronLeft size={14} />
-  //         </Button>
-
-  //         <Typography variant="h6" className="font-medium">
-  //           {monthNames[currentMonth]} {currentYear}
-  //         </Typography>
-
-  //         <Button
-  //           variant="text"
-  //           size="sm"
-  //           onClick={handleNextMonth}
-  //           className="p-1 rounded-full"
-  //           disabled={isCurrentMonth && now.getDate() < daysInMonth}
-  //         >
-  //           <FaChevronRight size={14} />
-  //         </Button>
-  //       </div>
-
-  //       <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500">
-  //         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-  //           <div key={day}>{day}</div>
-  //         ))}
-  //       </div>
-
-  //       <div className="grid grid-cols-7 gap-1 mb-4">{days}</div>
-  //     </div>
-  //   );
-  // };
   const renderCustomCalendar = () => {
     const monthNames = [
       "January",
@@ -555,7 +538,16 @@ const IdealFieldList = () => {
       "December",
     ];
 
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    // const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const startDate = attendanceFromDate
+      ? new Date(attendanceFromDate)
+      : new Date(attendanceYear, attendanceMonth, 1);
+
+    const endDate = attendanceToDate
+      ? new Date(attendanceToDate)
+      : new Date(attendanceYear, attendanceMonth + 1, 0);
+
+    const totalDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
     const formattedOrders =
@@ -574,7 +566,7 @@ const IdealFieldList = () => {
     const today = new Date();
     const todayStr = today.toISOString().split("T")[0];
 
-    for (let day = 1; day <= daysInMonth; day++) {
+    for (let day = 1; day <= totalDays; day++) {
       const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
       const orderForDate = formattedOrders.find(
@@ -591,7 +583,7 @@ const IdealFieldList = () => {
        ${
          hasService
            ? isOtherType
-             ? "bg-green-300 text-white border border-green-300"
+             ? "bg-orange-100 text-orange-800  border border-orange-300"
              : "bg-green-100 text-green-800 border border-green-300"
            : "text-gray-600"
        }
@@ -642,6 +634,293 @@ const IdealFieldList = () => {
       </div>
     );
   };
+  // const renderAttendanceView = () => {
+  //   const monthNames = [
+  //     "January",
+  //     "February",
+  //     "March",
+  //     "April",
+  //     "May",
+  //     "June",
+  //     "July",
+  //     "August",
+  //     "September",
+  //     "October",
+  //     "November",
+  //     "December",
+  //   ];
+  //   const daysInMonth = new Date(
+  //     attendanceYear,
+  //     attendanceMonth + 1,
+  //     0,
+  //   ).getDate();
+  //   const dayHeaders = [];
+
+  //   for (let day = 1; day <= daysInMonth; day++) {
+  //     const date = new Date(attendanceYear, attendanceMonth, day);
+  //     const dayOfWeek = date.getDay();
+  //     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  //     dayHeaders.push(
+  //       <div
+  //         key={`header-${day}`}
+  //         className={`p-1 border-r border-gray-300 text-center text-xs font-medium min-w-[28px] h-10 flex flex-col justify-center
+  //           ${isWeekend ? "bg-blue-50" : "bg-gray-50"}`}
+  //       >
+  //         <div className="font-bold text-sm">{day}</div>
+  //         <div className="text-[10px] text-gray-500 mt-[-2px]">
+  //           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
+  //             dayOfWeek
+  //           ].charAt(0)}
+  //         </div>
+  //       </div>,
+  //     );
+  //   }
+  //   const filteredAttendanceData =
+  //     selectedEmployees.length > 0
+  //       ? attendanceData.filter((user) => selectedEmployees.includes(user.id))
+  //       : attendanceData;
+  //   return (
+  //     <div className="mt-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+  //       <div className="p-4 border-b border-gray-200 bg-gray-50">
+  //         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  //           <div className="flex items-center gap-4">
+  //             <div className="flex items-center gap-2">
+  //               <IconButton
+  //                 variant="text"
+  //                 size="sm"
+  //                 onClick={handleAttendancePrevMonth}
+  //                 className="rounded-full hover:bg-gray-200"
+  //               >
+  //                 <FaChevronLeft size={14} />
+  //               </IconButton>
+  //               <div className="text-center">
+  //                 <Typography variant="h5" className="font-bold text-gray-800">
+  //                   {monthNames[attendanceMonth]} {attendanceYear}
+  //                 </Typography>
+  //                 <Typography variant="small" className="text-gray-600">
+  //                   Attendance Report
+  //                 </Typography>
+  //               </div>
+  //               <IconButton
+  //                 variant="text"
+  //                 size="sm"
+  //                 onClick={handleAttendanceNextMonth}
+  //                 className="rounded-full hover:bg-gray-200"
+  //               >
+  //                 <FaChevronRight size={14} />
+  //               </IconButton>
+  //             </div>
+  //           </div>
+  //           <div className="flex flex-wrap gap-3">
+  //             <Tooltip content="Present - Marked with 'P'">
+  //               <div className="flex items-center gap-1">
+  //                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
+  //                 <Typography variant="small" className="text-xs font-medium">
+  //                   Present (P)
+  //                 </Typography>
+  //               </div>
+  //             </Tooltip>
+  //             <Tooltip content="Absent - Empty cell">
+  //               <div className="flex items-center gap-1">
+  //                 <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+  //                 <Typography variant="small" className="text-xs font-medium">
+  //                   Absent (Empty)
+  //                 </Typography>
+  //               </div>
+  //             </Tooltip>
+  //           </div>
+  //         </div>
+  //       </div>
+
+  //       <div className="overflow-x-auto">
+  //         <div className="min-w-max">
+  //           <div className="flex border-b border-gray-300 bg-gray-50 sticky top-0">
+  //             <div className="w-64 p-3 border-r border-gray-300 font-semibold text-sm bg-gray-50 sticky left-0">
+  //               <div className="flex items-center justify-between">
+  //                 <span>Employee Details</span>
+  //                 <span className="text-xs font-normal text-gray-500">
+  //                   {filteredAttendanceData.length} employees
+  //                 </span>
+  //               </div>
+  //             </div>
+  //             <div className="flex">
+  //               {dayHeaders}
+  //               <div className="w-16 p-2 border-r border-gray-300 text-center text-xs font-medium bg-gray-50 flex items-center justify-center">
+  //                 Present
+  //               </div>
+  //             </div>
+  //           </div>
+
+  //           {attendanceLoading ? (
+  //             <div className="flex justify-center items-center h-64">
+  //               <div className="w-8 h-8 border-2 border-t-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  //             </div>
+  //           ) : filteredAttendanceData.length > 0 ? (
+  //             filteredAttendanceData.map((user, userIndex) => {
+  //               const presentCount = user.totalPresent || 0;
+  //               const totalDays = user.totalDays || daysInMonth;
+  //               const percentage =
+  //                 totalDays > 0
+  //                   ? Math.round((presentCount / totalDays) * 100)
+  //                   : 0;
+  //               const isOtherService = user?.type == "other";
+  //               return (
+  //                 <div
+  //                   key={user.id || userIndex}
+  //                   className={`flex border-b border-gray-200 hover:bg-gray-50 ${
+  //                     userIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+  //                   }`}
+  //                 >
+  //                   <div className="w-64 p-3 border-r border-gray-300 sticky left-0 z-1 bg-inherit">
+  //                     <div className="min-w-0 flex-1">
+  //                       <div className="font-medium text-sm truncate">
+  //                         {user.name || "Unknown User"}
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                   <div className="flex">
+  //                     {Array.from({ length: daysInMonth }, (_, index) => {
+  //                       const day = index + 1;
+
+  //                       const fullDateStr = new Date(
+  //                         attendanceYear,
+  //                         attendanceMonth,
+  //                         day,
+  //                       )
+  //                         .toISOString()
+  //                         .split("T")[0];
+
+  //                       const serviceItem = orderData?.find(
+  //                         (o) =>
+  //                           new Date(o.order_service_date)
+  //                             .toISOString()
+  //                             .split("T")[0] === fullDateStr,
+  //                       );
+
+  //                       const hasService = !!serviceItem;
+  //                       const isOtherService = user?.type === "other";
+
+  //                       const status = user.attendance?.[day] || "";
+  //                       const isPresent = status === "P";
+  //                       const isWithinRange = day <= totalDays;
+
+  //                       const date = new Date(
+  //                         attendanceYear,
+  //                         attendanceMonth,
+  //                         day,
+  //                       );
+  //                       const dayOfWeek = date.getDay();
+  //                       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+  //                       return (
+  //                         <Tooltip
+  //                           key={`${user.id}-${day}`}
+  //                           content={`${day} ${monthNames[attendanceMonth]}: ${
+  //                             isPresent
+  //                               ? "Present"
+  //                               : hasService
+  //                                 ? isOtherService
+  //                                   ? "Other Service Added"
+  //                                   : "Service Added"
+  //                                 : isWithinRange
+  //                                   ? "Absent"
+  //                                   : "Not in range"
+  //                           }`}
+  //                         >
+  //                           <div
+  //                             className={`min-w-[28px] h-12 border-r border-gray-200 flex items-center justify-center text-sm font-medium transition-all
+
+  //                 ${
+  //                   isPresent
+  //                     ? "bg-green-50 text-green-700"
+  //                     : hasService
+  //                       ? isOtherService
+  //                         ? "bg-green-800 text-white"
+  //                         : "bg-green-100 text-green-800"
+  //                       : isWeekend
+  //                         ? "bg-blue-50 text-gray-600"
+  //                         : "bg-white text-gray-400"
+  //                 }
+
+  //                 ${!isWithinRange ? "opacity-50" : ""}
+  //                 `}
+  //                           >
+  //                             {isPresent ? (
+  //                               <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+  //                                 <span className="text-xs font-bold">P</span>
+  //                               </div>
+  //                             ) : hasService ? (
+  //                               <div className="w-6 h-6 rounded-full flex items-center justify-center">
+  //                                 <span className="text-xs font-bold">
+  //                                   {isOtherService ? "O" : "S"}
+  //                                 </span>
+  //                               </div>
+  //                             ) : (
+  //                               <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
+  //                                 <span className="text-xs text-gray-400">
+  //                                   -
+  //                                 </span>
+  //                               </div>
+  //                             )}
+  //                           </div>
+  //                         </Tooltip>
+  //                       );
+  //                     })}
+  //                     <div className="w-16 border-r border-gray-200 flex flex-col items-center justify-center">
+  //                       <div
+  //                         className={`text-lg font-bold ${presentCount > 0 ? "text-green-700" : "text-gray-400"}`}
+  //                       >
+  //                         {presentCount}
+  //                       </div>
+  //                       <div className="text-[10px] text-gray-500 mt-[-4px]">
+  //                         {percentage}%
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                 </div>
+  //               );
+  //             })
+  //           ) : (
+  //             <div className="flex justify-center items-center h-64 col-span-full">
+  //               <div className="text-center">
+  //                 <div className="text-gray-400 mb-2">
+  //                   <FaUsers size={24} className="mx-auto" />
+  //                 </div>
+  //                 <Typography
+  //                   variant="small"
+  //                   className="text-gray-600 font-medium"
+  //                 >
+  //                   No attendance data available
+  //                 </Typography>
+  //                 <Typography
+  //                   variant="small"
+  //                   className="text-gray-500 text-xs mt-1"
+  //                 >
+  //                   Try selecting a different month or branch
+  //                 </Typography>
+  //               </div>
+  //             </div>
+  //           )}
+  //         </div>
+  //       </div>
+
+  //       <div className="p-3 border-t border-gray-200 bg-gray-50 text-xs text-gray-600">
+  //         <div className="flex justify-between items-center">
+  //           <div>
+  //             Total {attendanceData.length} employees •
+  //             <span className="mx-2">🟢 Present: Shows &apos;P&apos;</span> •
+  //             <span className="mx-2">⚪ Absent: Empty cell</span>
+  //           </div>
+  //           <div className="text-right">Click on any cell to view details</div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+  // Drop-in replacement for renderAttendanceView
+  // Requires: FaChevronLeft, FaChevronRight, FaUsers from react-icons/fa
+  // Requires: Tooltip, Typography, IconButton from @material-tailwind/react
+
   const renderAttendanceView = () => {
     const monthNames = [
       "January",
@@ -657,182 +936,204 @@ const IdealFieldList = () => {
       "November",
       "December",
     ];
-    const daysInMonth = new Date(
-      attendanceYear,
-      attendanceMonth + 1,
-      0,
-    ).getDate();
-    const dayHeaders = [];
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(attendanceYear, attendanceMonth, day);
+    const startDate = attendanceFromDate
+      ? new Date(attendanceFromDate)
+      : new Date(attendanceYear, attendanceMonth, 1);
+
+    const endDate = attendanceToDate
+      ? new Date(attendanceToDate)
+      : new Date(attendanceYear, attendanceMonth + 1, 0);
+
+    const totalDays = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
+
+    const filteredAttendance =
+      selectedEmployees.length > 0
+        ? attendanceData.filter((u) => selectedEmployees.includes(u.id))
+        : attendanceData;
+
+    const dayHeaders = Array.from({ length: totalDays }, (_, index) => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + index);
+      const day = date.getDate();
       const dayOfWeek = date.getDay();
       const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      dayHeaders.push(
-        <div
-          key={`header-${day}`}
-          className={`p-1 border-r border-gray-300 text-center text-xs font-medium min-w-[28px] h-10 flex flex-col justify-center
-            ${isWeekend ? "bg-blue-50" : "bg-gray-50"}`}
-        >
-          <div className="font-bold text-sm">{day}</div>
-          <div className="text-[10px] text-gray-500 mt-[-2px]">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
-              dayOfWeek
-            ].charAt(0)}
-          </div>
-        </div>,
-      );
-    }
+      const dayLabel = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][dayOfWeek];
+      return { day, dayOfWeek, isWeekend, dayLabel, date };
+    });
 
     return (
-      <div className="mt-4 bg-white rounded-lg border border-gray-200 shadow-sm">
-        <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <IconButton
-                  variant="text"
-                  size="sm"
-                  onClick={handleAttendancePrevMonth}
-                  className="rounded-full hover:bg-gray-200"
-                >
-                  <FaChevronLeft size={14} />
-                </IconButton>
-                <div className="text-center">
-                  <Typography variant="h5" className="font-bold text-gray-800">
-                    {monthNames[attendanceMonth]} {attendanceYear}
-                  </Typography>
-                  <Typography variant="small" className="text-gray-600">
-                    Attendance Report
-                  </Typography>
-                </div>
-                <IconButton
-                  variant="text"
-                  size="sm"
-                  onClick={handleAttendanceNextMonth}
-                  className="rounded-full hover:bg-gray-200"
-                >
-                  <FaChevronRight size={14} />
-                </IconButton>
-              </div>
+      <div
+        className="mt-4 rounded-xl border border-gray-200 shadow-sm overflow-hidden bg-white"
+        // style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-3 bg-white border-b border-gray-100">
+          {/* Month nav */}
+          <div className="flex items-center gap-2">
+            <IconButton
+              variant="text"
+              size="sm"
+              onClick={handleAttendancePrevMonth}
+              className="rounded-full hover:bg-gray-100 text-gray-500"
+            >
+              <FaChevronLeft size={12} />
+            </IconButton>
+            <div className="text-center min-w-[150px]">
+              <p className="text-base font-bold text-gray-800 leading-tight">
+                {attendanceFromDate && attendanceToDate
+                  ? (() => {
+                      const from = new Date(attendanceFromDate);
+                      const to = new Date(attendanceToDate);
+                      const sameMonth =
+                        from.getMonth() === to.getMonth() &&
+                        from.getFullYear() === to.getFullYear();
+                      return sameMonth
+                        ? `${monthNames[from.getMonth()]} ${from.getFullYear()}`
+                        : `${monthNames[from.getMonth()]} ${from.getFullYear()} – ${monthNames[to.getMonth()]} ${to.getFullYear()}`;
+                    })()
+                  : `${monthNames[attendanceMonth]} ${attendanceYear}`}
+              </p>
+              <p className="text-[11px] text-gray-400 font-medium tracking-wide uppercase">
+                Attendance Report
+              </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Tooltip content="Present - Marked with 'P'">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <Typography variant="small" className="text-xs font-medium">
-                    Present (P)
-                  </Typography>
-                </div>
-              </Tooltip>
-              <Tooltip content="Absent - Empty cell">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-                  <Typography variant="small" className="text-xs font-medium">
-                    Absent (Empty)
-                  </Typography>
-                </div>
-              </Tooltip>
-            </div>
+            <IconButton
+              variant="text"
+              size="sm"
+              onClick={handleAttendanceNextMonth}
+              className="rounded-full hover:bg-gray-100 text-gray-500"
+            >
+              <FaChevronRight size={12} />
+            </IconButton>
+          </div>
+
+          <div className="flex items-center gap-4 text-[11px] text-gray-500 font-medium flex-wrap">
+            <span className="flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-full bg-green-100 border border-green-300 flex items-center justify-center text-green-700 text-[9px] font-bold">
+                P
+              </span>
+              Present
+            </span>
+
+            <span className="flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-full bg-blue-50 border border-blue-100"></span>
+              Weekend
+            </span>
+
+            {/* Rate legend */}
+            <span className="flex items-center gap-2 pl-2 border-l border-gray-200">
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                <span className="text-green-600 font-semibold">≥75%</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+                <span className="text-amber-500 font-semibold">≥50%</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-full bg-red-400"></span>
+                <span className="text-red-500 font-semibold">&lt;50%</span>
+              </span>
+              <span className="text-gray-400 font-normal">Rate</span>
+            </span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <div className="min-w-max">
-            <div className="flex border-b border-gray-300 bg-gray-50 sticky top-0 z-10">
-              <div className="w-64 p-3 border-r border-gray-300 font-semibold text-sm bg-gray-50 sticky left-0 z-20">
-                <div className="flex items-center justify-between">
-                  <span>Employee Details</span>
-                  <span className="text-xs font-normal text-gray-500">
-                    {attendanceData.length} employees
-                  </span>
-                </div>
-              </div>
-              <div className="flex">
-                {dayHeaders}
-                <div className="w-16 p-2 border-r border-gray-300 text-center text-xs font-medium bg-gray-50 flex items-center justify-center">
-                  Present
-                </div>
-              </div>
-            </div>
+          <table className="min-w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="sticky left-0 z-20 bg-gray-50 border-r border-gray-200 px-4 py-2 text-left text-[10px] font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap min-w-[180px]">
+                  Employee
+                </th>
 
-            {attendanceLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="w-8 h-8 border-2 border-t-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            ) : attendanceData.length > 0 ? (
-              attendanceData.map((user, userIndex) => {
-                const presentCount = user.totalPresent || 0;
-                const totalDays = user.totalDays || daysInMonth;
-                const percentage =
-                  totalDays > 0
-                    ? Math.round((presentCount / totalDays) * 100)
-                    : 0;
-                const isOtherService = user?.type == "other";
-                return (
-                  <div
-                    key={user.id || userIndex}
-                    className={`flex border-b border-gray-200 hover:bg-gray-50 ${
-                      userIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                {dayHeaders.map(({ day, isWeekend, dayLabel }, i) => (
+                  <th
+                    key={i}
+                    className={`text-center px-0 py-1.5 font-medium border-r min-w-[30px] w-[30px] ${
+                      isWeekend
+                        ? "bg-blue-50 text-blue-400 border-blue-100"
+                        : "text-gray-800 border-gray-100"
                     }`}
                   >
-                    <div className="w-64 p-3 border-r border-gray-300 sticky left-0 z-10 bg-inherit">
-                      <div className="min-w-0 flex-1">
-                        <div className="font-medium text-sm truncate">
-                          {user.name || "Unknown User"}
-                        </div>
-                      </div>
+                    <div className="flex flex-col items-center leading-none gap-0.5">
+                      <span className="text-[8px] font-normal opacity-60">
+                        {dayLabel}
+                      </span>
+                      <span className="text-[11px] font-bold">{day}</span>
                     </div>
-                    <div className="flex">
-                      {/* {Array.from({ length: daysInMonth }, (_, index) => {
-                        const day = index + 1;
-                        const date = new Date(
-                          attendanceYear,
-                          attendanceMonth,
-                          day,
-                        );
-                        const dayOfWeek = date.getDay();
-                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                        const status = user.attendance?.[day] || "";
-                        const isPresent = status === "P";
-                        const isWithinRange = day <= totalDays;
+                  </th>
+                ))}
 
-                        return (
-                          <Tooltip
-                            key={`${user.id}-${day}`}
-                            content={`${day} ${monthNames[attendanceMonth]}: ${isPresent ? "Present" : isWithinRange ? "Absent" : "Not in range"}`}
-                          >
-                            <div
-                              className={`min-w-[28px] h-12 border-r border-gray-200 flex items-center justify-center text-sm font-medium
-                                ${isWeekend ? "bg-blue-50" : "bg-white"}
-                                ${isPresent ? "bg-green-50 text-green-700" : "text-gray-400"}
-                                ${!isWithinRange ? "opacity-50" : ""}`}
-                            >
-                              {isPresent ? (
-                                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                                  <span className="text-xs font-bold">P</span>
-                                </div>
-                              ) : (
-                                <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
-                                  <span className="text-xs text-gray-400">
-                                    -
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </Tooltip>
-                        );
-                      })} */}
-                      {Array.from({ length: daysInMonth }, (_, index) => {
-                        const day = index + 1;
+                <th className="text-center px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap border-l-2 border-gray-200 min-w-[60px]">
+                  Days
+                </th>
+                <th className="text-center px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap min-w-[80px]">
+                  Rate
+                </th>
+              </tr>
+            </thead>
 
-                        const fullDateStr = new Date(
-                          attendanceYear,
-                          attendanceMonth,
-                          day,
-                        )
-                          .toISOString()
-                          .split("T")[0];
+            <tbody>
+              {attendanceLoading ? (
+                <tr>
+                  <td colSpan={totalDays + 3} className="py-16 text-center">
+                    <div className="flex flex-col items-center gap-2 text-gray-400">
+                      <div className="w-7 h-7 rounded-full border-2 border-gray-200 border-t-blue-400 animate-spin" />
+                      <span className="text-xs">Loading attendance data…</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredAttendance.length === 0 ? (
+                <tr>
+                  <td colSpan={totalDays + 3} className="py-16 text-center">
+                    <div className="flex flex-col items-center gap-2 text-gray-400">
+                      <FaUsers size={22} />
+                      <p className="text-sm font-medium text-gray-600">
+                        No attendance data available
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Try selecting a different month or branch
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredAttendance.map((user, userIndex) => {
+                  const presentCount = user.totalPresent || 0;
+                  const totalDaysCount = user.totalDays || totalDays;
+                  const percentage =
+                    totalDaysCount > 0
+                      ? Math.round((presentCount / totalDaysCount) * 100)
+                      : 0;
+                  const isOtherService = user?.type === "other";
+
+                  const pctColor =
+                    percentage >= 75
+                      ? "text-green-600"
+                      : percentage >= 50
+                        ? "text-amber-500"
+                        : "text-red-500";
+                  const barColor =
+                    percentage >= 75
+                      ? "bg-green-500"
+                      : percentage >= 50
+                        ? "bg-amber-400"
+                        : "bg-red-400";
+
+                  return (
+                    <tr
+                      key={user.id || userIndex}
+                      className={`border-b border-gray-100 hover:bg-indigo-50/30 transition-colors duration-100 ${
+                        userIndex % 2 === 0 ? "bg-white" : "bg-gray-50/40"
+                      }`}
+                    >
+                      <td className="sticky left-0 z-20 bg-white border-r border-gray-200 px-4 py-2 font-semibold text-gray-800 whitespace-nowrap text-xs">
+                        {user.name || "Unknown User"}
+                      </td>
+
+                      {dayHeaders.map(({ day, isWeekend, date }, i) => {
+                        const fullDateStr = date.toISOString().split("T")[0];
 
                         const serviceItem = orderData?.find(
                           (o) =>
@@ -840,66 +1141,55 @@ const IdealFieldList = () => {
                               .toISOString()
                               .split("T")[0] === fullDateStr,
                         );
-
                         const hasService = !!serviceItem;
-                        const isOtherService = user?.type === "other";
-                        console.log(serviceItem, "serviceItem");
-
                         const status = user.attendance?.[day] || "";
                         const isPresent = status === "P";
-                        const isWithinRange = day <= totalDays;
+                        const isWithinRange =
+                          date >= startDate && date <= endDate;
+                        const tooltipLabel = isPresent
+                          ? "Present"
+                          : hasService
+                            ? isOtherService
+                              ? "Other Service Added"
+                              : "Service Added"
+                            : isWithinRange
+                              ? "Absent"
+                              : "Out of range";
 
-                        const date = new Date(
-                          attendanceYear,
-                          attendanceMonth,
-                          day,
-                        );
-                        const dayOfWeek = date.getDay();
-                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                        const cellBg = isPresent
+                          ? "bg-green-50"
+                          : hasService
+                            ? isOtherService
+                              ? "bg-emerald-700"
+                              : "bg-green-100"
+                            : isWeekend
+                              ? "bg-blue-50"
+                              : "";
 
                         return (
                           <Tooltip
-                            key={`${user.id}-${day}`}
-                            content={`${day} ${monthNames[attendanceMonth]}: ${
-                              isPresent
-                                ? "Present"
-                                : hasService
-                                  ? isOtherService
-                                    ? "Other Service Added"
-                                    : "Service Added"
-                                  : isWithinRange
-                                    ? "Absent"
-                                    : "Not in range"
-                            }`}
+                            key={i}
+                            content={`${day} ${monthNames[attendanceMonth]}: ${tooltipLabel}`}
                           >
-                            <div
-                              className={`min-w-[28px] h-12 border-r border-gray-200 flex items-center justify-center text-sm font-medium transition-all
-                  
-                  ${
-                    isPresent
-                      ? "bg-green-50 text-green-700"
-                      : hasService
-                        ? isOtherService
-                          ? "bg-green-800 text-white"
-                          : "bg-green-100 text-green-800"
-                        : isWeekend
-                          ? "bg-blue-50 text-gray-600"
-                          : "bg-white text-gray-400"
-                  }
-
-                  ${!isWithinRange ? "opacity-50" : ""}
-                  `}
+                            <td
+                              className={`text-center px-0 py-2 border-r border-gray-100 ${cellBg} ${
+                                !isWithinRange ? "opacity-40" : ""
+                              } cursor-default`}
                             >
                               {isPresent ? (
-                                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                                  <span className="text-xs font-bold">P</span>
-                                </div>
+                                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-600 text-xs font-bold shadow-sm">
+                                  P
+                                </span>
                               ) : hasService ? (
-                                <div className="w-6 h-6 rounded-full flex items-center justify-center">
-                                  <span className="text-xs font-bold">
-                                    {isOtherService ? "O" : "S"}
-                                  </span>
-                                </div>
+                                <span
+                                  className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] font-bold ${
+                                    isOtherService
+                                      ? "bg-white/20 text-white ring-1 ring-white/40"
+                                      : "bg-green-600 text-white"
+                                  }`}
+                                >
+                                  {isOtherService ? "O" : "S"}
+                                </span>
                               ) : (
                                 <div className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
                                   <span className="text-xs text-gray-400">
@@ -907,62 +1197,59 @@ const IdealFieldList = () => {
                                   </span>
                                 </div>
                               )}
-                            </div>
+                            </td>
                           </Tooltip>
                         );
                       })}
-                      <div className="w-16 border-r border-gray-200 flex flex-col items-center justify-center">
-                        <div
-                          className={`text-lg font-bold ${presentCount > 0 ? "text-green-700" : "text-gray-400"}`}
+
+                      {/* Present count */}
+                      <td className="text-center px-3 py-2 border-l-2 border-gray-200">
+                        <span
+                          className={`inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-md text-xs font-bold ${
+                            presentCount > 0
+                              ? "bg-green-50 text-green-700 ring-1 ring-green-200"
+                              : "bg-gray-100 text-gray-400"
+                          }`}
                         >
                           {presentCount}
+                        </span>
+                      </td>
+
+                      {/* Percentage + bar */}
+                      <td className="text-center px-3 py-2">
+                        <div className="flex flex-col items-center gap-1">
+                          <span
+                            className={`text-xs font-bold tabular-nums ${pctColor}`}
+                          >
+                            {percentage}%
+                          </span>
+                          <div className="w-10 h-1 rounded-full bg-gray-100 overflow-hidden">
+                            <div
+                              className={`h-full rounded-full ${barColor} transition-all duration-300`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="text-[10px] text-gray-500 mt-[-4px]">
-                          {percentage}%
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="flex justify-center items-center h-64 col-span-full">
-                <div className="text-center">
-                  <div className="text-gray-400 mb-2">
-                    <FaUsers size={24} className="mx-auto" />
-                  </div>
-                  <Typography
-                    variant="small"
-                    className="text-gray-600 font-medium"
-                  >
-                    No attendance data available
-                  </Typography>
-                  <Typography
-                    variant="small"
-                    className="text-gray-500 text-xs mt-1"
-                  >
-                    Try selecting a different month or branch
-                  </Typography>
-                </div>
-              </div>
-            )}
-          </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
 
-        <div className="p-3 border-t border-gray-200 bg-gray-50 text-xs text-gray-600">
-          <div className="flex justify-between items-center">
-            <div>
-              Showing {attendanceData.length} employees •
-              <span className="mx-2">🟢 Present: Shows &apos;P&apos;</span> •
-              <span className="mx-2">⚪ Absent: Empty cell</span>
-            </div>
-            <div className="text-right">Click on any cell to view details</div>
-          </div>
+        {/* ── Footer ── */}
+        <div className="px-5 py-2.5 bg-gray-50 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+          <span>
+            {attendanceData.length} employees · Showing{" "}
+            {monthNames[attendanceMonth]} {attendanceYear}
+          </span>
+          <span>Hover cells for details</span>
         </div>
       </div>
     );
   };
-
   const renderCard = (data) => {
     const firstName = data.name.split(" ")[0];
     const cardStyle = getCardStyle(data.o_id, data.type);
@@ -1043,7 +1330,12 @@ const IdealFieldList = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div
+            className={`grid grid-cols-1 md:grid-cols-2 ${
+              attendanceView ? "lg:grid-cols-4" : "lg:grid-cols-3"
+            } gap-3`}
+          >
+            {" "}
             {!attendanceView && (
               <div className="space-y-1">
                 <Typography
@@ -1060,7 +1352,6 @@ const IdealFieldList = () => {
                 />
               </div>
             )}
-
             <div className="space-y-1">
               <Typography
                 variant="small"
@@ -1087,7 +1378,53 @@ const IdealFieldList = () => {
                     ))}
               </select>
             </div>
+            {attendanceView && (
+              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+                {" "}
+                <div>
+                  <Typography
+                    variant="small"
+                    className="text-gray-700 font-medium text-xs"
+                  >
+                    📅 From Date
+                  </Typography>
+                  <input
+                    type="date"
+                    value={attendanceFromDate}
+                    onChange={(e) => setAttendanceFromDate(e.target.value)}
+                    className="w-full h-8 text-xs bg-white border border-gray-200 rounded-md px-2"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Typography
+                    variant="small"
+                    className="text-gray-700 font-medium text-xs"
+                  >
+                    📅 To Date
+                  </Typography>
+                  <input
+                    type="date"
+                    value={attendanceToDate}
+                    onChange={(e) => setAttendanceToDate(e.target.value)}
+                    className="w-full h-8 text-xs bg-white border border-gray-200 rounded-md px-2"
+                  />
+                </div>
+                <div>
+                  <Typography
+                    variant="small"
+                    className="text-gray-700 font-medium text-xs"
+                  >
+                    👤 Employees
+                  </Typography>
 
+                  <EmployeeMultiSelect
+                    employees={uniqueEmployees}
+                    selectedEmployees={selectedEmployees}
+                    setSelectedEmployees={setSelectedEmployees}
+                  />
+                </div>
+              </div>
+            )}
             {!attendanceView && (
               <div className="space-y-1">
                 <Typography
@@ -1135,6 +1472,10 @@ const IdealFieldList = () => {
                   <span className="flex items-center gap-1">
                     <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
                     Assigned
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block w-2 h-2 rounded-full bg-orange-500"></span>
+                    Office
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="inline-block w-2 h-2 rounded-full bg-red-200"></span>

@@ -822,7 +822,9 @@ const YesterdayBooking = () => {
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
-      } else if (orderStatus === "Completed") {
+      } else if (orderStatus == "ReConfirmed") {
+        backgroundColor = "#F7D5F1"; // light pink
+      } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
         backgroundColor = "#B9CCF4"; // light blue
