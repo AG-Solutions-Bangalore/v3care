@@ -826,6 +826,8 @@ const TodayBooking = () => {
       let backgroundColor = "";
       if (orderStatus == "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
+      } else if (orderStatus == "ReConfirmed") {
+        backgroundColor = "#F7D5F1"; // light pink
       } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus == "Inspection") {

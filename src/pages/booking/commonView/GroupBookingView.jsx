@@ -26,31 +26,31 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
     const dates = [
       ...new Set(
         groupbooking?.map((item) =>
-          Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-        )
+          Moment(item.order_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
+        ),
       ),
     ].sort(
       (a, b) =>
-        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
+        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf(),
     );
 
     const serviceDates = [
       ...new Set(
         groupbooking?.map((item) =>
-          Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD")
-        )
+          Moment(item.order_service_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
+        ),
       ),
     ].sort(
       (a, b) =>
-        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf()
+        Moment(b, "YYYY-MM-DD").valueOf() - Moment(a, "YYYY-MM-DD").valueOf(),
     );
 
     const formattedDates = dates.map((date) =>
-      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
     );
 
     const formattedServiceDates = serviceDates.map((date) =>
-      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY")
+      Moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
     );
 
     setUniqueDates(formattedDates);
@@ -341,7 +341,7 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -374,7 +374,7 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -517,7 +517,9 @@ const GroupBookingView = ({ groupbooking, setActiveTab }) => {
       let backgroundColor = "";
       if (orderStatus === "Confirmed") {
         backgroundColor = "#F7D5F1"; // light pink
-      } else if (orderStatus === "Completed") {
+      } else if (orderStatus == "ReConfirmed") {
+        backgroundColor = "#F7D5F1"; // light pink
+      } else if (orderStatus == "Completed") {
         backgroundColor = "#F0A7FC"; // light
       } else if (orderStatus === "Inspection") {
         backgroundColor = "#B9CCF4"; // light blue
