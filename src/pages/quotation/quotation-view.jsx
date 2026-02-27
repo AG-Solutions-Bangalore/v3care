@@ -1,23 +1,22 @@
-import html2pdf from "html2pdf.js";
-import { Globe, Mail, Phone, Printer } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { FaRegFilePdf } from "react-icons/fa";
-import ReactToPrint from "react-to-print";
-import stamplogo from "../../../public/stamplogo.png";
-import logo from "../../../public/v3.png";
-import Layout from "../../layout/Layout";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { BASE_URL } from "../../base/BaseUrl";
+import { Mail, Phone, Printer } from "lucide-react";
+import moment from "moment";
 import { toWords } from "number-to-words";
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import ReactToPrint from "react-to-print";
+import { toast } from "react-toastify";
+import stamplogo from "../../../public/stamplogo.png";
+import { BASE_URL } from "../../base/BaseUrl";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
+import Layout from "../../layout/Layout";
 
 const QuatationView = () => {
   const containerRef = useRef();
   const { id } = useParams();
   const [formData, setFormData] = useState({});
   const token = localStorage.getItem("token");
+  const [showLogo, setShowLogo] = useState(true);
   const fetchBooking = async () => {
     try {
       const response = await axios.get(
@@ -32,70 +31,27 @@ const QuatationView = () => {
   useEffect(() => {
     fetchBooking();
   }, [id]);
-  const handleSaveAsPdf = () => {
-    const element = containerRef.current;
 
-    const images = element.getElementsByTagName("img");
-    let loadedImages = 0;
-
-    if (images.length === 0) {
-      generatePdf(element);
-      return;
-    }
-
-    Array.from(images).forEach((img) => {
-      if (img.complete) {
-        loadedImages++;
-        if (loadedImages === images.length) {
-          generatePdf(element);
-        }
-      } else {
-        img.onload = () => {
-          loadedImages++;
-          if (loadedImages === images.length) {
-            generatePdf(element);
-          }
-        };
-      }
-    });
-  };
-
-  const generatePdf = (element) => {
-    const options = {
-      margin: [0, 0, 0, 0],
-      filename: "Quatation.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        windowHeight: element.scrollHeight,
-        scrollY: 0,
-      },
-      jsPDF: {
-        unit: "mm",
-        format: "a4",
-        orientation: "portrait",
-      },
-      pagebreak: { mode: "avoid" },
-    };
-
-    html2pdf()
-      .from(element)
-      .set(options)
-      .toPdf()
-      .get("pdf")
-      .then(() => {})
-      .save();
-  };
-  const quotation = formData?.quotation || [];
+  const quotation = formData?.quotation || {};
   const quotationSub = formData?.quotationSub || [];
+  const company = formData?.company || {};
   const subTotal = quotationSub.reduce(
     (sum, item) => sum + Number(item?.quotationSub_amount || 0),
     0,
   );
 
+  const cgst = Number(quotation.quotation_cgst) || 0;
+  const sgst = Number(quotation.quotation_sgst) || 0;
+  const igst = Number(quotation.quotation_igst) || 0;
+
+  const cgstAmount = (subTotal * cgst) / 100;
+  const sgstAmount = (subTotal * sgst) / 100;
+  const igstAmount = (subTotal * igst) / 100;
+
+  const grandTotal = subTotal + cgstAmount + sgstAmount + igstAmount;
+
   const amountInWords =
-    toWords(Math.round(subTotal)).replace(/\b\w/g, (c) => c.toUpperCase()) +
+    toWords(Math.round(grandTotal)).replace(/\b\w/g, (c) => c.toUpperCase()) +
     " Rupees Only";
   return (
     <Layout>
@@ -104,49 +60,34 @@ const QuatationView = () => {
           title="Quotation View"
           label2={
             <div className="flex gap-2">
-              <button
-                onClick={handleSaveAsPdf}
-                className=" bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center"
-              >
-                <FaRegFilePdf className="w-4 h-4 mr-2" />
-                Save as PDF
-              </button>
+              <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showLogo}
+                  onChange={(e) => setShowLogo(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                Show Stamp
+              </label>
 
               <ReactToPrint
                 trigger={() => (
-                  <button className=" bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center">
+                  <button className=" bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600 flex items-center font-normal">
                     <Printer className="h-4 w-4 mr-2" />
                     Print
                   </button>
                 )}
                 content={() => containerRef.current}
                 documentTitle="Quatation"
-                //   pageStyle={`
-                //     @page {
-                //         size: auto;
-                //         margin: 0mm;
-                //     }
-                //     @media print {
-                //         body {
-
-                //              min-height:100vh
-                //         }
-
-                //     .page-break {
-                //           page-break-before: always;
-                //                }
-
-                //     }
-                // `}
                 pageStyle={`
   @page {
     size: A4;
-    margin: 0mm;
+    margin: 4mm;
   }
 
   @media print {
     body {
-      margin: 0;
+      margin: 4mm;
       -webkit-print-color-adjust: exact;
     }
 
@@ -164,201 +105,222 @@ const QuatationView = () => {
           }
         />
 
-        <div
-          ref={containerRef}
-          className="font-normal text-sm mt-4 bg-white rounded-lg"
-        >
-          <>
-            <div className=" p-4 m-[1rem] ">
-              <div className="relative max-w-4xl mx-auto border-2 border-black">
-                <div className="absolute top-[2px] right-2 text-right text-xs">
+        <div className="relative mt-4">
+          <div className="bg-gray-100 max-w-4xl mx-auto px-4 py-2 rounded-md">
+            <div ref={containerRef}>
+              <div className="grid grid-cols-3 items-start mb-8">
+                <div>
+                  <h1 className="text-2xl font-bold mb-1">
+                    {company?.company_name || ""}
+                  </h1>
+                  <p className="text-sm"></p>
+                  <p className="text-xs">{company?.company_address || ""}</p>
+                  <p className="flex items-center gap-4 text-xs flex-wrap">
+                    <span className="flex items-center gap-1">
+                      <Phone className="h-3.5 w-3.5" />
+                      {company?.company_mobile || ""}
+                    </span>
+
+                    <span className="flex items-center gap-1">
+                      <Mail className="h-3.5 w-3.5" />
+                      {company?.company_other_email || ""}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex justify-center">
+                  <h2 className="text-xl font-bold">Quotation</h2>
+                </div>
+                <div className="flex flex-col items-end text-xs">
                   <p className="font-semibold">PAN No: BVHPK7881A</p>
                   <p className="font-semibold">GST No: 29AAQFG1234A1Z5</p>
                 </div>
-                <div className=" grid grid-cols-1 sm:grid-cols-12 gap-4 my-4">
-                  <div className="sm:col-span-3 flex justify-center">
-                    <img
-                      src={logo}
-                      alt="V3care"
-                      className="w-full max-w-[140px] h-auto"
-                    />
+              </div>
+
+              <div className="flex justify-between mb-6">
+                <div>
+                  <p className="text-sm font-semibold">To,</p>
+                  <p className="text-sm font-bold">
+                    {quotation.quotation_customer || ""}
+                  </p>
+                  <p className="text-xs max-w-[15rem] break-all whitespace-pre-wrap">
+                    {quotation.quotation_customer_address || ""}
+                  </p>
+                  <p className="text-xs">
+                    {quotation.quotation_customer_mobile || ""}
+                    {quotation.quotation_customer_alt_mobile
+                      ? `,${quotation.quotation_customer_alt_mobile}`
+                      : ""}
+                    {quotation.quotation_customer_email
+                      ? `,${quotation.quotation_customer_email}`
+                      : ""}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm">
+                    <span className="font-semibold">Quotation No:</span>{" "}
+                    {quotation.quotation_no || ""}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-semibold">Ref:</span>{" "}
+                    {quotation.quotation_ref || ""}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-semibold">Date:</span>{" "}
+                    {quotation.quotation_date
+                      ? moment(quotation.quotation_date).format("DD-MM-YYYY")
+                      : ""}
+                  </p>
+                  {quotation.quotation_valid_date && (
+                    <p className="text-sm">
+                      <span className="font-semibold">Valid Until:</span>{" "}
+                      {/* {formatDate(quotation.quotation_valid_date)} */}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-sm mb-2">Dear Sir/Mam,</p>
+              <p className="text-sm mb-6">
+                Thank you for your valuable inquiry. We are pleased to quote as
+                below:
+              </p>
+
+              <table className="w-full border-collapse mb-6">
+                <thead>
+                  <tr className="border-b-2 border-black">
+                    <th className="text-left py-2 px-2 text-sm font-bold">
+                      SL
+                    </th>
+                    <th className="text-left py-2 px-2 text-sm font-bold">
+                      DESCRIPTION
+                    </th>
+                    <th className="text-right py-2 px-2 text-sm font-bold">
+                      PRICE
+                    </th>
+                    <th className="text-right py-2 px-2 text-sm font-bold">
+                      QTY
+                    </th>
+
+                    <th className="text-right py-2 px-2 text-sm font-bold">
+                      TOTAL
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {quotationSub?.map((item, index) => (
+                    <tr
+                      key={item.id || index}
+                      className="border-b border-gray-300"
+                    >
+                      <td className="py-3 px-2 text-sm align-top">
+                        {index + 1}
+                      </td>
+                      <td className="py-3 px-2 text-sm align-top">
+                        <div className="font-semibold">
+                          {item.quotationSub_heading || "N/A"}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {item.quotationSub_description}
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 text-sm text-right align-top">
+                        <div>{item.quotationSub_rate}</div>
+                      </td>
+                      <td className="py-3 px-2 text-sm text-right align-top">
+                        {item.quotationSub_qnty || "0"}
+                      </td>
+                      <td className="py-3 px-2 text-sm text-right align-top">
+                        {item.quotationSub_amount || "0"}{" "}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="flex justify-between mb-6">
+                <div>
+                  <div className="flex">
+                    <p className="font-bold text-sm mb-2">Amount In Words :</p>
+                    <p className="text-sm mb-2 ml-2">{amountInWords || ""}</p>
                   </div>
-                  <div className="sm:col-span-9 flex flex-col items-center justify-center text-center">
-                    <p></p>
-                    <h2 className="text-xl font-semibold mb-2">V3care</h2>
-                    <p className="font-bold text-sm">
-                      # 2296, 24th Main Road, 16th Cross, HSR Layout, Sector 1,
-                      Bangalore – 560 102
+                  <div className="mb-8">
+                    <p className="font-bold text-sm mb-2">
+                      Terms & Conditions:
+                    </p>
+                    <p className="text-xs mb-3">
+                      {quotation.quotation_payment_terms
+                        ?.split(".")
+                        .filter((line) => line.trim() !== "")
+                        .map((line, index) => (
+                          <span key={index} className="block">
+                            {index + 1}) {line.trim()}.
+                          </span>
+                        ))}
                     </p>
 
-                    <div className="flex items-center justify-between gap-6 text-sm mt-2">
-                      <p className="flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        9789865436
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        v3care@gmail.com
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Globe className="h-4 w-4" />
-                        <a
-                          href="https://v3care.in/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          v3care.in
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-blue-300 text-lg flex justify-center font-bold  border-y border-black ">
-                  <h1 className="my-2">Quotation</h1>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-11 gap-4 mt-2">
-                  <div className="sm:col-span-5  pr-4">
-                    <p className=" px-2">
-                      <span className="font-bold">Customer Name:</span>{" "}
-                      {quotation?.quotation_customer || ""}
+                    <p className="font-bold text-sm mb-2">Bank Details:</p>
+                    <p className="text-xs mb-1">{company.company_name || ""}</p>
+                    <p className="text-xs mb-1">
+                      A/C : {company.company_account_no || ""}
                     </p>
-                    <p className="px-2">
-                      {" "}
-                      <span className="font-bold">Phone:</span>{" "}
-                      {quotation?.quotation_customer_mobile || ""}
+                    <p className="text-xs mb-1">
+                      IFSC: {company.company_ifsc_code || ""}
                     </p>
                   </div>
-
-                  <div className="sm:col-span-6 pl-4">
-                    <p> {quotation?.quotation_customer_address || ""}</p>
-                  </div>
                 </div>
-
-                <div className="mt-2">
-                  <table className="w-full border-t border-black text-sm">
-                    <thead className="bg-blue-300">
-                      <tr className="border-b border-black">
-                        <th className="w-16 border-r border-black p-2 text-left">
-                          S. No
-                        </th>
-                        <th className="w-64 border-r border-black p-2 text-left">
-                          Description of Service
-                        </th>
-                        <th className="w-32 border-r border-black p-2 text-center">
-                          Rate
-                        </th>
-                        <th className="w-24 border-r border-black p-2 text-center">
-                          Quantity
-                        </th>
-
-                        <th className="w-32 p-2 text-center">Cost</th>
-                      </tr>
-                    </thead>
-
-                    <tbody className="text-[12px]">
-                      {quotationSub?.map((item, index) => (
-                        <tr className="border-b border-black">
-                          <td className="border-r border-black p-2 text-left">
-                            {index + 1}
-                          </td>
-                          <td className="border-r border-black p-2">
-                            {item?.quotationSub_heading ?? ""}
-                            <div>
-                              <span className="text-[10px]">
-                                {item?.quotationSub_description ?? ""}
-                              </span>
-                            </div>
-                          </td>
-
-                          <td className="border-r border-black p-2 text-end">
-                            {item?.quotationSub_rate ?? ""}
-                          </td>
-                          <td className="border-r border-black p-2 text-center">
-                            {item?.quotationSub_qnty ?? ""}
-                          </td>
-                          <td className="p-2 text-end">
-                            ₹ {item?.quotationSub_amount ?? ""}
-                          </td>
-                        </tr>
-                      ))}
-                      <tr>
-                        <td colSpan={3} className="p-2">
-                          <span className="font-bold">Amount in Words: </span>
-                          {amountInWords}
-                        </td>
-                        <td className="p-2 border-b border-black border-l text-end font-bold">
-                          Total
-                        </td>
-                        <td className="p-2 text-end font-bold border-b border-l border-black">
-                          ₹ {subTotal}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td colSpan={3} className="p-2">
-                          <h2 className="font-bold underline">
-                            Terms & Conditions:
-                          </h2>
-                          <p className="px-1">
-                            <span className="font-bold">**</span> All the
-                            Chemicals and Machines will be provided by Our
-                            Company.
-                          </p>
-                        </td>
-                        {/* <td className="p-2 border-l border-b border-black text-end font-bold">
-                          GST - 18%
-                        </td> */}
-                        {/* <td className="p-2 text-end border-l border-b border-black">
-                          2,700.00
-                        </td> */}
-                      </tr>
-
-                      <tr>
-                        <td colSpan={3} className="border-b border-black p-1">
-                          <p className="px-1">
-                            <span className="font-bold">**</span> 50% at the
-                            start of the work and Balance after completion of
-                            Service.
-                          </p>
-                        </td>
-                        <td className="p-2 text-end font-bold border-b  border-black">
-                          {/* Grand Total */}
-                        </td>
-                        <td className="p-2 text-end font-bold border-b  border-black">
-                          {/* 17,700.00 */}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 text-xs">
-                  <div className="p-2">
-                    <p className="font-bold underline">Bank Details :</p>
-                    <p>V3Care</p>
-                    <p>A/c No : 50200012354428</p>
-                    <p>IFSC CODE : HDFC0003758</p>
+                <div className="w-64 ml-auto">
+                  {/* TOTAL */}
+                  <div className="flex justify-between py-2 border-t-2 border-black">
+                    <span className="font-bold text-sm">TOTAL</span>
+                    <span className="font-bold text-sm">
+                      ₹ {subTotal.toFixed(2)}
+                    </span>
                   </div>
 
-                  <div className="relative flex flex-col items-center ml-16">
-                    <div className="absolute bottom-5 right-[4.5rem] text-center px-2 z-0">
-                      <h2 className="p-1">Your Truly,</h2>
-                      <h2 className="p-1 font-semibold ">V3care</h2>
-                    </div>
+                  <div className="flex justify-between py-1 text-sm">
+                    <span>CGST ({cgst}%)</span>
+                    <span>₹ {cgstAmount.toFixed(2)}</span>
+                  </div>
 
-                    <img
-                      src={stamplogo}
-                      alt="V3care"
-                      className="w-full max-w-[120px] h-auto relative z-10"
-                    />
+                  <div className="flex justify-between py-1 text-sm">
+                    <span>SGST ({sgst}%)</span>
+                    <span>₹ {sgstAmount.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex justify-between py-1 text-sm">
+                    <span>IGST ({igst}%)</span>
+                    <span>₹ {igstAmount.toFixed(2)}</span>
+                  </div>
+
+                  {/* GRAND TOTAL */}
+                  <div className="flex justify-between py-2 border-t border-black mt-1">
+                    <span className="font-bold text-sm">GRAND TOTAL</span>
+                    <span className="font-bold text-sm">
+                      ₹ {grandTotal.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
+
+              <div className="flex flex-col items-end mt-12 mb-4 text-right">
+                <p className="text-sm font-semibold mb-6">
+                  For, {company?.company_name || ""}
+                </p>
+                <div className="min-h-[120px]  flex justify-end items-center">
+                  {showLogo && (
+                    <img
+                      src={stamplogo}
+                      alt="Company Stamp"
+                      className="w-28 h-auto object-contain"
+                    />
+                  )}
+                </div>
+                <p className="text-xs font-medium tracking-wide">
+                  AUTHORIZED SIGNATURE
+                </p>
+              </div>
             </div>
-            <div className="page-break"></div>
-          </>
+          </div>
         </div>
       </div>
     </Layout>

@@ -20,7 +20,7 @@ import {
   Button,
 } from "@material-tailwind/react";
 import PageHeader from "../../components/common/PageHeader/PageHeader";
-import { OutlinedInput, TextareaAutosize } from "@mui/material";
+import { OutlinedInput, TextareaAutosize, TextField } from "@mui/material";
 const QuotationForm = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
@@ -41,6 +41,10 @@ const QuotationForm = () => {
     quotation_customer_alt_mobile: "",
     quotation_customer_email: "",
     quotation_customer_address: "",
+    quotation_payment_terms: "",
+    quotation_cgst: "0",
+    quotation_sgst: "0",
+    quotation_igst: "18",
     sub: [
       {
         id: "",
@@ -110,9 +114,13 @@ const QuotationForm = () => {
         quotation_customer_alt_mobile: booking.order_customer_alt_mobile || "",
         quotation_customer_email: booking.order_customer_email || "",
         quotation_customer_address: booking.order_address,
+        quotation_payment_terms: booking.quotation_payment_terms,
+        quotation_cgst: booking.quotation_cgst,
+        quotation_sgst: booking.quotation_sgst,
+        quotation_igst: booking.quotation_igst,
       }));
     } catch (err) {
-      toast.error("Failed to load booking");
+      toast.error("Failed to load quotation");
     }
   };
 
@@ -134,6 +142,10 @@ const QuotationForm = () => {
         quotation_customer_alt_mobile: data.quotation_customer_alt_mobile || "",
         quotation_customer_email: data.quotation_customer_email || "",
         quotation_customer_address: data.quotation_customer_address,
+        quotation_payment_terms: data.quotation_payment_terms,
+        quotation_cgst: data.quotation_cgst,
+        quotation_sgst: data.quotation_sgst,
+        quotation_igst: data.quotation_igst,
         sub: response?.data?.quotationSub || [],
       });
     } catch (err) {
@@ -143,6 +155,20 @@ const QuotationForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (
+      name === "quotation_customer_mobile" ||
+      name == "quotation_customer_alt_mobile"
+    ) {
+      if (!/^\d{0,10}$/.test(value)) return;
+    }
+    if (
+      name === "quotation_cgst" ||
+      name === "quotation_sgst" ||
+      name === "quotation_igst"
+    ) {
+      if (!/^\d*\.?\d{0,2}$/.test(value)) return;
+    }
+
     setFormData({ ...formData, [name]: value });
   };
 
@@ -204,6 +230,10 @@ const QuotationForm = () => {
       quotation_customer_alt_mobile: formData.quotation_customer_alt_mobile,
       quotation_customer_email: formData.quotation_customer_email,
       quotation_customer_address: formData.quotation_customer_address,
+      quotation_payment_terms: formData.quotation_payment_terms,
+      quotation_cgst: formData.quotation_cgst,
+      quotation_sgst: formData.quotation_sgst,
+      quotation_igst: formData.quotation_igst,
       sub: formData.sub.map((item) => ({
         id: item.id,
         quotationSub_heading: item.quotationSub_heading,
@@ -286,12 +316,8 @@ const QuotationForm = () => {
 
   return (
     <Layout>
-      <PageHeader title="Quotation Form" />
+      <PageHeader title={isEdit ? "Edit Quotation" : "Create Quotation"} />
       <div className="p-6 bg-white rounded shadow mt-4">
-        <h2 className="text-xl font-bold mb-4">
-          {isEdit ? "Edit Quotation" : "Create Quotation"}
-        </h2>
-
         <form
           onSubmit={handleSubmit}
           onKeyDown={(e) => {
@@ -300,57 +326,113 @@ const QuotationForm = () => {
             }
           }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Input
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4  gap-4 mb-6">
+            <TextField
               label="Quotation Date"
               type="date"
               name="quotation_date"
               value={formData.quotation_date}
               onChange={handleChange}
               required
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
             />
-            <Input
+
+            <TextField
               label="Order Ref"
               name="order_ref"
               value={formData.order_ref}
               disabled
-              labelProps={{
-                className: "!text-gray-600 ",
-              }}
               required
+              size="small"
+              fullWidth
             />
-            <Input
+
+            <TextField
               label="Customer Name"
               name="quotation_customer"
               value={formData.quotation_customer}
               onChange={handleChange}
               required
+              size="small"
+              fullWidth
             />
-            <Input
+
+            <TextField
               label="Mobile"
               name="quotation_customer_mobile"
               value={formData.quotation_customer_mobile}
               onChange={handleChange}
               required
+              size="small"
+              fullWidth
+              type="number"
+              min={0}
+              maxLength={10}
             />
-            <Input
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+            <TextField
               label="Alternative Mobile"
               name="quotation_customer_alt_mobile"
               value={formData.quotation_customer_alt_mobile}
               onChange={handleChange}
+              size="small"
+              fullWidth
             />
-            <Input
+
+            <TextField
               label="Email"
               name="quotation_customer_email"
               value={formData.quotation_customer_email}
               onChange={handleChange}
+              size="small"
+              fullWidth
             />
-            <div className="md:col-span-3">
+            <TextField
+              label="CGST"
+              name="quotation_cgst"
+              value={formData.quotation_cgst}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="SGST"
+              name="quotation_sgst"
+              value={formData.quotation_sgst}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="IGST"
+              name="quotation_igst"
+              value={formData.quotation_igst}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
               <Textarea
                 label="Address"
                 required
                 name="quotation_customer_address"
                 value={formData.quotation_customer_address}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Textarea
+                label="Payment Terms"
+                name="quotation_payment_terms"
+                value={formData.quotation_payment_terms}
                 onChange={handleChange}
               />
             </div>
