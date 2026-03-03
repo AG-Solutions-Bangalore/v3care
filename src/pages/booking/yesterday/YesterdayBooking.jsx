@@ -599,7 +599,7 @@ const YesterdayBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const confirmBy = tableMeta.rowData[24];
           const status = tableMeta.rowData[25];
-          const inspectionstatus = tableMeta.rowData[26];
+          const inspectionstatus = tableMeta.rowData[28];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
