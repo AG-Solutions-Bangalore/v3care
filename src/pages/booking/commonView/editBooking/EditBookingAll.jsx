@@ -1191,6 +1191,54 @@ const EditBookingAll = () => {
                             />
                           </div>
                         </div>
+                        {/* <div className="grid grid-cols-1 md:grid-cols-2  gap-4 mb-4"> */}
+                        {booking.order_vendor_id != null && (
+                          <>
+                            <div>
+                              <FormControl fullWidth>
+                                <InputLabel id="order_comm_received_by-label">
+                                  <span className="text-sm relative bottom-[6px]">
+                                    Amount Received By V3Care or Vendor
+                                  </span>
+                                </InputLabel>
+                                <Select
+                                  sx={{ height: "40px", borderRadius: "5px" }}
+                                  labelId="order_comm_received_by"
+                                  id="id"
+                                  name="order_comm_received_by"
+                                  value={booking.order_comm_received_by || ""}
+                                  onChange={onInputChange}
+                                  label="Select Commission received By"
+                                >
+                                  {CommissionBy.map((item) => (
+                                    <MenuItem
+                                      key={item.id}
+                                      value={String(item.value)}
+                                    >
+                                      {item.label}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </div>
+                            <div>
+                              {booking.order_comm_received_by == "Vendor" && (
+                                <Typography className="text-black">
+                                  <strong>To be Received :</strong>{" "}
+                                  {booking.order_comm ?? ""}
+                                </Typography>
+                              )}
+                              {booking.order_comm_received_by == "V3 Care" && (
+                                <Typography className="text-black">
+                                  <strong>To be Pay :</strong>
+                                  {(Number(booking.order_vendor_amount) || 0) -
+                                    (Number(booking.order_comm) || 0)}
+                                </Typography>
+                              )}
+                            </div>
+                          </>
+                        )}
+                        {/* </div> */}
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-4">
                         <div className="md:col-span-8">
@@ -1248,55 +1296,7 @@ const EditBookingAll = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                        {booking.order_vendor_id != null && (
-                          <>
-                            <div>
-                              <FormControl fullWidth>
-                                <InputLabel id="order_comm_received_by-label">
-                                  <span className="text-sm relative bottom-[6px]">
-                                    Select Commission received By
-                                  </span>
-                                </InputLabel>
-                                <Select
-                                  sx={{ height: "40px", borderRadius: "5px" }}
-                                  labelId="order_comm_received_by"
-                                  id="id"
-                                  name="order_comm_received_by"
-                                  value={booking.order_comm_received_by || ""}
-                                  onChange={onInputChange}
-                                  label="Select Commission received By"
-                                >
-                                  {CommissionBy.map((item) => (
-                                    <MenuItem
-                                      key={item.id}
-                                      value={String(item.value)}
-                                    >
-                                      {item.label}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            </div>
-                            <div>
-                              {booking.order_comm_received_by == "Vendor" && (
-                                <Typography className="text-black">
-                                  <strong>To be Received :</strong>{" "}
-                                  {booking.order_comm ?? ""}
-                                </Typography>
-                              )}
-                              {booking.order_comm_received_by == "V3 Care" && (
-                                <Typography className="text-black">
-                                  <strong>To be Pay :</strong>
-                                  {(Number(booking.order_vendor_amount) || 0) -
-                                    (Number(booking.order_comm) || 0)}
-                                </Typography>
-                              )}
-                            </div> 
-                            
-                          </>
-                        )}
-                      </div>
+
                       <div
                         className={`grid gap-4 ${
                           booking?.order_status === "Cancel"
@@ -1319,7 +1319,7 @@ const EditBookingAll = () => {
                           <div className="form-group">
                             <Textarea
                               fullWidth
-                              label="Postpone Reason"
+                              label="Cancel / Postpone Reason"
                               name="order_postpone_reason"
                               required
                               value={booking.order_postpone_reason}
