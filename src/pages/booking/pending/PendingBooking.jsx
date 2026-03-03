@@ -86,6 +86,7 @@ const PendingBooking = () => {
     setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
   };
+
   // const columns = [
   //   {
   //     name: "id",
@@ -94,24 +95,17 @@ const PendingBooking = () => {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (id, tableMeta) => {
-
-  //         const orderfollowup = tableMeta.rowData[29];
+  //         const status = tableMeta.rowData[23];
+  //         const orderfollowup = tableMeta.rowData[31];
   //         const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
   //         const booking = {
-  //           order_remarks: tableMeta.rowData[26],
-  //           order_comment: tableMeta.rowData[27],
-  //           order_postpone_reason: tableMeta.rowData[28],
+  //           order_remarks: tableMeta.rowData[28],
+  //           order_comment: tableMeta.rowData[29],
+  //           order_postpone_reason: tableMeta.rowData[30],
   //         };
   //         return (
   //           <div className="flex items-center space-x-2">
-  //             {userType !== "4" && (
-  //               <CiSquarePlus
-  //               onClick={(e) => handleEdit(e, id)}
-  //                 title="Edit Booking"
-  //                 className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
-  //               />
-  //             )}
   //             <ClipboardList
   //               title="Follow Up"
   //               onClick={(e) => handleFollowModal(e, orderfollowup)}
@@ -125,6 +119,7 @@ const PendingBooking = () => {
   //       },
   //     },
   //   },
+  //   // ... rest of your columns remain the same
   //   //1
   //   {
   //     name: "booking_service_date",
@@ -153,19 +148,21 @@ const PendingBooking = () => {
   //       sort: false,
   //       customBodyRender: (order_ref, tableMeta) => {
   //         const branchName = tableMeta.rowData[4];
-  //         const bookTime = tableMeta.rowData[24];
+  //         const bookTime = tableMeta.rowData[26];
+
   //         return (
   //           <div className="flex flex-col w-32">
   //             <span>{order_ref}</span>
   //             <span>{branchName}</span>
   //             <span>{bookTime}</span>
+  //             {/* <span>{areaDisplay}</span> */}
   //           </div>
   //         );
   //       },
   //     },
   //   },
-  //    //3
-  //    {
+  //   //3
+  //   {
   //     name: "customer_mobile",
   //     label: "Customer/Mobile",
   //     options: {
@@ -183,8 +180,8 @@ const PendingBooking = () => {
   //       },
   //     },
   //   },
+  //   // ... rest of columns (same as before)
   //   //4
-
   //   {
   //     name: "branch_name",
   //     label: "Branch",
@@ -288,16 +285,17 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //    //12
-  //    {
+  //   //12
+  //   {
   //     name: "order_time",
-  //     label: "Time/Area",
+  //     label: "Time/Km/Area",
   //     options: {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (value, tableMeta) => {
-  //         const locality = tableMeta.rowData[31];
-  //         const subLocality = tableMeta.rowData[32];
+  //         const km = tableMeta.rowData[38];
+  //         const locality = tableMeta.rowData[33];
+  //         const subLocality = tableMeta.rowData[34];
 
   //         let areaDisplay = "";
   //         if (locality && subLocality) {
@@ -309,46 +307,67 @@ const PendingBooking = () => {
   //         } else {
   //           areaDisplay = "N/A";
   //         }
-
   //         return (
-  //           <div className="flex flex-col w-32">
-  //             <span>{value}</span>
-  //             <span style={{ fontSize: "12px" }}>{areaDisplay}</span>
+  //           <div className="w-32">
+  //             <div className="text-sm break-words">{value || "N/A"}</div>
+  //             <div className="text-xs text-gray-800 ">Km :{km ? km : 0}</div>
+  //             <div className="text-xs text-gray-500 ">{areaDisplay}</div>
   //           </div>
   //         );
   //       },
   //     },
   //   },
   //   //13
+
   //   {
-  //     name: "service_price",
-  //     label: "Service/Price",
+  //     name: "service_data",
+  //     label: "Service",
   //     options: {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (value, tableMeta) => {
   //         const service = tableMeta.rowData[9];
-  //         const price = tableMeta.rowData[10];
   //         const customeDetails = tableMeta.rowData[11];
   //         if (service == "Custom") {
   //           return (
   //             <div className="flex flex-col w-32">
   //               <span>{customeDetails}</span>
-  //               <span>{price}</span>
   //             </div>
   //           );
   //         }
   //         return (
   //           <div className=" flex flex-col w-32">
   //             <span>{service}</span>
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //   },
+  //   //14
+  //   {
+  //     name: "service_price",
+  //     label: "Total Amount",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //       customBodyRender: (value, tableMeta) => {
+  //         const price = tableMeta.rowData[10];
+
+  //         // const advance_amount = tableMeta.rowData[35];
+  //         // const dis_amount = tableMeta.rowData[36];
+  //         return (
+  //           <div className=" flex flex-col">
+  //             {/* <span>{service}</span> */}
   //             <span>{price}</span>
+  //             {/* <span>Advance : {advance_amount}</span>
+  //               <span>Discount : {dis_amount}</span> */}
   //           </div>
   //         );
   //       },
   //     },
   //   },
 
-  //   //14
+  //   //15
   //   {
   //     name: "order_assign",
   //     label: "Order Assign",
@@ -359,55 +378,30 @@ const PendingBooking = () => {
   //       viewColumns: false,
   //     },
   //   },
-  //   //15
+  //   //16
   //   {
   //     name: "amount_type",
-  //     label: "Paid Amount/Type",
+  //     label: "Received Amount",
   //     options: {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (value, tableMeta) => {
-  //         const type = tableMeta.rowData[20];
-  //         const paid_amount = tableMeta.rowData[19];
-
+  //         // const type = tableMeta.rowData[22];
+  //         const paid_amount = tableMeta.rowData[21];
+  //         const price = tableMeta.rowData[10];
+  //         const advance_amount = tableMeta.rowData[36];
+  //         const dis_amount = tableMeta.rowData[37];
+  //         const balance =
+  //           Number(price) -
+  //           Number(advance_amount) -
+  //           Number(dis_amount) -
+  //           Number(paid_amount);
+  //         const receivedamount = Number(paid_amount) + Number(advance_amount);
   //         return (
   //           <div className=" flex flex-col w-32">
-  //             <span>{paid_amount}</span>
-  //             <span>{type}</span>
-  //           </div>
-  //         );
-  //       },
-  //     },
-  //   },
-  //    //16
-  //    {
-  //     name: "confirm/status/inspection status",
-  //     label: "Confirm By/Status/Inspection Status",
-  //     options: {
-  //       filter: false,
-  //       sort: false,
-  //       setCellProps: () => ({
-  //         style: {
-  //           minWidth: "150px", // minimum width
-  //           maxWidth: "200px", // optional maximum
-  //           width: "180px", // fixed width
-  //         },
-  //       }),
-  //       customBodyRender: (value, tableMeta) => {
-  //         const confirmBy = tableMeta.rowData[21];
-  //         const status = tableMeta.rowData[22];
-  //         const inspectionstatus = tableMeta.rowData[25];
-  //         return (
-  //           <div className=" flex flex-col ">
-  //             <span>{confirmBy}</span>
-  //             <span>{status}</span>
-  //             <td className="flex  items-center">
-  //               {status === "Inspection" && (
-  //                 <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
-  //                   {inspectionstatus}
-  //                 </span>
-  //               )}
-  //             </td>
+  //             <span>{receivedamount ? receivedamount : "0"}</span>
+  //             {/* <span>{type}</span> */}
+  //             {/* <span>Balance : {balance ? balance : "0"}</span> */}
   //           </div>
   //         );
   //       },
@@ -415,16 +409,41 @@ const PendingBooking = () => {
   //   },
   //   //17
   //   {
+  //     name: "amount_type",
+  //     label: "Balance Amount",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //       customBodyRender: (value, tableMeta) => {
+  //         const paid_amount = tableMeta.rowData[21];
+  //         const price = tableMeta.rowData[10];
+  //         const advance_amount = tableMeta.rowData[36];
+  //         const dis_amount = tableMeta.rowData[37];
+  //         const balance =
+  //           Number(price) -
+  //           Number(advance_amount) -
+  //           Number(dis_amount) -
+  //           Number(paid_amount);
+  //         return (
+  //           <div className=" flex flex-col">
+  //             <span> {balance ? balance : "0"}</span>
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //   },
+  //   //18
+  //   {
   //     name: "order_no_assign",
   //     label: "No of Assign",
   //     options: {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (value, tableMeta) => {
-  //         const orderAssign = tableMeta.rowData[14];
+  //         const orderAssign = tableMeta.rowData[15];
 
   //         const activeAssignments = orderAssign.filter(
-  //           (assign) => assign.order_assign_status !== "Cancel"
+  //           (assign) => assign.order_assign_status !== "Cancel",
   //         );
   //         const count = activeAssignments.length;
 
@@ -446,7 +465,7 @@ const PendingBooking = () => {
   //       },
   //     },
   //   },
-  //   // 18
+  //   //19
   //   {
   //     name: "assignment_details",
   //     label: "Assign Details",
@@ -454,10 +473,10 @@ const PendingBooking = () => {
   //       filter: false,
   //       sort: false,
   //       customBodyRender: (value, tableMeta) => {
-  //         const orderAssign = tableMeta.rowData[14];
+  //         const orderAssign = tableMeta.rowData[15];
 
   //         const activeAssignments = orderAssign.filter(
-  //           (assign) => assign.order_assign_status !== "Cancel"
+  //           (assign) => assign.order_assign_status !== "Cancel",
   //         );
 
   //         if (activeAssignments.length === 0) {
@@ -482,7 +501,41 @@ const PendingBooking = () => {
   //       },
   //     },
   //   },
-  //   //19
+  //   //20
+  //   {
+  //     name: "confirm/status/inspection status",
+  //     label: "Confirm By/Status/Inspection Status",
+  //     options: {
+  //       filter: false,
+  //       sort: false,
+  //       setCellProps: () => ({
+  //         style: {
+  //           minWidth: "150px",
+  //           maxWidth: "200px",
+  //           width: "180px",
+  //         },
+  //       }),
+  //       customBodyRender: (value, tableMeta) => {
+  //         const confirmBy = tableMeta.rowData[23];
+  //         const status = tableMeta.rowData[24];
+  //         const inspectionstatus = tableMeta.rowData[27];
+  //         return (
+  //           <div className=" flex flex-col ">
+  //             <span>{confirmBy}</span>
+  //             <span>{status}</span>
+  //             <td className="flex  items-center">
+  //               {status === "Inspection" && (
+  //                 <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-green-800">
+  //                   {inspectionstatus}
+  //                 </span>
+  //               )}
+  //             </td>
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //   },
+  //   //21
   //   {
   //     name: "order_payment_amount",
   //     label: "Amount",
@@ -494,7 +547,7 @@ const PendingBooking = () => {
   //       sort: true,
   //     },
   //   },
-  //   //20
+  //   //22
   //   {
   //     name: "order_payment_type",
   //     label: "Type",
@@ -507,7 +560,7 @@ const PendingBooking = () => {
   //     },
   //   },
 
-  //   //21
+  //   //23
   //   {
   //     name: "updated_by",
   //     label: "Confirm By",
@@ -519,7 +572,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //22
+  //   //24
   //   {
   //     name: "order_status",
   //     label: "Status",
@@ -532,7 +585,7 @@ const PendingBooking = () => {
   //     },
   //   },
 
-  //   //23
+  //   //25
   //   {
   //     name: "order_address",
   //     label: "Address",
@@ -544,7 +597,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //24
+  //   //26
   //   {
   //     name: "order_booking_time",
   //     label: "Book Time",
@@ -556,7 +609,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //25
+  //   //27
   //   {
   //     name: "order_inspection_status",
   //     label: "Inspection Status",
@@ -568,7 +621,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //26
+  //   //28
   //   {
   //     name: "order_remarks",
   //     label: "Remarks",
@@ -580,7 +633,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //27
+  //   //29
   //   {
   //     name: "order_comment",
   //     label: "Comment",
@@ -592,7 +645,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //28
+  //   //30
   //   {
   //     name: "order_postpone_reason",
   //     label: "Reason",
@@ -604,7 +657,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //29
+  //   //31
   //   {
   //     name: "order_followup",
   //     label: "Followup",
@@ -616,7 +669,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //30
+  //   //32
   //   {
   //     name: "order_area",
   //     label: "Order Area",
@@ -628,7 +681,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //    //31 - order_locality
+  //   //33
   //   {
   //     name: "order_locality",
   //     label: "Locality",
@@ -640,7 +693,7 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
-  //   //32 - order_sub_locality
+  //   //34
   //   {
   //     name: "order_sub_locality",
   //     label: "Sub Locality",
@@ -652,7 +705,56 @@ const PendingBooking = () => {
   //       sort: false,
   //     },
   //   },
+  //   //35
+  //   {
+  //     name: "order_sub_locality",
+  //     label: "Sub Locality",
+  //     options: {
+  //       filter: true,
+  //       display: "exclude",
+  //       viewColumns: false,
+  //       searchable: true,
+  //       sort: false,
+  //     },
+  //   },
+  //   //36
+  //   {
+  //     name: "order_advance",
+  //     label: "Advance",
+  //     options: {
+  //       filter: true,
+  //       display: "exclude",
+  //       viewColumns: false,
+  //       searchable: true,
+  //       sort: false,
+  //     },
+  //   },
+  //   //37
+  //   {
+  //     name: "order_discount",
+  //     label: "Discount",
+  //     options: {
+  //       filter: true,
+  //       display: "exclude",
+  //       viewColumns: false,
+  //       searchable: true,
+  //       sort: false,
+  //     },
+  //   },
+  //   //38
+  //   {
+  //     name: "order_km",
+  //     label: "Km",
+  //     options: {
+  //       filter: true,
+  //       display: "exclude",
+  //       viewColumns: false,
+  //       searchable: true,
+  //       sort: false,
+  //     },
+  //   },
   // ];
+
   const columns = [
     {
       name: "id",
@@ -666,9 +768,9 @@ const PendingBooking = () => {
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
           const booking = {
-            order_remarks: tableMeta.rowData[28],
-            order_comment: tableMeta.rowData[29],
-            order_postpone_reason: tableMeta.rowData[30],
+            order_remarks: tableMeta.rowData[29],
+            order_comment: tableMeta.rowData[30],
+            order_postpone_reason: tableMeta.rowData[31],
           };
           return (
             <div className="flex items-center space-x-2">
@@ -714,7 +816,7 @@ const PendingBooking = () => {
         sort: false,
         customBodyRender: (order_ref, tableMeta) => {
           const branchName = tableMeta.rowData[4];
-          const bookTime = tableMeta.rowData[26];
+          const bookTime = tableMeta.rowData[27];
 
           return (
             <div className="flex flex-col w-32">
@@ -859,9 +961,9 @@ const PendingBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const km = tableMeta.rowData[38];
-          const locality = tableMeta.rowData[33];
-          const subLocality = tableMeta.rowData[34];
+          const km = tableMeta.rowData[39];
+          const locality = tableMeta.rowData[34];
+          const subLocality = tableMeta.rowData[35];
 
           let areaDisplay = "";
           if (locality && subLocality) {
@@ -953,10 +1055,10 @@ const PendingBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           // const type = tableMeta.rowData[22];
-          const paid_amount = tableMeta.rowData[21];
+          const paid_amount = tableMeta.rowData[22];
           const price = tableMeta.rowData[10];
-          const advance_amount = tableMeta.rowData[36];
-          const dis_amount = tableMeta.rowData[37];
+          const advance_amount = tableMeta.rowData[37];
+          const dis_amount = tableMeta.rowData[38];
           const balance =
             Number(price) -
             Number(advance_amount) -
@@ -964,7 +1066,7 @@ const PendingBooking = () => {
             Number(paid_amount);
           const receivedamount = Number(paid_amount) + Number(advance_amount);
           return (
-            <div className=" flex flex-col w-32">
+            <div className=" flex flex-col">
               <span>{receivedamount ? receivedamount : "0"}</span>
               {/* <span>{type}</span> */}
               {/* <span>Balance : {balance ? balance : "0"}</span> */}
@@ -981,10 +1083,10 @@ const PendingBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const paid_amount = tableMeta.rowData[21];
+          const paid_amount = tableMeta.rowData[22];
           const price = tableMeta.rowData[10];
-          const advance_amount = tableMeta.rowData[36];
-          const dis_amount = tableMeta.rowData[37];
+          const advance_amount = tableMeta.rowData[37];
+          const dis_amount = tableMeta.rowData[38];
           const balance =
             Number(price) -
             Number(advance_amount) -
@@ -1069,6 +1171,42 @@ const PendingBooking = () => {
     },
     //20
     {
+      name: "time",
+      label: "Start/End Time",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const orderAssign = tableMeta.rowData[15] || [];
+
+          const activeAssignments = orderAssign.filter(
+            (assign) => assign.order_assign_status !== "Cancel",
+          );
+
+          if (activeAssignments.length === 0) {
+            return <span>-</span>;
+          }
+
+          const assignment = activeAssignments[0];
+
+          return (
+            <div className="w-28 text-xs space-y-1 leading-tight">
+              <div>
+                <span className="font-medium">Start:</span>{" "}
+                {assignment.order_start_time}
+              </div>
+
+              <div>
+                <span className="font-medium">End:</span>{" "}
+                {assignment.order_end_time}
+              </div>
+            </div>
+          );
+        },
+      },
+    },
+    //21
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -1082,9 +1220,9 @@ const PendingBooking = () => {
           },
         }),
         customBodyRender: (value, tableMeta) => {
-          const confirmBy = tableMeta.rowData[23];
-          const status = tableMeta.rowData[24];
-          const inspectionstatus = tableMeta.rowData[27];
+          const confirmBy = tableMeta.rowData[24];
+          const status = tableMeta.rowData[25];
+          const inspectionstatus = tableMeta.rowData[28];
           return (
             <div className=" flex flex-col ">
               <span>{confirmBy}</span>
@@ -1101,7 +1239,7 @@ const PendingBooking = () => {
         },
       },
     },
-    //21
+    //22
     {
       name: "order_payment_amount",
       label: "Amount",
@@ -1113,7 +1251,7 @@ const PendingBooking = () => {
         sort: true,
       },
     },
-    //22
+    //23
     {
       name: "order_payment_type",
       label: "Type",
@@ -1126,7 +1264,7 @@ const PendingBooking = () => {
       },
     },
 
-    //23
+    //24
     {
       name: "updated_by",
       label: "Confirm By",
@@ -1138,7 +1276,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //24
+    //25
     {
       name: "order_status",
       label: "Status",
@@ -1151,7 +1289,7 @@ const PendingBooking = () => {
       },
     },
 
-    //25
+    //26
     {
       name: "order_address",
       label: "Address",
@@ -1163,7 +1301,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //26
+    //27
     {
       name: "order_booking_time",
       label: "Book Time",
@@ -1175,7 +1313,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //27
+    //28
     {
       name: "order_inspection_status",
       label: "Inspection Status",
@@ -1187,7 +1325,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //28
+    //29
     {
       name: "order_remarks",
       label: "Remarks",
@@ -1199,7 +1337,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //29
+    //30
     {
       name: "order_comment",
       label: "Comment",
@@ -1211,7 +1349,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //30
+    //31
     {
       name: "order_postpone_reason",
       label: "Reason",
@@ -1223,7 +1361,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //31
+    //32
     {
       name: "order_followup",
       label: "Followup",
@@ -1235,7 +1373,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //32
+    //33
     {
       name: "order_area",
       label: "Order Area",
@@ -1247,22 +1385,10 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //33
+    //34
     {
       name: "order_locality",
       label: "Locality",
-      options: {
-        filter: true,
-        display: "exclude",
-        viewColumns: false,
-        searchable: true,
-        sort: false,
-      },
-    },
-    //34
-    {
-      name: "order_sub_locality",
-      label: "Sub Locality",
       options: {
         filter: true,
         display: "exclude",
@@ -1285,6 +1411,18 @@ const PendingBooking = () => {
     },
     //36
     {
+      name: "order_sub_locality",
+      label: "Sub Locality",
+      options: {
+        filter: true,
+        display: "exclude",
+        viewColumns: false,
+        searchable: true,
+        sort: false,
+      },
+    },
+    //37
+    {
       name: "order_advance",
       label: "Advance",
       options: {
@@ -1295,7 +1433,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //37
+    //38
     {
       name: "order_discount",
       label: "Discount",
@@ -1307,7 +1445,7 @@ const PendingBooking = () => {
         sort: false,
       },
     },
-    //38
+    //39
     {
       name: "order_km",
       label: "Km",
