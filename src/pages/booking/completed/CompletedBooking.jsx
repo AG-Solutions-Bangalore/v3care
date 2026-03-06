@@ -376,7 +376,7 @@ const CompletedBooking = () => {
         filter: false,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          // const type = tableMeta.rowData[22];
+          const type = tableMeta.rowData[23];
           const paid_amount = tableMeta.rowData[22];
           const price = tableMeta.rowData[10];
           const advance_amount = tableMeta.rowData[37];
@@ -390,7 +390,7 @@ const CompletedBooking = () => {
           return (
             <div className=" flex flex-col">
               <span>{receivedamount ? receivedamount : "0"}</span>
-              {/* <span>{type}</span> */}
+              <span className="text-xs text-gray-800">{type}</span>
               {/* <span>Balance : {balance ? balance : "0"}</span> */}
             </div>
           );

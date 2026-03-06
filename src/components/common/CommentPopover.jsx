@@ -65,7 +65,7 @@ const CommentPopover = ({ booking }) => {
             </div>
 
             <div>
-              <h4 className="font-semibold text-blue-900">Postpone Reason</h4>
+              <h4 className="font-semibold text-blue-900">Cancel / Postpone Reason</h4>
               <p className="text-gray-700 mt-1 bg-gray-100 px-2 py-1 rounded-md whitespace-pre-line">
                 {postpone || "N/A"}
               </p>

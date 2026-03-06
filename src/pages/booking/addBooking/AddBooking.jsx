@@ -147,7 +147,7 @@ const AddBooking = () => {
 
     fetch(
       `${BASE_URL}/api/panel-fetch-service-sub/${booking.order_service}`,
-      requestOptions
+      requestOptions,
     )
       .then((response) => response.json())
       .then((data) => setSerDataSub(data.servicesub))
@@ -268,7 +268,17 @@ const AddBooking = () => {
       return false;
     }
   };
+  const onInputChangeLocality = (e) => {
+    const { name, value } = e.target;
 
+    if (name === "localityBook") {
+      setLocalityBook(value);
+    }
+
+    if (name === "localitySubBook") {
+      setLocalitySubBook(value);
+    }
+  };
   const onInputChange = (e) => {
     if (e.target.name == "order_customer_mobile") {
       if (validateOnlyDigits(e.target.value)) {
@@ -344,7 +354,7 @@ const AddBooking = () => {
       autoCompleteRef.current,
       {
         componentRestrictions: { country: "IN" },
-      }
+      },
     );
 
     autoComplete.addListener("place_changed", () => {
@@ -629,7 +639,7 @@ const AddBooking = () => {
                     name="order_service"
                     value={booking.order_service}
                     onChange={(e) => {
-                      onInputChange(e), HalfA(e);
+                      (onInputChange(e), HalfA(e));
                     }}
                     label="Service *"
                     required
@@ -671,7 +681,7 @@ const AddBooking = () => {
                       name="order_service_sub"
                       value={booking.order_service_sub}
                       onChange={(e) => {
-                        onInputChange(e), HalfB(e);
+                        (onInputChange(e), HalfB(e));
                       }}
                       label="Service Sub *"
                       required
@@ -716,7 +726,7 @@ const AddBooking = () => {
                       name="order_service_price_for"
                       value={booking.order_service_price_for}
                       onChange={(e) => {
-                        onInputChange(e), HalfC(e);
+                        (onInputChange(e), HalfC(e));
                       }}
                       label="Price For *"
                       required
@@ -794,23 +804,23 @@ const AddBooking = () => {
               </div>
 
               <div className="relative">
-  <Input
-    type="time"
-    label="Time Slot"
-    required
-    id="order_time"
-    name="order_time"
-    value={booking.order_time}
-    onChange={(e) => onInputChange(e)}
-    className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
+                <Input
+                  type="time"
+                  label="Time Slot"
+                  required
+                  id="order_time"
+                  name="order_time"
+                  value={booking.order_time}
+                  onChange={(e) => onInputChange(e)}
+                  className="h-[40px] [&::-webkit-calendar-picker-indicator]:bg-gray-300 
                [&::-webkit-calendar-picker-indicator]:p-2 
                [&::-webkit-calendar-picker-indicator]:rounded 
                hover:[&::-webkit-calendar-picker-indicator]:bg-gray-400"
-    labelProps={{
-      className: "text-sm"
-    }}
-  />
-</div>
+                  labelProps={{
+                    className: "text-sm",
+                  }}
+                />
+              </div>
               <div>
                 <Fields
                   types="number"
@@ -842,6 +852,33 @@ const AddBooking = () => {
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search Place"
                   value={query}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-5">
+              <div>
+                <Fields
+                  types="text"
+                  title="Locality"
+                  type="textField"
+                  autoComplete="off"
+                  name="localityBook"
+                  maxLength={80}
+                  value={localityBook}
+                  onChange={onInputChangeLocality}
+                />
+              </div>
+
+              <div>
+                <Fields
+                  types="text"
+                  title="Sub Locality"
+                  type="textField"
+                  autoComplete="off"
+                  name="localitySubBook"
+                  maxLength={80}
+                  value={localitySubBook}
+                  onChange={onInputChangeLocality}
                 />
               </div>
             </div>

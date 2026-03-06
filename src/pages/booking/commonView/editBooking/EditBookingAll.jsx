@@ -108,6 +108,8 @@ const EditBookingAll = () => {
     order_postpone_reason: "",
     order_vendor_id: "",
     order_comm_received_by: "",
+    order_locality: "",
+    order_sub_locality: "",
     order_amount: 0,
   });
 
@@ -415,6 +417,8 @@ const EditBookingAll = () => {
       order_discount: booking.order_discount,
       order_postpone_reason: booking.order_postpone_reason,
       order_comm_received_by: booking.order_comm_received_by,
+      order_locality: booking.order_locality,
+      order_sub_locality: booking.order_sub_locality,
       order_vendor_amount: booking.order_vendor_amount,
       order_comm: booking.order_comm,
       order_comm_percentage: booking.order_comm_percentage,
@@ -869,6 +873,22 @@ const EditBookingAll = () => {
                                 e.preventDefault();
                               }
                             }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <Input
+                            label="Locality"
+                            name="order_locality"
+                            value={booking.order_locality}
+                            onChange={(e) => onInputChange(e)}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <Input
+                            label="Sub Locality"
+                            name="order_sub_locality"
+                            value={booking.order_sub_locality}
+                            onChange={(e) => onInputChange(e)}
                           />
                         </div>
                       </div>

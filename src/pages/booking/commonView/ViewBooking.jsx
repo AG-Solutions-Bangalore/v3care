@@ -3,8 +3,16 @@ import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../layout/Layout";
-
+// import {
+//   Dialog,
+//   DialogTitle,
+//   DialogContent,
+//   DialogContentText,
+//   DialogActions,
+//   Button,
+// } from "@mui/material";
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -19,7 +27,13 @@ import BookingFilter from "../../../components/BookingFilter";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 
-import { Dialog, DialogActions, DialogContent } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import ButtonConfigColor from "../../../components/common/ButtonConfig/ButtonConfigColor";
 import LoaderComponent from "../../../components/common/LoaderComponent";
@@ -41,6 +55,7 @@ const ViewBooking = () => {
     order_followup_date: moment().format("YYYY-MM-DD"),
     order_followup_description: "",
   });
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onInputChange1 = (e) => {
@@ -106,7 +121,28 @@ const ViewBooking = () => {
       toast.error(res.data?.msg || "Network Error");
     }
   };
+  const removeAssign = async () => {
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/panel-remove-booking-assign/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("tokend")}`,
+          },
+        },
+      );
 
+      if (res.data.code === "200") {
+        toast.success(res.data?.message || "Booking Assign Removed Successfully");
+        setOpenRemoveDialog(false);
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Network Error");
+    }
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -401,6 +437,19 @@ const ViewBooking = () => {
                 onClick={() => navigate(`/add-booking-reassign/${id}`)}
               />
             )}
+            {![
+              "Pending",
+              "Inspection",
+              "Completed",
+              "RNR",
+              "Confirmed",
+            ].includes(booking.order_status) && (
+              <ButtonConfigColor
+                type="create"
+                label="Remove Assign"
+                onClick={() => setOpenRemoveDialog(true)}
+              />
+            )}
           </span>
         }
       />
@@ -667,6 +716,34 @@ const ViewBooking = () => {
               onClick={(e) => onSubmitFollowup(e)}
             />
           </div>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openRemoveDialog}
+        onClose={() => setOpenRemoveDialog(false)}
+        size="lg"
+      >
+        <DialogTitle>Remove Assign</DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            Do you want to remove this assigned people?
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <ButtonConfigColor
+            type="back"
+            buttontype="button"
+            label="Close"
+            onClick={() => setOpenRemoveDialog(false)}
+          />
+          <ButtonConfigColor
+            type="submit"
+            buttontype="submit"
+            label="Yes Remove"
+            onClick={removeAssign}
+          />
         </DialogActions>
       </Dialog>
     </Layout>
