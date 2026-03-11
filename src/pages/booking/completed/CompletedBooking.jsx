@@ -13,6 +13,7 @@ import LoaderComponent from "../../../components/common/LoaderComponent";
 import Layout from "../../../layout/Layout";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import { TextField } from "@mui/material";
 
 const CompletedBooking = () => {
   const [CompletedBookData, setCompletedBookData] = useState(null);
@@ -27,6 +28,8 @@ const CompletedBooking = () => {
   const pageParam = searchParams.get("page");
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -57,6 +60,7 @@ const CompletedBooking = () => {
         );
 
         setCompletedBookData(response.data?.booking);
+        setFilteredBookingData(response.data?.booking);
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       } finally {
@@ -76,6 +80,43 @@ const CompletedBooking = () => {
     e.stopPropagation();
     setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
+  };
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    localStorage.setItem("filteredCompletedDate", date);
+
+    if (date) {
+      const filteredData = CompletedBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(CompletedBookData);
+    }
+  };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredCompletedDate");
+
+    if (storedDate && CompletedBookData) {
+      const filteredData = CompletedBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(CompletedBookData);
+    }
+  }, [CompletedBookData]);
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(CompletedBookData);
+    localStorage.removeItem("filteredCompletedDate");
   };
   const columns = [
     {
@@ -200,7 +241,7 @@ const CompletedBooking = () => {
       name: "order_customer_mobile",
       label: "Mobile",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -213,7 +254,7 @@ const CompletedBooking = () => {
       name: "order_date",
       label: "Booking Date",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         display: "exclude",
         viewColumns: false,
@@ -228,7 +269,7 @@ const CompletedBooking = () => {
       name: "order_service_date",
       label: "Service Date",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         display: "exclude",
         viewColumns: false,
@@ -286,6 +327,7 @@ const CompletedBooking = () => {
           const km = tableMeta.rowData[39];
           const locality = tableMeta.rowData[34];
           const subLocality = tableMeta.rowData[35];
+          const address = tableMeta.rowData[26];
 
           let areaDisplay = "";
           if (locality && subLocality) {
@@ -297,11 +339,17 @@ const CompletedBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
+
+          const shortAddress =
+            address && address.length > 50
+              ? address.slice(0, 50) + "..."
+              : address || "N/A";
           return (
             <div className="w-32">
               <div className="text-sm break-words">{value || "N/A"}</div>
               <div className="text-xs text-gray-800 ">Km :{km ? km : 0}</div>
               <div className="text-xs text-gray-500 ">{areaDisplay}</div>
+              <div className="text-xs text-gray-800 ">{shortAddress}</div>
             </div>
           );
         },
@@ -603,7 +651,7 @@ const CompletedBooking = () => {
       name: "order_status",
       label: "Status",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -616,7 +664,7 @@ const CompletedBooking = () => {
       name: "order_address",
       label: "Address",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -628,7 +676,7 @@ const CompletedBooking = () => {
       name: "order_booking_time",
       label: "Book Time",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -652,7 +700,7 @@ const CompletedBooking = () => {
       name: "order_remarks",
       label: "Remarks",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -664,7 +712,7 @@ const CompletedBooking = () => {
       name: "order_comment",
       label: "Comment",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -676,7 +724,7 @@ const CompletedBooking = () => {
       name: "order_postpone_reason",
       label: "Reason",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -688,7 +736,7 @@ const CompletedBooking = () => {
       name: "order_followup",
       label: "Followup",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -736,7 +784,7 @@ const CompletedBooking = () => {
       name: "order_sub_locality",
       label: "Sub Locality",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -772,7 +820,7 @@ const CompletedBooking = () => {
       name: "order_km",
       label: "Km",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -788,7 +836,7 @@ const CompletedBooking = () => {
     download: false,
     print: false,
 
-    count: CompletedBookData?.length || 0,
+    count: filteredBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -796,7 +844,7 @@ const CompletedBooking = () => {
       navigate(`/completed?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = CompletedBookData[rowMeta.dataIndex].id;
+      const id = filteredBookingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
     setRowProps: () => {
@@ -806,6 +854,30 @@ const CompletedBooking = () => {
           cursor: "pointer",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate || ""}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
+        </>
+      );
     },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
@@ -846,7 +918,7 @@ const CompletedBooking = () => {
         <div className="mt-1">
           <MUIDataTable
             title={"Completed Booking List"}
-            data={CompletedBookData ? CompletedBookData : []}
+            data={filteredBookingData ? filteredBookingData : []}
             columns={columns}
             options={options}
           />
