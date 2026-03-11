@@ -15,6 +15,7 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import { TextField } from "@mui/material";
 const RnrList = () => {
   const [pendingBookData, setPendingBookData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,8 @@ const RnrList = () => {
   const [followupdata, setFollowUpData] = useState("");
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -56,7 +58,7 @@ const RnrList = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setPendingBookData(response.data?.booking);
@@ -86,6 +88,43 @@ const RnrList = () => {
     setFollowUpData(ref);
     setOpenFollowModal(true);
   };
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    localStorage.setItem("filteredrnrDate", date);
+
+    if (date) {
+      const filteredData = pendingBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(pendingBookData);
+    }
+  };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredrnrDate");
+
+    if (storedDate && pendingBookData) {
+      const filteredData = pendingBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(pendingBookData);
+    }
+  }, [pendingBookData]);
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(pendingBookData);
+    localStorage.removeItem("filteredrnrDate");
+  };
   const columns = [
     {
       name: "id",
@@ -94,7 +133,6 @@ const RnrList = () => {
         filter: false,
         sort: false,
         customBodyRender: (id, tableMeta) => {
-    
           const orderfollowup = tableMeta.rowData[29];
           const noFollowup = !orderfollowup || orderfollowup.length === 0;
 
@@ -107,7 +145,7 @@ const RnrList = () => {
             <div className="flex items-center space-x-2">
               {userType !== "4" && (
                 <CiSquarePlus
-                onClick={(e) => handleEdit(e, id)}
+                  onClick={(e) => handleEdit(e, id)}
                   title="Edit Booking"
                   className="h-6 w-6 hover:w-8 hover:h-8 hover:text-blue-900 cursor-pointer"
                 />
@@ -164,8 +202,8 @@ const RnrList = () => {
         },
       },
     },
-     //3
-     {
+    //3
+    {
       name: "customer_mobile",
       label: "Customer/Mobile",
       options: {
@@ -220,7 +258,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-   
+
     //7
     {
       name: "order_date",
@@ -251,8 +289,8 @@ const RnrList = () => {
         },
       },
     },
-    
-    //9 service name 
+
+    //9 service name
     {
       name: "order_service",
       label: "Service",
@@ -288,8 +326,8 @@ const RnrList = () => {
         sort: false,
       },
     },
-     //12
-     {
+    //12
+    {
       name: "order_time",
       label: "Time/Area",
       options: {
@@ -297,8 +335,8 @@ const RnrList = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const locality = tableMeta.rowData[31];
-          const subLocality = tableMeta.rowData[32]; 
-          
+          const subLocality = tableMeta.rowData[32];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -309,7 +347,7 @@ const RnrList = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
             <div className="flex flex-col w-32">
               <span>{value}</span>
@@ -333,7 +371,7 @@ const RnrList = () => {
           if (service == "Custom") {
             return (
               <div className="flex flex-col w-32">
-                <span>{customeDetails}</span> 
+                <span>{customeDetails}</span>
                 <span>{price}</span>
               </div>
             );
@@ -347,7 +385,7 @@ const RnrList = () => {
         },
       },
     },
-   
+
     //14
     {
       name: "order_assign",
@@ -369,7 +407,7 @@ const RnrList = () => {
         customBodyRender: (value, tableMeta) => {
           const type = tableMeta.rowData[20];
           const paid_amount = tableMeta.rowData[19];
-        
+
           return (
             <div className=" flex flex-col w-32">
               <span>{paid_amount}</span>
@@ -379,8 +417,8 @@ const RnrList = () => {
         },
       },
     },
-     //16
-     {
+    //16
+    {
       name: "confirm/status/inspection status",
       label: "Confirm By/Status/Inspection Status",
       options: {
@@ -424,7 +462,7 @@ const RnrList = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -457,7 +495,7 @@ const RnrList = () => {
           const orderAssign = tableMeta.rowData[14];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) {
@@ -506,7 +544,7 @@ const RnrList = () => {
         sort: true,
       },
     },
-    
+
     //21
     {
       name: "updated_by",
@@ -531,7 +569,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-   
+
     //23
     {
       name: "order_address",
@@ -628,7 +666,7 @@ const RnrList = () => {
         sort: false,
       },
     },
-     {
+    {
       name: "order_locality",
       label: "Locality",
       options: {
@@ -651,7 +689,6 @@ const RnrList = () => {
         sort: false,
       },
     },
-  
   ];
   const options = {
     selectableRows: "none",
@@ -661,7 +698,7 @@ const RnrList = () => {
     download: false,
     print: false,
 
-    count: pendingBookData?.length || 0,
+    count: filteredBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -669,7 +706,7 @@ const RnrList = () => {
       navigate(`/rnr?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = pendingBookData[rowMeta.dataIndex].id;
+      const id = filteredBookingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
     setRowProps: () => {
@@ -679,6 +716,30 @@ const RnrList = () => {
           cursor: "pointer",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate || ""}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
+        </>
+      );
     },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
@@ -718,7 +779,7 @@ const RnrList = () => {
         <div className="mt-1">
           <MUIDataTable
             title={"RNR Booking List"}
-            data={pendingBookData ? pendingBookData : []}
+            data={filteredBookingData ? filteredBookingData : []}
             columns={columns}
             options={options}
           />

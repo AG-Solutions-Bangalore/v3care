@@ -71,6 +71,10 @@ const status = [
     label: "On the way",
   },
   {
+    value: "Reached",
+    label: "Reached",
+  },
+  {
     value: "In Progress",
     label: "In Progress",
   },

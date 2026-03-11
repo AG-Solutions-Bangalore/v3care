@@ -134,7 +134,9 @@ const ViewBooking = () => {
       );
 
       if (res.data.code === "200") {
-        toast.success(res.data?.message || "Booking Assign Removed Successfully");
+        toast.success(
+          res.data?.message || "Booking Assign Removed Successfully",
+        );
         setOpenRemoveDialog(false);
       } else {
         toast.error(res?.message || "Something went wrong");
@@ -397,38 +399,54 @@ const ViewBooking = () => {
         }
         label2={
           <span className="space-x-2">
-            {!(
-              booking.order_status === "Pending" ||
-              booking.order_status === "Completed" ||
-              booking.order_status === "Cancel" ||
-              booking.order_status === "Vendor" ||
-              vendor?.vendor_company
-            ) && (
-              <ButtonConfigColor
-                type="create"
-                label="Add Assign V3"
-                onClick={() => navigate(`/booking-assign/${id}`)}
-              />
-            )}
-            {(booking.order_status === "Confirmed" ||
-              booking.order_status === "ReConfirmed" ||
-              booking.order_status === "Vendor" ||
-              booking.order_status === "Inspection") && (
-              <ButtonConfigColor
-                type="create"
-                label="Assign Vendor"
-                onClick={() => navigate(`/assign-vendor/${id}`)}
-              />
-            )}
             {(booking.order_status === "Confirmed" ||
               booking.order_status === "ReConfirmed") &&
-              userType !== "4" && (
+              booking?.order_vendor_id == null &&
+              bookingAssign.length === 0 && (
+                <>
+                  <ButtonConfigColor
+                    type="create"
+                    label="Add Assign V3"
+                    onClick={() => navigate(`/booking-assign/${id}`)}
+                  />
+
+                  <ButtonConfigColor
+                    type="create"
+                    label="Assign Vendor"
+                    onClick={() => navigate(`/assign-vendor/${id}`)}
+                  />
+
+                  <ButtonConfigColor
+                    type="create"
+                    label="Notify All Vendor"
+                    onClick={notifyUpdate}
+                  />
+                </>
+              )}
+
+            {!["Pending", "Completed", "Cancel"].includes(
+              booking.order_status,
+            ) &&
+              booking?.order_vendor_id != null && (
                 <ButtonConfigColor
                   type="create"
-                  label="Notify All Vendor"
-                  onClick={notifyUpdate}
+                  label="Assign Vendor"
+                  onClick={() => navigate(`/assign-vendor/${id}`)}
                 />
               )}
+
+            {!["Pending", "Completed", "Cancel", "Vendor"].includes(
+              booking.order_status,
+            ) &&
+              booking?.order_vendor_id == null &&
+              bookingAssign.length > 0 && (
+                <ButtonConfigColor
+                  type="create"
+                  label="Add Assign V3"
+                  onClick={() => navigate(`/booking-assign/${id}`)}
+                />
+              )}
+
             {(booking.order_status === "Completed" ||
               booking.order_status === "Cancel") && (
               <ButtonConfigColor
@@ -437,6 +455,7 @@ const ViewBooking = () => {
                 onClick={() => navigate(`/add-booking-reassign/${id}`)}
               />
             )}
+
             {![
               "Pending",
               "Inspection",

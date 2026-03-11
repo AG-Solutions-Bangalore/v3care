@@ -273,7 +273,7 @@ const TomorrowBooking = () => {
       name: "order_date",
       label: "Booking Date",
       options: {
-        filter: true,
+        filter: false,
         sort: false,
         display: "exclude",
         viewColumns: false,
@@ -346,6 +346,7 @@ const TomorrowBooking = () => {
           const km = tableMeta.rowData[39];
           const locality = tableMeta.rowData[34];
           const subLocality = tableMeta.rowData[35];
+          const address = tableMeta.rowData[26];
 
           let areaDisplay = "";
           if (locality && subLocality) {
@@ -357,11 +358,17 @@ const TomorrowBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
+
+          const shortAddress =
+            address && address.length > 50
+              ? address.slice(0, 50) + "..."
+              : address || "N/A";
           return (
             <div className="w-32">
               <div className="text-sm break-words">{value || "N/A"}</div>
               <div className="text-xs text-gray-800 ">Km :{km ? km : 0}</div>
               <div className="text-xs text-gray-500 ">{areaDisplay}</div>
+              <div className="text-xs text-gray-800 ">{shortAddress}</div>
             </div>
           );
         },
@@ -676,7 +683,7 @@ const TomorrowBooking = () => {
       name: "order_address",
       label: "Address",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -712,7 +719,7 @@ const TomorrowBooking = () => {
       name: "order_remarks",
       label: "Remarks",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -724,7 +731,7 @@ const TomorrowBooking = () => {
       name: "order_comment",
       label: "Comment",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -736,7 +743,7 @@ const TomorrowBooking = () => {
       name: "order_postpone_reason",
       label: "Reason",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -748,7 +755,7 @@ const TomorrowBooking = () => {
       name: "order_followup",
       label: "Followup",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,
@@ -796,7 +803,7 @@ const TomorrowBooking = () => {
       name: "order_sub_locality",
       label: "Sub Locality",
       options: {
-        filter: true,
+        filter: false,
         display: "exclude",
         viewColumns: false,
         searchable: true,

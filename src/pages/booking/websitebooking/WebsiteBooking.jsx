@@ -16,6 +16,7 @@ import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import CommentPopover from "../../../components/common/CommentPopover";
 import FollowupModal from "../../../components/common/FollowupModal";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { TextField } from "@mui/material";
 
 const WebsiteBooking = () => {
   const [websiteBookingData, setWebsiteBookingData] = useState(null);
@@ -31,6 +32,8 @@ const WebsiteBooking = () => {
   const pageParam = searchParams.get("page");
   const [openModal, setOpenModal] = useState(false);
   const [selectedAssignDetails, setSelectedAssignDetails] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
   useEffect(() => {
     if (pageParam) {
       setPage(parseInt(pageParam) - 1);
@@ -89,6 +92,43 @@ const WebsiteBooking = () => {
     e.stopPropagation();
     setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
+  };
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    localStorage.setItem("filteredWebsiteDate", date);
+
+    if (date) {
+      const filteredData = websiteBookingData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(websiteBookingData);
+    }
+  };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredWebsiteDate");
+
+    if (storedDate && websiteBookingData) {
+      const filteredData = websiteBookingData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(websiteBookingData);
+    }
+  }, [websiteBookingData]);
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(websiteBookingData);
+    localStorage.removeItem("filteredWebsiteDate");
   };
   const columns = [
     {
@@ -666,7 +706,7 @@ const WebsiteBooking = () => {
     download: false,
     print: false,
 
-    count: websiteBookingData?.length || 0,
+    count: filteredBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -674,7 +714,7 @@ const WebsiteBooking = () => {
       navigate(`/website?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = websiteBookingData[rowMeta.dataIndex].id;
+      const id = filteredBookingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
 
@@ -710,6 +750,30 @@ const WebsiteBooking = () => {
           cursor: "pointer",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate || ""}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
+        </>
+      );
     },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
@@ -751,7 +815,7 @@ const WebsiteBooking = () => {
         <div className="mt-1">
           <MUIDataTable
             title={"Website Booking List"}
-            data={websiteBookingData ? websiteBookingData : []}
+            data={filteredBookingData ? filteredBookingData : []}
             columns={columns}
             options={options}
           />

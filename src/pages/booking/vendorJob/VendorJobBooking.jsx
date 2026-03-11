@@ -15,9 +15,12 @@ import Layout from "../../../layout/Layout";
 import { ContextPanel } from "../../../utils/ContextPanel";
 import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
+import { TextField } from "@mui/material";
 
 const VendorJobBooking = () => {
   const [vendorBookData, setVendorBookData] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -56,7 +59,7 @@ const VendorJobBooking = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setVendorBookData(response.data?.booking);
@@ -85,6 +88,43 @@ const VendorJobBooking = () => {
     e.stopPropagation();
     setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
+  };
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    localStorage.setItem("filteredVendorDate", date);
+
+    if (date) {
+      const filteredData = vendorBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(vendorBookData);
+    }
+  };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredVendorDate");
+
+    if (storedDate && vendorBookData) {
+      const filteredData = vendorBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(vendorBookData);
+    }
+  }, [vendorBookData]);
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(vendorBookData);
+    localStorage.removeItem("filteredVendorDate");
   };
   const columns = [
     {
@@ -125,26 +165,26 @@ const VendorJobBooking = () => {
         },
       },
     },
-      //1
-      {
-        name: "booking_service_date",
-        label: "Booking/Service",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (value, tableMeta) => {
-            const bookingDate = tableMeta.rowData[7];
-            const serviceDate = tableMeta.rowData[8];
-  
-            return (
-              <div className=" flex flex-col justify-center">
-                <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
-                <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
-              </div>
-            );
-          },
+    //1
+    {
+      name: "booking_service_date",
+      label: "Booking/Service",
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const bookingDate = tableMeta.rowData[7];
+          const serviceDate = tableMeta.rowData[8];
+
+          return (
+            <div className=" flex flex-col justify-center">
+              <span>{Moment(bookingDate).format("DD-MM-YYYY")}</span>
+              <span>{Moment(serviceDate).format("DD-MM-YYYY")}</span>
+            </div>
+          );
         },
       },
+    },
     //2
     {
       name: "order_ref",
@@ -250,7 +290,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-  
+
     //9
     {
       name: "order_service",
@@ -287,8 +327,8 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-     //12
-     {
+    //12
+    {
       name: "order_time",
       label: "Time/Area",
       options: {
@@ -296,8 +336,8 @@ const VendorJobBooking = () => {
         sort: false,
         customBodyRender: (value, tableMeta) => {
           const locality = tableMeta.rowData[35];
-          const subLocality = tableMeta.rowData[36]; 
-          
+          const subLocality = tableMeta.rowData[36];
+
           let areaDisplay = "";
           if (locality && subLocality) {
             areaDisplay = `${locality} - ${subLocality}`;
@@ -308,7 +348,7 @@ const VendorJobBooking = () => {
           } else {
             areaDisplay = "N/A";
           }
-          
+
           return (
             <div className="flex flex-col w-32">
               <span>{value}</span>
@@ -400,7 +440,7 @@ const VendorJobBooking = () => {
         },
       },
     },
-   
+
     //17
     {
       name: "order_assign",
@@ -412,8 +452,8 @@ const VendorJobBooking = () => {
         viewColumns: false,
       },
     },
-     //18
-     {
+    //18
+    {
       name: "amount_type",
       label: "Paid Amount/Type",
       options: {
@@ -422,12 +462,11 @@ const VendorJobBooking = () => {
         customBodyRender: (value, tableMeta) => {
           const paid_amount = tableMeta.rowData[21];
           const type = tableMeta.rowData[22];
- 
+
           return (
             <div className=" flex flex-col w-32">
-               <span>{paid_amount}</span>
+              <span>{paid_amount}</span>
               <span>{type}</span>
-             
             </div>
           );
         },
@@ -478,7 +517,7 @@ const VendorJobBooking = () => {
           const orderAssign = tableMeta?.rowData[17] || [];
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign.order_assign_status !== "Cancel"
+            (assign) => assign.order_assign_status !== "Cancel",
           );
           const count = activeAssignments.length;
 
@@ -515,7 +554,7 @@ const VendorJobBooking = () => {
           }
 
           const activeAssignments = orderAssign.filter(
-            (assign) => assign?.order_assign_status !== "Cancel"
+            (assign) => assign?.order_assign_status !== "Cancel",
           );
 
           if (activeAssignments.length === 0) return <span>-</span>;
@@ -562,7 +601,7 @@ const VendorJobBooking = () => {
         sort: true,
       },
     },
-   
+
     //24
     {
       name: "updated_by",
@@ -587,7 +626,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-    
+
     //26
     {
       name: "order_address",
@@ -696,7 +735,7 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-     //35 - order_locality
+    //35 - order_locality
     {
       name: "order_locality",
       label: "Locality",
@@ -720,7 +759,6 @@ const VendorJobBooking = () => {
         sort: false,
       },
     },
-  
   ];
   const options = {
     selectableRows: "none",
@@ -729,7 +767,7 @@ const VendorJobBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    count: vendorBookData?.length || 0,
+    count: filteredBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -737,8 +775,8 @@ const VendorJobBooking = () => {
       navigate(`/vendor-job?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = vendorBookData[rowMeta.dataIndex].id;
-      handleView(e, id)
+      const id = filteredBookingData[rowMeta.dataIndex].id;
+      handleView(e, id);
     },
     setRowProps: () => {
       return {
@@ -747,6 +785,30 @@ const VendorJobBooking = () => {
           cursor: "pointer",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate || ""}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
+        </>
+      );
     },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
@@ -787,7 +849,7 @@ const VendorJobBooking = () => {
         <div className="mt-1">
           <MUIDataTable
             title={"Vendor Booking List"}
-            data={vendorBookData ? vendorBookData : []}
+            data={filteredBookingData ? filteredBookingData : []}
             columns={columns}
             options={options}
           />

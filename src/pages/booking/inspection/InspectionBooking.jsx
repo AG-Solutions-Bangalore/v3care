@@ -17,9 +17,12 @@ import UseEscapeKey from "../../../utils/UseEscapeKey";
 import AssignDetailsModal from "../../../components/AssignDetailsModal";
 import { BsFillChatQuoteFill } from "react-icons/bs";
 import { FaWpforms } from "react-icons/fa";
+import { TextField } from "@mui/material";
 
 const InspectionBooking = () => {
   const [InspectionBookData, setInspectionBookData] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [filteredBookingData, setFilteredBookingData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { userType } = useContext(ContextPanel);
   const navigate = useNavigate();
@@ -94,6 +97,43 @@ const InspectionBooking = () => {
     setFollowUpData(orderfollowup);
     setOpenFollowModal(true);
   };
+  const handleDateChange = (event) => {
+    const date = event.target.value;
+    setSelectedDate(date);
+    localStorage.setItem("filteredInspectionDate", date);
+
+    if (date) {
+      const filteredData = InspectionBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(date);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(InspectionBookData);
+    }
+  };
+  useEffect(() => {
+    const storedDate = localStorage.getItem("filteredInspectionDate");
+
+    if (storedDate && InspectionBookData) {
+      const filteredData = InspectionBookData.filter((item) => {
+        const itemDate = new Date(item.order_service_date);
+        const selectedDateObj = new Date(storedDate);
+        return itemDate.toDateString() === selectedDateObj.toDateString();
+      });
+
+      setSelectedDate(storedDate);
+      setFilteredBookingData(filteredData);
+    } else {
+      setFilteredBookingData(InspectionBookData);
+    }
+  }, [InspectionBookData]);
+  const handleReset = () => {
+    setSelectedDate(null);
+    setFilteredBookingData(InspectionBookData);
+    localStorage.removeItem("filteredInspectionDate");
+  };
   const columns = [
     {
       name: "id",
@@ -135,7 +175,7 @@ const InspectionBooking = () => {
               <CommentPopover booking={booking} />
               {(userType == "6" || userType == "7" || userType == "8") &&
                 quotation && (
-                  <FaWpforms 
+                  <FaWpforms
                     title="Quotation"
                     onClick={(e) => handleQuotation(e, id)}
                     // onClick={() => navigate(`/quotation/${id}?mode=create`)}
@@ -684,7 +724,7 @@ const InspectionBooking = () => {
     viewColumns: true,
     download: false,
     print: false,
-    count: InspectionBookData?.length || 0,
+    count: filteredBookingData?.length || 0,
     rowsPerPage: rowsPerPage,
     page: page,
     onChangePage: (currentPage) => {
@@ -692,7 +732,7 @@ const InspectionBooking = () => {
       navigate(`/inspection?page=${currentPage + 1}`);
     },
     onRowClick: (rowData, rowMeta, e) => {
-      const id = InspectionBookData[rowMeta.dataIndex].id;
+      const id = filteredBookingData[rowMeta.dataIndex].id;
       handleView(e, id)();
     },
     setRowProps: () => {
@@ -702,6 +742,30 @@ const InspectionBooking = () => {
           cursor: "pointer",
         },
       };
+    },
+    customToolbar: () => {
+      return (
+        <>
+          <TextField
+            label="Filter by Date"
+            type="date"
+            value={selectedDate || ""}
+            onChange={handleDateChange}
+            size="small"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            className="mr-4"
+          />
+
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-black rounded-md ml-4"
+          >
+            Reset
+          </button>
+        </>
+      );
     },
     customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
       return (
@@ -742,7 +806,7 @@ const InspectionBooking = () => {
         <div className="mt-1">
           <MUIDataTable
             title={"Inspection Booking List"}
-            data={InspectionBookData ? InspectionBookData : []}
+            data={filteredBookingData ? filteredBookingData : []}
             columns={columns}
             options={options}
           />
